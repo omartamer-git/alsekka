@@ -37,7 +37,6 @@ const Checkout = ({ route, navigation }) => {
 
     useEffect(() => {
         const url = SERVER_URL + `/passengerdetails?passenger=${passengerId}&tripId=${tripId}`;
-        console.log(url);
         fetch(url).then(response => response.json()).then(
             data => {
                 setPassengerDetails(data);
@@ -66,7 +65,6 @@ const Checkout = ({ route, navigation }) => {
 
     const checkoutConfirmed = () => {
         const url = SERVER_URL + `/checkout?passenger=${passengerId}&tripId=${tripId}&amountPaid=${amountPaid}&rating=${rating}`;
-        console.log(url);
         fetch(url).then(response => response.json()).then(
             data => {
 

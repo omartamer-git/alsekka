@@ -66,15 +66,12 @@ const PostRide = ({ route, navigation }) => {
     }
 
     const postRide = (e) => {
-        console.log("h");
         if (markerFrom && markerTo) {
-            console.log("b");
             const mainTextFrom = "Test 1";
             const mainTextTo = "Test 2";
             const secondaryTextFrom = "Test 3";
             const secondaryTextTo = "Test 4";
             const url = `${SERVER_URL}/postride?fromLatitude=${markerFrom.latitude}&fromLongitude=${markerFrom.longitude}&toLatitude=${markerTo.latitude}&toLongitude=${markerTo.longitude}&mainTextFrom=${mainTextFrom}&secondaryTextFrom=${secondaryTextFrom}&mainTextTo=${mainTextTo}&secondaryTextTo=${secondaryTextTo}&pricePerSeat=${pricePerSeat}&driver=${globalVars.getUserId()}&datetime=${getDateTime(date, false)}`;
-            console.log(url);
             fetch(url).then(response => response.json()).then(data => {
                 console.log(data);
             });

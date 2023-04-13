@@ -27,10 +27,8 @@ export const getDateSQL = (date) => {
 export const translateEnglishNumbers = ( text ) => {
     text = String(text);
     const x = text.length;
-    console.log(x);
     let resultText = "";
     for (let i = 0; i < x; i++) {
-        console.log(i);
         const letter = text.charAt(i);
         // ٠١٢٣٤٥٦٧٨٩
         switch (letter) {
@@ -488,4 +486,4 @@ export const customMapStyle = [
     },
 ]
 
-export const SERVER_URL = "http://127.0.0.1:3000";
+export const SERVER_URL = "http://192.168.1.19:3000";

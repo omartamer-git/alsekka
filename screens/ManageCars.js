@@ -49,7 +49,7 @@ const ManageCars = ({ route, navigation }) => {
                     <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                     </View>
 
-                    <ScrollView contentContainerStyle={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5 }]}>
+                    <ScrollView contentContainerStyle={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, flex: 0 }]}>
                         <View style={{ alignItems: 'flex-end', width: '100%', marginTop: 10 }}>
                             <TouchableOpacity onPress={() => navigation.navigate('New Car')} style={{ backgroundColor: palette.inputbg, borderColor: palette.secondary, borderWidth: 2, padding: 24, paddingTop: 12, paddingBottom: 12, borderRadius: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                 <MaterialIcons name="add" size={22} color={palette.black} />
@@ -64,15 +64,16 @@ const ManageCars = ({ route, navigation }) => {
                                         <View style={{ width: '100%', padding: 16, borderBottomWidth: 1, borderColor: palette.light, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} key={"car" + index}>
                                             <View style={{ width: '60%', flexDirection: 'row' }}>
                                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                    <FontsAwesome5 name="car-alt" size={28} />
+                                                    { data.approved === 1 && <FontsAwesome5 name="car-alt" size={28} /> }
+                                                    { data.approved === 0 && <MaterialIcons name="schedule" size={28} color={palette.dark}/> }
                                                 </View>
                                                 <View style={{ justifyContent: 'center', marginLeft: 10 }}>
-                                                    <Text style={{ fontSize: 14, fontWeight: '600', flexWrap: 'wrap' }}>{data.brand} {data.model} ({data.year})</Text>
+                                                    <Text style={{ fontSize: 14, fontWeight: '600', flexWrap: 'wrap', color: (data.approved === 1 ? palette.black : palette.dark) }}>{data.brand} {data.model} ({data.year})</Text>
                                                     <Text style={{ fontSize: 14, fontWeight: '600', flexWrap: 'wrap', color: palette.dark }}>{data.color}</Text>
                                                 </View>
                                             </View>
                                             <View style={{ height: 60, alignSelf: 'flex-end', width: '30%', marginTop: 10, borderRadius: 4, borderColor: palette.dark, borderWidth: 2 }}>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 2, borderBottomColor: palette.dark, width: '100%', flexShrink: 1, paddingLeft: 2, paddingRight: 2, backgroundColor: '#0377b4' }}>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 2, borderBottomColor: palette.dark, width: '100%', flexShrink: 1, paddingLeft: 2, paddingRight: 2, backgroundColor: data.approved === 1 ? '#0377b4' : palette.light }}>
                                                     <Text style={{ fontWeight: '500', fontSize: 12 }}>EGYPT</Text>
                                                     <Text style={{ fontWeight: '500', fontSize: 12 }}>مصر</Text>
                                                 </View>

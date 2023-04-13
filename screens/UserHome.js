@@ -8,7 +8,8 @@ import {
     TextInput,
     Image,
     TouchableOpacity,
-    Platform
+    Platform,
+    ScrollView
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../helper';
 import Button from '../components/Button';
@@ -28,6 +29,7 @@ import AvailableRide from '../components/AvailableRide';
 import { Notifications } from 'react-native-notifications';
 import AWS from 'aws-sdk/dist/aws-sdk-react-native';
 import LinearGradient from 'react-native-linear-gradient';
+
 
 
 const UserHome = ({ navigation, route }) => {
@@ -89,12 +91,12 @@ const UserHome = ({ navigation, route }) => {
             </SafeAreaView>
 
             <View style={styles.wrapper}>
-                <SafeAreaView style={{ backgroundColor: palette.white, borderRadius: 10, width: '100%', flex: 1 }}>
+                <SafeAreaView style={{ backgroundColor: palette.inputbg, width: '100%', flex: 1 }}>
                     <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
 
                     </View>
 
-                    <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', justifyContent: 'flex-start', flex: 1 }]}>
+                    <ScrollView contentContainerStyle={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', justifyContent: 'flex-start', flex: 0 }]}>
                         <Text style={[styles.headerText2, { marginTop: 20 }]}>
                             Good
                             {
@@ -145,7 +147,13 @@ const UserHome = ({ navigation, route }) => {
                         <TouchableOpacity underlayColor={palette.inputbg} style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('All Trips') }}>
                             <Text style={{ fontWeight: 'bold', color: palette.primary }}>View All Trips</Text>
                         </TouchableOpacity>
-                    </View>
+
+                        <View style={{marginTop: 20, width: '100%', backgroundColor: palette.accent, padding: 16, borderRadius: 8}}>
+                            <Text style={{color: palette.white, fontWeight: '600', fontSize: 18}}>Our Commitment to Safety</Text>
+                            <Text style={{color: palette.light, fontWeight: '500', marginTop: 10}}>At Omar's Carpooling, safety is our top priority. To ensure the safety of our passengers, we conduct thorough background checks and verify driver's licenses and car licenses for all of our users. All rides are GPS tracked in real-time.</Text>
+                            <TouchableOpacity><Text style={{marginTop: 5, color: palette.dark}}>Read More...</Text></TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 </SafeAreaView>
             </View >
         </View >
