@@ -74,22 +74,22 @@ const Account = ({ route, navigation }) => {
                                 {ratings}
                             </View>
                             <View style={{ flexDirection: 'row', width: '100%', height: 100, paddingTop: 20, paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity style={{ backgroundColor: palette.secondary, height: 80, flex:1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex:1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }}>
                                     <MaterialIcons name="message" size={40} color={palette.white} />
                                     <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Messages</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ backgroundColor: palette.secondary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => {  navigation.navigate('Wallet') }}>
+                                <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => {  navigation.navigate('Wallet') }}>
                                     <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
                                     <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Wallet</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ backgroundColor: palette.secondary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('All Trips') }}>
+                                <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('All Trips') }}>
                                     <MaterialIcons name="history" size={40} color={palette.white} />
                                     <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Trips</Text>
                                 </TouchableOpacity>
                             </View>
 
                             <View style={{ width: '100%' }}>
-                                <Button text="Manage My Cars" textColor={palette.white} bgColor={palette.secondary} onPress={() => { navigation.navigate('Manage Cars') }}/>
+                                <Button text="Manage My Cars" textColor={palette.white} bgColor={palette.primary} onPress={() => { navigation.navigate('Manage Cars') }}/>
                                 <CustomTextInput
                                     value={globalVars.getFirstName() + " " + globalVars.getLastName()}
                                     iconLeft="badge"

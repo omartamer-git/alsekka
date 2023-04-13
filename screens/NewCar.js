@@ -23,7 +23,6 @@ import * as globalVars from '../globalVars';
 import DatePicker from 'react-native-date-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Pending from '../svgs/pending';
-import RNFetchBlob from 'rn-fetch-blob';
 
 const NewCar = ({ route, navigation }) => {
     const colorMode = useColorScheme();

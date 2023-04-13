@@ -44,6 +44,7 @@ import AllTrips from './screens/AllTrips';
 import AddCard from './screens/AddCard';
 import ManageCars from './screens/ManageCars';
 import NewCar from './screens/NewCar';
+import Announcement from './screens/Announcement';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -153,6 +154,7 @@ const UserHomeNavigator = ({route, navigation}) => {
       <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{headerShown: false}} />
       <UserHomeStack.Screen name="Checkout" component={Checkout} options={{headerShown: false}} />
       <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{headerShown: false}} />
+      <UserHomeStack.Screen name="Announcement" component={Announcement} options={{headerShown: false}} />
     </UserHomeStack.Navigator>
   );
 }

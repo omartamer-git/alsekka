@@ -9,7 +9,8 @@ import {
     Image,
     TouchableOpacity,
     Platform,
-    ScrollView
+    ScrollView,
+    Dimensions
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../helper';
 import Button from '../components/Button';
@@ -29,7 +30,7 @@ import AvailableRide from '../components/AvailableRide';
 import { Notifications } from 'react-native-notifications';
 import AWS from 'aws-sdk/dist/aws-sdk-react-native';
 import LinearGradient from 'react-native-linear-gradient';
-
+import Carousel from 'react-native-reanimated-carousel';
 
 
 const UserHome = ({ navigation, route }) => {
@@ -41,6 +42,9 @@ const UserHome = ({ navigation, route }) => {
     const [driverMainTextFrom, setDriverMainTextFrom] = useState('');
     const [driverMainTextTo, setDriverMainTextTo] = useState('');
     const [driverTripId, setDriverTripId] = useState(null);
+    const [carouselWidth, setCarouselWidth] = useState(200);
+    const [carouselData, setCarouselData] = useState(null);
+    const MAX_CAROUSEL_TEXT_LENGTH = 250;
 
     useEffect(() => {
         fetch(SERVER_URL + `/upcomingrides?uid=${globalVars.getUserId()}&limit=1`).then(response => response.json()).then(
@@ -69,12 +73,26 @@ const UserHome = ({ navigation, route }) => {
             }
         );
 
+        fetch(SERVER_URL + `/announcements?active=1`).then(response => response.json()).then(
+            data => {
+                setCarouselData(data);
+            }
+        );
+
 
     }, []);
 
     const viewTrip = (id) => {
         navigation.navigate('View Trip', { tripId: id });
     };
+
+    const findCarouselWidth = (layout) => {
+        const { x, y, width, height } = layout.nativeEvent.layout;
+        console.log(width);
+        setCarouselWidth(width);
+    };
+
+    const width = Dimensions.get('window').width;
 
     const isDarkMode = useColorScheme === 'dark';
 
@@ -148,13 +166,34 @@ const UserHome = ({ navigation, route }) => {
                             <Text style={{ fontWeight: 'bold', color: palette.primary }}>View All Trips</Text>
                         </TouchableOpacity>
 
-                        <View style={{marginTop: 20, width: '100%', backgroundColor: palette.accent, padding: 16, borderRadius: 8}}>
-                            <Text style={{color: palette.white, fontWeight: '600', fontSize: 18}}>Our Commitment to Safety</Text>
-                            <Text style={{color: palette.light, fontWeight: '500', marginTop: 10}}>At Omar's Carpooling, safety is our top priority. To ensure the safety of our passengers, we conduct thorough background checks and verify driver's licenses and car licenses for all of our users. All rides are GPS tracked in real-time.</Text>
-                            <TouchableOpacity><Text style={{marginTop: 5, color: palette.dark}}>Read More...</Text></TouchableOpacity>
+                        <View onLayout={findCarouselWidth} style={{ width: '100%', marginTop: 20, }}>
+                            {carouselData &&
+                            <Carousel loop style={{ backgroundColor: palette.accent, borderRadius: 8 }} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
+                                ({ index }) => (
+                                    <View style={{ flex: 1, width: '100%', justifyContent: 'flex-start', alignItems: 'flex-start', padding: 16 }}>
+                                        <Text style={{ color: palette.white, fontWeight: '600', fontSize: 18, lineHeight: 18 }}>
+                                            {carouselData[index].title}
+                                        </Text>
+                                        <Text style={{ color: palette.light, fontWeight: '500', marginTop: 10, lineHeight: 14, fontSize: 14 }}>
+                                            {carouselData[index].text.substring(0, MAX_CAROUSEL_TEXT_LENGTH) + (carouselData[index].text.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")}
+                                        </Text>
+                                        {carouselData[index].text.length > MAX_CAROUSEL_TEXT_LENGTH &&
+                                            <TouchableOpacity
+                                                onPress={
+                                                    () => {
+                                                        navigation.navigate('Announcement', { id: carouselData[index].id });
+                                                    }
+                                                }
+                                            >
+                                                <Text style={{ marginTop: 5, color: palette.dark, lineHeight: 14, fontSize: 14 }}>Read More...</Text></TouchableOpacity>
+                                        }
+                                    </View>
+                                )
+                            }></Carousel>}
                         </View>
+
                     </ScrollView>
-                </SafeAreaView>
+                </SafeAreaView >
             </View >
         </View >
     );
