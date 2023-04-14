@@ -1,10 +1,12 @@
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { palette } from '../helper';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-const CarCard = ({approved, brand, model, year, color, licensePlateLetters, licensePlateNumbers}) => {
+import { palette, translateEnglishNumbers } from '../helper';
+
+const CarCard = ({approved, brand, model, year, color, licensePlateLetters, licensePlateNumbers, onPress=()=>{} }) => {
     return (
-        <View style={{ width: '100%', padding: 16, borderBottomWidth: 1, borderColor: palette.light, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} key={"car" + index}>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.75} style={{ width: '100%', padding: 16, borderBottomWidth: 1, borderColor: palette.light, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ width: '60%', flexDirection: 'row' }}>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     {approved === 1 && <FontsAwesome5 name="car-alt" size={28} />}
@@ -27,7 +29,7 @@ const CarCard = ({approved, brand, model, year, color, licensePlateLetters, lice
                     <View style={{ flex: 10, justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontWeight: '600', fontSize: 13, flexWrap: 'nowrap' }}>{licensePlateLetters.split('').join('​')}</Text></View>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 

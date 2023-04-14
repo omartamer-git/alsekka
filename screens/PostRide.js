@@ -9,6 +9,7 @@ import {
     Image,
     ScrollView,
     ActionSheetIOS,
+    TouchableOpacity,
     Modal
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../helper';
@@ -24,6 +25,7 @@ import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../components/FromToIndicator';
 import { Picker } from '@react-native-picker/picker';
+import CarCard from '../components/CarCard';
 
 const carsAPI = require('../api/carsAPI');
 
@@ -39,7 +41,10 @@ const PostRide = ({ route, navigation }) => {
     const [seatsOccupied, setSeatsOccupied] = useState('');
     const [mainTextFrom, setMainTextFrom] = useState('');
     const [mainTextTo, setMainTextTo] = useState('');
-    const [selectedCar, setSelectedCar] = useState('');
+
+    const [carSelectorOpen, setCarSelectorOpen] = useState(false);
+    const [carSelectorText, setCarSelectorText] = useState('Choose a car..');
+    const [selectedCar, setSelectedCar] = useState(null);
     const [usableCars, setUsableCars] = useState(null);
 
     const mapViewRef = useRef(null);
@@ -47,12 +52,12 @@ const PostRide = ({ route, navigation }) => {
 
     useEffect(() => {
         carsAPI.getUsableCars()
-        .then((usableCars) => {
-            setUsableCars(usableCars);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+            .then((usableCars) => {
+                setUsableCars(usableCars);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }, []);
 
     const setLocationFrom = (loc, mainTextFrom) => {
@@ -64,6 +69,14 @@ const PostRide = ({ route, navigation }) => {
         setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
         setMainTextTo(mainTextTo);
     }
+
+    const selectCar = (data) => {
+        setSelectedCar(data);
+        const carSelectorText = `${data.color} ${data.brand} ${data.model} (${data.licensePlateNumbers})`;
+        setCarSelectorText(carSelectorText);
+        setCarSelectorOpen(false);
+
+    };
 
     const postRide = (e) => {
         if (markerFrom && markerTo) {
@@ -81,6 +94,7 @@ const PostRide = ({ route, navigation }) => {
                 pricePerSeat: pricePerSeat,
                 driver: globalVars.getUserId(),
                 datetime: getDateTime(date, false),
+                car: selectedCar.id,
             };
             const options = {
                 method: 'POST',
@@ -202,19 +216,43 @@ const PostRide = ({ route, navigation }) => {
                             }}
                         />
 
+                        <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Select a Car</Text>
 
+                        <CustomTextInput
+                            placeholder="Select a car.."
+                            value={carSelectorText}
+                            onPressIn={() => setCarSelectorOpen(true)}
+                            iconLeft="directions-car"
+                            style={{ backgroundColor: palette.white }}
+                            editable={false}
+                        />
 
                         <Modal
-                            visible={true}
-                            animationType="slide"
                             transparent={true}
+                            visible={carSelectorOpen}
+                            animationType="slide"
                             onRequestClose={() => { console.log("close") }}
                         >
-                            <ScrollView style={[styles.bottomModal, { height: '50%' }]} contentContainerStyle={{ padding: 16, }}>
-                                {usableCars && usableCars.map((car, index) => {
-                                    return (<Text>Hello</Text>);
-                                })}
-                            </ScrollView>   
+                            <TouchableOpacity style={{ flex: 1 }} onPress={() => { setCarSelectorOpen(false) }} />
+                            <View style={[styles.bottomModal, { height: '50%' }]}>
+                                <ScrollView style={{ flex: 1, width: '100%' }}>
+                                    {usableCars && usableCars.map((data, index) => {
+                                        return (
+                                            <CarCard
+                                                approved={data.approved}
+                                                brand={data.brand}
+                                                model={data.model}
+                                                year={data.year}
+                                                color={data.color}
+                                                licensePlateLetters={data.licensePlateLetters}
+                                                licensePlateNumbers={data.licensePlateNumbers}
+                                                onPress={() => selectCar(data)}
+                                                key={"car" + index} />
+                                        );
+                                    })}
+
+                                </ScrollView>
+                            </View>
                         </Modal>
 
                         <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Seats Available</Text>

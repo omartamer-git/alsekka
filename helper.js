@@ -302,7 +302,8 @@ export const styles = StyleSheet.create({
         elevation: 5,
         shadowOpacity: 0.3,
         shadowRadius: 5,
-        shadowOffset: {width: 0, height: -3}
+        shadowOffset: {width: 0, height: -3},
+        padding: 16
     }
 });
 
