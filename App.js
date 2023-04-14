@@ -45,6 +45,7 @@ import AddCard from './screens/AddCard';
 import ManageCars from './screens/ManageCars';
 import NewCar from './screens/NewCar';
 import Announcement from './screens/Announcement';
+import SubmitDriverDocuments from './screens/SubmitDriverDocuments';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -129,6 +130,8 @@ const PostRideNavigator = ({ route, navigation }) => {
   return (
     <PostRideStack.Navigator initialRouteName='Post a Ride'>
       <PostRideStack.Screen name="Post a Ride" component={PostRide} options={{ headerShown: false }} />
+      <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+      <PostRideStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
     </PostRideStack.Navigator>
   );
 }
@@ -137,24 +140,25 @@ const AccountNavigator = ({ route, navigation }) => {
   return (
     <AccountStack.Navigator initialRouteName='Account Home'>
       <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="Wallet" component={Wallet} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="Add Card" component={AddCard} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="Manage Cars" component={ManageCars} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="New Car" component={NewCar} options={{headerShown: false}} />
+      <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
+      <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
+      <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
     </AccountStack.Navigator>
   );
 }
 
-const UserHomeNavigator = ({route, navigation}) => {
+const UserHomeNavigator = ({ route, navigation }) => {
   return (
     <UserHomeStack.Navigator >
-      <UserHomeStack.Screen name="User Home" component={UserHome}  options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="Checkout" component={Checkout} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{headerShown: false}} />
-      <UserHomeStack.Screen name="Announcement" component={Announcement} options={{headerShown: false}} />
+      <UserHomeStack.Screen name="User Home" component={UserHome} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Announcement" component={Announcement} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
     </UserHomeStack.Navigator>
   );
 }

@@ -139,7 +139,10 @@ const UserHome = ({ navigation, route }) => {
                         }
                         {
                             driverElement && !driverMainTextTo &&
-                            <View style={[styles.rideView, { height: 70, marginTop: 20, backgroundColor: palette.secondary, alignItems: 'center', paddingLeft: 16, paddingRight: 16, justifyContent: 'flex-start', flexDirection: 'row' }]}>
+                            <TouchableOpacity
+                            onPress={() => {navigation.navigate('Driver Documents')}}
+                            activeOpacity={0.75}
+                            style={[styles.rideView, { height: 70, marginTop: 20, backgroundColor: palette.secondary, alignItems: 'center', paddingLeft: 16, paddingRight: 16, justifyContent: 'flex-start', flexDirection: 'row' }]}>
                                 <Text style={[styles.white, { flex: 1 }]}>You haven't applied to be a vehicle owner yet, apply now!</Text>
 
                                 <View>
@@ -147,7 +150,7 @@ const UserHome = ({ navigation, route }) => {
                                         <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
                                     </TouchableOpacity>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         }
 
                         <Text style={[styles.headerText3, { marginTop: 20 }]}>Your Upcoming Rides</Text>

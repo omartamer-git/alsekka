@@ -131,10 +131,10 @@ const NewCar = ({ route, navigation }) => {
             },
             async (buttonIndex) => {
                 if (buttonIndex === 1) {
-                    response = await launchCamera(imagePickerOptions);
+                    const response = await launchCamera(imagePickerOptions);
                     setImageFront(response);
                 } else if (buttonIndex === 2) {
-                    response = await launchImageLibrary(imagePickerOptions);
+                    const response = await launchImageLibrary(imagePickerOptions);
                     setImageFront(response);
                 }
             }
@@ -150,10 +150,10 @@ const NewCar = ({ route, navigation }) => {
             },
             async (buttonIndex) => {
                 if (buttonIndex === 1) {
-                    response = await launchCamera(imagePickerOptions);
+                    const response = await launchCamera(imagePickerOptions);
                     setImageBack(response);
                 } else if (buttonIndex === 2) {
-                    response = await launchImageLibrary(imagePickerOptions);
+                    const response = await launchImageLibrary(imagePickerOptions);
                     setImageBack(response);
                 }
             }
@@ -179,7 +179,7 @@ const NewCar = ({ route, navigation }) => {
                     </View>
 
                     <Modal animationType='slide' transparent='true' visible={modalVisible} style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-                        <SafeAreaView style={{flex: 1, width: '100%'}}>
+                        <SafeAreaView style={{ flex: 1, width: '100%' }}>
                             <View style={{ width: '100%', flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
                                 <Pending width="300" height="300" />
                                 <Text style={{ marginTop: 20, fontSize: 32, fontWeight: '500', color: palette.accent, textAlign: 'center' }}>Your documents are under review</Text>

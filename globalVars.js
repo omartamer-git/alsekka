@@ -7,6 +7,7 @@ let email = null;
 let balance = null;
 let ratings = null;
 let gender = null;
+let driver = 0;
 
 export function setUserId(newUserId) {
     userId = newUserId;
@@ -78,4 +79,12 @@ export function setGender(newGender) {
 
 export function getGender() {
     return gender;
+}
+
+export function setDriver(newDriver) {
+    driver = newDriver;
+}
+
+export function getDriver() {
+    return driver;
 }

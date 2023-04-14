@@ -41,6 +41,7 @@ const LoginScreen = ({ route, navigation }) => {
               globalVars.setEmail(data.email);
               globalVars.setBalance(data.balance);
               globalVars.setRating(data.rating);
+              globalVars.setDriver(data.driver);
           });
 
 
