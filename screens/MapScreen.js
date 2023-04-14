@@ -24,6 +24,12 @@ const MapScreen = ({ route, navigation }) => {
 
   const loc = route.params?.loc;
 
+  // const [location, setLocation] = useState({
+  //   latitude: 37.78825,
+  //   longitude: -122.4324,
+  //   latitudeDelta: 0.0922,
+  //   longitudeDelta: 0.0421,
+  // });
   const [location, setLocation] = useState(null);
   const [markerFrom, setMarkerFrom] = useState(null);
   const [markerTo, setMarkerTo] = useState(null);
@@ -38,34 +44,46 @@ const MapScreen = ({ route, navigation }) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(
-      info => {
-        setLocation({
-          latitude: info.coords.latitude,
-          longitude: info.coords.longitude
-        });
-      }
-    );
+      Geolocation.getCurrentPosition(
+        info => {
+          setLocation({
+            latitude: info.coords.latitude,
+            longitude: info.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+        }
+      );
   }, []);
+
+  const adjustMarkers = () => {
+    if (markerFrom && markerTo) {
+      mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+      console.log("FIT TO MARKERS");
+    } else if (markerFrom) {
+      mapViewRef.current.fitToSuppliedMarkers(["from"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+    } else if (markerTo) {
+      mapViewRef.current.fitToSuppliedMarkers(["to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+    } else {
+      Geolocation.getCurrentPosition(
+        info => {
+          setLocation({
+            latitude: info.coords.latitude,
+            longitude: info.coords.longitude
+          });
+        }
+      );
+    }
+  }
 
   const setLocationFrom = (loc, text) => {
     setTextFrom(text);
     setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
-    if (markerTo) {
-      mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
-    } else {
-      setLocation({ latitude: loc.lat, longitude: loc.lng });
-    }
   }
 
   const setLocationTo = (loc, text) => {
     setTextTo(text);
     setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
-    if (markerFrom) {
-      mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
-    } else {
-      setLocation({ latitude: loc.lat, longitude: loc.lng });
-    }
   }
 
   const goFindRides = (e) => {
@@ -97,14 +115,14 @@ const MapScreen = ({ route, navigation }) => {
           <MapView
             style={{ height: 300, width: '100%', zIndex: 3, elevation: 3, position: 'relative', marginTop: -20, borderBottomColor: '#d9d9d9', borderBottomWidth: 1 }}
             showUserLocation={true}
-            region={location}
+            initialRegion={location}
             provider={PROVIDER_GOOGLE}
             ref={mapViewRef}
             customMapStyle={customMapStyle}
             mapPadding={{ bottom: 48, top: 0, left: 16, right: 0 }}
           >
-            {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
-            {markerTo && <Marker identifier="to" coordinate={markerTo} />}
+            {markerFrom && <Marker identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue" />}
+            {markerTo && <Marker identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />}
           </MapView>
 
           <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start' }]}>

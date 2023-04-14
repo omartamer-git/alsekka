@@ -289,6 +289,21 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: '#F6F5F5',
     },
+
+    bottomModal: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        backgroundColor: '#fff',
+        shadowColor: palette.dark,
+        elevation: 5,
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        shadowOffset: {width: 0, height: -3}
+    }
 });
 
 export const loggedInStyles = StyleSheet.create({

@@ -7,7 +7,9 @@ import {
     Text,
     TextInput,
     Image,
-    ScrollView
+    ScrollView,
+    ActionSheetIOS,
+    Modal
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../helper';
 import Button from '../components/Button';
@@ -21,9 +23,11 @@ import * as globalVars from '../globalVars';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../components/FromToIndicator';
+import { Picker } from '@react-native-picker/picker';
+
+const carsAPI = require('../api/carsAPI');
 
 const PostRide = ({ route, navigation }) => {
-    const [location, setLocation] = useState(null);
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
     const [pricePerSeat, setPricePerSeat] = useState('');
@@ -33,46 +37,60 @@ const PostRide = ({ route, navigation }) => {
     const [date, setDate] = useState(new Date());
     const [seatsAvailable, setSeatsAvailable] = useState('');
     const [seatsOccupied, setSeatsOccupied] = useState('');
+    const [mainTextFrom, setMainTextFrom] = useState('');
+    const [mainTextTo, setMainTextTo] = useState('');
+    const [selectedCar, setSelectedCar] = useState('');
+    const [usableCars, setUsableCars] = useState(null);
 
     const mapViewRef = useRef(null);
+    const carPicker = useRef(null);
 
     useEffect(() => {
-        Geolocation.getCurrentPosition(
-            info => {
-                setLocation({
-                    latitude: info.coords.latitude,
-                    longitude: info.coords.longitude
-                });
-            }
-        );
+        carsAPI.getUsableCars()
+        .then((usableCars) => {
+            setUsableCars(usableCars);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
     }, []);
 
-    const setLocationFrom = (loc) => {
+    const setLocationFrom = (loc, mainTextFrom) => {
         setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
-        if (markerTo) {
-            mapViewRef.current.fitToSuppliedMarkers(["from", "to"]);
-        } else {
-            setLocation({ latitude: loc.lat, longitude: loc.lng });
-        }
+        setMainTextFrom(mainTextFrom);
     }
 
-    const setLocationTo = (loc) => {
+    const setLocationTo = (loc, mainTextTo) => {
         setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
-        if (markerFrom) {
-            mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 50, bottom: 50, right: 50, left: 50 } });
-        } else {
-            setLocation({ latitude: loc.lat, longitude: loc.lng });
-        }
+        setMainTextTo(mainTextTo);
     }
 
     const postRide = (e) => {
         if (markerFrom && markerTo) {
-            const mainTextFrom = "Test 1";
-            const mainTextTo = "Test 2";
-            const secondaryTextFrom = "Test 3";
-            const secondaryTextTo = "Test 4";
-            const url = `${SERVER_URL}/postride?fromLatitude=${markerFrom.latitude}&fromLongitude=${markerFrom.longitude}&toLatitude=${markerTo.latitude}&toLongitude=${markerTo.longitude}&mainTextFrom=${mainTextFrom}&secondaryTextFrom=${secondaryTextFrom}&mainTextTo=${mainTextTo}&secondaryTextTo=${secondaryTextTo}&pricePerSeat=${pricePerSeat}&driver=${globalVars.getUserId()}&datetime=${getDateTime(date, false)}`;
-            fetch(url).then(response => response.json()).then(data => {
+            let newDate = date;
+            newDate.setHours(time.getHours());
+            newDate.setMinutes(time.getMinutes());
+
+            const data = {
+                fromLatitude: markerFrom.latitude,
+                fromLongitude: markerFrom.longitude,
+                toLatitude: markerTo.latitude,
+                toLongitude: markerTo.longitude,
+                mainTextFrom: mainTextFrom,
+                mainTextTo: mainTextTo,
+                pricePerSeat: pricePerSeat,
+                driver: globalVars.getUserId(),
+                datetime: getDateTime(date, false),
+            };
+            const options = {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+            const url = `${SERVER_URL}/postride`;
+            fetch(url, options).then(response => response.json()).then(data => {
                 console.log(data);
             });
         }
@@ -81,6 +99,22 @@ const PostRide = ({ route, navigation }) => {
     const onChangePricePerSeat = (data) => {
         setPricePerSeat(data);
     }
+
+    const handleChangeSeatsAvailable = (data) => {
+        const numeric = data.replace(/[^0-9]/g, '');
+        setSeatsAvailable(numeric);
+    }
+
+    const handleChangeSeatsOccupied = (data) => {
+        const numeric = data.replace(/[^0-9]/g, '');
+        setSeatsOccupied(numeric);
+    }
+
+    const handleChangePricePerSeat = (data) => {
+        const numeric = data.replace(/[^0-9]/g, '');
+        setPricePerSeat(numeric);
+    }
+
     const isDarkMode = useColorScheme === 'dark';
 
 
@@ -113,8 +147,10 @@ const PostRide = ({ route, navigation }) => {
                             open={datePickerOpen}
                             date={date}
                             onConfirm={(date) => {
-                                setDatePickerOpen(false)
-                                setDate(date)
+                                setDatePickerOpen(false);
+                                date = new Date(date.toDateString());
+                                setDate(date);
+                                console.log(date);
                             }}
                             onCancel={() => {
                                 setDatePickerOpen(false)
@@ -133,7 +169,7 @@ const PostRide = ({ route, navigation }) => {
                             iconRight="date-range"
                             editable={false}
                             style={{ backgroundColor: palette.white }}
-                        /> 
+                        />
 
                         <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Time</Text>
 
@@ -155,28 +191,48 @@ const PostRide = ({ route, navigation }) => {
                             open={timePickerOpen}
                             date={time}
                             onConfirm={(time) => {
-                                setTimePickerOpen(false)
-                                setTime(time)
+                                setTimePickerOpen(false);
+                                time.setSeconds(0);
+                                time.setMilliseconds(0);
+                                setTime(time);
+                                console.log(time);
                             }}
                             onCancel={() => {
                                 setTimePickerOpen(false)
                             }}
                         />
 
+
+
+                        <Modal
+                            visible={true}
+                            animationType="slide"
+                            transparent={true}
+                            onRequestClose={() => { console.log("close") }}
+                        >
+                            <ScrollView style={[styles.bottomModal, { height: '50%' }]} contentContainerStyle={{ padding: 16, }}>
+                                {usableCars && usableCars.map((car, index) => {
+                                    return (<Text>Hello</Text>);
+                                })}
+                            </ScrollView>   
+                        </Modal>
+
                         <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Seats Available</Text>
- 
+
                         <CustomTextInput
                             placeholder="Number of empty seats"
                             value={seatsAvailable}
+                            onChangeText={handleChangeSeatsAvailable}
                             iconLeft="groups"
                             style={{ backgroundColor: palette.white }}
                         />
 
                         <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Seats Occupied</Text>
- 
+
                         <CustomTextInput
                             placeholder="Number of full seats (without driver)"
                             value={seatsOccupied}
+                            onChangeText={handleChangeSeatsOccupied}
                             iconLeft="group-work"
                             style={{ backgroundColor: palette.white }}
                         />
@@ -186,6 +242,7 @@ const PostRide = ({ route, navigation }) => {
                         <CustomTextInput
                             placeholder="Price For One Seat"
                             value={pricePerSeat}
+                            onChangeText={handleChangePricePerSeat}
                             iconLeft="attach-money"
                             style={{ backgroundColor: palette.white }}
                         />
