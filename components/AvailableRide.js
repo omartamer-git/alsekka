@@ -16,7 +16,7 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
     }
     return (
         <TouchableOpacity style={[styles.rideView, style]} onPress={() => { onPress(rid) }}>
-            <View style={{ flexDirection: 'row', height: '70%', padding: 16 }}>
+            <View style={{ flexDirection: 'row', flex: 7, padding: 16 }}>
                 <View style={{ height: '100%', flex: 0.1 }}>
                     <FromToIndicator circleRadius={5} />
                 </View>
@@ -26,24 +26,24 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                     <Text style={{ alignSelf: 'flex-start', fontWeight: '600' }}>{toAddress}</Text>
                 </View>
             </View>
-            <View style={{ flexDirection: 'row', height: '30%', width: '100%', paddingLeft: 5, paddingRight: 5, borderTopWidth: 1, borderColor: palette.light }}>
-                <View style={[styles.subViews, { flex: 0.25, borderRightWidth: 1 }]}>
+            <View style={{ flexDirection: 'row', flex: 3, width: '100%', paddingLeft: 5, paddingRight: 5, borderTopWidth: 1, borderColor: palette.light }}>
+                <View style={[styles.subViews, { flex: 1, borderRightWidth: 1 }]}>
                     <MaterialIcons name="monetization-on" size={16} color={palette.primary} />
                     <Text style={styles.textIcon}>{pricePerSeat}EGP</Text>
                 </View>
 
-                <View style={[styles.subViews, { flex: 0.25, borderRightWidth: 1 }]}>
+                <View style={[styles.subViews, { flex: 1, borderRightWidth: 1 }]}>
                     {
                         items
                     }
                 </View>
 
-                <View style={[styles.subViews, { flex: 0.25, borderRightWidth: 1 }]}>
+                <View style={[styles.subViews, { flex: 1, borderRightWidth: 1 }]}>
                     <MaterialIcons name="date-range" size={16} color={palette.primary} />
                     <Text style={styles.textIcon}>{date}</Text>
                 </View>
 
-                <View style={[styles.subViews, { flex: 0.25 }]}>
+                <View style={[styles.subViews, { flex: 1 }]}>
                     <MaterialIcons name="schedule" size={16} color={palette.primary} />
                     <Text style={styles.textIcon}>{time}</Text>
                 </View>
@@ -64,6 +64,7 @@ const styles = StyleSheet.create(
             borderColor: '#d9d9d9',
             borderWidth: 1,
             backgroundColor: '#F6F5F5',
+            height: 165
         },
 
         subViews: {

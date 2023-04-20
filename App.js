@@ -46,6 +46,7 @@ import ManageCars from './screens/ManageCars';
 import NewCar from './screens/NewCar';
 import Announcement from './screens/Announcement';
 import SubmitDriverDocuments from './screens/SubmitDriverDocuments';
+import ViewCommunities from './screens/ViewCommunities';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -54,6 +55,7 @@ const BookingStack = createNativeStackNavigator();
 const PostRideStack = createNativeStackNavigator();
 const AccountStack = createNativeStackNavigator();
 const UserHomeStack = createNativeStackNavigator();
+const CommunityStack = createNativeStackNavigator();
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -93,6 +95,13 @@ const LoggedInHome = ({ route, navigation }) => {
             return (<MaterialIcons name="directions-car" size={size} color={color} />);
           }
         }} />
+      <Tab.Screen name="Communities" component={CommunityNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => {
+            return (<MaterialIcons name="forum" size={size} color={color} />);
+          }
+        }} />
       <Tab.Screen name="Account" component={AccountNavigator}
         options={{
           headerShown: false,
@@ -100,6 +109,7 @@ const LoggedInHome = ({ route, navigation }) => {
             return (<MaterialIcons name="person" size={size} color={color} />);
           }
         }} />
+
     </Tab.Navigator>
   );
 }
@@ -135,6 +145,14 @@ const PostRideNavigator = ({ route, navigation }) => {
     </PostRideStack.Navigator>
   );
 }
+
+const CommunityNavigator = ({route, navigator}) => {
+  return (
+    <CommunityStack.Navigator>
+      <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{headerShown: false}} />
+    </CommunityStack.Navigator>
+  );
+};
 
 const AccountNavigator = ({ route, navigation }) => {
   return (

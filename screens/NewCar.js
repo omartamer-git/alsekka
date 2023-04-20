@@ -192,6 +192,7 @@ const NewCar = ({ route, navigation }) => {
                     </Modal>
 
                     <ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', flex: 0 }]}>
+                        
                         <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Car Brand</Text>
                         <CustomTextInput placeholder="Car Brand (e.g. Mercedes)" iconRight="directions-car" value={brand} onChangeText={setBrand} />
 
