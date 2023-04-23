@@ -4,7 +4,7 @@ import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, translateEnglishNumbers } from '../helper';
 
-const CommunityCard = ({name, picture, description, privacy, style={}, onPress=()=>{} }) => {
+const CommunityCard = ({name, picture, description, privacy={}, style={}, onPress=()=>{} }) => {
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.75} style={[{ width: '100%', padding: 16, borderWidth: 1, borderRadius: 8, borderColor: palette.light, flexDirection: 'row', }, style]}>
             <View style={{ flexShrink: 0.7, flexDirection: 'row' }}>

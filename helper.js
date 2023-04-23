@@ -502,4 +502,4 @@ export const customMapStyle = [
     },
 ]
 
-export const SERVER_URL = "http://192.168.1.19:3000";
+export const SERVER_URL = "http://127.0.0.1:3000";

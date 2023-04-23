@@ -5,7 +5,7 @@ import FromToIndicator from './FromToIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, date, time, driverName, onPress, style = {} }) => {
+const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, date, time, driverName, onPress=() => {}, style = {} }) => {
     const items = [];
     for (let i = 0; i < seatsOccupied; i++) {
         items.push(<MaterialIcons key={ "seat" + i } name="account-circle" size={16} color={palette.primary} />);

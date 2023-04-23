@@ -29,7 +29,7 @@ import Passenger from '../components/Passenger';
 
 const ViewTrip = ({ route, navigation }) => {
     const { tripId } = route.params;
-    const [tripDetails, setTripDetails] = useState({});
+    const [tripDetails, setTripDetails] = useState(null);
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
     const [ratings, setRatings] = useState(null);
@@ -132,6 +132,10 @@ const ViewTrip = ({ route, navigation }) => {
         navigation.navigate('Manage Trip', { tripId: tripId });
     };
 
+    const goToChat = (receiver) => {
+        navigation.navigate('Chat', {receiver: receiver});
+    };
+
 
     const isDarkMode = useColorScheme === 'dark';
 
@@ -163,27 +167,31 @@ const ViewTrip = ({ route, navigation }) => {
                             {markerTo && <Marker identifier="to" coordinate={markerTo} onLayout={fitMarkers} />}
                         </MapView>
 
-                        <AvailableRide style={{ borderRadius: 0, backgroundColor: palette.white, height: '25%' }} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
-
+                        {
+                            tripDetails &&
+                            <AvailableRide style={{ borderRadius: 0, backgroundColor: palette.white, height: '25%' }} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
+                        }
                         <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'center', justifyContent: 'center', flex: 1 }]}>
+                            {tripDetails &&
+                                <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', paddingTop: '5%', paddingBottom: '5%' }}>
+                                    <View style={{ width: 80, height: 80, borderRadius: 80 / 2, borderColor: palette.primary, borderWidth: 3, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Image source={{ uri: tripDetails.profilePicture }} style={{ height: 75, width: 75, resizeMode: 'center', borderRadius: 37.5, borderWidth: 2, borderColor: palette.white }} />
+                                    </View>
+                                    <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'flex-start', marginLeft: 10 }}>
+                                        <Text style={styles.headerText2}>{isDriver ? "You're driving!" : tripDetails.firstName}</Text>
+                                        <Text style={[styles.smallText, { color: palette.dark, fontWeight: '500' }]}>Peugeot 508</Text>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            {ratings}
+                                        </View>
+                                    </View>
+                                    {!isDriver && <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                        <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 60 / 2, backgroundColor: palette.white, alignItems: 'center', justifyContent: 'center', shadowColor: palette.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 4 }}>
+                                            <MaterialIcons style={{}} name="chat-bubble" size={30} color={palette.primary} />
+                                        </TouchableOpacity>
+                                    </View>}
+                                </View>
+                            }
 
-                            <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', paddingTop: '5%', paddingBottom: '5%' }}>
-                                <View style={{ width: 80, height: 80, borderRadius: 80 / 2, borderColor: palette.primary, borderWidth: 3, alignItems: 'center', justifyContent: 'center' }}>
-                                    <Image source={{ uri: tripDetails.profilePicture }} style={{ height: 75, width: 75, resizeMode: 'center', borderRadius: 37.5, borderWidth: 2, borderColor: palette.white }} />
-                                </View>
-                                <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'flex-start', marginLeft: 10 }}>
-                                    <Text style={styles.headerText2}>{isDriver ? "You're driving!" : tripDetails.firstName}</Text>
-                                    <Text style={[styles.smallText, { color: palette.dark, fontWeight: '500' }]}>Peugeot 508</Text>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        {ratings}
-                                    </View>
-                                </View>
-                                {!isDriver && <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                    <View style={{ width: 60, height: 60, borderRadius: 60 / 2, backgroundColor: palette.white, alignItems: 'center', justifyContent: 'center', shadowColor: palette.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 4 }}>
-                                        <MaterialIcons style={{}} name="chat-bubble" size={30} color={palette.primary} />
-                                    </View>
-                                </View>}
-                            </View>
 
                             {
                                 isDriver &&
@@ -197,8 +205,10 @@ const ViewTrip = ({ route, navigation }) => {
                                             return (
                                                 <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                        <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} style={{marginRight: 8}} />
-                                                        <MaterialIcons name="phone" size={24} color={palette.secondary} style={{marginLeft: 8}} />
+                                                        <TouchableOpacity activeOpacity={0.9} style={{ marginRight: 8 }} onPress={() => goToChat(data.id)}>
+                                                            <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
+                                                        </TouchableOpacity>
+                                                        <MaterialIcons name="phone" size={24} color={palette.secondary} style={{ marginLeft: 8 }} />
                                                     </View>
                                                 </Passenger>
                                             );

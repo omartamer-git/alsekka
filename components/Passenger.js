@@ -10,7 +10,7 @@ const Passenger = ({ borderTopWidth, data, children }) => {
             </View>
             <View style={{ marginLeft: 10, flexDirection: 'row', flex: 1, paddingRight: 5 }}>
                 <View style={{ justifyContent: 'center', flex:1 }}>
-                    <Text style={{ fontWeight: '500' }}>{data.firstName} {data.lastName} ({data.id})</Text>
+                    <Text style={{ fontWeight: '500' }}>{data.firstName} {data.lastName}</Text>
                     <Text style={{ fontSize: 12, fontWeight: '500', color: palette.dark }}>{data.paymentMethod == 0 ? "Cash" : "Card"}</Text>
                     <Text>
                         {

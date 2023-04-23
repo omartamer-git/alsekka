@@ -47,9 +47,12 @@ import NewCar from './screens/NewCar';
 import Announcement from './screens/Announcement';
 import SubmitDriverDocuments from './screens/SubmitDriverDocuments';
 import ViewCommunities from './screens/ViewCommunities';
+import Chat from './screens/Chat';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
+
+const UserStack = createNativeStackNavigator();
 
 const BookingStack = createNativeStackNavigator();
 const PostRideStack = createNativeStackNavigator();
@@ -65,11 +68,20 @@ const App = () => {
     <NavigationContainer>
       <RootStack.Navigator>
         <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
-        <RootStack.Screen name="LoggedIn" component={LoggedInHome} options={{ headerShown: false }} />
+        <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
       </RootStack.Navigator>
     </NavigationContainer>
   );
 }
+
+const LoggedInStack = ({ route, navigation }) => {
+  return (
+    <UserStack.Navigator initialRouteName="TabScreen">
+      <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
+      <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+    </UserStack.Navigator>
+  );
+};
 
 const LoggedInHome = ({ route, navigation }) => {
   return (
@@ -146,10 +158,10 @@ const PostRideNavigator = ({ route, navigation }) => {
   );
 }
 
-const CommunityNavigator = ({route, navigator}) => {
+const CommunityNavigator = ({ route, navigator }) => {
   return (
     <CommunityStack.Navigator>
-      <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{headerShown: false}} />
+      <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
     </CommunityStack.Navigator>
   );
 };

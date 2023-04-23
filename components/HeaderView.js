@@ -18,7 +18,7 @@ const HeaderView = ({ screenName, navType, action, children, colorMode="light", 
     }
     return (
         <View style={[styles.viewStyle, modifierStyles, style]}>
-            <View style={{ width: '33.5%', flex: 1, alignItems: 'flex-start' }}>
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
                 {
                     navType &&
                     (
@@ -32,8 +32,8 @@ const HeaderView = ({ screenName, navType, action, children, colorMode="light", 
                     )
                 }
             </View>
-
-            <View style={{ width: '33%', flex: 1, alignItems: 'center' }}>
+            
+            <View style={{ flex: 1, alignItems: 'center' }}>
                 {screenName && <View style={styles.screenName}><Text style={{ textAlign: 'center', color: colorModeColor, fontWeight: '600', fontSize: 16 }}>{screenName}</Text></View>}
             </View>
 
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     children: {
         alignItems: 'flex-end',
-        width: '33.5%',
+        flex:1,
     }
 });
 

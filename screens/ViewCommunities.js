@@ -77,23 +77,34 @@ const ViewCommunities = ({ navigation, route }) => {
 
                     </View>
 
-                    <ScrollView style={{flex: 1}} contentContainerStyle={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', justifyContent: 'flex-start', flex: 0 }]}>
-                        <Text style={[styles.headerText2, { marginTop: 20 }]}>Communities</Text>
+                    <ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', justifyContent: 'flex-start', flex: 0 }]}>
+                        <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',marginTop: 20}}>
+                            <Text style={[styles.headerText2]}>Communities</Text>
+                            <MaterialIcons name="search" size={24} />
+                        </View>
+
                         <View style={{ flex: 1, width: '100%', marginTop: 10, borderTopWidth: 1, borderTopColor: palette.light }}>
                             <Text style={[styles.headerText3, { marginTop: 10 }]}>Your Feed</Text>
                             {
                                 feed && feed.map((data, index) => {
                                     const nextRideDate = new Date(data.datetime);
-                                    return (<AvailableRide key={"feed" + index} rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.firstName + " " + data.lastName}  date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 10 }} />);
+                                    return (
+                                        <View style={{ flex: 1, width: '100%' }} key={"feed" + index}>
+                                            <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.firstName + " " + data.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 10 }} />
+                                            <Text style={{ marginLeft: 5, marginTop: 5, color: palette.dark, fontSize: 12 }}>Posted by {data.firstName} {data.lastName} in {data.community_name}</Text>
+                                        </View>
+                                    );
                                 })
                             }
+                            <Text style={{alignSelf: 'center', marginTop: 10, fontWeight: '600', color: palette.accent}}>See More</Text>
                         </View>
 
                         <View style={{ flex: 1, width: '100%', marginTop: 10, borderTopWidth: 1, borderTopColor: palette.light }}>
                             <Text style={[styles.headerText3, { marginTop: 10 }]}>Recommended Communities</Text>
                             {
                                 communities && communities.map((data, index) => {
-                                    return (<CommunityCard name={data.name} picture={data.picture} description={data.description} style={{ marginTop: 10 }} />);
+                                    console.log(data);
+                                    return (<CommunityCard key={"communitycard" + index} name={data.name} picture={data.picture} description={data.description} style={{ marginTop: 10 }} />);
                                 })
                             }
                         </View>
