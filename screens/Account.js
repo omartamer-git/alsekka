@@ -74,7 +74,7 @@ const Account = ({ route, navigation }) => {
                                 {ratings}
                             </View>
                             <View style={{ flexDirection: 'row', width: '100%', height: 100, paddingTop: 20, paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex:1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex:1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('Chats List') }}>
                                     <MaterialIcons name="message" size={40} color={palette.white} />
                                     <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Messages</Text>
                                 </TouchableOpacity>

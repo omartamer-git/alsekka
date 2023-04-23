@@ -48,6 +48,7 @@ import Announcement from './screens/Announcement';
 import SubmitDriverDocuments from './screens/SubmitDriverDocuments';
 import ViewCommunities from './screens/ViewCommunities';
 import Chat from './screens/Chat';
+import ChatsList from './screens/ChatsList';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -175,6 +176,7 @@ const AccountNavigator = ({ route, navigation }) => {
       <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
       <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
       <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Chats List" component={ChatsList} options={{headerShown: false}} />
     </AccountStack.Navigator>
   );
 }
