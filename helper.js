@@ -500,6 +500,7 @@ export const customMapStyle = [
             }
         ]
     },
-]
+];
 
+export const containerStyle = [styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, flex: 0, flexGrow: 1 }];
 export const SERVER_URL = "http://127.0.0.1:3000";

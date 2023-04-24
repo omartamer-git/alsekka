@@ -9,13 +9,15 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import { styles, SERVER_URL, palette } from '../helper';
-import Button from '../components/Button';
-import Separator from '../components/Separator';
-import CustomTextInput from '../components/CustomTextInput';
+import { styles, SERVER_URL, palette } from '../../helper';
+import Button from '../../components/Button';
+import Separator from '../../components/Separator';
+import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as globalVars from '../globalVars';
-import HeaderView from '../components/HeaderView';
+import * as globalVars from '../../globalVars';
+import * as accountAPI from '../../api/accountAPI';
+import HeaderView from '../../components/HeaderView';
+import axios from 'axios';
 
 
 const LoginScreen = ({ route, navigation }) => {
@@ -25,39 +27,17 @@ const LoginScreen = ({ route, navigation }) => {
   const isDarkMode = useColorScheme === 'dark';
 
   const handleContinueClick = (e) => {
-    fetch(SERVER_URL + `/login?phone=${phoneNum}&password=${password}`).then(response => response.json()).then(
-      data => {
-        if (data.success == "1") {
-          globalVars.setUserId(data.id);
 
-
-
-          const url = `${SERVER_URL}/userinfo?uid=${globalVars.getUserId()}`;
-          fetch(url).then(response => response.json()).then(data => {
-              globalVars.setFirstName(data.firstName);
-              globalVars.setLastName(data.lastName);
-              globalVars.setProfilePicture(data.profilePicture);
-              globalVars.setPhone(data.phone);
-              globalVars.setEmail(data.email);
-              globalVars.setBalance(data.balance);
-              globalVars.setRating(data.rating);
-              globalVars.setDriver(data.driver);
-          });
-
-
-
-          navigation.popToTop();
-          navigation.replace("LoggedIn", {
-            screen: 'Rides Home',
-            params: {
-              screen: 'Find a Ride',
-            }
-          });
-        } else {
-          console.log("Invalid login");
-        }
-      }
-    )
+    accountAPI.login(phoneNum, password).then(
+      () => {
+        navigation.popToTop();
+        navigation.replace("LoggedIn", {
+          screen: 'Rides Home',
+          params: {
+            screen: 'Find a Ride',
+          }
+        });
+      });
   };
 
   const phoneTextChange = (text) => {
@@ -114,15 +94,15 @@ const LoginScreen = ({ route, navigation }) => {
 
 
               <Button
-                style={[styles.continueBtn, {marginTop: 30}]}
+                style={[styles.continueBtn, { marginTop: 30 }]}
                 text="Sign in"
                 bgColor={palette.primary}
                 textColor={palette.white}
                 onPress={handleContinueClick}
               />
 
-              <View style={{flexDirection: 'column-reverse', alignItems: 'center', flex:1}}>
-                <Text style={{color: palette.light}}>Don't have an account? <Text style={{color: palette.primary, fontWeight: '600'}}>Sign up</Text></Text>
+              <View style={{ flexDirection: 'column-reverse', alignItems: 'center', flex: 1 }}>
+                <Text style={{ color: palette.light }}>Don't have an account? <Text style={{ color: palette.primary, fontWeight: '600' }}>Sign up</Text></Text>
               </View>
             </View>
           </View>

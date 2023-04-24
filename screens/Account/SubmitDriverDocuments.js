@@ -12,25 +12,26 @@ import {
     TouchableOpacity,
     Modal
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../helper';
-import Button from '../components/Button';
-import Separator from '../components/Separator';
-import CustomTextInput from '../components/CustomTextInput';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import Button from '../../components/Button';
+import Separator from '../../components/Separator';
+import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../components/HeaderView';
-import AutoComplete from '../components/AutoComplete';
+import HeaderView from '../../components/HeaderView';
+import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../globalVars';
+import * as globalVars from '../../globalVars';
+import * as licensesAPI from '../../api/licenses';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../components/FromToIndicator';
+import FromToIndicator from '../../components/FromToIndicator';
 import { Picker } from '@react-native-picker/picker';
-import CarCard from '../components/CarCard';
-import PiggyBank from '../svgs/piggybank';
+import CarCard from '../../components/CarCard';
+import PiggyBank from '../../svgs/piggybank';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Pending from '../svgs/pending';
+import Pending from '../../svgs/pending';
 
-const carsAPI = require('../api/carsAPI');
+const carsAPI = require('../../api/carsAPI');
 
 const SubmitDriverDocuments = ({ route, navigation }) => {
     useEffect(() => {
@@ -68,47 +69,26 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         setImageBack(response);
     };
 
-    const uploadLicense = () => {
+    const uploadLicense = async () => {
         const licenseBody = {
             uid: globalVars.getUserId(),
             frontSide: licenseFront,
             backSide: licenseBack,
         };
-        fetch(SERVER_URL + `/submitlicense`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(licenseBody)
-            }).then(response => response.json()).then(
-                data => {
-                    console.log(data);
-                }
-            )
+
+        await licensesAPI.uploadLicense(licenseBody);
+        setLicenseStatus(0);
     };
 
     useEffect(() => {
-        fetch(SERVER_URL + `/license?uid=${globalVars.getUserId()}`).then((response) => response.json()).then((data) => {
-            if (!data.error) {
-                setLicenseStatus(data.status);
-            }
+        licensesAPI.getLicense().then((data) => {
+            setLicenseStatus(data.status);
         });
     }, []);
 
     return (
-        <View style={styles.backgroundStyle}>
-            <StatusBar barStyle={isDarkMode ? 'dark-content' : 'light-content'} />
-            <SafeAreaView>
-                <HeaderView navType="back" screenName="Documents" borderVisible={false} action={() => { navigation.goBack() }} >
-                    <View style={styles.localeWrapper}>
-                        <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                        <Text style={styles.locale}>EN</Text>
-                    </View>
-                </HeaderView>
-            </SafeAreaView>
-
-            <ScrollView style={styles.wrapper} contentContainerStyle={{ flexGrow: 1 }}>
+        <ScreenWrapper screenName="Submit Documents" navType="back" navAction={() => { navigation.goBack() }}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
                 <SafeAreaView style={{ backgroundColor: palette.inputbg, borderRadius: 10, width: '100%', flexGrow: 1 }}>
                     <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                     </View>
@@ -134,7 +114,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
                 </SafeAreaView>
             </ScrollView>
-        </View>
+        </ScreenWrapper>
     );
 }
 

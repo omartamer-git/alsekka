@@ -21,34 +21,35 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import HomeScreen from './screens/HomeScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import LoginScreen from './screens/LoginScreen';
-import MapScreen from './screens/MapScreen';
-import RideFinder from './screens/RideFinder';
-import BookRide from './screens/BookRide';
-import PostRide from './screens/PostRide';
-import Account from './screens/Account';
-import UserHome from './screens/UserHome';
-import ViewTrip from './screens/ViewTrip';
-import ManageTrip from './screens/ManageTrip';
-import Wallet from './screens/Wallet';
+import HomeScreen from './screens/Guest/HomeScreen';
+import SignUpScreen from './screens/Guest/SignUpScreen';
+import LoginScreen from './screens/Guest/LoginScreen';
+import MapScreen from './screens/BookRide/MapScreen';
+import RideFinder from './screens/BookRide/RideFinder';
+import BookRide from './screens/BookRide/BookRide';
+import PostRide from './screens/PostRide/PostRide';
+import Account from './screens/Account/Account';
+import UserHome from './screens/HomeScreen/UserHome';
+import ViewTrip from './screens/PostRide/ViewTrip';
+import ManageTrip from './screens/Rides/ManageTrip';
+import Wallet from './screens/Account/Wallet';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import { palette } from './helper';
-import Checkout from './screens/Checkout';
-import AllTrips from './screens/AllTrips';
-import AddCard from './screens/AddCard';
-import ManageCars from './screens/ManageCars';
-import NewCar from './screens/NewCar';
-import Announcement from './screens/Announcement';
-import SubmitDriverDocuments from './screens/SubmitDriverDocuments';
-import ViewCommunities from './screens/ViewCommunities';
-import Chat from './screens/Chat';
-import ChatsList from './screens/ChatsList';
+import Checkout from './screens/Rides/Checkout';
+import AllTrips from './screens/Rides/AllTrips';
+import AddCard from './screens/Account/AddCard';
+import ManageCars from './screens/Account/ManageCars';
+import NewCar from './screens/Account/NewCar';
+import Announcement from './screens/HomeScreen/Announcement';
+import SubmitDriverDocuments from './screens/Account/SubmitDriverDocuments';
+import ViewCommunities from './screens/Communities/ViewCommunities';
+import Chat from './screens/Chat/Chat';
+import ChatsList from './screens/Chat/ChatsList';
+import AddBank from './screens/Account/AddBank';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -177,6 +178,7 @@ const AccountNavigator = ({ route, navigation }) => {
       <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
       <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
       <AccountStack.Screen name="Chats List" component={ChatsList} options={{headerShown: false}} />
+      <AccountStack.Screen name="Add Bank" component={AddBank} options={{headerShown: false}} />
     </AccountStack.Navigator>
   );
 }

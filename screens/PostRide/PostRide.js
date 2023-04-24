@@ -12,23 +12,24 @@ import {
     TouchableOpacity,
     Modal
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../helper';
-import Button from '../components/Button';
-import Separator from '../components/Separator';
-import CustomTextInput from '../components/CustomTextInput';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../../helper';
+import Button from '../../components/Button';
+import Separator from '../../components/Separator';
+import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../components/HeaderView';
-import AutoComplete from '../components/AutoComplete';
+import HeaderView from '../../components/HeaderView';
+import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../globalVars';
+import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../components/FromToIndicator';
+import FromToIndicator from '../../components/FromToIndicator';
 import { Picker } from '@react-native-picker/picker';
-import CarCard from '../components/CarCard';
-import PiggyBank from '../svgs/piggybank';
-
-const carsAPI = require('../api/carsAPI');
+import CarCard from '../../components/CarCard';
+import PiggyBank from '../../svgs/piggybank';
+import * as carsAPI from '../../api/carsAPI';
+import * as ridesAPI from '../../api/ridesAPI';
+import ScreenWrapper from '../ScreenWrapper';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -85,29 +86,8 @@ const PostRide = ({ route, navigation }) => {
             newDate.setHours(time.getHours());
             newDate.setMinutes(time.getMinutes());
 
-            const data = {
-                fromLatitude: markerFrom.latitude,
-                fromLongitude: markerFrom.longitude,
-                toLatitude: markerTo.latitude,
-                toLongitude: markerTo.longitude,
-                mainTextFrom: mainTextFrom,
-                mainTextTo: mainTextTo,
-                pricePerSeat: pricePerSeat,
-                driver: globalVars.getUserId(),
-                datetime: getDateTime(date, false),
-                car: selectedCar.id,
-            };
-            const options = {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }
-            const url = `${SERVER_URL}/postride`;
-            fetch(url, options).then(response => response.json()).then(data => {
-                console.log(data);
-            });
+            ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
+                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id);
         }
     }
 
@@ -134,21 +114,9 @@ const PostRide = ({ route, navigation }) => {
 
 
     return (
-        <View style={styles.backgroundStyle}>
-            <StatusBar barStyle={isDarkMode ? 'dark-content' : 'light-content'} />
-            <SafeAreaView>
-                <HeaderView navType="back" screenName="Post Ride" borderVisible={false} action={() => { navigation.goBack() }} >
-                    <View style={styles.localeWrapper}>
-                        <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                        <Text style={styles.locale}>EN</Text>
-                    </View>
-                </HeaderView>
-            </SafeAreaView>
-
+        <ScreenWrapper screenName={"Post Ride"} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.wrapper} contentContainerStyle={{ flexGrow: 1 }}>
                 <SafeAreaView style={{ backgroundColor: palette.inputbg, borderRadius: 10, width: '100%', flexGrow: 1 }}>
-                    <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                    </View>
 
                     {globalVars.getDriver() === 1 &&
                         <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', justifyContent: 'flex-start' }]}>
@@ -307,7 +275,8 @@ const PostRide = ({ route, navigation }) => {
 
                 </SafeAreaView>
             </ScrollView>
-        </View>
+        </ScreenWrapper>
+
     );
 }
 

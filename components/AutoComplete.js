@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Button from './Button';
+import * as googleMapsAPI from '../api/googlemaps';
 
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;
@@ -59,20 +60,11 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
 
     }, [modalVisible]);
 
-    const handleTextChange = (data) => {
+    const handleTextChange = async (data) => {
         if (data !== "") {
-            let pred = [];
             placeIds = [];
-            let url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${data}&key=${googleKey}&region=eg&language=en&locationbias=ipbias`;
-            fetch(url).then
-                (response => response.json()).then(
-                    data => {
-                        for (let i = 0; i < data.predictions.length; i++) {
-                            pred.push([data.predictions[i].description, data.predictions[i].place_id]);
-                        }
-                        setPredictions(pred);
-                    }
-                )
+            const pred = await googleMapsAPI.getPredictions(data);
+            setPredictions(pred);
         } else {
             setPredictions(null);
             placeIds = [];
@@ -80,12 +72,11 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
     }
 
     const handleRegionChange = async (region) => {
-        let url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${region.latitude},${region.longitude}&key=${googleKey}`;
-        const response = (await fetch(url));
-        const data = (await response.json());
+        const results = await googleMapsAPI.geocode(region.latitude, region.longitude);
 
-        const description = data.results[0].formatted_address;
-        const placeId = data.results[0].place_id;
+        const description = results.formatted_address;
+        const placeId = results.place_id;
+
         setMapPred([description, placeId]);
 
         moveInput([description, placeId], false);
@@ -99,15 +90,11 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
     }
 
     const onChangeRegion = (region) => {
-        // [data.predictions[i].description, data.predictions[i].place_id]
         debounceRegion(region);
     };
 
     const getLocationFromPlaceId = async (place_id) => {
-        let url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&key=${googleKey}`;
-        const response = (await fetch(url));
-        const data = (await response.json());
-        const loc = data.result.geometry.location;
+        const loc = await googleMapsAPI.getLocationFromPlaceId(place_id);
         return loc;
     }
 
@@ -147,75 +134,6 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
         <View style={{ width: '100%' }}>
             <CustomTextInput onFocus={() => { setModalVisible(true); }} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} />
             <Modal animationType="slide" visible={modalVisible}>
-                {/* {!modalMap && <View style={styles.modalStyle}>
-                    <SafeAreaView style={{ backgroundColor: palette.primary }}>
-                        <HeaderView navType="back" screenName="Enter Location" borderVisible={false} action={() => { setModalVisible(false) }} >
-                            <View style={styles2.localeWrapper}>
-                                <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                                <Text style={styles2.locale}>EN</Text>
-                            </View>
-                        </HeaderView>
-                    </SafeAreaView>
-                    <View style={{ flex: 1, width: '100%' }}>
-
-
-                        <SafeAreaView style={{ flex: 1, width: '100%' }}>
-                            <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                            </View>
-
-                            <View style={[styles2.defaultContainer, styles2.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start' }]}>
-
-                                <CustomTextInput iconLeft="pin-drop" onChangeText={onChangeText} placeholder={placeholder} value={text} />
-                                {!modalMap && predictions &&
-                                    predictions.map(
-                                        (prediction, index) => {
-                                            let color = palette.light;
-                                            if (favoritePlaces) {
-                                                const favoritePlaces_ids = favoritePlaces.map((subArr) => subArr[1]).concat();
-                                                if (favoritePlaces_ids.includes(prediction[1])) {
-                                                    color = palette.red;
-                                                }
-                                            }
-                                            return (
-                                                <TouchableOpacity key={index} style={styles.predictionBox} onPress={() => moveInput(prediction)}>
-                                                    <Text style={{ flex: 10 }}>{prediction[0]}</Text>
-                                                    <TouchableOpacity onPress={() => addToFavorites(prediction)} style={{ flex: 1 }}>
-                                                        <MaterialIcons name="favorite" size={20} color={color} />
-                                                    </TouchableOpacity>
-                                                </TouchableOpacity>
-                                            )
-                                        }
-                                    )
-                                }
-                                {!modalMap && !predictions &&
-                                    <View style={{ flex: 1, width: '100%' }}>
-                                        <Text style={[styles2.headerText3, { marginTop: 30 }]}>Favorites</Text>
-                                        <View style={{ flex: 1, width: '100%', marginTop: 10 }}>
-                                            {
-                                                favoritePlaces &&
-                                                favoritePlaces.map(
-                                                    (prediction, index) => {
-                                                        let color = palette.red;
-                                                        return (
-                                                            <TouchableOpacity key={index} style={styles.predictionBox} onPress={() => moveInput(prediction)}>
-                                                                <Text style={{ flex: 17 }}>{prediction[0]}</Text>
-                                                                <TouchableOpacity onPress={() => addToFavorites(prediction)} style={{ flex: 2 }}>
-                                                                    <MaterialIcons name="favorite" size={20} color={color} />
-                                                                </TouchableOpacity>
-                                                            </TouchableOpacity>
-                                                        )
-                                                    }
-                                                )
-                                            }
-                                        </View>
-
-                                    </View>
-                                }
-                            </View>
-                        </SafeAreaView>
-                    </View>
-                </View>} */}
-
                 <SafeAreaView style={{ backgroundColor: palette.primary }}>
                     <HeaderView navType="back" screenName="Enter Location" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
                         <View style={styles2.localeWrapper}>

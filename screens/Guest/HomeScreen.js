@@ -9,12 +9,12 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import { styles, SERVER_URL, palette } from '../helper';
-import Button from '../components/Button';
-import Separator from '../components/Separator';
+import { styles, SERVER_URL, palette } from '../../helper';
+import Button from '../../components/Button';
+import Separator from '../../components/Separator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import HeaderView from '../components/HeaderView';
+import HeaderView from '../../components/HeaderView';
 
 const HomeScreen = ({ navigation }) => {
   const [phoneNumberText, setPhone] = useState('');
@@ -41,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </HeaderView>
         <View style={[styles.defaultContainer, styles.defaultPadding]}>
-          <Image source={require('../assets/homescreen_car.png')} style={styles.logo} />
+          <Image source={require('../../assets/homescreen_car.png')} style={styles.logo} />
           <View style={styles.leftAlignedHeaderText}>
             <View style={styles.leftAlignedHeaderText2}>
               <Text style={[styles.headerText, styles.homeScreenHeaderTextMargin, styles.white]}>Welcome</Text>

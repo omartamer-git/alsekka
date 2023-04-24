@@ -10,14 +10,15 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import { styles, SERVER_URL, palette } from '../helper';
-import Button from '../components/Button';
-import Separator from '../components/Separator';
-import CustomTextInput from '../components/CustomTextInput';
+import { styles, SERVER_URL, palette } from '../../helper';
+import Button from '../../components/Button';
+import Separator from '../../components/Separator';
+import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../components/HeaderView';
+import HeaderView from '../../components/HeaderView';
 import { ScrollView } from 'react-native-gesture-handler';
-import { setUserId } from '../globalVars';
+import { setUserId } from '../../globalVars';
+import * as accountAPI from '../../api/accountAPI';
 
 const SignUpScreen = ({ route, navigation }) => {
   const [phoneNum, setPhoneNum] = useState('');
@@ -32,23 +33,17 @@ const SignUpScreen = ({ route, navigation }) => {
   const handleContinueClick = (e) => {
     const url = SERVER_URL + `/createaccount?fname=${firstName}&lname=${lastName}&phone=${phoneNum}&email=${email}&password=${password}&gender=${gender}`;
     console.log(url);
-    fetch(url).then(response => response.json()).then(
-      data => {
-        if (data.success == "1") {
-          globalVars.setUserId(data.id);
-          navigation.popToTop();
-          navigation.replace("LoggedIn", {
-            screen: 'Rides Home',
-            params: {
-              screen: 'Find a Ride',
-            }
-          });
-        } else {
-          console.log("Account couldn't be created, handle error");
+    accountAPI.createAccount(firstName, lastName, phoneNum, email, gender).then((data) => {
+      navigation.popToTop();
+      navigation.replace("LoggedIn", {
+        screen: 'Rides Home',
+        params: {
+          screen: 'Find a Ride',
         }
-      }
-    )
+      });
+    });
   };
+  
   const phoneTextChange = (text) => {
     const numericValue = text.replace(/[^0-9]/g, '');
     setPhoneNum(numericValue);
