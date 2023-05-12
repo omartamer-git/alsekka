@@ -61,16 +61,16 @@ const LoginScreen = ({ route, navigation }) => {
         </HeaderView>
       </SafeAreaView>
       <View style={styles.wrapper}>
-        <View style={[styles.defaultPadding, styles.headerTextMargins, { flexDirection: 'column' }]}>
+        <View style={[styles.defaultPadding, styles.headerTextMargins]}>
           <Text style={[styles.headerText, styles.white]}>Sign In</Text>
         </View>
-        <SafeAreaView style={{ backgroundColor: palette.inputbg, borderRadius: 10, width: '100%', flex: 1 }}>
-          <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, borderRadius: 30, width: '100%' }]}>
-            <View style={[{ width: '100%', flex: 1 }, styles.defaultPaddingVertical]}>
+        <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
+          <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
+            <View style={[styles.w100, styles.flexOne, styles.defaultPaddingVertical]}>
               <Text style={[styles.headerText, styles.black]}>Welcome Back</Text>
-              <Text style={{ color: palette.dark, marginTop: 10, fontSize: 15, fontWeight: '400' }}>Hello there, sign in to continue!</Text>
+              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>Hello there, sign in to continue!</Text>
 
-              <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Phone Number</Text>
+              <Text style={styles.inputText}>Phone Number</Text>
               <CustomTextInput
                 value={phoneNum}
                 onChangeText={phoneTextChange}
@@ -79,7 +79,7 @@ const LoginScreen = ({ route, navigation }) => {
                 placeholder="Enter your phone number"
               />
 
-              <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Password</Text>
+              <Text style={styles.inputText}>Password</Text>
 
               <CustomTextInput
                 value={password}
@@ -90,19 +90,19 @@ const LoginScreen = ({ route, navigation }) => {
                 secureTextEntry={true}
               />
 
-              <Text style={{ color: palette.primary, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Forgot your password?</Text>
+              <Text style={[styles.primary, styles.mt20, styles.font14, styles.bold]}>Forgot your password?</Text>
 
 
               <Button
-                style={[styles.continueBtn, { marginTop: 30 }]}
+                style={[styles.continueBtn, styles.mt20]}
                 text="Sign in"
                 bgColor={palette.primary}
                 textColor={palette.white}
                 onPress={handleContinueClick}
               />
 
-              <View style={{ flexDirection: 'column-reverse', alignItems: 'center', flex: 1 }}>
-                <Text style={{ color: palette.light }}>Don't have an account? <Text style={{ color: palette.primary, fontWeight: '600' }}>Sign up</Text></Text>
+              <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
+                <Text style={styles.light}>Don't have an account? <Text style={[styles.primary, styles.bold]}>Sign up</Text></Text>
               </View>
             </View>
           </View>

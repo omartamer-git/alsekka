@@ -8,8 +8,10 @@ import {
     TextInput,
     Image,
     TouchableOpacity,
+    ScrollView,
+    StyleSheet,
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, mapContainerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -105,64 +107,95 @@ const BookRide = ({ route, navigation }) => {
     const isDarkMode = useColorScheme === 'dark';
 
     return (
-        <ScreenWrapper screenName="Book Ride" navType="back" navAction={() => {navigation.goBack()}}>
-            <MapView
-                style={{ height: 300, width: '100%', zIndex: 3, elevation: 3, position: 'relative', marginTop: -20, borderBottomColor: '#d9d9d9', borderBottomWidth: 1 }}
-                showUserLocation={true}
-                region={location}
-                provider={PROVIDER_GOOGLE}
-                ref={mapViewRef}
-                customMapStyle={customMapStyle}
-            >
-                {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
-                {markerTo && <Marker identifier="to" coordinate={markerTo} />}
-            </MapView>
+        <ScreenWrapper screenName="Book Ride" navType="back" navAction={() => { navigation.goBack() }}>
+            <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
+                <MapView
+                    style={[styles.mapStyle]}
+                    showUserLocation={true}
+                    region={location}
+                    provider={PROVIDER_GOOGLE}
+                    ref={mapViewRef}
+                    customMapStyle={customMapStyle}
+                >
+                    {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
+                    {markerTo && <Marker identifier="to" coordinate={markerTo} />}
+                </MapView>
 
-            <AvailableRide style={{ borderRadius: 0, backgroundColor: palette.white, flex: 1 }} fromAddress={mainTextFrom} toAddress={mainTextTo} seatsOccupied={seatsOccupied} pricePerSeat={pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
-            <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'center', justifyContent: 'center', flex: 1 }]}>
-                <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', paddingTop: '5%', paddingBottom: '2.5%' }}>
-                    <View style={{ flex: 0.275 }}>
-                        <View style={{ width: 80, height: 80, borderRadius: 80 / 2, borderColor: palette.primary, borderWidth: 3, alignItems: 'center', justifyContent: 'center' }}>
-                            {profilePicture && <Image source={{ uri: profilePicture }} style={{ height: 75, width: 75, resizeMode: 'center', borderRadius: 37.5, borderWidth: 2, borderColor: palette.white }} />}
+                <AvailableRide style={[styles.br0, styles.bgWhite, styles.flexOne]} fromAddress={mainTextFrom} toAddress={mainTextTo} seatsOccupied={seatsOccupied} pricePerSeat={pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
+                <View style={[containerStyle, styles.flexOne]}>
+                    <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.pv16]}>
+                        <View style={bookRideStyles.profilePictureView}>
+                            {profilePicture && <Image source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
+                        </View>
+                        <View style={[styles.flexOne, styles.ml20]}>
+                            <Text style={styles.headerText2}>{firstName} {lastName}</Text>
+                            <Text style={[styles.smallText, styles.black]}>Something else here</Text>
+                            <View style={styles.flexRow}>
+                                {ratings}
+                            </View>
+                        </View>
+                        <View style={styles.alignEnd}>
+                            <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
+                                <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
+                            </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{ flex: 0.475 }}>
-                        <Text style={styles.headerText2}>{firstName} {lastName}</Text>
-                        <Text style={[styles.smallText, styles.black]}>Something else here</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            {ratings}
-                        </View>
-                    </View>
-                    <View style={{ flex: 0.25, alignItems: 'flex-end' }}>
-                        <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={{ width: 60, height: 60, borderRadius: 60 / 2, backgroundColor: palette.white, alignItems: 'center', justifyContent: 'center', shadowColor: palette.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 4 }}>
-                            <MaterialIcons style={{}} name="chat-bubble" size={30} color={palette.primary} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
 
 
-                <View style={{ width: '100%', paddingTop: '2.5%', paddingBottom: '5%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <Popover animationConfig={{ duration: 0 }} arrowSize={{ width: 0, height: 0 }} from={(
-                        <TouchableOpacity style={{ flex: 0.2, height: 48, borderRadius: 5, borderColor: palette.dark, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', paddingLeft: 20, paddingRight: 20 }}>
+                    <View style={[styles.w100, styles.pv8, styles.flexRow, styles.fullCenter]}>
+                        <TouchableOpacity style={bookRideStyles.paymentMethod}>
                             <MaterialIcons name="payments" size={18} color='#008000' />
-                            <Text style={{ fontWeight: '600', marginLeft: 5, color: palette.dark }}>Cash</Text>
+                            <Text style={[styles.bold, styles.ml5, styles.dark]}>Cash</Text>
                             <MaterialIcons name="expand-more" size={18} color={palette.dark} />
                         </TouchableOpacity>
-                    )}>
-                        <TouchableOpacity>
-                            <Text>Cash</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Text>Card</Text>
-                        </TouchableOpacity>
-                    </Popover>
 
-                    <Button text="Book Now" bgColor={palette.primary} textColor={palette.white} onPress={bookRide} style={{ flex: 0.8, marginLeft: 10 }} />
+
+                        <Button text="Book Now" bgColor={palette.primary} textColor={palette.white} onPress={bookRide} style={[styles.flexOne, styles.ml20]} />
+                    </View>
                 </View>
-            </View>
-
+            </ScrollView>
         </ScreenWrapper>
     );
 }
+
+const bookRideStyles = StyleSheet.create({
+    profilePictureView: {
+        width: 80 * rem,
+        height: 80 * rem,
+        borderRadius: 80 * rem / 2,
+        ...styles.borderPrimary,
+        ...styles.border3,
+        ...styles.fullCenter
+    },
+
+    profilePicture: {
+        height: 75 * rem,
+        width: 75 * rem,
+        resizeMode: 'center',
+        borderRadius: 75/2,
+        ...styles.border2,
+        ...styles.borderWhite,
+    },
+
+    chatButton: {
+        width: 60 * rem,
+        height: 60 * rem,
+        borderRadius: 60 * rem / 2,
+        ...styles.bgWhite,
+        ...styles.fullCenter,
+        shadowColor: palette.black,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4 * rem
+    },
+
+    paymentMethod: {
+        height: 48 * rem,
+        width: 80 * rem,
+        ...styles.borderDark,
+        ...styles.fullCenter,
+        ...styles.flexRow
+    }
+});
 
 export default BookRide;

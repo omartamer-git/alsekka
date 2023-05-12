@@ -126,8 +126,9 @@ export const passengerDetails = async(passengerId, tripId) => {
     return data;
 };
 
-export const checkPassengerOut = async(passengerId, tripId) => {
+export const checkPassengerOut = async(passengerId, tripId, amountPaid, rating) => {
     const url = SERVER_URL + `/checkout?passenger=${passengerId}&tripId=${tripId}&amountPaid=${amountPaid}&rating=${rating}`;
+    console.log(url);
     const response = await fetch(url);
     const data = await response.json();
 
@@ -136,8 +137,10 @@ export const checkPassengerOut = async(passengerId, tripId) => {
 
 export const checkPassengerIn = async(passengerId, tripId) => {
     const url = SERVER_URL + `/checkIn?tripId=${tripId}&passenger=${passengerId}`;
+    console.log(url);
     const response = await fetch(url);
     const data = await response.json();
+    console.log(data);
     
     return data;
 };

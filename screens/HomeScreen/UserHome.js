@@ -10,9 +10,10 @@ import {
     TouchableOpacity,
     Platform,
     ScrollView,
-    Dimensions
+    Dimensions,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -92,8 +93,8 @@ const UserHome = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={"Home"}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <Text style={[styles.headerText2, { marginTop: 20 }]}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <Text style={[styles.headerText2, styles.mt20]}>
                     Good
                     {
                         currentTime.getHours() < 12 ? " Morning" : currentTime.getHours() < 18 ? " Afternoon" : " Evening"
@@ -102,13 +103,13 @@ const UserHome = ({ navigation, route }) => {
                 </Text>
 
                 {driverElement && driverMainTextTo &&
-                    <LinearGradient style={{ height: 70, marginTop: 20, width: '100%', borderRadius: 8 }} colors={[palette.primary, palette.secondary]}>
-                        <TouchableOpacity style={[styles.rideView, { flex: 1, alignItems: 'center', paddingLeft: 16, paddingRight: 16, justifyContent: 'flex-start', flexDirection: 'row', backgroundColor: 'rgba(255, 255, 255, 0)' }]}
+                    <LinearGradient style={userHomeStyles.selfUpcomingRide} colors={[palette.primary, palette.secondary]}>
+                        <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgTransparent]}
                             onPress={() => { viewTrip(driverTripId); }}>
-                            <Text style={[styles.white, { flex: 1 }]}>View your upcoming trip to {driverMainTextTo}</Text>
+                            <Text style={[styles.white, styles.flexOne]}>View your upcoming trip to {driverMainTextTo}</Text>
 
                             <View>
-                                <TouchableOpacity style={{ color: palette.white, justifyContent: 'center', alignItems: 'flex-end' }}>
+                                <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
                                     <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
                                 </TouchableOpacity>
                             </View>
@@ -119,43 +120,43 @@ const UserHome = ({ navigation, route }) => {
                     driverElement && !driverMainTextTo &&
                     <TouchableOpacity
                         onPress={() => { navigation.navigate('Driver Documents') }}
-                        activeOpacity={0.75}
-                        style={[styles.rideView, { height: 70, marginTop: 20, backgroundColor: palette.secondary, alignItems: 'center', paddingLeft: 16, paddingRight: 16, justifyContent: 'flex-start', flexDirection: 'row' }]}>
-                        <Text style={[styles.white, { flex: 1 }]}>You haven't applied to be a vehicle owner yet, apply now!</Text>
+                        activeOpacity={0.9}
+                        style={[userHomeStyles.topAlert, styles.bgPrimary]}>
+                        <Text style={[styles.white, styles.flexOne]}>You haven't applied to be a vehicle owner yet, apply now!</Text>
 
                         <View>
-                            <TouchableOpacity style={{ color: palette.white, justifyContent: 'center', alignItems: 'flex-end' }}>
+                            <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
                                 <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
                 }
 
-                <Text style={[styles.headerText3, { marginTop: 20 }]}>Your Upcoming Rides</Text>
+                <Text style={[styles.headerText3, styles.mt20]}>Your Upcoming Rides</Text>
                 {
                     nextRideData &&
-                    <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} seatsOccupied={nextRideData.seatsOccupied} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8, marginBottom: 8, height: 140 }} onPress={() => { viewTrip(nextRideData.id); }} />
+                    <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} seatsOccupied={nextRideData.seatsOccupied} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
                 }
                 {
                     !nextRideData &&
-                    <View style={[styles.rideView, { marginTop: 8, marginBottom: 8, height: 140 }]} >
+                    <View style={userHomeStyles.noRides} >
                         <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                        <Text style={{ marginTop: 5, fontWeight: 'bold', color: palette.dark, flexWrap: 'wrap', width: '75%', textAlign: 'center' }}>Your next ride is just a tap away. Book or post a ride now!</Text>
+                        <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>Your next ride is just a tap away. Book or post a ride now!</Text>
                     </View>
                 }
-                <TouchableOpacity underlayColor={palette.inputbg} style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('All Trips') }}>
-                    <Text style={{ fontWeight: 'bold', color: palette.primary }}>View All Trips</Text>
+                <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={() => { navigation.navigate('All Trips') }}>
+                    <Text style={[styles.bold, styles.primary]}>View All Trips</Text>
                 </TouchableOpacity>
 
-                <View onLayout={findCarouselWidth} style={{ width: '100%', marginTop: 20, }}>
+                <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
                     {carouselData &&
-                        <Carousel loop style={{ backgroundColor: palette.accent, borderRadius: 8 }} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
+                        <Carousel loop style={[styles.bgAccent, styles.br8]} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
                             ({ index }) => (
-                                <View style={{ flex: 1, width: '100%', justifyContent: 'flex-start', alignItems: 'flex-start', padding: 16 }}>
-                                    <Text style={{ color: palette.white, fontWeight: '600', fontSize: 18, lineHeight: 18 }}>
+                                <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>
+                                    <Text style={[styles.white, styles.bold, styles.font18]}>
                                         {carouselData[index].title}
                                     </Text>
-                                    <Text style={{ color: palette.light, fontWeight: '500', marginTop: 10, lineHeight: 14, fontSize: 14 }}>
+                                    <Text style={[styles.light, styles.semiBold, styles.mt10, styles.font14]}>
                                         {carouselData[index].text.substring(0, MAX_CAROUSEL_TEXT_LENGTH) + (carouselData[index].text.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")}
                                     </Text>
                                     {carouselData[index].text.length > MAX_CAROUSEL_TEXT_LENGTH &&
@@ -166,7 +167,7 @@ const UserHome = ({ navigation, route }) => {
                                                 }
                                             }
                                         >
-                                            <Text style={{ marginTop: 5, color: palette.dark, lineHeight: 14, fontSize: 14 }}>Read More...</Text></TouchableOpacity>
+                                            <Text style={[styles.mt5, styles.dark, styles.font14]}>Read More...</Text></TouchableOpacity>
                                     }
                                 </View>
                             )
@@ -179,5 +180,28 @@ const UserHome = ({ navigation, route }) => {
 
     );
 };
+
+const userHomeStyles = StyleSheet.create({
+    selfUpcomingRide: {
+        ...styles.mt20,
+        ...styles.w100,
+        ...styles.br8
+    },
+
+    topAlert: {
+        ...styles.rideView,
+        ...styles.alignCenter,
+        ...styles.p16,
+        ...styles.justifyStart,
+        ...styles.flexRow,
+    },
+
+    noRides: {
+        height: 140 * rem,
+        ...styles.rideView,
+        ...styles.mv10,
+        ...styles.ph24,
+    },
+});
 
 export default UserHome;

@@ -7,9 +7,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, palette, customMapStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, palette, customMapStyle, mapContainerStyle, containerStyle, mapPadding, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -101,25 +102,25 @@ const MapScreen = ({ route, navigation }) => {
 
   return (
     <ScreenWrapper screenName="Search Rides">
-      <ScrollView style={{ flex: 1, zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 }} contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
         <MapView
-          style={{ height: 300, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1 }}
+          style={styles.mapStyle}
           showUserLocation={true}
           initialRegion={location}
           provider={PROVIDER_GOOGLE}
           ref={mapViewRef}
           customMapStyle={customMapStyle}
-          mapPadding={{ bottom: 48, top: 0, left: 16, right: 0 }}
+          mapPadding={mapPadding}
         >
           {markerFrom && <Marker identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue" />}
           {markerTo && <Marker identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />}
         </MapView>
 
-        <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start' }]}>
+        <View style={[containerStyle, styles.flexOne]}>
 
-          <View style={{ width: '100%', borderRadius: 4, shadowColor: palette.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 4, position: 'relative', marginTop: -64, zIndex: 6 }}>
-            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder="From..." handleLocationSelect={setLocationFrom} inputStyles={{ marginTop: 0, marginBottom: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottomWidth: 0.5, borderColor: palette.light, backgroundColor: palette.white }} />
-            <AutoComplete key="autoCompleteTo" type="place" placeholder="To..." handleLocationSelect={setLocationTo} inputStyles={{ marginTop: 0, marginBottom: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, borderTopWidth: 0.5, borderColor: palette.light, backgroundColor: palette.white }} />
+          <View style={mapScreenStyles.autoCompletePair}>
+            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder="From..." handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
+            <AutoComplete key="autoCompleteTo" type="place" placeholder="To..." handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
           </View>
 
           <DatePicker
@@ -136,7 +137,7 @@ const MapScreen = ({ route, navigation }) => {
             }}
           />
 
-          <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Date</Text>
+          <Text style={styles.inputText}>Date</Text>
 
           <CustomTextInput
             placeholder="Date"
@@ -148,7 +149,7 @@ const MapScreen = ({ route, navigation }) => {
             editable={false}
           />
 
-          <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Time</Text>
+          <Text style={styles.inputText}>Time</Text>
 
           <CustomTextInput
             placeholder="Time"
@@ -174,23 +175,23 @@ const MapScreen = ({ route, navigation }) => {
             }}
           />
 
-          <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>
+          <Text style={styles.inputText}>
             Gender to Carpool With
           </Text>
 
-          <View style={{ flexDirection: 'row', width: '100%', marginTop: 8, marginBottom: 8 }}>
-            <TouchableOpacity onPress={() => { setGenderChoice(1) }} activeOpacity={0.9} style={{ flex: 1, backgroundColor: genderChoice === 1 ? palette.primary : palette.dark, justifyContent: 'center', alignItems: 'center', height: 48 }}>
-              <Text style={{ color: palette.white, fontWeight: '600' }}>Female Only</Text>
+          <View style={[styles.flexRow, styles.w100, styles.mv10]}>
+            <TouchableOpacity onPress={() => { setGenderChoice(1) }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 1 ? palette.primary : palette.dark }]}>
+              <Text style={mapScreenStyles.genderText}>Female Only</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { setGenderChoice(2) }} activeOpacity={0.9} style={{ flex: 1, backgroundColor: genderChoice === 2 ? palette.primary : palette.dark, justifyContent: 'center', alignItems: 'center', height: 48 }}>
-              <Text style={{ color: palette.white, fontWeight: '600' }}>Any</Text>
+            <TouchableOpacity onPress={() => { setGenderChoice(2) }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 2 ? palette.primary : palette.dark }]}>
+              <Text style={mapScreenStyles.genderText}>Any</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { setGenderChoice(0) }} activeOpacity={0.9} style={{ flex: 1, backgroundColor: genderChoice === 0 ? palette.primary : palette.dark, justifyContent: 'center', alignItems: 'center', height: 48 }}>
-              <Text style={{ color: palette.white, fontWeight: '600' }}>Male Only</Text>
+            <TouchableOpacity onPress={() => { setGenderChoice(0) }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 0 ? palette.primary : palette.dark }]}>
+              <Text style={mapScreenStyles.genderText}>Male Only</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{ flex: 1 }} />
+          <View style={styles.flexOne} />
 
           <Button
             text="Search"
@@ -204,5 +205,47 @@ const MapScreen = ({ route, navigation }) => {
 
   );
 }
+
+const mapScreenStyles = StyleSheet.create({
+  autoCompletePair: {
+    ...styles.w100,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 * rem },
+    shadowOpacity: 0.2, shadowRadius: 4,
+    position: 'relative',
+    marginTop: -64 * rem,
+    zIndex: 6
+  },
+
+  autoCompleteStyles: {
+    marginTop: 0,
+    marginBottom: 0,
+    borderColor: palette.light,
+    backgroundColor: palette.white
+  },
+
+  autoCompleteTop: {
+    borderBottomWidth: 0.5,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+
+  autoCompleteBottom: {
+    borderTopWidth: 0.5,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
+  },
+
+  genderButton: {
+    ...styles.flexOne,
+    ...styles.fullCenter,
+    height: 48 * rem,
+  },
+
+  genderText: {
+    ...styles.white,
+    ...styles.bold
+  }
+});
 
 export default MapScreen;

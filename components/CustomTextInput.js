@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, View, StyleSheet, Keyboard } from 'react-native';
-import { palette } from '../helper';
+import { palette, rem } from '../helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const CustomTextInput = ({ value, onChangeText, placeholder, style, editable, keyboardType, selectTextOnFocus, secureTextEntry, onFocus, onPressIn, iconLeft, iconRight, inputRef, onKeyPress, textStyles }) => {
@@ -47,7 +47,7 @@ CustomTextInput.defaultProps = {
 
 const styles = StyleSheet.create({
     container: {
-        height: 48,
+        height: 48 * rem,
         alignItems: 'center',
         justifyContent: 'flex-start',
         borderRadius: 4,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         backgroundColor: palette.white
     },
     input: {
-        height: 23,
+        height: 23 * rem,
         textAlign: 'left',
         fontWeight: '500',
         color: palette.accent,

@@ -12,7 +12,7 @@ import {
     TouchableOpacity,
     Modal
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -115,16 +115,16 @@ const PostRide = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName={"Post Ride"} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.wrapper} contentContainerStyle={{ flexGrow: 1 }}>
-                <SafeAreaView style={{ backgroundColor: palette.inputbg, borderRadius: 10, width: '100%', flexGrow: 1 }}>
+            <ScrollView style={styles.wrapper} contentContainerStyle={styles.flexGrow}>
+                <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
 
                     {globalVars.getDriver() === 1 &&
-                        <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'flex-start', justifyContent: 'flex-start' }]}>
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Starting Point</Text>
-                            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder="From..." handleLocationSelect={setLocationFrom} inputStyles={{ backgroundColor: palette.white }} />
+                        <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.alignStart, styles.justifyCenter, { zIndex: 5 }]}>
+                            <Text style={styles.inputText}>Starting Point</Text>
+                            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder="From..." handleLocationSelect={setLocationFrom} inputStyles={styles.bgWhite} />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Destination</Text>
-                            <AutoComplete key="autoCompleteTo" type="place" placeholder="To..." handleLocationSelect={setLocationTo} inputStyles={{ backgroundColor: palette.white }} />
+                            <Text style={styles.inputText}>Destination</Text>
+                            <AutoComplete key="autoCompleteTo" type="place" placeholder="To..." handleLocationSelect={setLocationTo} inputStyles={styles.bgWhite} />
                             <DatePicker
                                 modal
                                 mode="date"
@@ -141,7 +141,7 @@ const PostRide = ({ route, navigation }) => {
                                 }}
                             />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Date</Text>
+                            <Text style={styles.inputText}>Date</Text>
 
                             <CustomTextInput
                                 placeholder="Date"
@@ -152,10 +152,9 @@ const PostRide = ({ route, navigation }) => {
                                 }}
                                 iconRight="date-range"
                                 editable={false}
-                                style={{ backgroundColor: palette.white }}
                             />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Time</Text>
+                            <Text style={styles.inputText}>Time</Text>
 
                             <CustomTextInput
                                 placeholder="Time"
@@ -166,7 +165,6 @@ const PostRide = ({ route, navigation }) => {
                                 }}
                                 iconRight="schedule"
                                 editable={false}
-                                style={{ backgroundColor: palette.white }}
                             />
 
                             <DatePicker
@@ -186,14 +184,13 @@ const PostRide = ({ route, navigation }) => {
                                 }}
                             />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Select a Car</Text>
+                            <Text style={styles.inputText}>Select a Car</Text>
 
                             <CustomTextInput
                                 placeholder="Select a car.."
                                 value={carSelectorText}
                                 onPressIn={() => setCarSelectorOpen(true)}
                                 iconLeft="directions-car"
-                                style={{ backgroundColor: palette.white }}
                                 editable={false}
                             />
 
@@ -203,9 +200,9 @@ const PostRide = ({ route, navigation }) => {
                                 animationType="slide"
                                 onRequestClose={() => { console.log("close") }}
                             >
-                                <TouchableOpacity style={{ flex: 1 }} onPress={() => { setCarSelectorOpen(false) }} />
+                                <TouchableOpacity style={styles.flexOne} onPress={() => { setCarSelectorOpen(false) }} />
                                 <View style={[styles.bottomModal, { height: '50%' }]}>
-                                    <ScrollView style={{ flex: 1, width: '100%' }}>
+                                    <ScrollView style={[styles.flexOne, styles.w100]}>
                                         {usableCars && usableCars.map((data, index) => {
                                             return (
                                                 <CarCard
@@ -221,7 +218,7 @@ const PostRide = ({ route, navigation }) => {
                                             );
                                         })}
 
-                                        <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60, padding: 16, flexDirection: 'row', alignItems: 'center' }}>
+                                        <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, flexDirection: 'row', alignItems: 'center' }}>
                                             <MaterialIcons name="add" size={18} color={palette.black} />
                                             <Text style={{ fontSize: 14, fontWeight: '600' }}>Add New Car</Text>
                                         </TouchableOpacity>
@@ -230,34 +227,31 @@ const PostRide = ({ route, navigation }) => {
                                 </View>
                             </Modal>
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Seats Available</Text>
+                            <Text style={styles.inputText}>Seats Available</Text>
 
                             <CustomTextInput
                                 placeholder="Number of empty seats"
                                 value={seatsAvailable}
                                 onChangeText={handleChangeSeatsAvailable}
                                 iconLeft="groups"
-                                style={{ backgroundColor: palette.white }}
                             />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Seats Occupied</Text>
+                            <Text style={styles.inputText}>Seats Occupied</Text>
 
                             <CustomTextInput
                                 placeholder="Number of full seats (without driver)"
                                 value={seatsOccupied}
                                 onChangeText={handleChangeSeatsOccupied}
                                 iconLeft="group-work"
-                                style={{ backgroundColor: palette.white }}
                             />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Price Per Seat</Text>
+                            <Text style={styles.inputText}>Price Per Seat</Text>
 
                             <CustomTextInput
                                 placeholder="Price For One Seat"
                                 value={pricePerSeat}
                                 onChangeText={handleChangePricePerSeat}
                                 iconLeft="attach-money"
-                                style={{ backgroundColor: palette.white }}
                             />
 
                             <Button text="Post Ride" bgColor={palette.primary} textColor={palette.white} onPress={postRide} />
@@ -265,10 +259,10 @@ const PostRide = ({ route, navigation }) => {
                         </View>
                     }
                     {globalVars.getDriver() === 0 &&
-                        <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'center', justifyContent: 'center' }]}>
+                        <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
                             <PiggyBank width={300} height={300} />
-                            <Text style={[styles.headerText, { textAlign: 'center' }]}>Get Paid to Carpool!</Text>
-                            <Text style={{ textAlign: 'center', fontSize: 18, marginTop: 10 }}>Submit your license and become a vehicle owner to start making money on your commute!</Text>
+                            <Text style={[styles.headerText, styles.textCenter]}>Get Paid to Carpool!</Text>
+                            <Text style={[styles.textCenter, styles.font18, styles.mt10]}>Submit your license and become a vehicle owner to start making money on your commute!</Text>
                             <Button bgColor={palette.primary} textColor={palette.white} text="Let's Do It" onPress={() => navigation.navigate("Driver Documents")} />
                         </View>
                     }

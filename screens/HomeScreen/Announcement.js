@@ -50,12 +50,12 @@ const Announcement = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={"Announcement"} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                {announcement && <Text style={[styles.headerText2, { marginTop: 20 }]}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                {announcement && <Text style={[styles.headerText2, styles.mt20]}>
                     {announcement.title}
                 </Text>}
 
-                {announcement && <Text style={{ marginTop: 20 }}>
+                {announcement && <Text style={styles.mt20}>
                     {announcement.text}
                 </Text>}
             </ScrollView>

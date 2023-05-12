@@ -14,7 +14,7 @@ import {
     KeyboardAvoidingView,
     StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -89,7 +89,7 @@ const Chat = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName="Chat" navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, padding: 8 }}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}>
                 {
                     chatMessages &&
                     chatMessages.slice(0).reverse().map((data, index) => {
@@ -98,22 +98,23 @@ const Chat = ({ navigation, route }) => {
                         if (data.sender === globalVars.getUserId()) {
                             // I'm the sender
                             lastSender = true;
-                            return (<View key={"message" + index} style={{ flexDirection: 'row', marginTop: 10, alignSelf: 'flex-end' }}>
-                                <View style={chatStyles.senderBubble}>
-                                    <Text style={chatStyles.senderBubbleText}>{data.message}</Text>
-                                </View>
-                                <View style={{ width: 50, height: 50 }}>
-                                    {(oldLastSender === null || !oldLastSender) &&
-                                        <Image source={{ uri: globalVars.getProfilePicture() }} width={50} height={50} style={chatStyles.profilePicture} />
-                                    }
-                                </View>
-                            </View>);
+                            return (
+                                <View key={"message" + index} style={[chatStyles.message, styles.alignEnd]}>
+                                    <View style={chatStyles.senderBubble}>
+                                        <Text style={chatStyles.senderBubbleText}>{data.message}</Text>
+                                    </View>
+                                    <View style={{ width: 50 * rem, height: 50 * rem }}>
+                                        {(oldLastSender === null || !oldLastSender) &&
+                                            <Image source={{ uri: globalVars.getProfilePicture() }} width={50} height={50} style={chatStyles.profilePicture} />
+                                        }
+                                    </View>
+                                </View>);
                         } else {
                             // He's the sender
                             lastSender = false;
                             return (
-                                <View key={"message" + index} style={{ flexDirection: 'row', marginTop: 10, alignSelf: 'flex-start' }}>
-                                    <View style={{ height: 50, width: 50 }}>
+                                <View key={"message" + index} style={[chatStyles.message, styles.alignStart]}>
+                                    <View style={{ height: 50 * rem, width: 50 * rem }}>
                                         {(oldLastSender === null || oldLastSender) && <Image source={{ uri: receiverData.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />}
                                     </View>
                                     <View style={chatStyles.receiverBubble}>
@@ -125,11 +126,11 @@ const Chat = ({ navigation, route }) => {
                     })
                 }
             </ScrollView>
-            <View style={{ paddingLeft: 16, paddingRight: 16, width: '100%', flexDirection: 'row', marginBottom: 5 }}>
-                <View style={{ flex: 1, height: 48, borderWidth: 1, borderRadius: 8, paddingLeft: 16, borderColor: palette.light }}>
-                    <TextInput style={{ width: '100%', flex: 1 }} placeholder="Send a message..." value={messageText} onChangeText={(text) => { setMessageText(text) }} />
+            <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5]}>
+                <View style={chatStyles.messageView}>
+                    <TextInput style={styles.flexOne} placeholder="Send a message..." value={messageText} onChangeText={(text) => { setMessageText(text) }} />
                 </View>
-                <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={{ justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: palette.dark, backgroundColor: palette.primary, height: 48, width: 48, borderRadius: 24, marginLeft: 10 }}>
+                <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>
                     <MaterialIcons name="send" size={22} color={palette.white} />
                 </TouchableOpacity>
             </View>
@@ -138,31 +139,54 @@ const Chat = ({ navigation, route }) => {
 };
 
 const chatStyles = StyleSheet.create({
+    message: {
+        ...styles.flexRow,
+        ...styles.mt10,
+        width: '80%',
+    },
     receiverBubble: {
-        width: '60%',
-        padding: 16,
-        backgroundColor: palette.accent,
-        borderRadius: 8,
-        marginLeft: 10
+        ...styles.flexOne,
+        ...styles.p16,
+        ...styles.bgAccent,
+        ...styles.br8,
+        ...styles.ml10
     },
     receiverBubbleText: {
-        color: palette.white
+        ...styles.white,
     },
 
     senderBubble: {
-        width: '60%',
-        padding: 16,
-        backgroundColor: palette.primary,
-        borderRadius: 8,
-        marginRight: 10
+        ...styles.flexOne,
+        ...styles.p16,
+        ...styles.bgPrimary,
+        ...styles.br8,
+        ...styles.mr10
     },
     senderBubbleText: {
-        color: palette.white
+        ...styles.white
     },
     profilePicture: {
         borderRadius: 25,
-        borderWidth: 1,
-        borderColor: palette.accent
+        ...styles.border1,
+        ...styles.borderAccent
+    },
+    messageView: {
+        ...styles.flexOne,
+        height: 48 * rem,
+        ...styles.border1,
+        ...styles.br8,
+        ...styles.pl16,
+        ...styles.borderLight
+    },
+    sendBtn: {
+        ...styles.fullCenter,
+        ...styles.border1,
+        ...styles.borderDark,
+        ...styles.bgPrimary,
+        height: 48 * rem,
+        width: 48 * rem,
+        borderRadius: 48 * rem/2,
+        ...styles.ml10
     }
 });
 

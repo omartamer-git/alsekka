@@ -13,7 +13,7 @@ import {
     Modal,
     Platform
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, translateEnglishNumbers, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, translateEnglishNumbers, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -38,7 +38,7 @@ const NewCar = ({ route, navigation }) => {
     const [charLicense1, setCharLicense1] = useState("");
     const [charLicense2, setCharLicense2] = useState("");
     const [charLicense3, setCharLicense3] = useState("");
-    const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500, maxHeight: 500, storageOptions: { skipBackup: true, path: 'images' } };
+    const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
 
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");
@@ -148,33 +148,33 @@ const NewCar = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName="Add Card" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Car Brand</Text>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <Text style={styles.inputText}>Car Brand</Text>
                 <CustomTextInput placeholder="Car Brand (e.g. Mercedes)" iconRight="directions-car" value={brand} onChangeText={setBrand} />
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Year of Manufacture</Text>
+                <Text style={styles.inputText}>Year of Manufacture</Text>
                 <CustomTextInput placeholder="Car Year (e.g. 2022)" iconRight="date-range" value={year} onChangeText={setYear} />
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Car Model</Text>
+                <Text style={styles.inputText}>Car Model</Text>
                 <CustomTextInput placeholder="Car Model (e.g. C180)" iconRight="badge" value={model} onChangeText={setModel} />
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Color</Text>
+                <Text style={styles.inputText}>Color</Text>
                 <CustomTextInput placeholder="Color (e.g. Red)" iconRight="palette" value={color} onChangeText={setColor} />
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>License Plate (Letters)</Text>
-                <View style={{ width: '100%', flexDirection: 'row' }}>
-                    <CustomTextInput style={{ flex: 1 }} textStyles={{ textAlign: 'right' }} inputRef={input3Ref} value={charLicense3} onKeyPress={handleKeyPress(charLicense3, null, input2Ref)} onChangeText={(data) => setCharLicenseFull(data, 3)} placeholder="٣" />
-                    <CustomTextInput style={{ flex: 1, marginLeft: 10 }} textStyles={{ textAlign: 'right' }} inputRef={input2Ref} onKeyPress={handleKeyPress(charLicense2, input3Ref, input1Ref)} value={charLicense2} onChangeText={(data) => setCharLicenseFull(data, 2)} placeholder="٢" />
-                    <CustomTextInput style={{ flex: 1, marginLeft: 10 }} textStyles={{ textAlign: 'right' }} inputRef={input1Ref} onKeyPress={handleKeyPress(charLicense1, input2Ref, null)} value={charLicense1} onChangeText={(data) => setCharLicenseFull(data, 1)} placeholder="١" />
+                <Text style={styles.inputText}>License Plate (Letters)</Text>
+                <View style={[styles.w100, styles.flexRow]}>
+                    <CustomTextInput style={styles.flexOne} textStyles={styles.textEnd} inputRef={input3Ref} value={charLicense3} onKeyPress={handleKeyPress(charLicense3, null, input2Ref)} onChangeText={(data) => setCharLicenseFull(data, 3)} placeholder="٣" />
+                    <CustomTextInput style={[styles.flexOne, styles.ml10]} textStyles={styles.textEnd} inputRef={input2Ref} onKeyPress={handleKeyPress(charLicense2, input3Ref, input1Ref)} value={charLicense2} onChangeText={(data) => setCharLicenseFull(data, 2)} placeholder="٢" />
+                    <CustomTextInput style={[styles.flexOne, styles.ml10]} textStyles={styles.textEnd} inputRef={input1Ref} onKeyPress={handleKeyPress(charLicense1, input2Ref, null)} value={charLicense1} onChangeText={(data) => setCharLicenseFull(data, 1)} placeholder="١" />
                 </View>
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>License Plate (Numbers)</Text>
+                <Text style={styles.inputText}>License Plate (Numbers)</Text>
                 <CustomTextInput placeholder="License Plate Number (e.g. 1234)" value={licensePlateNumbers} onChangeText={setLicensePlateNumbers} />
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Car License (Front)</Text>
+                <Text style={styles.inputText}>Car License (Front)</Text>
                 <Button text={frontPhotoButtonText} bgColor={palette.accent} textColor={palette.white} onPress={chooseLicenseFront} />
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Car License (Back)</Text>
+                <Text style={styles.inputText}>Car License (Back)</Text>
                 <Button text={backPhotoButtonText} bgColor={palette.accent} textColor={palette.white} onPress={chooseLicenseBack} />
 
                 <Button text="Confirm" bgColor={palette.primary} textColor={palette.white} onPress={addCar} />

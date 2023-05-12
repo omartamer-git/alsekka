@@ -10,9 +10,10 @@ import {
     ScrollView,
     ActionSheetIOS,
     TouchableOpacity,
-    Modal
+    Modal,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -30,6 +31,8 @@ import CarCard from '../../components/CarCard';
 import PiggyBank from '../../svgs/piggybank';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Pending from '../../svgs/pending';
+import HeaderLip from '../../components/HeaderLip';
+import ScreenWrapper from '../ScreenWrapper';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -38,7 +41,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     }, []);
 
     const isDarkMode = useColorScheme === 'dark';
-    const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500, maxHeight: 500, storageOptions: { skipBackup: true, path: 'images' } };
+    const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");
     const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Upload Driver's License (Front)");
@@ -81,34 +84,37 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     };
 
     useEffect(() => {
+        console.log(licenseStatus);
+        console.log(globalVars.getDriver());
         licensesAPI.getLicense().then((data) => {
-            setLicenseStatus(data.status);
+            if(data.status) {
+                setLicenseStatus(data.status);
+            }
         });
     }, []);
 
     return (
         <ScreenWrapper screenName="Submit Documents" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <SafeAreaView style={{ backgroundColor: palette.inputbg, borderRadius: 10, width: '100%', flexGrow: 1 }}>
-                    <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                    </View>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
+                    <HeaderLip />
 
-                    {globalVars.getDriver() === 0 && licenseStatus === null &&
-                        <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'center', justifyContent: 'center' }]}>
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Front Side Driver's License Upload</Text>
+                    {globalVars.getDriver() === 0 && !licenseStatus &&
+                        <View style={driverDocumentsStyles.wrapper}>
+                            <Text style={styles.inputText}>Front Side Driver's License Upload</Text>
                             <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
 
-                            <Text style={{ color: palette.black, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Back Side Driver's License Upload</Text>
+                            <Text style={styles.inputText}>Back Side Driver's License Upload</Text>
                             <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
                             <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} />
 
                         </View>
                     }
                     {globalVars.getDriver() === 0 && licenseStatus === 0 &&
-                        <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'center', justifyContent: 'center' }]}>
+                        <View style={driverDocumentsStyles.wrapper}>
                             <Pending width="300" height="300" />
-                            <Text style={{ marginTop: 20, fontSize: 32, fontWeight: '500', color: palette.accent, textAlign: 'center' }}>Your documents are being reviewed</Text>
-                            <Text style={{ marginTop: 10, fontSize: 14, fontWeight: '500', color: palette.dark, textAlign: 'center' }}>To ensure the safety of our community, we have to carefully verify all documents sent to us. Please allow up to 24 hours for verification.</Text>
+                            <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>Your documents are being reviewed</Text>
+                            <Text style={[styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>To ensure the safety of our community, we have to carefully verify all documents sent to us. Please allow up to 24 hours for verification.</Text>
                         </View>
                     }
 
@@ -117,5 +123,16 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         </ScreenWrapper>
     );
 }
+
+const driverDocumentsStyles = StyleSheet.create({
+    wrapper: {
+        ...styles.defaultContainer,
+        ...styles.defaultPadding,
+        ...styles.bgLightGray,
+        ...styles.w100,
+        ...styles.fullCenter,
+         zIndex: 5,
+    },
+});
 
 export default SubmitDriverDocuments;

@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Alert,
+    StyleSheet,
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
 import Button from '../../components/Button';
@@ -91,8 +92,8 @@ const ManageTrip = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName="Manage Trip" navType={"back"} navAction={() => navigation.goBack()}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <View style={{ width: '100%', borderWidth: 1, borderColor: palette.light, borderRadius: 4 }}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
                     {tripDetails &&
                         tripDetails.passengers.map((data, index) => {
                             let borderTopWidth = 1;
@@ -103,20 +104,20 @@ const ManageTrip = ({ route, navigation }) => {
                                 <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
                                     {
                                         data.status === 0 &&
-                                        <TouchableOpacity onPress={() => { checkIn(data.id) }} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: palette.secondary, padding: 8, borderRadius: 4 }} activeOpacity={0.9}>
-                                            <Text style={{ color: palette.white, fontWeight: '600' }}>Check In</Text>
+                                        <TouchableOpacity onPress={() => { checkIn(data.id) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
+                                            <Text style={manageTripStyles.manageBtnText}>Check In</Text>
                                         </TouchableOpacity>
                                     }
                                     {
                                         data.status === 0 &&
-                                        <TouchableOpacity onPress={() => { noShow(data.id) }} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: palette.red, padding: 8, borderRadius: 4, marginLeft: 5 }} activeOpacity={0.9}>
+                                        <TouchableOpacity onPress={() => { noShow(data.id) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
                                             <MaterialIcons name="close" size={14} color={palette.white} />
                                         </TouchableOpacity>
                                     }
                                     {
                                         data.status === 1 &&
-                                        <TouchableOpacity onPress={() => { checkOut(data.id) }} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: palette.success, padding: 8, borderRadius: 4 }} activeOpacity={0.9}>
-                                            <Text style={{ color: palette.white, fontWeight: '600' }}>Check Out</Text>
+                                        <TouchableOpacity onPress={() => { checkOut(data.id) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
+                                            <Text style={manageTripStyles.manageBtnText}>Check Out</Text>
                                         </TouchableOpacity>
                                     }
                                 </Passenger>
@@ -128,6 +129,19 @@ const ManageTrip = ({ route, navigation }) => {
         </ScreenWrapper >
     );
 };
+
+const manageTripStyles = StyleSheet.create({
+    manageBtn: {
+        ...styles.fullCenter,
+        ...styles.p8,
+        ...styles.br8,
+    },
+
+    manageBtnText: {
+        ...styles.bold,
+        ...styles.white
+    }
+});
 
 
 export default ManageTrip;

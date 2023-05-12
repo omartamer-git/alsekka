@@ -6,6 +6,7 @@ import axios from 'axios';
 export const login = async (phoneNum, password) => {
     const response = await axios.get(SERVER_URL + `/login?phone=${phoneNum}&password=${password}`);
     const data = response.data;
+    console.log(data);
 
     if (data.success == "1") {
         globalVars.setUserId(data.id);

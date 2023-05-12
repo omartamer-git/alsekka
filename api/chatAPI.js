@@ -40,7 +40,7 @@ export const chatHistory = async(receiver) => {
 
 export const findNewMessages = async(receiver) => {
     const newMessagesUrl = SERVER_URL + `/newmessages?uid=${globalVars.getUserId()}&receiver=${receiver}`;
-    const response = await fetch(url);
+    const response = await fetch(newMessagesUrl);
     const data = await response.json();
 
     return data;

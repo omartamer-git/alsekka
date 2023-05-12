@@ -6,9 +6,10 @@ import {
     View,
     Text,
     TextInput,
-    ScrollView
+    ScrollView,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, palette, customMapStyle, getDateShort, getTime, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, palette, customMapStyle, getDateShort, getTime, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -50,33 +51,64 @@ const RideFinder = ({ route, navigation }) => {
         navigation.navigate('Book Ride', { rideId: rid });
     }
 
-
     const isDarkMode = useColorScheme === 'dark';
 
 
     return (
         <ScreenWrapper>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <View style={{ width: '100%', borderRadius: 4, shadowColor: palette.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 4, zIndex: 6 }}>
-                    <CustomTextInput key="fromText" iconLeft="my-location" value={textFrom} style={{ marginTop: 0, marginBottom: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottomWidth: 0.5, borderColor: palette.light, backgroundColor: palette.white }} />
-                    <CustomTextInput key="toText" iconLeft="place" value={textTo} style={{ marginTop: 0, marginBottom: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, borderTopWidth: 0.5, borderColor: palette.light, backgroundColor: palette.white }} />
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <View style={rideFinderStyles.autoCompletePair}>
+                    <CustomTextInput key="fromText" iconLeft="my-location" value={textFrom} style={[rideFinderStyles.autoCompleteStyles, rideFinderStyles.autoCompleteTop]} />
+                    <CustomTextInput key="toText" iconLeft="place" value={textTo} style={[rideFinderStyles.autoCompleteStyles, rideFinderStyles.autoCompleteBottom]} />
                 </View>
 
-                <Text style={[styles.headerText3, styles.black, { marginTop: 30 }]}>Available Rides</Text>
+                <Text style={[styles.headerText3, styles.black, styles.mt20]}>Available Rides</Text>
                 {
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
-                        return (<AvailableRide key={"ar" + index} rid={data.id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} pricePerSeat={data.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} onPress={onClickRide} style={{ marginTop: 8, marginBottom: 8, height: 140 }} />);
+                        return (<AvailableRide key={"ar" + index} rid={data.id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} pricePerSeat={data.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
                     }
                     )
                 }
-                <View style={{ flex: 1 }} />
+                <View style={styles.flexOne} />
             </ScrollView>
 
         </ScreenWrapper>
 
     );
-
 }
+
+const rideFinderStyles = StyleSheet.create({
+    autoCompletePair: {
+        ...styles.w100,
+        shadowColor: palette.black,
+        shadowOffset: { width: 0, height: 1 * rem },
+        shadowOpacity: 0.2, shadowRadius: 4,
+      },
+    
+      autoCompleteStyles: {
+        marginTop: 0,
+        marginBottom: 0,
+        borderColor: palette.light,
+        backgroundColor: palette.white
+      },
+    
+      autoCompleteTop: {
+        borderBottomWidth: 0.5,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+      },
+    
+      autoCompleteBottom: {
+        borderTopWidth: 0.5,
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0,
+      },
+
+      availableRide: {
+        ...styles.mt10,
+        height: 140 * rem,
+      }
+});
 
 export default RideFinder;

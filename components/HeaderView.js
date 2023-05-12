@@ -6,7 +6,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette } from '../helper';
+import { palette, rem } from '../helper';
 
 const HeaderView = ({ screenName, navType, action, children, colorMode="light", borderVisible=true, style={} }) => {
     const colorModeColor = colorMode === "light" ? palette.white : palette.dark;
@@ -48,12 +48,12 @@ const HeaderView = ({ screenName, navType, action, children, colorMode="light", 
 const styles = StyleSheet.create({
     viewStyle: {
         width: '100%',
-        height: 40,
+        height: 40 * rem,
         borderBottomColor: palette.light,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20,
-        paddingRight: 20,
+        paddingLeft: 20 * rem,
+        paddingRight: 20 * rem,
     },
     screenName: {
         alignItems: 'center',

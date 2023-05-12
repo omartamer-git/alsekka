@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { rem } from '../helper';
 
 const Button = ({ text, onPress, bgColor, textColor, style, icon, iconColor, borderColor, children }) => {
     let borderColor_ = borderColor;
@@ -30,20 +31,21 @@ const styles = StyleSheet.create({
         flex: 1
     },
     button: {
-        height: 48,
+        height: 48 * rem,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4,
-        paddingLeft: 24,
+        borderRadius: 4 * rem,
+        paddingLeft: 24 * rem,
         flexDirection: 'row',
-        paddingRight: 24,
-        marginTop: 8,
-        marginBottom: 8,
+        paddingRight: 24 * rem,
+        marginTop: 8 * rem,
+        marginBottom: 8 * rem,
         borderWidth: 1,
     },
     continueBtnText: {
-        fontSize: 17,
-        fontWeight: '600'
+        fontSize: 17 * rem,
+        fontWeight: '600',
+        textAlign: 'center'
     },
     icon: {
         marginRight: 8

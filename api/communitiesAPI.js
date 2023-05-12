@@ -16,6 +16,7 @@ export const communitiesFeed = async() => {
     const url = SERVER_URL + `/myfeed?uid=${globalVars.getUserId()}`;
     const response = await fetch(url);
     const data = await response.json();
-
+    console.log(data);
+    console.log("hi");
     return data;
 };

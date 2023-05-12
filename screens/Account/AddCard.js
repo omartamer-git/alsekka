@@ -9,9 +9,10 @@ import {
     Image,
     TouchableOpacity,
     Platform,
-    ScrollView
+    ScrollView,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -88,34 +89,34 @@ const AddCard = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName="Add Card" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <LinearGradient colors={[palette.secondary, palette.accent]} style={{ width: '100%', height: 200, borderRadius: 16, padding: 24, marginTop: 16, paddingTop: 40 }}>
-                    <Text style={[styles.white, { fontWeight: 'bold', fontSize: 26 }]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                        <View>
-                            <Text style={{ color: palette.white, fontWeight: '600' }}>EXP: {expiryDate}</Text>
-                            <Text style={{ color: palette.white, fontWeight: '600' }}>CVV: {cvv}</Text>
-                        </View>
-                        <View>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <LinearGradient colors={[palette.secondary, palette.accent]} style={addCardStyles.card}>
+                    <Text style={[styles.white, styles.bold, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
+                    <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween, styles.alignEnd]}>
+                        <>
+                            <Text style={addCardStyles.cardDetailsText}>EXP: {expiryDate}</Text>
+                            <Text style={addCardStyles.cardDetailsText}>CVV: {cvv}</Text>
+                        </>
+                        <>
                             {
                                 cardType === "visa" ? <Visa color={palette.white} width={50} height={50} /> : (cardType === "mastercard") ? <Mastercard color={palette.white} width={50} height={50} /> : ""
                             }
-                        </View>
+                        </>
                     </View>
                 </LinearGradient>
 
-                <View style={{ width: '100%' }}>
-                    <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Card Number</Text>
+                <View style={styles.w100}>
+                    <Text style={styles.inputText}>Card Number</Text>
                     <CustomTextInput iconLeft="credit-card" placeholder="1234 5678 9123 4567" value={cardNumber} onChangeText={changeCardNumber} />
                 </View>
 
-                <View style={{ flexDirection: 'row', width: '100%' }}>
-                    <View style={{ flex: 1, paddingRight: 8 }}>
-                        <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Expiry Date</Text>
+                <View style={[styles.flexRow, styles.w100]}>
+                    <View style={[styles.flexOne, styles.pr8]}>
+                        <Text style={styles.inputText}>Expiry Date</Text>
                         <CustomTextInput iconRight="help" placeholder="MM/YY" value={expiryDate} onChangeText={changeExpiryDate} />
                     </View>
-                    <View style={{ flex: 1, paddingLeft: 8 }}>
-                        <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>CVV</Text>
+                    <View style={[styles.flexOne, styles.pl8]}>
+                        <Text style={styles.inputText}>CVV</Text>
                         <CustomTextInput iconRight="help" placeholder="123" value={cvv} onChangeText={changeCvv} />
                     </View>
                 </View>
@@ -126,5 +127,21 @@ const AddCard = ({ navigation, route }) => {
         </ScreenWrapper>
     );
 };
+
+const addCardStyles = StyleSheet.create({
+    cardDetailsText: {
+        ...styles.white,
+        ...styles.bold,
+    },
+
+    card: {
+        ...styles.w100,
+        height: 200 * rem,
+        ...styles.br16,
+        ...styles.p24,
+        ...styles.mt10,
+        paddingTop: 40 * rem
+    }
+});
 
 export default AddCard;

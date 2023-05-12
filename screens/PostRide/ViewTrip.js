@@ -9,9 +9,10 @@ import {
     Image,
     TouchableHighlight,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -117,7 +118,7 @@ const ViewTrip = ({ route, navigation }) => {
     };
 
     const startTrip = () => {
-        ridesAPI.cancelRide(tripId).then(data => {
+        ridesAPI.startRide(tripId).then(data => {
             if (data) {
                 setTripStatus(1);
             }
@@ -137,9 +138,9 @@ const ViewTrip = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName="View Trip" navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingBottom: '25%' }}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
                 <MapView
-                    style={{ height: 300, width: '100%', zIndex: 3, elevation: 3, position: 'relative', marginTop: -20, borderBottomColor: '#d9d9d9', borderBottomWidth: 1 }}
+                    style={[styles.mapStyle]}
                     showUserLocation={true}
                     region={location}
                     provider={PROVIDER_GOOGLE}
@@ -152,33 +153,35 @@ const ViewTrip = ({ route, navigation }) => {
 
                 {
                     tripDetails &&
-                    <AvailableRide style={{ borderRadius: 0, backgroundColor: palette.white, height: '25%' }} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
+                    <AvailableRide style={viewTripStyles.availableRide} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
                 }
-                <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.inputbg, width: '100%', zIndex: 5, alignItems: 'center', justifyContent: 'center', flex: 1 }]}>
+                <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
                     {tripDetails &&
-                        <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', paddingTop: '5%', paddingBottom: '5%' }}>
-                            <View style={{ width: 80, height: 80, borderRadius: 80 / 2, borderColor: palette.primary, borderWidth: 3, alignItems: 'center', justifyContent: 'center' }}>
-                                <Image source={{ uri: tripDetails.profilePicture }} style={{ height: 75, width: 75, resizeMode: 'center', borderRadius: 37.5, borderWidth: 2, borderColor: palette.white }} />
+                        <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.pv16, styles.justifyStart]}>
+                            <View style={viewTripStyles.profilePictureView}>
+                                <Image source={{ uri: tripDetails.profilePicture }} style={viewTripStyles.profilePicture} />
                             </View>
-                            <View style={{ flex: 2, alignItems: 'flex-start', justifyContent: 'flex-start', marginLeft: 10 }}>
+                            <View style={[styles.alignStart, styles.justifyStart, styles.ml10]}>
                                 <Text style={styles.headerText2}>{isDriver ? "You're driving!" : tripDetails.firstName}</Text>
-                                <Text style={[styles.smallText, { color: palette.dark, fontWeight: '500' }]}>Peugeot 508</Text>
-                                <View style={{ flexDirection: 'row' }}>
+                                <Text style={[styles.smallText, styles.dark, styles.semiBold]}>Peugeot 508</Text>
+                                <View style={styles.flexRow}>
                                     {ratings}
                                 </View>
                             </View>
-                            {!isDriver && <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 60 / 2, backgroundColor: palette.white, alignItems: 'center', justifyContent: 'center', shadowColor: palette.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 4 }}>
-                                    <MaterialIcons style={{}} name="chat-bubble" size={30} color={palette.primary} />
-                                </TouchableOpacity>
-                            </View>}
+
+                            {!isDriver &&
+                                <View style={[styles.flexOne, styles.alignEnd]}>
+                                    <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
+                                        <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
+                                    </TouchableOpacity>
+                                </View>}
                         </View>
                     }
 
 
                     {
                         isDriver &&
-                        <View style={{ width: '100%', borderWidth: 1, borderColor: palette.light, borderRadius: 4 }}>
+                        <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
                             {
                                 tripDetails.passengers.map((data, index) => {
                                     let borderTopWidth = 1;
@@ -187,11 +190,11 @@ const ViewTrip = ({ route, navigation }) => {
                                     }
                                     return (
                                         <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                <TouchableOpacity activeOpacity={0.9} style={{ marginRight: 8 }} onPress={() => goToChat(data.id)}>
+                                            <View style={[styles.flexRow, styles.alignCenter]}>
+                                                <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.id)}>
                                                     <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
                                                 </TouchableOpacity>
-                                                <MaterialIcons name="phone" size={24} color={palette.secondary} style={{ marginLeft: 8 }} />
+                                                <MaterialIcons name="phone" size={24} color={palette.secondary} style={styles.ml10} />
                                             </View>
                                         </Passenger>
                                     );
@@ -201,12 +204,12 @@ const ViewTrip = ({ route, navigation }) => {
                     }
                     {
                         !isDriver &&
-                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button bgColor={palette.secondary} textColor={palette.white} onPress={() => { }} style={{ flex: 0.8, marginRight: 10 }} >
+                        <View style={[styles.w100, styles.flexRow, styles.fullCenter]}>
+                            <Button bgColor={palette.secondary} textColor={palette.white} onPress={() => { }} style={[styles.mr10, styles.flexOne]} >
                                 <MaterialIcons name="check" size={24} color={palette.white} />
                             </Button>
-                            <View style={{ flex: 0.2, height: 48, borderRadius: 4 }}>
-                                <TouchableOpacity style={{ width: '100%', height: 48, borderRadius: 4, backgroundColor: palette.red, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={[styles.br8, { width: 48 * rem, height: 48 * rem }]}>
+                                <TouchableOpacity style={[styles.w100, styles.br8, styles.bgRed, styles.fullCenter, { height: 48 * rem }]}>
                                     <MaterialIcons name="close" size={24} color={palette.white} />
                                 </TouchableOpacity>
                             </View>
@@ -214,7 +217,7 @@ const ViewTrip = ({ route, navigation }) => {
                     }
                     {
                         isDriver &&
-                        <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={[styles.w100, styles.fullCenter]}>
                             {tripStatus === 0 && tripCancellable && <Button bgColor={palette.red} text="Cancel Ride" textColor={palette.white} onPress={cancelRide} />}
 
                             {tripStatus === 0 && tripReady && <Button bgColor={palette.secondary} text="Start Trip" textColor={palette.white} onPress={startTrip} />}
@@ -230,5 +233,43 @@ const ViewTrip = ({ route, navigation }) => {
         </ScreenWrapper>
     );
 }
+
+const viewTripStyles = StyleSheet.create({
+    availableRide: {
+        ...styles.br0,
+        ...styles.bgWhite,
+        height: 140 * rem
+    },
+
+    profilePictureView: {
+        width: 80 * rem,
+        height: 80 * rem,
+        borderRadius: 80 * rem / 2,
+        ...styles.borderPrimary,
+        ...styles.border3,
+        ...styles.fullCenter
+    },
+
+    profilePicture: {
+        height: 75 * rem,
+        width: 75 * rem,
+        resizeMode: 'center',
+        borderRadius: 75 * rem / 2,
+        ...styles.border2,
+        ...styles.borderWhite
+    },
+
+    chatBubble: {
+        width: 60 * rem,
+        height: 60 * rem,
+        borderRadius: 60 * rem / 2,
+        ...styles.bgWhite,
+        ...styles.fullCenter,
+        shadowColor: palette.black,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4
+    }
+});
 
 export default ViewTrip;

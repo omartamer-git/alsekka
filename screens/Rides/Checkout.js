@@ -40,6 +40,7 @@ const Checkout = ({ route, navigation }) => {
     useEffect(() => {
         ridesAPI.passengerDetails(passengerId, tripId).then(
             data => {
+                console.log(data);
                 setPassengerDetails(data);
                 setAmountPaid(String(data.amountDue));
             });
@@ -65,16 +66,16 @@ const Checkout = ({ route, navigation }) => {
     };
 
     const checkoutConfirmed = () => {
-        ridesAPI.checkPassengerOut(passengerId, tripId).then(
+        ridesAPI.checkPassengerOut(passengerId, tripId, amountPaid, rating).then(
             data => {
-
+                console.log(data);
             });
     }
 
 
     return (
         <ScreenWrapper screenName="Checkout Passenger" navType={"back"} navAction={() => navigation.goBack()}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
 
                 {
                     passengerDetails &&
@@ -85,16 +86,16 @@ const Checkout = ({ route, navigation }) => {
                 {
                     passengerDetails &&
                     passengerDetails.paymentMethod === 0 &&
-                    <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Enter Amount Paid</Text>
+                    <Text style={styles.inputText}>Enter Amount Paid</Text>
                 }
 
                 {
                     passengerDetails &&
                     passengerDetails.paymentMethod === 0 &&
-                    <CustomTextInput value={amountPaid} placeholder="Amount Paid" style={{ backgroundColor: palette.white }} onChangeText={onChangeAmountPaid} />}
+                    <CustomTextInput value={amountPaid} placeholder="Amount Paid" style={styles.bgWhite} onChangeText={onChangeAmountPaid} />}
 
-                <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Rate {passengerDetails && passengerDetails.firstName}</Text>
-                <View style={{ width: '100%', flex: 1, flexDirection: 'row' }}>
+                <Text style={styles.inputText}>Rate {passengerDetails && passengerDetails.firstName}</Text>
+                <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
                     {Array.from({ length: 5 }, (_, index) => {
                         return (
                             <TouchableOpacity key={"ratingStar" + index} onPress={() => { setRating(index + 1) }}>

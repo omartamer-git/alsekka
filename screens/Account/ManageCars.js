@@ -34,17 +34,17 @@ const ManageCars = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName="Manage Cars" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {cars && cars.length > 0 &&
-                    <View style={{ flex: 1, width: '100%' }}>
-                        <View style={{ alignItems: 'flex-end', width: '100%', marginTop: 10 }}>
-                            <TouchableOpacity onPress={() => navigation.navigate('New Car')} style={{ backgroundColor: palette.inputbg, borderColor: palette.secondary, borderWidth: 2, padding: 24, paddingTop: 12, paddingBottom: 12, borderRadius: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={[styles.flexOne, styles.w100]}>
+                        <View style={[styles.alignEnd, styles.w100, styles.mt10]}>
+                            <TouchableOpacity onPress={() => navigation.navigate('New Car')} style={[styles.bgLightGray, styles.borderSecondary, styles.border2, styles.p24, styles.pv8, styles.br24, styles.flexRow, styles.fullCenter]}>
                                 <MaterialIcons name="add" size={22} color={palette.black} />
-                                <Text style={{ color: palette.black, fontWeight: '600' }}>Add Car</Text>
+                                <Text style={[styles.black, styles.bold]}>Add Car</Text>
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{ width: '100%', marginTop: 10 }}>
+                        <View style={[styles.w100, styles.mt10]}>
                             {
                                 cars.map((data, index) => {
                                     return (
@@ -64,9 +64,9 @@ const ManageCars = ({ route, navigation }) => {
                     </View>
                 }
                 {cars && cars.length === 0 &&
-                    <View style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ textAlign: 'center', fontSize: 28, fontWeight: '600' }}>Let's get you on the road!</Text>
-                        <Text style={{ fontSize: 18 }}>Register your car details now.</Text>
+                    <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
+                        <Text style={[styles.textCenter, styles.font28, styles.bold]}>Let's get you on the road!</Text>
+                        <Text style={styles.font18}>Register your car details now.</Text>
                         <Button onPress={() => navigation.navigate('New Car')} bgColor={palette.primary} textColor={palette.white} text="Add Car" />
                     </View>
                 }

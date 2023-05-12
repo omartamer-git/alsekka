@@ -15,7 +15,7 @@ import {
     NativeModules,
     Platform
 } from 'react-native';
-import { styles as styles2, palette, customMapStyle } from '../helper';
+import { styles as styles2, palette, customMapStyle, mapPadding, rem } from '../helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -163,7 +163,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                                         return (
                                             <TouchableOpacity key={index} style={styles.predictionBox} onPress={() => moveInput(prediction)}>
                                                 <Text style={{ flex: 10 }}>{prediction[0]}</Text>
-                                                <TouchableOpacity onPress={() => addToFavorites(prediction)} style={{ flex: 1 }}>
+                                                <TouchableOpacity onPress={() => addToFavorites(prediction)} style={styles.flexOne}>
                                                     <MaterialIcons name="favorite" size={20} color={color} />
                                                 </TouchableOpacity>
                                             </TouchableOpacity>
@@ -172,7 +172,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                                 )
                             }
                             {!modalMap && !predictions &&
-                                <View style={{ flex: 1, width: '100%' }}>
+                                <View style={[styles.flexOne, styles.w100]}>
                                     <Text style={[styles2.headerText3, { marginTop: 30 }]}>Favorites</Text>
                                     <View style={{ flex: 1, width: '100%', marginTop: 10 }}>
                                         {
@@ -191,9 +191,9 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                                                 }
                                             )
                                         }
-                                        <TouchableOpacity style={{ flexDirection: 'row', height: 48, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={() => { setModalMap(true) }}>
+                                        <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={() => { setModalMap(true) }}>
                                             <MaterialIcons name="place" size={16} color={palette.black} />
-                                            <Text style={{ marginLeft: 10 }}>Choose Location on Map</Text>
+                                            <Text style={styles2.ml10}>Choose Location on Map</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -215,7 +215,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                             provider={PROVIDER_GOOGLE}
                             ref={mapViewRef}
                             customMapStyle={customMapStyle}
-                            mapPadding={{ bottom: 48, top: 0, left: 16, right: 0 }}
+                            mapPadding={mapPadding}
                         >
                             <MaterialIcons name="place" size={48} color={palette.red} />
                         </MapView>}
@@ -231,12 +231,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: palette.inputbg,
+        backgroundColor: palette.lightGray,
         width: '100%'
     },
     predictionBox: {
         width: '100%',
-        height: 48,
+        height: 48 * rem,
         borderBottomColor: '#d9d9d9',
         borderBottomWidth: 1,
         padding: 5,
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        backgroundColor: palette.inputbg,
+        backgroundColor: palette.lightGray,
     }
 
 });

@@ -42,14 +42,12 @@ const HomeScreen = ({ navigation }) => {
         </HeaderView>
         <View style={[styles.defaultContainer, styles.defaultPadding]}>
           <Image source={require('../../assets/homescreen_car.png')} style={styles.logo} />
-          <View style={styles.leftAlignedHeaderText}>
-            <View style={styles.leftAlignedHeaderText2}>
-              <Text style={[styles.headerText, styles.homeScreenHeaderTextMargin, styles.white]}>Welcome</Text>
+          <View style={[styles.w100, styles.alignStart, styles.flexOne, styles.justifyCenter]}>
+            <Text style={[styles.headerText, styles.homeScreenHeaderTextMargin, styles.white]}>Welcome</Text>
 
-              <Text style={styles.subText}>Omar's Carpooling</Text>
-              <Text style={[styles.subText, { fontWeight: 'bold' }]}>Ride together.. Save together</Text>
+            <Text style={styles.subText}>Omar's Carpooling</Text>
+            <Text style={[styles.subText, { fontWeight: 'bold' }]}>Ride together.. Save together</Text>
 
-            </View>
           </View>
 
           <Button
@@ -70,13 +68,8 @@ const HomeScreen = ({ navigation }) => {
           />
 
           <View style={styles.footer}>
-            <Text style={styles.smallText} onPress={handleLoginClick}>Already have an account? <Text style={{ color: palette.white, fontWeight: 'bold' }}>Sign in</Text></Text>
+            <Text style={styles.smallText} onPress={handleLoginClick}>Already have an account? <Text style={[styles.white, styles.bold]}>Sign in</Text></Text>
           </View>
-
-
-
-
-
         </View>
       </SafeAreaView>
     </View>

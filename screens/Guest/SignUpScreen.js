@@ -10,7 +10,7 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import { styles, SERVER_URL, palette } from '../../helper';
+import { styles, SERVER_URL, palette, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -19,6 +19,7 @@ import HeaderView from '../../components/HeaderView';
 import { ScrollView } from 'react-native-gesture-handler';
 import { setUserId } from '../../globalVars';
 import * as accountAPI from '../../api/accountAPI';
+import HeaderLip from '../../components/HeaderLip';
 
 const SignUpScreen = ({ route, navigation }) => {
   const [phoneNum, setPhoneNum] = useState('');
@@ -31,8 +32,6 @@ const SignUpScreen = ({ route, navigation }) => {
   const isDarkMode = useColorScheme === 'dark';
 
   const handleContinueClick = (e) => {
-    const url = SERVER_URL + `/createaccount?fname=${firstName}&lname=${lastName}&phone=${phoneNum}&email=${email}&password=${password}&gender=${gender}`;
-    console.log(url);
     accountAPI.createAccount(firstName, lastName, phoneNum, email, gender).then((data) => {
       navigation.popToTop();
       navigation.replace("LoggedIn", {
@@ -43,7 +42,7 @@ const SignUpScreen = ({ route, navigation }) => {
       });
     });
   };
-  
+
   const phoneTextChange = (text) => {
     const numericValue = text.replace(/[^0-9]/g, '');
     setPhoneNum(numericValue);
@@ -85,19 +84,19 @@ const SignUpScreen = ({ route, navigation }) => {
         </HeaderView>
       </SafeAreaView>
 
-      <ScrollView style={styles.wrapper} contentContainerStyle={{ paddingBottom: 40 }}>
-        <View style={[styles.defaultPadding, styles.headerTextMargins, { flexDirection: 'column' }]}>
+      <ScrollView style={styles.wrapper} contentContainerStyle={[styles.flexGrow, { paddingBottom: 40 }]}>
+        <View style={[styles.defaultPadding, styles.headerTextMargins]}>
           <Text style={[styles.headerText, styles.white]}>Sign Up</Text>
         </View>
-        <SafeAreaView style={{ backgroundColor: palette.white, borderRadius: 10, width: '100%', flex: 1 }}>
-          <View style={[styles.defaultContainer, styles.defaultPadding, { backgroundColor: palette.white, borderRadius: 30, width: '100%' }]}>
-            <View style={[{ width: '100%', flex: 1 }, styles.defaultPaddingVertical]}>
+        <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
+          <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
+            <View style={[styles.flexOne, styles.w100, styles.defaultPaddingVertical]}>
               <Text style={[styles.headerText, styles.black]}>Let's get started!</Text>
-              <Text style={{ color: palette.light, marginTop: 10, fontSize: 15, fontWeight: '400' }}>Hello there, you'll need to create an account to continue!</Text>
+              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>Hello there, you'll need to create an account to continue!</Text>
 
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ flex: 0.5, paddingRight: '2.5%' }}>
-                  <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>First Name</Text>
+              <View style={styles.flexRow}>
+                <View style={[styles.flexOne, styles.pr8]}>
+                  <Text style={styles.inputText}>First Name</Text>
                   <CustomTextInput
                     value={firstName}
                     onChangeText={firstNameChange}
@@ -107,8 +106,8 @@ const SignUpScreen = ({ route, navigation }) => {
                   />
                 </View>
 
-                <View style={{ flex: 0.5, paddingLeft: '2.5%' }}>
-                  <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Last Name</Text>
+                <View style={[styles.flexOne, styles.pl8]}>
+                  <Text style={styles.inputText}>Last Name</Text>
                   <CustomTextInput
                     value={lastName}
                     onChangeText={lastNameChange}
@@ -121,7 +120,7 @@ const SignUpScreen = ({ route, navigation }) => {
               </View>
 
 
-              <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Phone Number</Text>
+              <Text style={styles.inputText}>Phone Number</Text>
               <CustomTextInput
                 value={phoneNum}
                 onChangeText={phoneTextChange}
@@ -130,7 +129,7 @@ const SignUpScreen = ({ route, navigation }) => {
                 placeholder="Enter your phone number"
               />
 
-              <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>
+              <Text style={styles.inputText}>
                 Email
               </Text>
               <CustomTextInput
@@ -141,7 +140,7 @@ const SignUpScreen = ({ route, navigation }) => {
                 placeholder="Enter your email address"
               />
 
-              <Text style={{ color: palette.dark, marginTop: 20, fontSize: 15, fontWeight: '600' }}>Password</Text>
+              <Text style={styles.inputText}>Password</Text>
               <CustomTextInput
                 value={password}
                 onChangeText={passwordTextChange}
@@ -151,36 +150,47 @@ const SignUpScreen = ({ route, navigation }) => {
                 secureTextEntry={true}
               />
 
-              <View style={{ flexDirection: 'row', width: '100%', marginTop: 20 }}>
-                <TouchableOpacity style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: (gender == 0) ? palette.secondary : palette.inputbg, height: 48 }}
+              <View style={[styles.flexRow, styles.w100, styles.mt20]}>
+                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender == 0) ? palette.secondary : palette.white }]}
                   onPress={toggleGender}>
-                  <Text style={{ color: (gender == 0) ? palette.white : palette.black, fontWeight: 'bold' }}>Male</Text>
+                  <Text style={[signupScreenStyles.genderText, { color: (gender == 0) ? palette.white : palette.black }]}>Male</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: (gender == 1) ? palette.secondary : palette.inputbg, height: 48 }}
+                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender == 1) ? palette.secondary : palette.white }]}
                   onPress={toggleGender}>
-                  <Text style={{ color: (gender == 1) ? palette.white : palette.black, fontWeight: 'bold' }}>Female</Text>
+                  <Text style={[signupScreenStyles.genderText, { color: (gender == 1) ? palette.white : palette.black }]}>Female</Text>
                 </TouchableOpacity>
               </View>
 
 
               <Button
-                style={[styles.continueBtn, { marginTop: 30 }]}
+                style={[styles.continueBtn, styles.mt20]}
                 text="Create Account"
                 bgColor={palette.secondary}
                 textColor={palette.white}
                 onPress={handleContinueClick}
               />
 
-              <View style={{ flexDirection: 'column-reverse', alignItems: 'center', flex: 1, marginTop: 10 }}>
-                <Text style={{ color: palette.light }}>Already have an account? <Text style={{ color: palette.primary, fontWeight: '600' }}>Sign in</Text></Text>
+              <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
+                <Text style={styles.light}>Already have an account? <Text style={[styles.primary, styles.bold]}>Sign up</Text></Text>
               </View>
             </View>
           </View>
         </SafeAreaView>
       </ScrollView>
     </View>
-
   );
 }
+
+const signupScreenStyles = StyleSheet.create({
+  genderButton: {
+    ...styles.flexOne,
+    ...styles.fullCenter,
+    height: 48 * rem,
+  },
+
+  genderText: {
+    ...styles.bold
+  }
+});
 
 export default SignUpScreen;

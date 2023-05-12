@@ -9,9 +9,10 @@ import {
     Image,
     TouchableOpacity,
     Platform,
-    ScrollView
+    ScrollView,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -53,18 +54,17 @@ const Wallet = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName="Wallet" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={styles.headerText}>Wallet</Text>
-                <LinearGradient colors={[palette.primary, palette.secondary]} style={{ width: '100%', height: 200, borderRadius: 16, padding: 24, marginTop: 16 }}>
-                    <Text style={[styles.white, { fontWeight: '600' }]}>Balance</Text>
+                <LinearGradient colors={[palette.primary, palette.secondary]} style={walletStyles.card}>
+                    <Text style={[styles.white, styles.bold]}>Balance</Text>
                     <Text style={[styles.headerText, styles.white]}>EGP {balance}</Text>
-                    {/* <View style={{ flex: 1 }} /> */}
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
+                    <View style={[styles.flexOne, styles.flexRow, styles.alignEnd]}>
                         <Button text="Add Balance" bgColor={palette.white} style={{ flex: 0.5 }} />
                     </View>
                 </LinearGradient>
 
-                <Text style={[styles.headerText3, { marginTop: 16 }]}>Payment Methods</Text>
+                <Text style={[styles.headerText3, styles.mt15]}>Payment Methods</Text>
                 {
                     cards.map((data, index) => {
                         return (
@@ -72,24 +72,52 @@ const Wallet = ({ navigation, route }) => {
                         );
                     })
                 }
-                <TouchableOpacity onPress={() => { navigation.navigate('Add Card') }} activeOpacity={0.9} style={{ height: 44, width: '100%', justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row', backgroundColor: palette.light, borderRadius: 4, paddingLeft: 12, paddingRight: 12, marginTop: 16 }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Add Card') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="add" size={18} color={palette.dark} />
-                    <Text style={{ color: palette.dark, fontWeight: '600', marginLeft: 16 }}>Add Payment Method</Text>
+                    <Text style={walletStyles.paymentMethodButtonText}>Add Payment Method</Text>
                 </TouchableOpacity>
 
-                <Text style={[styles.headerText3, { marginTop: 16 }]}>Withdrawal Options</Text>
-                <TouchableOpacity onPress={() => { navigation.navigate('Add Bank') }} activeOpacity={0.9} style={{ height: 44, width: '100%', justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row', backgroundColor: palette.light, borderRadius: 4, paddingLeft: 12, paddingRight: 12, marginTop: 16 }}>
+                <Text style={[styles.headerText3, styles.mt15]}>Withdrawal Options</Text>
+                <TouchableOpacity onPress={() => { navigation.navigate('Add Bank') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="account-balance" size={18} color={palette.dark} />
-                    <Text style={{ color: palette.dark, fontWeight: '600', marginLeft: 16 }}>Add Bank Account</Text>
+                    <Text style={walletStyles.paymentMethodButtonText}>Add Bank Account</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity activeOpacity={0.9} style={{ height: 44, width: '100%', justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row', backgroundColor: palette.light, borderRadius: 4, paddingLeft: 12, paddingRight: 12, marginTop: 16 }}>
+                <TouchableOpacity activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="wallet-travel" size={18} color={palette.dark} />
-                    <Text style={{ color: palette.dark, fontWeight: '600', marginLeft: 16 }}>Add Mobile Wallet</Text>
+                    <Text style={walletStyles.paymentMethodButtonText}>Add Mobile Wallet</Text>
                 </TouchableOpacity>
             </ScrollView>
         </ScreenWrapper>
     );
 };
+
+const walletStyles = StyleSheet.create({
+    card: {
+        ...styles.w100,
+        height: 200 * rem,
+        ...styles.br16,
+        ...styles.p24,
+        ...styles.mt10
+    },
+
+    paymentMethodButtonText: {
+        ...styles.dark,
+        ...styles.bold,
+        ...styles.ml15,
+    },
+
+    paymentMethodButton: {
+        height: 44 * rem,
+        ...styles.w100,
+        ...styles.justifyStart,
+        ...styles.alignCenter,
+        ...styles.flexRow,
+        ...styles.bgLight,
+        ...styles.br8,
+        ...styles.ph16,
+        ...styles.mt15,
+    }
+});
 
 export default Wallet;

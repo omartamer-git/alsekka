@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { rem } from '../helper';
 
 const Separator = ({ text }) => {
   return (
@@ -16,16 +17,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: 10 * rem,
   },
   line: {
     flex: 1,
-    height: 1,
+    height: 1 * rem,
     backgroundColor: '#d9d9d9',
-    marginHorizontal: 10,
+    marginHorizontal: 10 * rem,
   },
   text: {
-    fontSize: 15,
+    fontSize: 15 * rem,
     fontWeight: '600',
     color: '#d9d9d9',
   },

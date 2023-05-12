@@ -11,9 +11,10 @@ import {
     Modal
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import HeaderLip from '../components/HeaderLip';
 import HeaderView from '../components/HeaderView';
 
-import { styles, loggedInStyles, palette, containerStyle } from '../helper';
+import { styles, loggedInStyles, palette, containerStyle, rem } from '../helper';
 
 const ScreenWrapper = ({ screenName, children, navType, navAction }) => {
     const isDarkMode = useColorScheme === 'dark';
@@ -31,8 +32,8 @@ const ScreenWrapper = ({ screenName, children, navType, navAction }) => {
             </SafeAreaView>
 
             <View style={styles.wrapper}>
-                <SafeAreaView style={{ backgroundColor: palette.inputbg, width: '100%', flex: 1 }}>
-                    <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne]}>
+                    <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20 * rem, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
 
                     </View>
 

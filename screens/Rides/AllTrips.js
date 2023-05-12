@@ -9,9 +9,10 @@ import {
     Image,
     TouchableOpacity,
     Platform,
-    ScrollView
+    ScrollView,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -80,19 +81,19 @@ const AllTrips = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName="All Trips" navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={[styles.headerText2, { marginTop: 20 }]}>
                     Trips
                 </Text>
 
                 {driverElement && driverMainTextTo &&
-                    <LinearGradient style={{ height: 70, marginTop: 20, width: '100%', borderRadius: 8 }} colors={[palette.primary, palette.secondary]}>
-                        <TouchableOpacity style={[styles.rideView, { flex: 1, alignItems: 'center', paddingLeft: 16, paddingRight: 16, justifyContent: 'flex-start', flexDirection: 'row', backgroundColor: 'rgba(255, 255, 255, 0)' }]}
+                    <LinearGradient style={[styles.mt20, styles.w100, styles.br8]} colors={[palette.primary, palette.secondary]}>
+                        <TouchableOpacity style={[styles.rideView, styles.pv8, styles.ph16, styles.flexOne, styles.alignCenter, styles.justifyStart, styles.flexRow, styles.bgTransparent]}
                             onPress={() => { viewTrip(driverTripId); }}>
-                            <Text style={[styles.white, { flex: 1 }]}>View your upcoming trip to {driverMainTextTo}</Text>
+                            <Text style={[styles.white, styles.flexOne]}>View your upcoming trip to {driverMainTextTo}</Text>
 
                             <View>
-                                <TouchableOpacity style={{ color: palette.white, justifyContent: 'center', alignItems: 'flex-end' }}>
+                                <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
                                     <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
                                 </TouchableOpacity>
                             </View>
@@ -101,11 +102,11 @@ const AllTrips = ({ navigation, route }) => {
                 }
                 {
                     driverElement && !driverMainTextTo &&
-                    <View style={[styles.rideView, { height: 70, marginTop: 20, backgroundColor: palette.secondary, alignItems: 'center', paddingLeft: 16, paddingRight: 16, justifyContent: 'flex-start', flexDirection: 'row' }]}>
-                        <Text style={[styles.white, { flex: 1 }]}>You haven't applied to be a vehicle owner yet, apply now!</Text>
+                    <View style={[styles.rideView, styles.pv8, styles.ph16, styles.mt20, styles.bgSecondary, styles.alignCenter, styles.justifyStart, styles.flexRow]}>
+                        <Text style={[styles.white, styles.flexOne]}>You haven't applied to be a vehicle owner yet, apply now!</Text>
 
                         <View>
-                            <TouchableOpacity style={{ color: palette.white, justifyContent: 'center', alignItems: 'flex-end' }}>
+                            <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
                                 <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
                             </TouchableOpacity>
                         </View>
@@ -116,23 +117,37 @@ const AllTrips = ({ navigation, route }) => {
                     nextRides && nextRides.map((data, index) => {
                         const nextRideDate = new Date(data.datetime);
                         return (
-                            <AvailableRide key={"ride" + index} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8, marginBottom: 8, height: 140 }} onPress={() => { viewTrip(data.id); }} />
+                            <AvailableRide key={"ride" + index} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={allTripsStyle.availableRide} onPress={() => { viewTrip(data.id); }} />
                         );
                     })
                 }
                 {
                     !nextRides &&
-                    <View style={[styles.rideView, { marginTop: 8, marginBottom: 8, height: 140 }]} >
+                    <View style={allTripsStyle.noRides} >
                         <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                        <Text style={{ marginTop: 5, fontWeight: 'bold', color: palette.dark, flexWrap: 'wrap', width: '75%', textAlign: 'center' }}>Your next ride is just a tap away. Book or post a ride now!</Text>
+                        <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>Your next ride is just a tap away. Book or post a ride now!</Text>
                     </View>
                 }
-                <TouchableOpacity style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }} onPress={updateRides}>
-                    <Text style={{ fontWeight: 'bold', color: palette.primary }}>Load More Trips...</Text>
+                <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
+                    <Text style={[styles.bold, styles.primary]}>Load More Trips...</Text>
                 </TouchableOpacity>
             </ScrollView>
         </ScreenWrapper>
     );
 };
+
+const allTripsStyle = StyleSheet.create({
+    noRides: {
+        ...styles.rideView,
+        ...styles.mv10,
+        height: 140 * rem,
+        ...styles.ph24
+    },
+
+    availableRide: {
+        height: 140 * rem,
+        ...styles.mv10,
+    }
+});
 
 export default AllTrips;

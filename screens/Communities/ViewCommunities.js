@@ -50,6 +50,7 @@ const ViewCommunities = ({ navigation, route }) => {
 
         communitiesAPI.communitiesFeed().then(
             data => {
+                console.log(data.length);
                 if (data.length != 0) {
                     setFeed(data);
                 }
@@ -60,34 +61,34 @@ const ViewCommunities = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={"Communities"}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <View style={[styles.w100, styles.flexRow, styles.alignCenter, styles.spaceBetween, styles.mt20]}>
                     <Text style={[styles.headerText2]}>Communities</Text>
                     <MaterialIcons name="search" size={24} />
                 </View>
 
-                <View style={{ width: '100%', marginTop: 10, borderTopWidth: 1, borderBottomWidth: 1, borderColor: palette.light, paddingBottom: 10 }}>
-                    <Text style={[styles.headerText3, { marginTop: 10 }]}>Your Feed</Text>
+                <View style={[styles.w100, styles.mt10, styles.borderLight, styles.pb8, { borderTopWidth: 1, borderBottomWidth: 1 }]}>
+                    <Text style={[styles.headerText3, styles.mt10]}>Your Feed</Text>
                     {
                         feed && feed.map((data, index) => {
+                            console.log(data);
                             const nextRideDate = new Date(data.datetime);
                             return (
-                                <View style={{ flex: 1, width: '100%' }} key={"feed" + index}>
-                                    <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.firstName + " " + data.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 10 }} />
-                                    <Text style={{ marginLeft: 5, marginTop: 5, color: palette.dark, fontSize: 12 }}>Posted by {data.firstName} {data.lastName} in {data.community_name}</Text>
+                                <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
+                                    <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.firstName + " " + data.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
+                                    <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.firstName} {data.lastName} in {data.community_name}</Text>
                                 </View>
                             );
                         })
                     }
-                    <Text style={{ alignSelf: 'center', marginTop: 10, fontWeight: '600', color: palette.accent }}>See More</Text>
+                    <Text style={[styles.alignSelfCenter, styles.mt10, styles.bold, styles.accent]}>See More</Text>
                 </View>
 
-                <View style={{ flex: 1, width: '100%', marginTop: 10 }}>
-                    <Text style={[styles.headerText3, { marginTop: 10 }]}>Recommended Communities</Text>
+                <View style={[styles.flexOne, styles.mt10, styles.w100]}>
+                    <Text style={[styles.headerText3, styles.mt10]}>Recommended Communities</Text>
                     {
-                        communities && communities.map((data, index) => {
-                            console.log(data);
-                            return (<CommunityCard key={"communitycard" + index} name={data.name} picture={data.picture} description={data.description} style={{ marginTop: 10 }} />);
+                        communities && communities.map((data, index) => {                            
+                            return (<CommunityCard key={"communitycard" + index} name={data.name} picture={data.picture} description={data.description} style={styles.mt10} />);
                         })
                     }
                 </View>

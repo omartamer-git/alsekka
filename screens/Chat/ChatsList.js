@@ -50,15 +50,15 @@ const ChatsList = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName="Chats">
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     chats &&
                     chats.map((data, index) => {
                         return (
                             <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: data.id }) }} activeOpacity={0.9} key={"chat" + index} style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
                                 <Image source={{ uri: data.profilePicture }} width={60} height={60} style={{ borderRadius: 60 / 2, borderWidth: 1, borderColor: palette.accent }} />
-                                <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Text style={{ marginLeft: 10, fontWeight: '500', fontSize: 18 }}>{data.firstName} {data.lastName}</Text>
+                                <View style={[styles.flexRow, styles.flexOne, styles.spaceBetween, styles.alignCenter]}>
+                                    <Text style={[styles.ml10, styles.semiBold, styles.font18]}>{data.firstName} {data.lastName}</Text>
                                     <MaterialIcons name="arrow-forward-ios" size={18} />
                                 </View>
                             </TouchableOpacity>

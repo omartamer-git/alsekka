@@ -8,9 +8,10 @@ import {
     TextInput,
     Image,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    StyleSheet
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -41,34 +42,34 @@ const Account = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName="Account" navigation={navigation}>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={containerStyle}>
-                <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ width: 110, height: 110, borderRadius: 110 / 2, borderColor: palette.primary, borderWidth: 3, alignItems: 'center', justifyContent: 'center' }}>
-                        {globalVars.getProfilePicture() && <Image source={{ uri: globalVars.getProfilePicture() }} style={{ height: 100, width: 100, resizeMode: 'center', borderRadius: 50, borderWidth: 2, borderColor: palette.white }} />}
+            <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
+                <View style={[styles.mt10, styles.fullCenter]}>
+                    <View style={accountStyles.profilePictureView}>
+                        {globalVars.getProfilePicture() && <Image source={{ uri: globalVars.getProfilePicture() }} style={accountStyles.profilePicture} />}
 
-                        <View style={{ position: 'absolute', borderRadius: 50, width: 100, height: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(125,125,125,0.5)' }}>
-                            <MaterialIcons name="photo-camera" size={50} style={{ borderRadius: 50, position: 'absolute' }} color={palette.light} />
+                        <View style={accountStyles.profilePictureOverlay}>
+                            <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
                         </View>
                     </View>
                 </View>
 
-                <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
                     <Text style={styles.headerText2}>{globalVars.getFirstName()} {globalVars.getLastName()}</Text>
-                    <View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
                         {ratings}
                     </View>
-                    <View style={{ flexDirection: 'row', width: '100%', height: 100, paddingTop: 20, paddingBottom: 20, alignItems: 'center', justifyContent: 'center' }}>
-                        <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('Chats List') }}>
+                    <View style={accountStyles.acctButtonsView}>
+                        <TouchableOpacity style={ accountStyles.acctButtons } onPress={() => { navigation.navigate('Chats List') }}>
                             <MaterialIcons name="message" size={40} color={palette.white} />
-                            <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Messages</Text>
+                            <Text style={accountStyles.acctButtonsText}>Messages</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('Wallet') }}>
+                        <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Wallet') }}>
                             <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
-                            <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Wallet</Text>
+                            <Text style={accountStyles.acctButtonsText}>Wallet</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ backgroundColor: palette.primary, height: 80, flex: 1, marginLeft: 5, marinRight: 5, borderRadius: 4, alignItems: 'center', justifyContent: 'center' }} onPress={() => { navigation.navigate('All Trips') }}>
+                        <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('All Trips') }}>
                             <MaterialIcons name="history" size={40} color={palette.white} />
-                            <Text style={{ color: palette.white, fontWeight: '600', marginTop: 5 }}>Trips</Text>
+                            <Text style={accountStyles.acctButtonsText}>Trips</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -79,21 +80,21 @@ const Account = ({ route, navigation }) => {
                             iconLeft="badge"
                             iconRight="edit"
                             editable={false}
-                            style={{ backgroundColor: palette.white }}
+                            style={accountStyles.editInput}
                         />
                         <CustomTextInput
                             value={globalVars.getPhone()}
                             iconLeft="phone"
                             iconRight="edit"
                             editable={false}
-                            style={{ backgroundColor: palette.white }}
+                            style={accountStyles.editInput}
                         />
                         <CustomTextInput
                             value={globalVars.getEmail()}
                             iconLeft="mail"
                             iconRight="edit"
                             editable={false}
-                            style={{ backgroundColor: palette.white }}
+                            style={accountStyles.editInput}
                         />
                     </View>
                 </View>
@@ -101,5 +102,68 @@ const Account = ({ route, navigation }) => {
         </ScreenWrapper>
     );
 }
+
+const profilePictureSizing = {
+    height: 100 * rem,
+    width: 100 * rem,
+    borderRadius: 100 * rem/2,
+};
+
+const accountStyles = StyleSheet.create({
+    acctButtonsView: {
+        ...styles.flexRow,
+        ...styles.w100,
+        height: 100 * rem,
+        ...styles.pv24,
+        ...styles.fullCenter,
+    },
+
+    acctButtons: {
+        ...styles.bgPrimary,
+        height: 80 * rem,
+        ...styles.flexOne,
+        ...styles.mh5,
+        borderRadius: 4 * rem,
+        ...styles.fullCenter,
+    },
+
+    acctButtonsText: {
+        ...styles.white,
+        ...styles.bold,
+        ...styles.mt5,
+    },
+
+    profilePictureView: {
+        width: 110 * rem,
+        height: 110 * rem,
+        borderRadius: 110 * rem / 2,
+        ...styles.borderPrimary,
+        ...styles.fullCenter,
+        borderWidth: 3 * rem,
+    },
+
+    profilePicture: {
+        resizeMode: 'center',
+        borderWidth: 2 * rem,
+        ...profilePictureSizing,
+        ...styles.borderWhite,
+    },
+
+    profilePictureOverlay: {
+        ...styles.positionAbsolute,
+        ...profilePictureSizing,
+        ...styles.fullCenter,
+        backgroundColor: 'rgba(125,125,125,0.5)'
+    },
+
+    cameraOverlay: {
+        borderRadius: 50 * rem,
+        ...styles.positionAbsolute,
+    },
+
+    editInput: {
+        ...styles.bgWhite,
+    }
+});
 
 export default Account;
