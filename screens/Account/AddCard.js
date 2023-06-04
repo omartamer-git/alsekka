@@ -91,7 +91,9 @@ const AddCard = ({ navigation, route }) => {
         <ScreenWrapper screenName="Add Card" navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <LinearGradient colors={[palette.secondary, palette.accent]} style={addCardStyles.card}>
-                    <Text style={[styles.white, styles.bold, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
+                    <Text adjustsFontSizeToFit
+                        numberOfLines={1}
+                        style={[styles.white, styles.bold, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
                     <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween, styles.alignEnd]}>
                         <>
                             <Text style={addCardStyles.cardDetailsText}>EXP: {expiryDate}</Text>

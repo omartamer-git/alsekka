@@ -42,16 +42,20 @@ const Chat = ({ navigation, route }) => {
     const [receiverData, setReceiverData] = useState(null);
     const [chatMessages, setChatMessages] = useState(null);
     const [messageText, setMessageText] = useState('');
+    const ref = useRef();
     let lastSender = null;
 
     const sendMessage = () => {
+        console.log(receiver);
         chatAPI.sendMessage(receiver, messageText).then(
             data => {
                 setChatMessages(data.concat(chatMessages));
+                console.log(data);
                 setMessageText('');
             }
         );
     };
+
     useEffect(() => {
         chatAPI.loadChat(receiver).then((data) => {
             setReceiverData(data);
@@ -89,13 +93,15 @@ const Chat = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName="Chat" navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
+            ref={ref}
+            onContentSizeChange={() => ref.current.scrollToEnd({animated: true})}>
                 {
                     chatMessages &&
                     chatMessages.slice(0).reverse().map((data, index) => {
                         const oldLastSender = lastSender;
 
-                        if (data.sender === globalVars.getUserId()) {
+                        if (data.senderId === globalVars.getUserId()) {
                             // I'm the sender
                             lastSender = true;
                             return (

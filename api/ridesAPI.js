@@ -17,7 +17,7 @@ export const bookRide = async (rideId, paymentMethod) => {
     const result = await fetch(url);
     const data = await result.json();
 
-    if (data[0].affectedRows === 1) {
+    if (data.id) {
         return true;
     } else {
         console.log("Failed to insert " + data);
@@ -28,6 +28,7 @@ export const bookRide = async (rideId, paymentMethod) => {
 
 export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderChoice) => {
     let url = `${SERVER_URL}/nearbyrides?startLng=${fromLng}&startLat=${fromLat}&endLng=${toLng}&endLat=${toLat}&date=${date}&gender=${genderChoice}`;
+    console.log(url);
     const response = await fetch(url);
     const data = await response.json();
 

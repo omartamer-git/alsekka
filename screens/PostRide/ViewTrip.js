@@ -42,7 +42,7 @@ const ViewTrip = ({ route, navigation }) => {
 
     const [tripReady, setTripReady] = useState(false);
     const [tripCancellable, setTripCancellable] = useState(false);
-    const [tripStatus, setTripStatus] = useState(0);
+    const [tripStatus, setTripStatus] = useState('SCHEDULED');
 
     const mapViewRef = useRef(null);
 
@@ -59,6 +59,7 @@ const ViewTrip = ({ route, navigation }) => {
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
+                console.log(data);
 
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
@@ -67,8 +68,8 @@ const ViewTrip = ({ route, navigation }) => {
                 fitMarkers();
                 setTripStatus(data.status);
 
-                const fullStars = Math.floor(data.rating);
-                const halfStars = Math.ceil(data.rating) - Math.abs(data.rating);
+                const fullStars = Math.floor(data.Driver.rating);
+                const halfStars = Math.ceil(data.Driver.rating) - Math.abs(data.Driver.rating);
 
                 let ratingsItems = [];
                 for (let i = 0; i < fullStars; i++) {
@@ -91,7 +92,7 @@ const ViewTrip = ({ route, navigation }) => {
         const objDateTime = objDate.getTime();
         const currTime = currDate.getTime();
         const timeToTrip = objDateTime - currTime;
-
+        console.log(timeToTrip);
         if (timeToTrip < 1000 * 60 * 60) { // within an hour, or time has already passed
             setTripReady(true);
         } else {
@@ -113,14 +114,14 @@ const ViewTrip = ({ route, navigation }) => {
 
     const cancelRide = () => {
         ridesAPI.cancelRide(tripId).then(data => {
-            console.log(data);
+            setTripStatus('CANCELLED');
         });
     };
 
     const startTrip = () => {
         ridesAPI.startRide(tripId).then(data => {
             if (data) {
-                setTripStatus(1);
+                setTripStatus('ONGOING');
             }
         });
     };
@@ -159,10 +160,10 @@ const ViewTrip = ({ route, navigation }) => {
                     {tripDetails &&
                         <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.pv16, styles.justifyStart]}>
                             <View style={viewTripStyles.profilePictureView}>
-                                <Image source={{ uri: tripDetails.profilePicture }} style={viewTripStyles.profilePicture} />
+                                <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
                             </View>
                             <View style={[styles.alignStart, styles.justifyStart, styles.ml10]}>
-                                <Text style={styles.headerText2}>{isDriver ? "You're driving!" : tripDetails.firstName}</Text>
+                                <Text style={styles.headerText2}>{isDriver ? "You're driving!" : tripDetails.Driver.firstName}</Text>
                                 <Text style={[styles.smallText, styles.dark, styles.semiBold]}>Peugeot 508</Text>
                                 <View style={styles.flexRow}>
                                     {ratings}
@@ -191,7 +192,7 @@ const ViewTrip = ({ route, navigation }) => {
                                     return (
                                         <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
                                             <View style={[styles.flexRow, styles.alignCenter]}>
-                                                <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.id)}>
+                                                <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.userId)}>
                                                     <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
                                                 </TouchableOpacity>
                                                 <MaterialIcons name="phone" size={24} color={palette.secondary} style={styles.ml10} />
@@ -218,13 +219,13 @@ const ViewTrip = ({ route, navigation }) => {
                     {
                         isDriver &&
                         <View style={[styles.w100, styles.fullCenter]}>
-                            {tripStatus === 0 && tripCancellable && <Button bgColor={palette.red} text="Cancel Ride" textColor={palette.white} onPress={cancelRide} />}
+                            {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text="Cancel Ride" textColor={palette.white} onPress={cancelRide} />}
 
-                            {tripStatus === 0 && tripReady && <Button bgColor={palette.secondary} text="Start Trip" textColor={palette.white} onPress={startTrip} />}
+                            {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text="Start Trip" textColor={palette.white} onPress={startTrip} />}
 
-                            {tripStatus === 1 && <Button bgColor={palette.secondary} text="Manage Trip" textColor={palette.white} onPress={manageTrip} />}
+                            {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text="Manage Trip" textColor={palette.white} onPress={manageTrip} />}
 
-                            {tripStatus === 4 && <Button bgColor={palette.primary} text="Trip Cancelled" textColor={palette.white} onPress={() => { }} />}
+                            {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text="Trip Cancelled" textColor={palette.white} onPress={() => { }} />}
 
                         </View>
                     }

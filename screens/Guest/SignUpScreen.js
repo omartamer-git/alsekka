@@ -27,12 +27,12 @@ const SignUpScreen = ({ route, navigation }) => {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [gender, setGender] = useState(0);
+  const [gender, setGender] = useState('MALE');
 
   const isDarkMode = useColorScheme === 'dark';
 
   const handleContinueClick = (e) => {
-    accountAPI.createAccount(firstName, lastName, phoneNum, email, gender).then((data) => {
+    accountAPI.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
       navigation.popToTop();
       navigation.replace("LoggedIn", {
         screen: 'Rides Home',
@@ -65,10 +65,10 @@ const SignUpScreen = ({ route, navigation }) => {
   }
 
   const toggleGender = (e) => {
-    if (gender == 1) {
-      setGender(0);
+    if (gender == 'FEMALE') {
+      setGender('MALE');
     } else {
-      setGender(1);
+      setGender('FEMALE');
     }
   }
 
@@ -151,13 +151,13 @@ const SignUpScreen = ({ route, navigation }) => {
               />
 
               <View style={[styles.flexRow, styles.w100, styles.mt20]}>
-                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender == 0) ? palette.secondary : palette.white }]}
+                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.secondary : palette.white }]}
                   onPress={toggleGender}>
-                  <Text style={[signupScreenStyles.genderText, { color: (gender == 0) ? palette.white : palette.black }]}>Male</Text>
+                  <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>Male</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender == 1) ? palette.secondary : palette.white }]}
+                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.secondary : palette.white }]}
                   onPress={toggleGender}>
-                  <Text style={[signupScreenStyles.genderText, { color: (gender == 1) ? palette.white : palette.black }]}>Female</Text>
+                  <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>Female</Text>
                 </TouchableOpacity>
               </View>
 

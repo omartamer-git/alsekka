@@ -103,20 +103,20 @@ const ManageTrip = ({ route, navigation }) => {
                             return (
                                 <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
                                     {
-                                        data.status === 0 &&
-                                        <TouchableOpacity onPress={() => { checkIn(data.id) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
+                                        data.status === 'CONFIRMED' &&
+                                        <TouchableOpacity onPress={() => { checkIn(data.userId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
                                             <Text style={manageTripStyles.manageBtnText}>Check In</Text>
                                         </TouchableOpacity>
                                     }
                                     {
-                                        data.status === 0 &&
-                                        <TouchableOpacity onPress={() => { noShow(data.id) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
+                                        data.status === 'CONFIRMED' &&
+                                        <TouchableOpacity onPress={() => { noShow(data.userId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
                                             <MaterialIcons name="close" size={14} color={palette.white} />
                                         </TouchableOpacity>
                                     }
                                     {
-                                        data.status === 1 &&
-                                        <TouchableOpacity onPress={() => { checkOut(data.id) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
+                                        data.status === 'ENROUTE' &&
+                                        <TouchableOpacity onPress={() => { checkOut(data.userId) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
                                             <Text style={manageTripStyles.manageBtnText}>Check Out</Text>
                                         </TouchableOpacity>
                                     }

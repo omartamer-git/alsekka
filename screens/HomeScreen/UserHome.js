@@ -11,7 +11,8 @@ import {
     Platform,
     ScrollView,
     Dimensions,
-    StyleSheet
+    StyleSheet,
+    RefreshControl
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
@@ -40,6 +41,7 @@ import ScreenWrapper from '../ScreenWrapper';
 const UserHome = ({ navigation, route }) => {
     const [nextRideData, setNextRideData] = useState(null);
     const [nextRideDate, setNextRideDate] = useState(new Date());
+    const [refreshing, setRefreshing] = useState(false);
     const currentTime = new Date();
 
     const [driverElement, setDriverElement] = useState(false);
@@ -50,13 +52,14 @@ const UserHome = ({ navigation, route }) => {
     const [carouselData, setCarouselData] = useState(null);
     const MAX_CAROUSEL_TEXT_LENGTH = 250;
 
-    useEffect(() => {
-        ridesAPI.upcomingRides().then((data) => {
+    const loadData = () => {
+        setRefreshing(true);
+        const promises = [ridesAPI.upcomingRides().then((data) => {
             if (data) {
                 setNextRideData(data);
                 setNextRideDate(new Date(data.datetime));
             }
-        });
+        }),
 
         ridesAPI.driverRides(1).then((data) => {
             if (data.length === 0) {
@@ -71,13 +74,28 @@ const UserHome = ({ navigation, route }) => {
                 setDriverMainTextFrom(data[0].mainTextFrom);
                 setDriverMainTextTo(data[0].mainTextTo)
             }
-        });
+        }),
 
         announcementsAPI.getAnnouncements(1).then((data) => {
             setCarouselData(data);
-        });
+        })];
 
+        Promise.all(promises)
+            .then(() => {
+                // All API calls have succeeded
+                setRefreshing(false);
+            })
+            .catch((error) => {
+                // Handle errors if any API call fails
+                console.error("Error occurred during API calls:", error);
+                setRefreshing(false); // Set refreshing to false even in case of errors
+            });
+    };
+
+    useEffect(() => {
+        loadData();
     }, []);
+
 
     const viewTrip = (id) => {
         navigation.navigate('View Trip', { tripId: id });
@@ -89,11 +107,15 @@ const UserHome = ({ navigation, route }) => {
         setCarouselWidth(width);
     };
 
+    const onRefresh = () => {
+        loadData();
+    };
+
     const width = Dimensions.get('window').width;
 
     return (
         <ScreenWrapper screenName={"Home"}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <Text style={[styles.headerText2, styles.mt20]}>
                     Good
                     {
@@ -149,7 +171,7 @@ const UserHome = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
-                    {carouselData &&
+                    {carouselData && carouselData.length !== 0 &&
                         <Carousel loop style={[styles.bgAccent, styles.br8]} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
                             ({ index }) => (
                                 <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>

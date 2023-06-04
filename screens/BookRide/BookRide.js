@@ -77,13 +77,13 @@ const BookRide = ({ route, navigation }) => {
             if (mapViewRef) {
                 mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
             }
-            setDriver(data.uid);
-            setFirstName(data.firstName);
-            setLastName(data.lastName);
-            setProfilePicture(data.profilePicture);
+            setDriver(data.Driver.id);
+            setFirstName(data.Driver.firstName);
+            setLastName(data.Driver.lastName);
+            setProfilePicture(data.Driver.profilePicture);
 
-            const fullStars = Math.floor(data.rating);
-            const halfStars = Math.ceil(data.rating) - Math.abs(data.rating);
+            const fullStars = Math.floor(data.Driver.rating);
+            const halfStars = Math.ceil(data.Driver.rating) - Math.abs(data.Driver.rating);
 
             let ratingsItems = [];
             for (let i = 0; i < fullStars; i++) {
@@ -101,7 +101,7 @@ const BookRide = ({ route, navigation }) => {
 
 
     const bookRide = (e) => {
-        ridesAPI.bookRide(rideId, 0); // payment method
+        ridesAPI.bookRide(rideId, 'CASH'); // payment method
     }
 
     const isDarkMode = useColorScheme === 'dark';

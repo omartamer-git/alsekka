@@ -14,8 +14,8 @@ export const sendMessage = async(receiver, messageText) => {
             "datetime": new Date().toISOString(),
             "id": data.id,
             "message": messageText,
-            "receiver": receiver,
-            "sender": globalVars.getUserId(),
+            "receiverId": receiver,
+            "senderId": globalVars.getUserId(),
         }
     ];
 };
@@ -31,7 +31,7 @@ export const loadChat = async(receiver) => {
 
 export const chatHistory = async(receiver) => {
     let url = SERVER_URL + `/chathistory?uid=${globalVars.getUserId()}&receiver=${receiver}`;
-
+    console.log(url);
     const response = await fetch(url);
     const data = await response.json();
 

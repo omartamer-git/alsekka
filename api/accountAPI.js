@@ -31,6 +31,7 @@ export const login = async (phoneNum, password) => {
 
 export const createAccount = async (firstName, lastName, phoneNum, email, password, gender) => {
     const url = SERVER_URL + `/createaccount?fname=${firstName}&lname=${lastName}&phone=${phoneNum}&email=${email}&password=${password}&gender=${gender}`;
+    console.log(url);
     const response = await fetch(url);
     const data = await response.json();
 

@@ -30,6 +30,7 @@ import PiggyBank from '../../svgs/piggybank';
 import * as carsAPI from '../../api/carsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import ScreenWrapper from '../ScreenWrapper';
+import BottomModal from '../../components/BottomModal';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -194,38 +195,29 @@ const PostRide = ({ route, navigation }) => {
                                 editable={false}
                             />
 
-                            <Modal
-                                transparent={true}
-                                visible={carSelectorOpen}
-                                animationType="slide"
-                                onRequestClose={() => { console.log("close") }}
-                            >
-                                <TouchableOpacity style={styles.flexOne} onPress={() => { setCarSelectorOpen(false) }} />
-                                <View style={[styles.bottomModal, { height: '50%' }]}>
-                                    <ScrollView style={[styles.flexOne, styles.w100]}>
-                                        {usableCars && usableCars.map((data, index) => {
-                                            return (
-                                                <CarCard
-                                                    approved={data.approved}
-                                                    brand={data.brand}
-                                                    model={data.model}
-                                                    year={data.year}
-                                                    color={data.color}
-                                                    licensePlateLetters={data.licensePlateLetters}
-                                                    licensePlateNumbers={data.licensePlateNumbers}
-                                                    onPress={() => selectCar(data)}
-                                                    key={"car" + index} />
-                                            );
-                                        })}
+                            <BottomModal onHide={() => setCarSelectorOpen(false)} modalVisible={carSelectorOpen}>
 
-                                        <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, flexDirection: 'row', alignItems: 'center' }}>
-                                            <MaterialIcons name="add" size={18} color={palette.black} />
-                                            <Text style={{ fontSize: 14, fontWeight: '600' }}>Add New Car</Text>
-                                        </TouchableOpacity>
+                                {usableCars && usableCars.map((data, index) => {
+                                    return (
+                                        <CarCard
+                                            approved={data.approved}
+                                            brand={data.brand}
+                                            model={data.model}
+                                            year={data.year}
+                                            color={data.color}
+                                            licensePlateLetters={data.licensePlateLetters}
+                                            licensePlateNumbers={data.licensePlateNumbers}
+                                            onPress={() => selectCar(data)}
+                                            key={"car" + index} />
+                                    );
+                                })}
 
-                                    </ScrollView>
-                                </View>
-                            </Modal>
+                                <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, flexDirection: 'row', alignItems: 'center' }}>
+                                    <MaterialIcons name="add" size={18} color={palette.black} />
+                                    <Text style={{ fontSize: 14, fontWeight: '600' }}>Add New Car</Text>
+                                </TouchableOpacity>
+
+                            </BottomModal>
 
                             <Text style={styles.inputText}>Seats Available</Text>
 

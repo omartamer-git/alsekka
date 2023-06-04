@@ -9,16 +9,16 @@ const CarCard = ({approved, brand, model, year, color, licensePlateLetters, lice
         <TouchableOpacity onPress={onPress} activeOpacity={0.75} style={{ width: '100%', padding: 16, borderBottomWidth: 1, borderColor: palette.light, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={[styles.flexRow, { width: '60%' }]}>
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    {approved === 1 && <FontsAwesome5 name="car-alt" size={28} />}
-                    {approved === 0 && <MaterialIcons name="schedule" size={28} color={palette.dark} />}
+                    {approved === 'APPROVED' && <FontsAwesome5 name="car-alt" size={28} />}
+                    {approved === 'PENDING' && <MaterialIcons name="schedule" size={28} color={palette.dark} />}
                 </View>
                 <View style={{ justifyContent: 'center', marginLeft: 10 }}>
-                    <Text style={[styles.font14, styles.bold, { flexWrap: 'wrap', color: (approved === 1 ? palette.black : palette.dark) }]}>{brand} {model} ({year})</Text>
+                    <Text style={[styles.font14, styles.bold, { flexWrap: 'wrap', color: (approved === 'APPROVED' ? palette.black : palette.dark) }]}>{brand} {model} ({year})</Text>
                     <Text style={[styles.font14, styles.bold,  { flexWrap: 'wrap', color: palette.dark }]}>{color}</Text>
                 </View>
             </View>
             <View style={[styles.mt10, styles.br8, styles.borderDark, styles.border2, { height: 60 * rem, alignSelf: 'flex-end', width: '30%' }]}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 2, borderBottomColor: palette.dark, width: '100%', flexShrink: 1, paddingLeft: 2, paddingRight: 2, backgroundColor: approved === 1 ? '#0377b4' : palette.light }}>
+                <View style={[styles.flexRow, styles.spaceBetween, styles.borderDark, styles.w100, { borderBottomWidth: 2, flexShrink: 1, paddingLeft: 2, paddingRight: 2, backgroundColor: approved === 'APPROVED' ? '#0377b4' : palette.light }]}>
                     <Text style={[styles.semiBold, styles.font12]}>EGYPT</Text>
                     <Text style={[styles.semiBold, styles.font12]}>مصر</Text>
                 </View>

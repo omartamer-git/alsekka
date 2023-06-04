@@ -87,9 +87,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         console.log(licenseStatus);
         console.log(globalVars.getDriver());
         licensesAPI.getLicense().then((data) => {
-            if(data.status) {
-                setLicenseStatus(data.status);
-            }
+            setLicenseStatus(data === null ? 0 : data.status);
         });
     }, []);
 
@@ -131,7 +129,7 @@ const driverDocumentsStyles = StyleSheet.create({
         ...styles.bgLightGray,
         ...styles.w100,
         ...styles.fullCenter,
-         zIndex: 5,
+        zIndex: 5,
     },
 });
 

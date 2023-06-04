@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
     Platform,
     ScrollView,
-    Dimensions
+    Dimensions,
+    RefreshControl
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
 import Button from '../../components/Button';
@@ -39,7 +40,19 @@ import ScreenWrapper from '../ScreenWrapper';
 const ViewCommunities = ({ navigation, route }) => {
     const [communities, setCommunities] = useState(null);
     const [feed, setFeed] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        loadFeed();
+        setRefreshing(false);
+    };
+
     useEffect(() => {
+        loadFeed();
+    }, []);
+
+    const loadFeed = () => {
         communitiesAPI.getCommunities().then(
             data => {
                 if (data.length != 0) {
@@ -56,35 +69,36 @@ const ViewCommunities = ({ navigation, route }) => {
                 }
             }
         );
-    }, []);
+    };
 
 
     return (
         <ScreenWrapper screenName={"Communities"}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  >
                 <View style={[styles.w100, styles.flexRow, styles.alignCenter, styles.spaceBetween, styles.mt20]}>
                     <Text style={[styles.headerText2]}>Communities</Text>
                     <MaterialIcons name="search" size={24} />
                 </View>
 
-                <View style={[styles.w100, styles.mt10, styles.borderLight, styles.pb8, { borderTopWidth: 1, borderBottomWidth: 1 }]}>
+                { feed && feed.length > 0 &&
+                    <View style={[styles.w100, styles.mt10, styles.borderLight, styles.pb8, { borderTopWidth: 1 }]}>
                     <Text style={[styles.headerText3, styles.mt10]}>Your Feed</Text>
                     {
-                        feed && feed.map((data, index) => {
+                        feed.map((data, index) => {
                             console.log(data);
                             const nextRideDate = new Date(data.datetime);
                             return (
                                 <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                    <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.firstName + " " + data.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
-                                    <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.firstName} {data.lastName} in {data.community_name}</Text>
+                                    <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
+                                    <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.Driver.firstName} {data.Driver.lastName} in { data.Communities[0].community_name }</Text>
                                 </View>
                             );
                         })
                     }
                     <Text style={[styles.alignSelfCenter, styles.mt10, styles.bold, styles.accent]}>See More</Text>
-                </View>
+                </View>}
 
-                <View style={[styles.flexOne, styles.mt10, styles.w100]}>
+                <View style={[styles.flexOne, styles.mt10, styles.w100, styles.borderLight, {borderTopWidth: 1}]}>
                     <Text style={[styles.headerText3, styles.mt10]}>Recommended Communities</Text>
                     {
                         communities && communities.map((data, index) => {                            

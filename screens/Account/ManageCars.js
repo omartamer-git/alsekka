@@ -65,7 +65,7 @@ const ManageCars = ({ route, navigation }) => {
                 }
                 {cars && cars.length === 0 &&
                     <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
-                        <Text style={[styles.textCenter, styles.font28, styles.bold]}>Let's get you on the road!</Text>
+                        <Text style={[styles.textCenter, styles.font28, styles.bold, styles.ph24]}>Let's get you on the road!</Text>
                         <Text style={styles.font18}>Register your car details now.</Text>
                         <Button onPress={() => navigation.navigate('New Car')} bgColor={palette.primary} textColor={palette.white} text="Add Car" />
                     </View>
