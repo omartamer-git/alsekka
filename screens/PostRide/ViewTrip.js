@@ -59,8 +59,6 @@ const ViewTrip = ({ route, navigation }) => {
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
-                console.log(data);
-
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
                 setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
@@ -86,13 +84,11 @@ const ViewTrip = ({ route, navigation }) => {
 
     }, []);
 
-    // useeffect to set tripready and cancellable??
     useEffect(() => {
         const currDate = new Date();
         const objDateTime = objDate.getTime();
         const currTime = currDate.getTime();
         const timeToTrip = objDateTime - currTime;
-        console.log(timeToTrip);
         if (timeToTrip < 1000 * 60 * 60) { // within an hour, or time has already passed
             setTripReady(true);
         } else {

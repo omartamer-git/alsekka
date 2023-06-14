@@ -135,7 +135,6 @@ const PostRide = ({ route, navigation }) => {
                                     setDatePickerOpen(false);
                                     date = new Date(date.toDateString());
                                     setDate(date);
-                                    console.log(date);
                                 }}
                                 onCancel={() => {
                                     setDatePickerOpen(false)
@@ -178,7 +177,6 @@ const PostRide = ({ route, navigation }) => {
                                     time.setSeconds(0);
                                     time.setMilliseconds(0);
                                     setTime(time);
-                                    console.log(time);
                                 }}
                                 onCancel={() => {
                                     setTimePickerOpen(false)
@@ -226,15 +224,6 @@ const PostRide = ({ route, navigation }) => {
                                 value={seatsAvailable}
                                 onChangeText={handleChangeSeatsAvailable}
                                 iconLeft="groups"
-                            />
-
-                            <Text style={styles.inputText}>Seats Occupied</Text>
-
-                            <CustomTextInput
-                                placeholder="Number of full seats (without driver)"
-                                value={seatsOccupied}
-                                onChangeText={handleChangeSeatsOccupied}
-                                iconLeft="group-work"
                             />
 
                             <Text style={styles.inputText}>Price Per Seat</Text>

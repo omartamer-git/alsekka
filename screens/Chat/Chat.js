@@ -46,11 +46,9 @@ const Chat = ({ navigation, route }) => {
     let lastSender = null;
 
     const sendMessage = () => {
-        console.log(receiver);
         chatAPI.sendMessage(receiver, messageText).then(
             data => {
                 setChatMessages(data.concat(chatMessages));
-                console.log(data);
                 setMessageText('');
             }
         );

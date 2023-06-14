@@ -28,7 +28,7 @@ export const bookRide = async (rideId, paymentMethod) => {
 
 export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderChoice) => {
     let url = `${SERVER_URL}/nearbyrides?startLng=${fromLng}&startLat=${fromLat}&endLng=${toLng}&endLat=${toLat}&date=${date}&gender=${genderChoice}`;
-    console.log(url);
+    
     const response = await fetch(url);
     const data = await response.json();
 
@@ -129,7 +129,7 @@ export const passengerDetails = async(passengerId, tripId) => {
 
 export const checkPassengerOut = async(passengerId, tripId, amountPaid, rating) => {
     const url = SERVER_URL + `/checkout?passenger=${passengerId}&tripId=${tripId}&amountPaid=${amountPaid}&rating=${rating}`;
-    console.log(url);
+    
     const response = await fetch(url);
     const data = await response.json();
 
@@ -138,10 +138,10 @@ export const checkPassengerOut = async(passengerId, tripId, amountPaid, rating) 
 
 export const checkPassengerIn = async(passengerId, tripId) => {
     const url = SERVER_URL + `/checkIn?tripId=${tripId}&passenger=${passengerId}`;
-    console.log(url);
+    
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
+    
     
     return data;
 };

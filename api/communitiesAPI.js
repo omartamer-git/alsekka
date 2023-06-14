@@ -12,11 +12,40 @@ export const getCommunities = async () => {
     return data;
 };
 
-export const communitiesFeed = async() => {
-    const url = SERVER_URL + `/myfeed?uid=${globalVars.getUserId()}`;
+export const communitiesFeed = async(communityId) => {
+    const url = SERVER_URL + `/myfeed?uid=${globalVars.getUserId()}${communityId ? `&communityId=${communityId}` : ''}`;
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
-    console.log("hi");
+    return data;
+};
+
+export const searchCommunities = async(name) => {
+    const url = SERVER_URL + `/searchcommunities?name=${name}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+};
+
+export const getCommunityDetails = async(communityId) => {
+    const url = SERVER_URL + `/communitydetails?communityId=${communityId}&uid=${globalVars.getUserId()}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+};
+
+export const joinCommunity = async(communityId, answer) => {
+    const url = SERVER_URL + `/joincommunity`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            uid: globalVars.getUserId(),
+            communityId: communityId,
+            answer: answer
+        })
+    });
+    const data = await response.json();
     return data;
 };

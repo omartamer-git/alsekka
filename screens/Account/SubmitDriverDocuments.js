@@ -84,8 +84,6 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     };
 
     useEffect(() => {
-        console.log(licenseStatus);
-        console.log(globalVars.getDriver());
         licensesAPI.getLicense().then((data) => {
             setLicenseStatus(data === null ? 0 : data.status);
         });

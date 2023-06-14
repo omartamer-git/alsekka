@@ -31,6 +31,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Visa from '../../svgs/visa';
 import Mastercard from '../../svgs/mastercard';
 import ScreenWrapper from '../ScreenWrapper';
+import { addBankAccount } from '../../api/accountAPI';
 
 const AddBank = ({ navigation, route }) => {
     const [fullName, setFullName] = useState('');
@@ -38,6 +39,14 @@ const AddBank = ({ navigation, route }) => {
     const [accNumber, setAccountNumber] = useState('');
     const [swiftCode, setSwiftCode] = useState('');
     const [branch, setBranch] = useState('');
+
+    const addAccount = () => {
+        addBankAccount(fullName, bankName, accNumber, swiftCode, branch).then(data => {
+            navigation.goBack();
+        }).catch(err => {
+            console.log(err);
+        });
+    }
 
     return (
         <ScreenWrapper screenName="Add Account" navType="back" navAction={() => navigation.goBack()}>
@@ -82,7 +91,7 @@ const AddBank = ({ navigation, route }) => {
                 />
 
                 <View style={styles.flexOne} />
-                <Button text="Add Account" bgColor={palette.accent} textColor={palette.white} />
+                <Button text="Add Account" bgColor={palette.accent} textColor={palette.white} onPress={addAccount} />
             </ScrollView>
         </ScreenWrapper>
     );

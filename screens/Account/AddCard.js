@@ -31,8 +31,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import Visa from '../../svgs/visa';
 import Mastercard from '../../svgs/mastercard';
 import ScreenWrapper from '../ScreenWrapper';
+import { addCard } from '../../api/accountAPI';
 
 const AddCard = ({ navigation, route }) => {
+    const [cardholderName, setCardholderName] = useState("");
     const [cardNumber, setCardNumber] = useState("");
     const [cardType, setCardType] = useState("");
 
@@ -63,6 +65,14 @@ const AddCard = ({ navigation, route }) => {
 
         }
     }
+
+    const addNewCard = () => {
+        // store cvv in asyncstorage
+
+        addCard(cardNumber.replace(/\s+/g, ''), expiryDate, cardholderName).then(data => {
+            navigation.goBack();
+        });
+    };
 
     const changeExpiryDate = (data) => {
         setExpiryDate(
@@ -97,7 +107,6 @@ const AddCard = ({ navigation, route }) => {
                     <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween, styles.alignEnd]}>
                         <>
                             <Text style={addCardStyles.cardDetailsText}>EXP: {expiryDate}</Text>
-                            <Text style={addCardStyles.cardDetailsText}>CVV: {cvv}</Text>
                         </>
                         <>
                             {
@@ -106,24 +115,33 @@ const AddCard = ({ navigation, route }) => {
                         </>
                     </View>
                 </LinearGradient>
-
                 <View style={styles.w100}>
                     <Text style={styles.inputText}>Card Number</Text>
                     <CustomTextInput iconLeft="credit-card" placeholder="1234 5678 9123 4567" value={cardNumber} onChangeText={changeCardNumber} />
                 </View>
 
+
+
+
                 <View style={[styles.flexRow, styles.w100]}>
-                    <View style={[styles.flexOne, styles.pr8]}>
-                        <Text style={styles.inputText}>Expiry Date</Text>
-                        <CustomTextInput iconRight="help" placeholder="MM/YY" value={expiryDate} onChangeText={changeExpiryDate} />
+                    <View style={{flex: 1.5}}>
+                        <Text style={styles.inputText}>Card Holder Name</Text>
+                        <CustomTextInput iconLeft="badge" placeholder="Cardholder Name" value={cardholderName} onChangeText={setCardholderName} />
                     </View>
-                    <View style={[styles.flexOne, styles.pl8]}>
+
+                    <View style={[styles.flexOne, styles.ml5]}>
+                        <Text style={styles.inputText}>Expiry Date</Text>
+                        <CustomTextInput placeholder="MM/YY" value={expiryDate} onChangeText={changeExpiryDate} />
+                    </View>
+                    {/* <View style={[styles.flexOne, styles.pl8]}>
                         <Text style={styles.inputText}>CVV</Text>
                         <CustomTextInput iconRight="help" placeholder="123" value={cvv} onChangeText={changeCvv} />
-                    </View>
+                    </View> */}
                 </View>
 
-                <Button bgColor={palette.primary} textColor={palette.white} text="Add Card" />
+
+
+                <Button bgColor={palette.primary} textColor={palette.white} text="Add Card" onPress={addNewCard} />
 
             </ScrollView>
         </ScreenWrapper>

@@ -64,7 +64,6 @@ const MapScreen = ({ route, navigation }) => {
   const adjustMarkers = () => {
     if (markerFrom && markerTo) {
       mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
-      console.log("FIT TO MARKERS");
     } else if (markerFrom) {
       mapViewRef.current.fitToSuppliedMarkers(["from"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
     } else if (markerTo) {

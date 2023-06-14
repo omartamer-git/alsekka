@@ -103,7 +103,6 @@ const UserHome = ({ navigation, route }) => {
 
     const findCarouselWidth = (layout) => {
         const { x, y, width, height } = layout.nativeEvent.layout;
-        console.log(width);
         setCarouselWidth(width);
     };
 

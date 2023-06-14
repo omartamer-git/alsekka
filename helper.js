@@ -5,7 +5,15 @@ import {
     StyleSheet,
 } from 'react-native';
 
+export const isPhoneNumberValid = (phoneNumber) => {
+    const phoneNumberPattern = /^01\d{9}$/;
+    return phoneNumberPattern.test(phoneNumber);
+}
 
+export const isEmailValid = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
 
 export const getDateSQL = (date) => {
     let month = date.getMonth() + 1;
@@ -70,8 +78,8 @@ export const translateEnglishNumbers = (text) => {
     }
     return resultText;
 }
-// f8483b RED
-// f7b844 GOLD
+
+
 export const palette = {
     primary: '#2E1760',
     secondary: '#5e08c4',
@@ -82,6 +90,8 @@ export const palette = {
     lightGray: '#f6f7f9',
     red: '#f8483b',
     success: '#198754',
+    green: '#198754',
+    red: '#dc3545',
 };
 
 export const getDateShort = (date) => {
@@ -204,6 +214,14 @@ export const styles = StyleSheet.create({
 
     dark: {
         color: palette.dark
+    },
+
+    error: {
+        color: palette.red,
+    },
+
+    success: {
+        color: palette.success,
     },
 
     light: {

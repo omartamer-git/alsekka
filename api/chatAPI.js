@@ -31,7 +31,6 @@ export const loadChat = async(receiver) => {
 
 export const chatHistory = async(receiver) => {
     let url = SERVER_URL + `/chathistory?uid=${globalVars.getUserId()}&receiver=${receiver}`;
-    console.log(url);
     const response = await fetch(url);
     const data = await response.json();
 

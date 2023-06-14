@@ -21,6 +21,7 @@ import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import ScreenWrapper from '../ScreenWrapper';
 import BottomModal from '../../components/BottomModal';
+import { editEmail, editName, editPhone } from '../../api/accountAPI';
 
 const Account = ({ route, navigation }) => {
     const [ratings, setRatings] = useState(null);
@@ -28,6 +29,11 @@ const Account = ({ route, navigation }) => {
     const [editPhoneModalVisible, setEditPhoneModalVisible] = useState(false);
     const [editEmailModalVisible, setEditEmailModalVisible] = useState(false);
 
+    const [editFirstNameText, setEditFirstNameText] = useState(globalVars.getFirstName());
+    const [editLastNameText, setEditLastNameText] = useState(globalVars.getLastName());
+
+    const [editPhoneText, setEditPhoneText] = useState(globalVars.getPhone());
+    const [editEmailText, setEditEmailText] = useState(globalVars.getEmail());
 
     useEffect(() => {
         const fullStars = Math.floor(globalVars.getRating());
@@ -46,7 +52,32 @@ const Account = ({ route, navigation }) => {
     }, []);
 
     const saveEditName = () => {
+        editName(editFirstNameText, editLastNameText).then(data => {
+            if (data.success == "1") {
+                globalVars.setFirstName(editFirstNameText);
+                globalVars.setLastName(editLastNameText);
+            }
+        });
 
+        setEditNameModalVisible(false);
+    };
+    const saveEditEmail = () => {
+        editEmail(editEmailText).then(data => {
+            if (data.success == "1") {
+                globalVars.setEmail(editEmailText);
+            }
+        });
+
+        setEditEmailModalVisible(false);
+    };
+    const saveEditPhone = () => {
+        editPhone(editPhoneText).then(data => {
+            if (data.success == "1") {
+                globalVars.setPhone(editPhoneText);
+            }
+        });
+
+        setEditPhoneModalVisible(false);
     };
 
     return (
@@ -99,6 +130,7 @@ const Account = ({ route, navigation }) => {
                                 iconRight="edit"
                                 editable={false}
                                 style={accountStyles.editInput}
+                                onPressIn={() => setEditPhoneModalVisible(true)}
                             />
                             <CustomTextInput
                                 value={globalVars.getEmail()}
@@ -106,6 +138,7 @@ const Account = ({ route, navigation }) => {
                                 iconRight="edit"
                                 editable={false}
                                 style={accountStyles.editInput}
+                                onPressIn={() => setEditEmailModalVisible(true)}
                             />
                         </View>
                     </View>
@@ -116,21 +149,49 @@ const Account = ({ route, navigation }) => {
                 <View style={[styles.w100]}>
                     <Text style={styles.inputText}>First Name</Text>
                     <CustomTextInput
-                        value={globalVars.getFirstName()}
+                        value={editFirstNameText}
                         iconLeft="badge"
                         style={accountStyles.editInput}
-                        onPressIn={() => setEditNameModalVisible(true)}
+                        onChangeText={(data) => setEditFirstNameText(data)}
                     />
 
                     <Text style={styles.inputText}>Last Name</Text>
                     <CustomTextInput
-                        value={globalVars.getLastName()}
+                        value={editLastNameText}
                         iconLeft="badge"
                         style={accountStyles.editInput}
-                        onPressIn={() => setEditNameModalVisible(true)}
+                        onChangeText={(data) => setEditLastNameText(data)}
                     />
 
                     <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={saveEditName} />
+                </View>
+            </BottomModal>
+
+            <BottomModal onHide={() => setEditEmailModalVisible(false)} modalVisible={editEmailModalVisible}>
+                <View style={[styles.w100]}>
+                    <Text style={styles.inputText}>Email</Text>
+                    <CustomTextInput
+                        value={editEmailText}
+                        iconLeft="badge"
+                        style={accountStyles.editInput}
+                        onChangeText={(data) => setEditEmailText(data)}
+                    />
+
+                    <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={saveEditEmail} />
+                </View>
+            </BottomModal>
+
+            <BottomModal onHide={() => setEditPhoneModalVisible(false)} modalVisible={editPhoneModalVisible}>
+                <View style={[styles.w100]}>
+                    <Text style={styles.inputText}>Phone</Text>
+                    <CustomTextInput
+                        value={editPhoneText}
+                        iconLeft="badge"
+                        style={accountStyles.editInput}
+                        onChangeText={(data) => setEditPhoneText(data)}
+                    />
+
+                    <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={saveEditPhone} />
                 </View>
             </BottomModal>
         </>

@@ -50,6 +50,8 @@ import ViewCommunities from './screens/Communities/ViewCommunities';
 import Chat from './screens/Chat/Chat';
 import ChatsList from './screens/Chat/ChatsList';
 import AddBank from './screens/Account/AddBank';
+import SearchCommunities from './screens/Communities/SearchCommunities';
+import ViewCommunity from './screens/Communities/ViewCommunity';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -164,6 +166,8 @@ const CommunityNavigator = ({ route, navigator }) => {
   return (
     <CommunityStack.Navigator>
       <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
     </CommunityStack.Navigator>
   );
 };

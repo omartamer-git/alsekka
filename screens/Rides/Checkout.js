@@ -40,7 +40,6 @@ const Checkout = ({ route, navigation }) => {
     useEffect(() => {
         ridesAPI.passengerDetails(passengerId, tripId).then(
             data => {
-                console.log(data);
                 setPassengerDetails(data);
                 setAmountPaid(String(data.amountDue));
             });
@@ -68,7 +67,6 @@ const Checkout = ({ route, navigation }) => {
     const checkoutConfirmed = () => {
         ridesAPI.checkPassengerOut(passengerId, tripId, amountPaid, rating).then(
             data => {
-                console.log(data);
             });
     }
 

@@ -29,6 +29,24 @@ const SignUpScreen = ({ route, navigation }) => {
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('MALE');
 
+  const [phoneNumValidated, setPhoneNumValidated] = useState(false);
+  const [phoneNumError, setPhoneNumError] = useState(false);
+
+  const [passwordValidated, setPasswordValidated] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  const [emailValidated, setEmailValidated] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+
+  const [firstNameValidated, setFirstNameValidated] = useState(false);
+  const [firstNameError, setFirstNameError] = useState(false);
+
+  const [lastNameValidated, setLastNameValidated] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+
+  const [phoneNumExists, setPhoneNumExists] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
+
   const isDarkMode = useColorScheme === 'dark';
 
   const handleContinueClick = (e) => {
@@ -103,6 +121,7 @@ const SignUpScreen = ({ route, navigation }) => {
                     selectTextOnFocus={false}
                     editable={true}
                     placeholder="First Name"
+
                   />
                 </View>
 
@@ -151,11 +170,11 @@ const SignUpScreen = ({ route, navigation }) => {
               />
 
               <View style={[styles.flexRow, styles.w100, styles.mt20]}>
-                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.secondary : palette.white }]}
+                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.primary : palette.white }]}
                   onPress={toggleGender}>
                   <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>Male</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.secondary : palette.white }]}
+                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.primary : palette.white }]}
                   onPress={toggleGender}>
                   <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>Female</Text>
                 </TouchableOpacity>
@@ -165,7 +184,7 @@ const SignUpScreen = ({ route, navigation }) => {
               <Button
                 style={[styles.continueBtn, styles.mt20]}
                 text="Create Account"
-                bgColor={palette.secondary}
+                bgColor={palette.primary}
                 textColor={palette.white}
                 onPress={handleContinueClick}
               />
