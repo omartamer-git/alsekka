@@ -13,12 +13,16 @@ export const login = async (phoneNum, password) => {
         });
 
         const data = response.data;
-
-        if (data.success === "1") {
+        console.log(data);
+        if (data.success === 1) {
             globalVars.setUserId(data.id);
 
-            const url = `${SERVER_URL}/userinfo?uid=${globalVars.getUserId()}`;
-            const userInfoResponse = await axios.get(url);
+            const url = `${SERVER_URL}/userinfo`;
+            const userInfoResponse = await axios.get(url, {
+                params: {
+                    uid: data.id
+                }
+            });
             const userData = userInfoResponse.data;
 
             globalVars.setFirstName(userData.firstName);
@@ -40,75 +44,87 @@ export const login = async (phoneNum, password) => {
 };
 
 export const createAccount = async (firstName, lastName, phoneNum, email, password, gender) => {
-    const url = SERVER_URL + `/createaccount?fname=${firstName}&lname=${lastName}&phone=${phoneNum}&email=${email}&password=${password}&gender=${gender}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${SERVER_URL}/createaccount`;
+    const params = {
+        fname: firstName,
+        lname: lastName,
+        phone: phoneNum,
+        email: email,
+        password: password,
+        gender: gender
+    };
 
-    if (data.success == "1") {
-        globalVars.setUserId(data.id);
-    } else {
-        console.log("Account couldn't be created, handle error");
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+
+        if (data.success === 1) {
+            globalVars.setUserId(data.id);
+        } else {
+            console.log("Account couldn't be created, handle error");
+        }
+
+        return data;
+    } catch (err) {
+        throw err;
     }
-
-    return data;
 };
 
+
 export const getWallet = async () => {
-    const response = await fetch(SERVER_URL + `/wallet?uid=${globalVars.getUserId()}`);
-    const data = await response.json()
-    return data;
+    try {
+        const response = await axios.get(`${SERVER_URL}/wallet`, {
+            params: {
+                uid: globalVars.getUserId()
+            }
+        });
+
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const editName = async (firstName, lastName) => {
-    // send PATCH request to /name using firstName and lastName and req.body
     const body = {
         uid: globalVars.getUserId(),
         firstName: firstName,
         lastName: lastName
-    }
-    const response = await fetch(SERVER_URL + `/name`, {
-        method: 'PATCH',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    return data;
-};
+    };
 
-export const editEmail = async (email) => {
-    // send PATCH request to /name using firstName and lastName and req.body
-    const body = {
-        uid: globalVars.getUserId(),
-        email: email
+    try {
+        const response = await axios.patch(`${SERVER_URL}/name`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
     }
-    const response = await fetch(SERVER_URL + `/email`, {
-        method: 'PATCH',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    return data;
 };
 
 export const editPhone = async (phone) => {
-    // send PATCH request to /name using firstName and lastName and req.body
     const body = {
         uid: globalVars.getUserId(),
         phone: phone
+    };
+
+    try {
+        const response = await axios.patch(`${SERVER_URL}/phone`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
     }
-    const response = await fetch(SERVER_URL + `/phone`, {
-        method: 'PATCH',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    return data;
 };
 
 export const addBankAccount = async (fullName, bankName, accNumber, swiftCode, branch) => {
@@ -119,16 +135,20 @@ export const addBankAccount = async (fullName, bankName, accNumber, swiftCode, b
         accNumber: accNumber,
         swiftCode: swiftCode,
         branch: branch
+    };
+
+    try {
+        const response = await axios.post(`${SERVER_URL}/bankaccount`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
     }
-    const response = await fetch(SERVER_URL + `/bankaccount`, {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    return data;
 };
 
 export const addCard = async (cardNumber, cardExpiry, cardholderName) => {
@@ -137,14 +157,18 @@ export const addCard = async (cardNumber, cardExpiry, cardholderName) => {
         cardholderName: cardholderName,
         cardNumber: cardNumber,
         cardExpiry: cardExpiry
+    };
+
+    try {
+        const response = await axios.post(`${SERVER_URL}/card`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
     }
-    const response = await fetch(SERVER_URL + `/card`, {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    return data;
 };

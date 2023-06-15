@@ -12,10 +12,10 @@ const CustomTextInput = ({ value,
     const [error, setError] = useState(false);
     const validationStyles = validated ? (error ? styles.warningBorder : styles.successBorder) : null;
 
-    const onChangeText_ = (text) => {
-        onChangeText(text);
-        validationFunction(text) ? setError(false) : setError(true);
-    };
+    // const onChangeText_ = (text) => {
+    //     onChangeText(text);
+    //     // validationFunction && validationFunction(text) ? setError(false) : setError(true);
+    // };
 
     return (
         <>
@@ -30,7 +30,7 @@ const CustomTextInput = ({ value,
                     value={value}
                     keyboardType={keyboardType}
                     editable={editable}
-                    onChangeText={onChangeText_}
+                    onChangeText={onChangeText}
                     selectTextOnFocus={selectTextOnFocus}
                     secureTextEntry={secureTextEntry}
                     onFocus={onFocus}

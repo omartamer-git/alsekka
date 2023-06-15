@@ -4,24 +4,33 @@ import * as globalVars from '../globalVars';
 import axios from 'axios';
 
 
-export const uploadLicense = async(licenseBody) => {
-    const response = await fetch(SERVER_URL + `/submitlicense`,
-    {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(licenseBody)
-    });
-    
-    const data = await response.json();
-    
-    return data;
+export const uploadLicense = async (licenseBody) => {
+    const url = `${SERVER_URL}/submitlicense`;
+
+    try {
+        const response = await axios.post(url, licenseBody, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
-export const getLicense = async() => {
-    const response = await fetch(SERVER_URL + `/license?uid=${globalVars.getUserId()}`);
-    const data = await response.json();
-    
-    return data;
+export const getLicense = async () => {
+    const url = `${SERVER_URL}/license`;
+    const params = {
+        uid: globalVars.getUserId()
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };

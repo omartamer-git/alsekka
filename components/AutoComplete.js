@@ -85,6 +85,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
     const debounceFn = useCallback(_debounce(handleTextChange, 300), []);
     const debounceRegion = useCallback(_debounce(handleRegionChange, 300), [])
     const onChangeText = (data) => {
+        console.log("hello!!!");
         setText(data);
         debounceFn(data);
     }

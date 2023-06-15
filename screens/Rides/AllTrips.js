@@ -47,7 +47,7 @@ const AllTrips = ({ navigation, route }) => {
             if (data.length === 0) {
                 // no upcoming rides
             }
-            else if (data[0].driver === "0") {
+            else if (data[0].driver === 0) {
                 setDriverElement(true);
             } else {
                 setDriverElement(true);

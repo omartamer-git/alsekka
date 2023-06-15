@@ -5,53 +5,103 @@ import axios from 'axios';
 
 
 export const rideDetails = async (rideId) => {
-    const url = `${SERVER_URL}/ridedetails?rideId=${rideId}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${SERVER_URL}/ridedetails`;
+    const params = {
+        rideId: rideId
+    };
 
-    return data;
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const bookRide = async (rideId, paymentMethod) => {
-    const url = `${SERVER_URL}/bookride?uid=${globalVars.getUserId()}&rideId=${rideId}&paymentMethod=${paymentMethod}`;
-    const result = await fetch(url);
-    const data = await result.json();
+    const url = `${SERVER_URL}/bookride`;
+    const params = {
+        uid: globalVars.getUserId(),
+        rideId: rideId,
+        paymentMethod: paymentMethod
+    };
 
-    if (data.id) {
-        return true;
-    } else {
-        console.log("Failed to insert " + data);
-        return false;
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+
+        if (data.id) {
+            return true;
+        } else {
+            console.log("Failed to insert " + data);
+            return false;
+        }
+    } catch (err) {
+        throw err;
     }
-
 };
 
 export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderChoice) => {
-    let url = `${SERVER_URL}/nearbyrides?startLng=${fromLng}&startLat=${fromLat}&endLng=${toLng}&endLat=${toLat}&date=${date}&gender=${genderChoice}`;
-    
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${SERVER_URL}/nearbyrides`;
+    const params = {
+        startLng: fromLng,
+        startLat: fromLat,
+        endLng: toLng,
+        endLat: toLat,
+        date: date,
+        gender: genderChoice
+    };
 
-    return data;
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const upcomingRides = async () => {
-    const url = SERVER_URL + `/upcomingrides?uid=${globalVars.getUserId()}&limit=1`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${SERVER_URL}/upcomingrides`;
+    const params = {
+        uid: globalVars.getUserId(),
+        limit: 1
+    };
 
-    if (data.length != 0) { return data[0]; } else { return null; }
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+
+        if (data.length !== 0) {
+            return data[0];
+        } else {
+            return null;
+        }
+    } catch (err) {
+        throw err;
+    }
 };
 
-export const driverRides = async (limit) => {
-    const url = SERVER_URL + `/driverrides?uid=${globalVars.getUserId()}&limit=${limit}`;
-    const response = await fetch(url);
-    const data = await response.json();
 
-    return data;
+export const driverRides = async (limit) => {
+    const url = `${SERVER_URL}/driverrides`;
+    const params = {
+        uid: globalVars.getUserId(),
+        limit: limit
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car) => {
+    const url = `${SERVER_URL}/postride`;
     const body = {
         fromLatitude: fromLatitude,
         fromLongitude: fromLongitude,
@@ -65,94 +115,153 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         car: car,
     };
 
-    const options = {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json',
-        }
+    try {
+        const response = await axios.post(url, body);
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
     }
-
-    const url = `${SERVER_URL}/postride`;
-
-    const response = await fetch(url, options);
-    const data = await response.json();
-
-    return data;
 };
 
 export const tripDetails = async (tripId) => {
-    const url = SERVER_URL + `/tripdetails?uid=${globalVars.getUserId()}&tripId=${tripId}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${SERVER_URL}/tripdetails`;
+    const params = {
+        uid: globalVars.getUserId(),
+        tripId: tripId
+    };
 
-    return data;
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
+
 export const cancelRide = async (tripId) => {
-    const url = SERVER_URL + `/cancelride?tripId=${tripId}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
+    const url = `${SERVER_URL}/cancelride`;
+    const params = {
+        tripId: tripId
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
 export const startRide = async (tripId) => {
-    const url = SERVER_URL + `/startride?tripId=${tripId}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `${SERVER_URL}/startride`;
+    const params = {
+        tripId: tripId
+    };
 
-    if (data.success === 1) {
-        return true;
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+
+        if (data.success === 1) {
+            return true;
+        }
+        return false;
+    } catch (err) {
+        throw err;
     }
-    return false;
 };
 
 export const pastRides = async (limit, afterTime) => {
-    let url = SERVER_URL + `/pastrides?uid=${globalVars.getUserId()}&limit=${limit}`;
+    let url = `${SERVER_URL}/pastrides`;
+    const params = {
+        uid: globalVars.getUserId(),
+        limit: limit
+    };
+
     if (afterTime) {
-        url = url + `&after=${afterTime}`;
+        params.after = afterTime;
     }
 
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return data;
-};
-
-export const passengerDetails = async(passengerId, tripId) => {
-    const url = SERVER_URL + `/passengerdetails?passenger=${passengerId}&tripId=${tripId}`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return data;
-};
-
-export const checkPassengerOut = async(passengerId, tripId, amountPaid, rating) => {
-    const url = SERVER_URL + `/checkout?passenger=${passengerId}&tripId=${tripId}&amountPaid=${amountPaid}&rating=${rating}`;
-    
-    const response = await fetch(url);
-    const data = await response.json();
-
-    return data;
-};
-
-export const checkPassengerIn = async(passengerId, tripId) => {
-    const url = SERVER_URL + `/checkIn?tripId=${tripId}&passenger=${passengerId}`;
-    
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    
-    return data;
-};
-
-export const noShow = async(passengerId, tripId) => {
-    const url = SERVER_URL + `/noshow?tripId=${tripId}&passenger=${passengerId}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    if(data.success === 1) {
-        return true;
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
     }
-    return false;
+};
+
+
+export const passengerDetails = async (passengerId, tripId) => {
+    const url = `${SERVER_URL}/passengerdetails`;
+    const params = {
+        passenger: passengerId,
+        tripId: tripId
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating) => {
+    const url = `${SERVER_URL}/checkout`;
+    const body = {
+        passenger: passengerId,
+        tripId: tripId,
+        amountPaid: amountPaid,
+        rating: rating
+    };
+
+    try {
+        const response = await axios.post(url, body);
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const checkPassengerIn = async (passengerId, tripId) => {
+    const url = `${SERVER_URL}/checkIn`;
+    const params = {
+        tripId: tripId,
+        passenger: passengerId
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
+};
+
+export const noShow = async (passengerId, tripId) => {
+    const url = `${SERVER_URL}/noshow`;
+    const params = {
+        tripId: tripId,
+        passenger: passengerId
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        const data = response.data;
+
+        if (data.success === 1) {
+            return true;
+        }
+        return false;
+    } catch (err) {
+        throw err;
+    }
 };
