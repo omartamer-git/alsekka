@@ -9,6 +9,19 @@ let ratings = null;
 let gender = null;
 let driver = 0;
 
+export function reset() {
+    userId = null;
+    firstName = null;
+    lastName = null;
+    profilePicture = null;
+    phone = null;
+    email = null;
+    balance = null;
+    ratings = null;
+    gender = null;
+    driver = 0;
+}
+
 export function setUserId(newUserId) {
     userId = newUserId;
 }
@@ -25,7 +38,7 @@ export function getFirstName() {
     return firstName;
 }
 
-export function setLastName(newLastName)  {
+export function setLastName(newLastName) {
     lastName = newLastName;
 }
 

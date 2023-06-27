@@ -22,6 +22,9 @@ import DatePicker from 'react-native-date-picker';
 import ScreenWrapper from '../ScreenWrapper';
 import BottomModal from '../../components/BottomModal';
 import { editEmail, editName, editPhone } from '../../api/accountAPI';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const Account = ({ route, navigation }) => {
     const [ratings, setRatings] = useState(null);
@@ -29,11 +32,14 @@ const Account = ({ route, navigation }) => {
     const [editPhoneModalVisible, setEditPhoneModalVisible] = useState(false);
     const [editEmailModalVisible, setEditEmailModalVisible] = useState(false);
 
-    const [editFirstNameText, setEditFirstNameText] = useState(globalVars.getFirstName());
-    const [editLastNameText, setEditLastNameText] = useState(globalVars.getLastName());
-
     const [editPhoneText, setEditPhoneText] = useState(globalVars.getPhone());
-    const [editEmailText, setEditEmailText] = useState(globalVars.getEmail());
+    const [emailError, setEmailError] = useState(null);
+    const [phoneError, setPhoneError] = useState(null);
+
+    const logout = () => {
+        globalVars.reset();
+        navigation.navigate('Guest');
+    };
 
     useEffect(() => {
         const fullStars = Math.floor(globalVars.getRating());
@@ -51,33 +57,49 @@ const Account = ({ route, navigation }) => {
         setRatings(ratingsItems);
     }, []);
 
-    const saveEditName = () => {
-        editName(editFirstNameText, editLastNameText).then(data => {
+    const editNameSchema = Yup.object().shape({
+        firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
+        lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
+    });
+    const editEmailSchema = Yup.object().shape({
+        emailInput: Yup.string().email('Please enter a valid email address').required('This field is required'),
+    });
+    const editPhoneSchema = Yup.object().shape({
+        phoneInput: Yup.string().matches(
+            /^01[0-2,5]{1}[0-9]{8}$/,
+            'Please enter a valid phone number in international format'
+        ).required('This field is required')
+    });
+
+    const saveEditName = (firstNameInput, lastNameInput) => {
+        editName(firstNameInput, lastNameInput).then(data => {
             if (data.success == "1") {
-                globalVars.setFirstName(editFirstNameText);
-                globalVars.setLastName(editLastNameText);
+                globalVars.setFirstName(firstNameInput);
+                globalVars.setLastName(lastNameInput);
             }
         });
 
         setEditNameModalVisible(false);
     };
-    const saveEditEmail = () => {
-        editEmail(editEmailText).then(data => {
+    const saveEditEmail = (emailInput) => {
+        editEmail(emailInput).then(data => {
             if (data.success == "1") {
-                globalVars.setEmail(editEmailText);
+                globalVars.setEmail(emailInput);
             }
+            setEditEmailModalVisible(false);
+        }).catch(err => {
+            setEmailError(err.response.data.error.message);
         });
-
-        setEditEmailModalVisible(false);
     };
-    const saveEditPhone = () => {
-        editPhone(editPhoneText).then(data => {
+    const saveEditPhone = (phoneInput) => {
+        editPhone(phoneInput).then(data => {
             if (data.success == "1") {
                 globalVars.setPhone(editPhoneText);
             }
+            setEditPhoneModalVisible(false);
+        }).catch(err => {
+            setPhoneError(err.response.data.error.message);
         });
-
-        setEditPhoneModalVisible(false);
     };
 
     return (
@@ -142,56 +164,100 @@ const Account = ({ route, navigation }) => {
                             />
                         </View>
                     </View>
+
+                    <View style={[styles.w100]}>
+                        <Button bgColor={palette.primary} textColor={palette.white} text="Log Out" onPress={logout} />
+                    </View>
                 </ScrollView>
             </ScreenWrapper>
 
             <BottomModal onHide={() => setEditNameModalVisible(false)} modalVisible={editNameModalVisible}>
                 <View style={[styles.w100]}>
-                    <Text style={styles.inputText}>First Name</Text>
-                    <CustomTextInput
-                        value={editFirstNameText}
-                        iconLeft="badge"
-                        style={accountStyles.editInput}
-                        onChangeText={(data) => setEditFirstNameText(data)}
-                    />
+                    <Formik
+                        initialValues={{ firstNameInput: globalVars.getFirstName(), lastNameInput: globalVars.getLastName() }}
+                        validationSchema={editNameSchema}
+                        onSubmit={(values) => { saveEditName(values.firstNameInput, values.lastNameInput) }}
+                    >
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
+                            <>
+                                <Text style={styles.inputText}>First Name</Text>
+                                <CustomTextInput
+                                    value={values.firstNameInput}
+                                    iconLeft="badge"
+                                    style={accountStyles.editInput}
+                                    onChangeText={handleChange('firstNameInput')}
+                                    onBlur={handleBlur('firstNameInput')}
+                                    error={touched.firstNameInput && errors.firstNameInput}
+                                />
 
-                    <Text style={styles.inputText}>Last Name</Text>
-                    <CustomTextInput
-                        value={editLastNameText}
-                        iconLeft="badge"
-                        style={accountStyles.editInput}
-                        onChangeText={(data) => setEditLastNameText(data)}
-                    />
+                                <Text style={styles.inputText}>Last Name</Text>
+                                <CustomTextInput
+                                    value={values.lastNameInput}
+                                    iconLeft="badge"
+                                    style={accountStyles.editInput}
+                                    onChangeText={handleChange('lastNameInput')}
+                                    onBlur={handleBlur('lastNameInput')}
+                                    error={touched.lastNameInput && errors.lastNameInput}
+                                />
 
-                    <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={saveEditName} />
+                                <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
+                            </>
+                        )}
+                    </Formik>
                 </View>
             </BottomModal>
 
             <BottomModal onHide={() => setEditEmailModalVisible(false)} modalVisible={editEmailModalVisible}>
                 <View style={[styles.w100]}>
-                    <Text style={styles.inputText}>Email</Text>
-                    <CustomTextInput
-                        value={editEmailText}
-                        iconLeft="badge"
-                        style={accountStyles.editInput}
-                        onChangeText={(data) => setEditEmailText(data)}
-                    />
+                    <ErrorMessage message={emailError} condition={emailError} />
+                    <Formik
+                        initialValues={{ emailInput: globalVars.getEmail() }}
+                        validationSchema={editEmailSchema}
+                        onSubmit={(values) => { saveEditEmail(values.emailInput) }}
+                    >
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
+                            <>
+                                <Text style={styles.inputText}>Email</Text>
+                                <CustomTextInput
+                                    value={values.emailInput}
+                                    iconLeft="badge"
+                                    style={accountStyles.editInput}
+                                    onChangeText={handleChange('emailInput')}
+                                    onBlur={handleBlur('emailInput')}
+                                    error={touched.emailInput && errors.emailInput}
+                                />
 
-                    <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={saveEditEmail} />
+                                <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
+                            </>
+                        )}
+                    </Formik>
                 </View>
             </BottomModal>
 
             <BottomModal onHide={() => setEditPhoneModalVisible(false)} modalVisible={editPhoneModalVisible}>
                 <View style={[styles.w100]}>
-                    <Text style={styles.inputText}>Phone</Text>
-                    <CustomTextInput
-                        value={editPhoneText}
-                        iconLeft="badge"
-                        style={accountStyles.editInput}
-                        onChangeText={(data) => setEditPhoneText(data)}
-                    />
+                    <ErrorMessage message={phoneError} condition={phoneError} />
+                    <Formik
+                        initialValues={{ phoneInput: globalVars.getPhone() }}
+                        validationSchema={editPhoneSchema}
+                        onSubmit={(values) => { saveEditPhone(values.phoneInput) }}
+                    >
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
+                            <>
+                                <Text style={styles.inputText}>Phone Number</Text>
+                                <CustomTextInput
+                                    value={values.phoneInput}
+                                    iconLeft="badge"
+                                    style={accountStyles.editInput}
+                                    onChangeText={handleChange('phoneInput')}
+                                    onBlur={handleBlur('phoneInput')}
+                                    error={touched.phoneInput && errors.phoneInput}
+                                />
 
-                    <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={saveEditPhone} />
+                                <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
+                            </>
+                        )}
+                    </Formik>
                 </View>
             </BottomModal>
         </>

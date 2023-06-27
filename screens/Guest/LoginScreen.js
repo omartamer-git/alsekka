@@ -19,54 +19,35 @@ import * as accountAPI from '../../api/accountAPI';
 import HeaderView from '../../components/HeaderView';
 import axios from 'axios';
 import { config } from '../../config';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import ErrorMessage from '../../components/ErrorMessage';
 
 
 const LoginScreen = ({ route, navigation }) => {
 
-  const [phoneNum, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumValidated, setPhoneNumValidated] = useState(false);
-  const [phoneNumError, setPhoneNumError] = useState(false);
-  const [incorrectCredentials, setIncorrectCredentials] = useState(false);
-
-  const [passwordValidated, setPasswordValidated] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-
   const isDarkMode = useColorScheme === 'dark';
+  const [errorMessage, setErrorMessage] = useState(null);
+  // const objForm = new Form();
 
-  const handleContinueClick = (e) => {
-    let returnAfterValidation = false;
-    setPhoneNumValidated(true);
-    setPasswordValidated(true);
-
-    if (!isPhoneNumberValid(phoneNum)) {
-      setPhoneNumValidated(true);
-      setPhoneNumError(true);
-      returnAfterValidation = true;
-    }
+  const handleContinueClick = (phoneNum, password) => {
 
     if (password.length < config.PASSWORD_MIN_LENGTH) {
       setPasswordError(true);
       returnAfterValidation = true;
     }
 
-    if(returnAfterValidation) {
-      return;
-    }
-
     accountAPI.login(phoneNum, password).then(
       () => {
         navigation.popToTop();
         navigation.replace("LoggedIn", {
-          screen: 'Rides Home',
+          screen: 'TabScreen',
           params: {
-            screen: 'Find a Ride',
+            screen: 'Home',
           }
         });
       }).catch(err => {
-        if (err.response.status === 401) {
-          setIncorrectCredentials(true);
-        }
+        setErrorMessage(err.response.data.error.message);
       });
   };
 
@@ -78,6 +59,16 @@ const LoginScreen = ({ route, navigation }) => {
   const passwordTextChange = (text) => {
     setPassword(text);
   }
+
+  const loginSchema = Yup.object().shape({
+    phoneInput: Yup.string().matches(
+      /^01[0-2,5]{1}[0-9]{8}$/,
+      'Please enter a valid phone number in international format'
+    )
+      .required('This field is required'),
+    passwordInput: Yup.string().min(0, 'Your password should be at least 8 characters long').required('This field is required'),
+  });
+
 
   return (
     <View style={styles.backgroundStyle}>
@@ -99,43 +90,47 @@ const LoginScreen = ({ route, navigation }) => {
             <View style={[styles.w100, styles.flexOne, styles.defaultPaddingVertical]}>
               <Text style={[styles.headerText, styles.black]}>Welcome Back</Text>
               <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>Hello there, sign in to continue!</Text>
-              {incorrectCredentials && <Text style={[styles.error, styles.mt10, styles.font14, styles.normal]}>Invalid email and/or password</Text>}
-              <Text style={styles.inputText}>Phone Number</Text>
-              <CustomTextInput
-                value={phoneNum}
-                onChangeText={phoneTextChange}
-                selectTextOnFocus={false}
-                editable={true}
-                placeholder="Enter your phone number"
-                validated={phoneNumValidated}
-                validationFunction={isPhoneNumberValid}
-                validationText='Please enter a valid phone number (e.g. 01234567890)'
-              />
+              <ErrorMessage message={errorMessage} condition={errorMessage} />
+              <Formik
+                initialValues={{ phoneInput: '', passwordInput: '' }}
+                validationSchema={loginSchema}
+                onSubmit={(values) => { handleContinueClick(values.phoneInput, values.passwordInput) }}
+              >
+                {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
+                  <>
+                    <Text style={styles.inputText}>Phone Number</Text>
+                    <CustomTextInput
+                      value={values.phoneInput}
+                      onChangeText={handleChange('phoneInput')}
+                      onBlur={handleBlur('phoneInput')}
+                      placeholder="Enter your phone number"
+                      error={touched.phoneInput && errors.phoneInput}
+                    />
 
-              <Text style={styles.inputText}>Password</Text>
+                    <Text style={styles.inputText}>Password</Text>
 
-              <CustomTextInput
-                value={password}
-                onChangeText={passwordTextChange}
-                selectTextOnFocus={false}
-                editable={true}
-                placeholder="Enter your password"
-                secureTextEntry={true}
-                validated={passwordValidated}
-                validationFunction={(text) => text.length >= config.PASSWORD_MIN_LENGTH}
-                validationText='Please enter a valid password'
-              />
-
-              <Text style={[styles.primary, styles.mt20, styles.font14, styles.bold]}>Forgot your password?</Text>
+                    <CustomTextInput
+                      value={values.passwordInput}
+                      onChangeText={handleChange('passwordInput')}
+                      onBlur={handleBlur('passwordInput')}
+                      placeholder="Enter your password"
+                      secureTextEntry={true}
+                      error={touched.passwordInput && errors.passwordInput}
+                    />
 
 
-              <Button
-                style={[styles.continueBtn, styles.mt20]}
-                text="Sign in"
-                bgColor={palette.primary}
-                textColor={palette.white}
-                onPress={handleContinueClick}
-              />
+                    <Button
+                      style={[styles.continueBtn, styles.mt20]}
+                      text="Sign in"
+                      bgColor={palette.primary}
+                      textColor={palette.white}
+                      onPress={handleSubmit}
+                      disabled={!isValid}
+                    />
+                  </>
+                )}
+              </Formik>
+
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
                 <Text style={styles.light}>Don't have an account? <Text style={[styles.primary, styles.bold]}>Sign up</Text></Text>

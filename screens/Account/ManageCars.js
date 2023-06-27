@@ -8,7 +8,8 @@ import {
     TextInput,
     Image,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    RefreshControl
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, translateEnglishNumbers, containerStyle } from '../../helper';
 import Button from '../../components/Button';
@@ -22,19 +23,31 @@ import DatePicker from 'react-native-date-picker';
 import CarCard from '../../components/CarCard';
 import * as carsAPI from '../../api/carsAPI';
 import ScreenWrapper from '../ScreenWrapper';
+import CarImage from '../../svgs/car';
 
 const ManageCars = ({ route, navigation }) => {
     const [cars, setCars] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
-    useEffect(() => {
+    const loadData = async () => {
         carsAPI.getUsableCars(0).then((newCars) => {
             setCars(newCars);
         }).catch((error) => console.log(error));
+    };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await loadData();
+        setRefreshing(false);
+    }
+
+    useEffect(() => {
+        loadData();
     }, []);
 
     return (
         <ScreenWrapper screenName="Manage Cars" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 {cars && cars.length > 0 &&
                     <View style={[styles.flexOne, styles.w100]}>
                         <View style={[styles.alignEnd, styles.w100, styles.mt10]}>
@@ -65,8 +78,9 @@ const ManageCars = ({ route, navigation }) => {
                 }
                 {cars && cars.length === 0 &&
                     <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
-                        <Text style={[styles.textCenter, styles.font28, styles.bold, styles.ph24]}>Let's get you on the road!</Text>
-                        <Text style={styles.font18}>Register your car details now.</Text>
+                        <CarImage width={300} height={300} />
+                        <Text style={[styles.textCenter, styles.font28, styles.bold]}>Let's get you on the road!</Text>
+                        <Text style={[styles.font14, styles.mt5]}>Register your car details now.</Text>
                         <Button onPress={() => navigation.navigate('New Car')} bgColor={palette.primary} textColor={palette.white} text="Add Car" />
                     </View>
                 }

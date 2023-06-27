@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput, View, StyleSheet, Keyboard, Text } from 'react-native';
-import { palette, rem } from '../helper';
+import { isEmailValid, palette, rem } from '../helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const CustomTextInput = ({ value,
@@ -8,14 +8,9 @@ const CustomTextInput = ({ value,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn,
     iconLeft, iconRight, inputRef,
-    onKeyPress, textStyles, validated = false, validationFunction, validationText = "" }) => {
-    const [error, setError] = useState(false);
-    const validationStyles = validated ? (error ? styles.warningBorder : styles.successBorder) : null;
-
-    // const onChangeText_ = (text) => {
-    //     onChangeText(text);
-    //     // validationFunction && validationFunction(text) ? setError(false) : setError(true);
-    // };
+    onKeyPress, textStyles, onBlur, error }) => {
+    const validationStyles = error ? styles.warningBorder : null;
+    let key;
 
     return (
         <>
@@ -37,6 +32,7 @@ const CustomTextInput = ({ value,
                     autoCorrect={false}
                     autoCapitalize='none'
                     blurOnSubmit={true}
+                    onBlur={onBlur}
                     onPressIn={onPressIn}
                     placeholderTextColor={palette.light}
                     ref={inputRef}
@@ -47,7 +43,7 @@ const CustomTextInput = ({ value,
                     <MaterialIcons name={iconRight} size={18} style={{ paddingLeft: 16 }} color={palette.primary} />
                 }
             </View>
-            {validated && error && <Text adjustsFontSizeToFit numberOfLines={1} style={{ color: palette.red, fontSize: 12 * rem }}>{validationText}</Text>}
+            {error && <Text adjustsFontSizeToFit numberOfLines={2} style={{ color: palette.red, fontSize: 12 * rem }}>{error}</Text>}
 
         </>
     );

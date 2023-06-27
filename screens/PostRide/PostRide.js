@@ -10,7 +10,8 @@ import {
     ScrollView,
     ActionSheetIOS,
     TouchableOpacity,
-    Modal
+    Modal,
+    RefreshControl
 } from 'react-native';
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, rem } from '../../helper';
 import Button from '../../components/Button';
@@ -31,6 +32,7 @@ import * as carsAPI from '../../api/carsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import ScreenWrapper from '../ScreenWrapper';
 import BottomModal from '../../components/BottomModal';
+import { loadUserInfo } from '../../api/accountAPI';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -50,18 +52,27 @@ const PostRide = ({ route, navigation }) => {
     const [selectedCar, setSelectedCar] = useState(null);
     const [usableCars, setUsableCars] = useState(null);
 
+    const [refreshing, setRefreshing] = useState(false);
+
+
     const mapViewRef = useRef(null);
     const carPicker = useRef(null);
 
-    useEffect(() => {
+    const loadCars = () => {
         carsAPI.getUsableCars()
-            .then((usableCars) => {
-                setUsableCars(usableCars);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        .then((usableCars) => {
+            setUsableCars(usableCars);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    }
+
+    useEffect(() => {
+        loadCars();
     }, []);
+
+
 
     const setLocationFrom = (loc, mainTextFrom) => {
         setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
@@ -111,12 +122,19 @@ const PostRide = ({ route, navigation }) => {
         setPricePerSeat(numeric);
     }
 
+    const onRefresh = () => {
+        setRefreshing(true);
+        loadUserInfo();
+        loadCars();
+        setRefreshing(false);
+    }
+
     const isDarkMode = useColorScheme === 'dark';
 
 
     return (
         <ScreenWrapper screenName={"Post Ride"} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.wrapper} contentContainerStyle={styles.flexGrow}>
+            <ScrollView style={styles.wrapper} contentContainerStyle={styles.flexGrow} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
 
                     {globalVars.getDriver() === 1 &&

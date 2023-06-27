@@ -20,67 +20,31 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { setUserId } from '../../globalVars';
 import * as accountAPI from '../../api/accountAPI';
 import HeaderLip from '../../components/HeaderLip';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const SignUpScreen = ({ route, navigation }) => {
-  const [phoneNum, setPhoneNum] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('MALE');
-
-  const [phoneNumValidated, setPhoneNumValidated] = useState(false);
-  const [phoneNumError, setPhoneNumError] = useState(false);
-
-  const [passwordValidated, setPasswordValidated] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-
-  const [emailValidated, setEmailValidated] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-
-  const [firstNameValidated, setFirstNameValidated] = useState(false);
-  const [firstNameError, setFirstNameError] = useState(false);
-
-  const [lastNameValidated, setLastNameValidated] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
 
   const [phoneNumExists, setPhoneNumExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
-
+  const [errorMessage, setErrorMessage] = useState(null);
   const isDarkMode = useColorScheme === 'dark';
 
-  const handleContinueClick = (e) => {
+  const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
     accountAPI.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
       navigation.popToTop();
       navigation.replace("LoggedIn", {
-        screen: 'Rides Home',
+        screen: 'TabScreen',
         params: {
-          screen: 'Find a Ride',
+          screen: 'Home',
         }
       });
+    }).catch(err => {
+      setErrorMessage(err.response.data.error.message);
     });
   };
-
-  const phoneTextChange = (text) => {
-    const numericValue = text.replace(/[^0-9]/g, '');
-    setPhoneNum(numericValue);
-  }
-
-  const onChangeEmail = (text) => {
-    setEmail(text);
-  }
-
-  const passwordTextChange = (text) => {
-    setPassword(text);
-  }
-
-  const firstNameChange = (text) => {
-    setFirstName(text);
-  }
-
-  const lastNameChange = (text) => {
-    setLastName(text);
-  }
 
   const toggleGender = (e) => {
     if (gender == 'FEMALE') {
@@ -89,6 +53,17 @@ const SignUpScreen = ({ route, navigation }) => {
       setGender('FEMALE');
     }
   }
+  const signUpSchema = Yup.object().shape({
+    phoneInput: Yup.string().matches(
+      /^01[0-2,5]{1}[0-9]{8}$/,
+      'Please enter a valid phone number in international format'
+    )
+      .required('This field is required'),
+    passwordInput: Yup.string().min(8, 'Your password should be at least 8 characters long').required('This field is required'),
+    emailInput: Yup.string().email('Please enter a valid email address').required('This field is required'),
+    firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
+    lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
+  });
 
   return (
     <View style={styles.backgroundStyle} >
@@ -111,83 +86,94 @@ const SignUpScreen = ({ route, navigation }) => {
             <View style={[styles.flexOne, styles.w100, styles.defaultPaddingVertical]}>
               <Text style={[styles.headerText, styles.black]}>Let's get started!</Text>
               <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>Hello there, you'll need to create an account to continue!</Text>
+              <ErrorMessage condition={errorMessage} message={errorMessage} />
+              <Formik
+                initialValues={{ phoneInput: '', passwordInput: '', emailInput: '', firstNameInput: '', lastNameInput: '' }}
+                validationSchema={signUpSchema}
+                onSubmit={(values) => { handleContinueClick(values.firstNameInput, values.lastNameInput, values.phoneInput, values.emailInput, values.passwordInput) }}
+              >
+                {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
+                  <>
+                    <View style={styles.flexRow}>
+                      <View style={[styles.flexOne, styles.pr8]}>
+                        <Text style={styles.inputText}>First Name</Text>
+                        <CustomTextInput
+                          value={values.firstNameInput}
+                          onChangeText={handleChange('firstNameInput')}
+                          onBlur={handleBlur('firstNameInput')}
+                          error={touched.firstNameInput && errors.firstNameInput}
+                          placeholder="First Name"
+                        />
+                      </View>
 
-              <View style={styles.flexRow}>
-                <View style={[styles.flexOne, styles.pr8]}>
-                  <Text style={styles.inputText}>First Name</Text>
-                  <CustomTextInput
-                    value={firstName}
-                    onChangeText={firstNameChange}
-                    selectTextOnFocus={false}
-                    editable={true}
-                    placeholder="First Name"
+                      <View style={[styles.flexOne, styles.pl8]}>
+                        <Text style={styles.inputText}>Last Name</Text>
+                        <CustomTextInput
+                          value={values.lastNameInput}
+                          onChangeText={handleChange('lastNameInput')}
+                          onBlur={handleBlur('lastNameInput')}
+                          error={touched.lastNameInput && errors.lastNameInput}
+                          placeholder="Last Name"
+                        />
+                      </View>
 
-                  />
-                </View>
-
-                <View style={[styles.flexOne, styles.pl8]}>
-                  <Text style={styles.inputText}>Last Name</Text>
-                  <CustomTextInput
-                    value={lastName}
-                    onChangeText={lastNameChange}
-                    selectTextOnFocus={false}
-                    editable={true}
-                    placeholder="Last Name"
-                  />
-                </View>
-
-              </View>
-
-
-              <Text style={styles.inputText}>Phone Number</Text>
-              <CustomTextInput
-                value={phoneNum}
-                onChangeText={phoneTextChange}
-                selectTextOnFocus={false}
-                editable={true}
-                placeholder="Enter your phone number"
-              />
-
-              <Text style={styles.inputText}>
-                Email
-              </Text>
-              <CustomTextInput
-                value={email}
-                onChangeText={onChangeEmail}
-                selectTextOnFocus={false}
-                editable={true}
-                placeholder="Enter your email address"
-              />
-
-              <Text style={styles.inputText}>Password</Text>
-              <CustomTextInput
-                value={password}
-                onChangeText={passwordTextChange}
-                selectTextOnFocus={false}
-                editable={true}
-                placeholder="Enter your password"
-                secureTextEntry={true}
-              />
-
-              <View style={[styles.flexRow, styles.w100, styles.mt20]}>
-                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.primary : palette.white }]}
-                  onPress={toggleGender}>
-                  <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>Male</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.primary : palette.white }]}
-                  onPress={toggleGender}>
-                  <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>Female</Text>
-                </TouchableOpacity>
-              </View>
+                    </View>
 
 
-              <Button
-                style={[styles.continueBtn, styles.mt20]}
-                text="Create Account"
-                bgColor={palette.primary}
-                textColor={palette.white}
-                onPress={handleContinueClick}
-              />
+                    <Text style={styles.inputText}>Phone Number</Text>
+                    <CustomTextInput
+                      value={values.phoneInput}
+                      onChangeText={handleChange('phoneInput')}
+                      onBlur={handleBlur('phoneInput')}
+                      error={touched.phoneInput && errors.phoneInput}
+                      placeholder="Enter your phone number"
+                    />
+
+                    <Text style={styles.inputText}>
+                      Email
+                    </Text>
+                    <CustomTextInput
+                      value={values.emailInput}
+                      onChangeText={handleChange('emailInput')}
+                      placeholder="Enter your email address"
+                      onBlur={handleBlur('emailInput')}
+                      error={touched.emailInput && errors.emailInput}
+                    />
+
+                    <Text style={styles.inputText}>Password</Text>
+                    <CustomTextInput
+                      value={values.passwordInput}
+                      onChangeText={handleChange('passwordInput')}
+                      placeholder="Enter your password"
+                      secureTextEntry={true}
+                      onBlur={handleBlur('passwordInput')}
+                      error={touched.passwordInput && errors.passwordInput}
+                    />
+
+                    <View style={[styles.flexRow, styles.w100, styles.mt20]}>
+                      <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.primary : palette.white }]}
+                        onPress={toggleGender}>
+                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>Male</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.primary : palette.white }]}
+                        onPress={toggleGender}>
+                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>Female</Text>
+                      </TouchableOpacity>
+                    </View>
+
+
+                    <Button
+                      style={[styles.continueBtn, styles.mt20]}
+                      text="Create Account"
+                      bgColor={palette.primary}
+                      textColor={palette.white}
+                      onPress={handleSubmit}
+                      disabled={!isValid}
+                    />
+                  </>
+                )}
+              </Formik>
+
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
                 <Text style={styles.light}>Already have an account? <Text style={[styles.primary, styles.bold]}>Sign up</Text></Text>

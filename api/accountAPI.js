@@ -16,23 +16,7 @@ export const login = async (phoneNum, password) => {
         console.log(data);
         if (data.success === 1) {
             globalVars.setUserId(data.id);
-
-            const url = `${SERVER_URL}/userinfo`;
-            const userInfoResponse = await axios.get(url, {
-                params: {
-                    uid: data.id
-                }
-            });
-            const userData = userInfoResponse.data;
-
-            globalVars.setFirstName(userData.firstName);
-            globalVars.setLastName(userData.lastName);
-            globalVars.setProfilePicture(userData.profilePicture);
-            globalVars.setPhone(userData.phone);
-            globalVars.setEmail(userData.email);
-            globalVars.setBalance(userData.balance);
-            globalVars.setRating(userData.rating);
-            globalVars.setDriver(userData.driver);
+            await loadUserInfo();
         } else {
             console.log(data);
         }
@@ -60,6 +44,7 @@ export const createAccount = async (firstName, lastName, phoneNum, email, passwo
 
         if (data.success === 1) {
             globalVars.setUserId(data.id);
+            await loadUserInfo();
         } else {
             console.log("Account couldn't be created, handle error");
         }
@@ -69,6 +54,26 @@ export const createAccount = async (firstName, lastName, phoneNum, email, passwo
         throw err;
     }
 };
+
+export const loadUserInfo = async () => {
+    const url = `${SERVER_URL}/userinfo`;
+    const userInfoResponse = await axios.get(url, {
+        params: {
+            uid: globalVars.getUserId()
+        }
+    });
+    const userData = userInfoResponse.data;
+
+    globalVars.setFirstName(userData.firstName);
+    globalVars.setLastName(userData.lastName);
+    globalVars.setProfilePicture(userData.profilePicture);
+    globalVars.setPhone(userData.phone);
+    globalVars.setEmail(userData.email);
+    globalVars.setBalance(userData.balance);
+    globalVars.setRating(userData.rating);
+    globalVars.setDriver(userData.driver);
+
+}
 
 
 export const getWallet = async () => {
@@ -107,6 +112,26 @@ export const editName = async (firstName, lastName) => {
     }
 };
 
+export const editEmail = async (email) => {
+    const body = {
+        uid: globalVars.getUserId(),
+        email: email
+    };
+
+    try {
+        const response = await axios.patch(`${SERVER_URL}/email`, body, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = response.data;
+        return data;
+    } catch (err) {
+        throw err;
+    }
+};
+
 export const editPhone = async (phone) => {
     const body = {
         uid: globalVars.getUserId(),
@@ -127,14 +152,13 @@ export const editPhone = async (phone) => {
     }
 };
 
-export const addBankAccount = async (fullName, bankName, accNumber, swiftCode, branch) => {
+export const addBankAccount = async (fullName, bankName, accNumber, swiftCode) => {
     const body = {
         uid: globalVars.getUserId(),
         fullName: fullName,
         bankName: bankName,
         accNumber: accNumber,
         swiftCode: swiftCode,
-        branch: branch
     };
 
     try {
@@ -143,6 +167,7 @@ export const addBankAccount = async (fullName, bankName, accNumber, swiftCode, b
                 'Content-Type': 'application/json'
             }
         });
+
 
         const data = response.data;
         return data;

@@ -1,18 +1,20 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { rem } from '../helper';
+import { palette, rem } from '../helper';
 
-const Button = ({ text, onPress, bgColor, textColor, style, icon, iconColor, borderColor, children }) => {
+const Button = ({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, form, children }) => {
     let borderColor_ = borderColor;
     if(borderColor_ === undefined) {
         borderColor_ = bgColor;
     }
+
     return (
         <TouchableOpacity
-            style={[styles.button, { backgroundColor: bgColor, borderColor: borderColor_}, style]}
+            style={[styles.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
             activeOpacity={0.9}
             onPress={onPress}
+            disabled={disabled}
         >
             {icon === undefined ? null : <FontsAwesome5 style={styles.icon} name={icon} size={20} color={iconColor} />}
             <View style={[styles.viewStyle, icon === undefined ? {} : { marginRight: 20 }]}>

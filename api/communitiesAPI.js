@@ -71,6 +71,8 @@ export const joinCommunity = async (communityId, answer) => {
         answer: answer
     };
 
+    console.log(body);
+
     try {
         const response = await axios.post(url, body, {
             headers: {

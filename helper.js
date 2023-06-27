@@ -5,14 +5,30 @@ import {
     StyleSheet,
 } from 'react-native';
 
-export const isPhoneNumberValid = (phoneNumber) => {
-    const phoneNumberPattern = /^01\d{9}$/;
-    return phoneNumberPattern.test(phoneNumber);
-}
+function validateCardNumber(cardNumber) {
+    // Remove any spaces or dashes from the card number
+    cardNumber = cardNumber.replace(/\s+/g, '').replace(/-/g, '');
 
-export const isEmailValid = (email) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+    // Convert the card number into an array of digits
+    var cardDigits = cardNumber.split('').map(Number);
+
+    // Double every second digit starting from the right
+    for (var i = cardDigits.length - 2; i >= 0; i -= 2) {
+        cardDigits[i] *= 2;
+
+        // If the doubled value is greater than 9, subtract 9
+        if (cardDigits[i] > 9) {
+            cardDigits[i] -= 9;
+        }
+    }
+
+    // Calculate the sum of all digits
+    var sum = cardDigits.reduce(function (acc, digit) {
+        return acc + digit;
+    }, 0);
+
+    // The card number is valid if the sum is divisible by 10
+    return sum % 10 === 0;
 }
 
 export const getDateSQL = (date) => {

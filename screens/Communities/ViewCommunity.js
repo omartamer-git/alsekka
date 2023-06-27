@@ -57,7 +57,8 @@ const ViewCommunity = ({ navigation, route }) => {
     }, []);
 
     const joinCommunity = () => {
-        communitiesAPI.joinCommunity(communityId, joinQuestion).then(
+        console.log(joinAnswer);
+        communitiesAPI.joinCommunity(communityId, joinAnswer).then(
             data => {
                 if (communityPrivacy) {
                     setSentJoinRequest(true);
@@ -131,7 +132,7 @@ const ViewCommunity = ({ navigation, route }) => {
                             {communityPrivacy && joinQuestion && (
                                 <View style={[styles.w100, styles.mt10]}>
                                     <Text style={[styles.font14, styles.mt10, styles.textCenter, styles.w100]}>{joinQuestion}</Text>
-                                    <CustomTextInput placeholder="Answer" style={[styles.mt10]} value={joinAnswer} />
+                                    <CustomTextInput placeholder="Answer" style={[styles.mt10]} value={joinAnswer} onChangeText={(data) => setJoinAnswer(data)} />
                                 </View>
                             )}
 

@@ -25,6 +25,7 @@ import DatePicker from 'react-native-date-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
+import CoffeeIcon from '../../svgs/coffee';
 
 const NewCar = ({ route, navigation }) => {
     const colorMode = useColorScheme();
@@ -79,7 +80,6 @@ const NewCar = ({ route, navigation }) => {
 
         await carsAPI.newCar(newCarBody);
         setModalVisible(true);
-
     };
 
     const setCharLicenseFull = (data, i) => {
@@ -147,7 +147,7 @@ const NewCar = ({ route, navigation }) => {
 
 
     return (
-        <ScreenWrapper screenName="Add Card" navType="back" navAction={() => { navigation.goBack() }}>
+        <ScreenWrapper screenName="Add Car" navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={styles.inputText}>Car Brand</Text>
                 <CustomTextInput placeholder="Car Brand (e.g. Mercedes)" iconRight="directions-car" value={brand} onChangeText={setBrand} />
@@ -179,6 +179,23 @@ const NewCar = ({ route, navigation }) => {
 
                 <Button text="Confirm" bgColor={palette.primary} textColor={palette.white} onPress={addCar} />
             </ScrollView>
+
+            <Modal visible={modalVisible} animationType="slide">
+                <SafeAreaView style={{ backgroundColor: palette.primary }}>
+                    <HeaderView navType="back" screenName="Manage Cars" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
+                        <View style={styles.localeWrapper}>
+                            <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
+                            <Text style={styles.locale}>EN</Text>
+                        </View>
+                    </HeaderView>
+                </SafeAreaView>
+                <View style={[styles.defaultContainer, styles.defaultPadding, styles.justifyCenter, styles.alignCenter]}>
+                    <CoffeeIcon width={250} height={250} />
+                    <Text style={[styles.font28, styles.bold, styles.mt10]}>Hang Tight!</Text>
+                    <Text style={[styles.font18, styles.mt5, styles.textCenter]}>We'll be processing your information soon.</Text>
+                    <Button bgColor={palette.primary} textColor={palette.white} text="Go Back" onPress={() => { navigation.goBack(); }}></Button>
+                </View>
+            </Modal>
         </ScreenWrapper>
     );
 }

@@ -44,8 +44,8 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");
-    const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Upload Driver's License (Front)");
-    const [backPhotoButtonText, setBackPhotoButtonText] = useState("Upload Driver's License (Back)");
+    const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Front Side");
+    const [backPhotoButtonText, setBackPhotoButtonText] = useState("Back Side");
     const [licenseStatus, setLicenseStatus] = useState(null);
 
     const setImageBack = (response) => {
@@ -80,7 +80,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         };
 
         await licensesAPI.uploadLicense(licenseBody);
-        setLicenseStatus(0);
+        setLicenseStatus("PENDING");
     };
 
     useEffect(() => {
@@ -95,7 +95,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
                     <HeaderLip />
 
-                    {globalVars.getDriver() === 0 && !licenseStatus &&
+                    {globalVars.getDriver() === 0 && licenseStatus === 0 &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Text style={styles.inputText}>Front Side Driver's License Upload</Text>
                             <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
@@ -103,10 +103,9 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                             <Text style={styles.inputText}>Back Side Driver's License Upload</Text>
                             <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
                             <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} />
-
                         </View>
                     }
-                    {globalVars.getDriver() === 0 && licenseStatus === 0 &&
+                    {globalVars.getDriver() === 0 && licenseStatus === 'PENDING' &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Pending width="300" height="300" />
                             <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>Your documents are being reviewed</Text>
