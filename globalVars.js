@@ -8,6 +8,7 @@ let balance = null;
 let ratings = null;
 let gender = null;
 let driver = 0;
+let verified = false;
 
 export function reset() {
     userId = null;
@@ -20,6 +21,7 @@ export function reset() {
     ratings = null;
     gender = null;
     driver = 0;
+    verified = false;
 }
 
 export function setUserId(newUserId) {
@@ -100,4 +102,12 @@ export function setDriver(newDriver) {
 
 export function getDriver() {
     return driver;
+}
+
+export function getVerified() {
+    return verified;
+}
+
+export function setVerified(newVerified) {
+    verified = newVerified;
 }

@@ -17,7 +17,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import { ScrollView } from 'react-native-gesture-handler';
-import { setUserId } from '../../globalVars';
+import { getVerified, setUserId } from '../../globalVars';
 import * as accountAPI from '../../api/accountAPI';
 import HeaderLip from '../../components/HeaderLip';
 import { Formik } from 'formik';
@@ -34,11 +34,17 @@ const SignUpScreen = ({ route, navigation }) => {
 
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
     accountAPI.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
-      navigation.popToTop();
-      navigation.replace("LoggedIn", {
-        screen: 'TabScreen',
-        params: {
-          screen: 'Home',
+      accountAPI.loadUserInfo().then(() => {
+        if (getVerified()) {
+          navigation.popToTop();
+          navigation.replace("LoggedIn", {
+            screen: 'TabScreen',
+            params: {
+              screen: 'Home',
+            }
+          });
+        } else {
+          navigation.navigate('Otp', { phone: phoneNum });
         }
       });
     }).catch(err => {

@@ -33,6 +33,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Pending from '../../svgs/pending';
 import HeaderLip from '../../components/HeaderLip';
 import ScreenWrapper from '../ScreenWrapper';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -47,6 +48,8 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Front Side");
     const [backPhotoButtonText, setBackPhotoButtonText] = useState("Back Side");
     const [licenseStatus, setLicenseStatus] = useState(null);
+    const [frontSideTouched, setFrontSideTouched] = useState(false);
+    const [backSideTouched, setBackSideTouched] = useState(false);
 
     const setImageBack = (response) => {
         if (!response.didCancel && !response.error) {
@@ -63,11 +66,13 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     };
 
     const onClickUploadFront = async (e) => {
+        setFrontSideTouched(true);
         const response = await launchImageLibrary(imagePickerOptions);
         setImageFront(response);
     };
 
     const onClickUploadBack = async (e) => {
+        setBackSideTouched(true);
         const response = await launchImageLibrary(imagePickerOptions);
         setImageBack(response);
     };
@@ -97,12 +102,15 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
                     {globalVars.getDriver() === 0 && licenseStatus === 0 &&
                         <View style={driverDocumentsStyles.wrapper}>
-                            <Text style={styles.inputText}>Front Side Driver's License Upload</Text>
+                            <Text style={styles.inputText}>Front Side Driver's License Upload *</Text>
+                            <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
                             <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
 
-                            <Text style={styles.inputText}>Back Side Driver's License Upload</Text>
+                            <Text style={[styles.inputText]}>Back Side Driver's License Upload *</Text>
+                            <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
                             <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
-                            <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} />
+                            
+                            <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
                         </View>
                     }
                     {globalVars.getDriver() === 0 && licenseStatus === 'PENDING' &&

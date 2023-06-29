@@ -35,7 +35,7 @@ const SearchCommunities = ({ navigation, route }) => {
             setCommunities([]);
             return;
         }
-        communitiesAPI.searchCommunities(text).then(
+        communitiesAPI.searchCommunities(text.trim()).then(
             data => {
                 setCommunities(data);
             }

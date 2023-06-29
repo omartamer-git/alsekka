@@ -52,6 +52,7 @@ import ChatsList from './screens/Chat/ChatsList';
 import AddBank from './screens/Account/AddBank';
 import SearchCommunities from './screens/Communities/SearchCommunities';
 import ViewCommunity from './screens/Communities/ViewCommunity';
+import Otp from './screens/Account/Otp';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -136,6 +137,7 @@ const Guest = ({ route, navigation }) => {
       <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Otp" component={Otp} options={{headerShown: false}} />
     </GuestStack.Navigator>
   );
 }

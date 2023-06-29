@@ -44,9 +44,8 @@ export const createAccount = async (firstName, lastName, phoneNum, email, passwo
 
         if (data.success === 1) {
             globalVars.setUserId(data.id);
-            await loadUserInfo();
         } else {
-            console.log("Account couldn't be created, handle error");
+            throw new Error("Unexpected error occurred");
         }
 
         return data;
@@ -72,7 +71,7 @@ export const loadUserInfo = async () => {
     globalVars.setBalance(userData.balance);
     globalVars.setRating(userData.rating);
     globalVars.setDriver(userData.driver);
-
+    globalVars.setVerified(userData.verified);
 }
 
 
@@ -175,6 +174,31 @@ export const addBankAccount = async (fullName, bankName, accNumber, swiftCode) =
         throw err;
     }
 };
+
+export const getOtp = async () => {
+    const url = `${SERVER_URL}/verify`;
+
+    axios.get(url, {
+        params: {
+            uid: globalVars.getUserId()
+        }
+    });
+}
+
+export const sendOtp = async (otp) => {
+    const url = `${SERVER_URL}/verify`;
+
+    const body = {
+        uid: globalVars.getUserId(),
+        otp: otp
+    }
+    await axios.patch(url, body, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return true;
+}
 
 export const addCard = async (cardNumber, cardExpiry, cardholderName) => {
     const body = {

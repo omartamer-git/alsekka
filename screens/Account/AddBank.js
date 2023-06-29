@@ -42,8 +42,7 @@ const AddBank = ({ navigation, route }) => {
         addBankAccount(fullName, bankName, accNumber, swiftCode).then(data => {
             navigation.goBack();
         }).catch(err => {
-            console.log(err.message);
-            setAddBankError(err.response);
+            setAddBankError(err.response.data.error.message);
         });
     }
 

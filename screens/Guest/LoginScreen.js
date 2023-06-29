@@ -39,13 +39,19 @@ const LoginScreen = ({ route, navigation }) => {
 
     accountAPI.login(phoneNum, password).then(
       () => {
-        navigation.popToTop();
-        navigation.replace("LoggedIn", {
-          screen: 'TabScreen',
-          params: {
-            screen: 'Home',
+        accountAPI.loadUserInfo().then(() => {
+          if (globalVars.getVerified()) {
+            navigation.popToTop();
+            navigation.replace("LoggedIn", {
+              screen: 'TabScreen',
+              params: {
+                screen: 'Home',
+              }
+            });
+          } else {
+            navigation.navigate('Otp', { phone: phoneNum });
           }
-        });
+        })
       }).catch(err => {
         setErrorMessage(err.response.data.error.message);
       });

@@ -26,6 +26,9 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
 import CoffeeIcon from '../../svgs/coffee';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const NewCar = ({ route, navigation }) => {
     const colorMode = useColorScheme();
@@ -52,20 +55,20 @@ const NewCar = ({ route, navigation }) => {
 
     const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Choose Photo...");
     const [backPhotoButtonText, setBackPhotoButtonText] = useState("Choose Photo...");
+    const [frontPhotoButtonTouched, setFrontPhotoButtonTouched] = useState(false);
+    const [backPhotoButtonTouched, setBackPhotoButtonTouched] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleKeyPress = (input, nextInputRef, prevInputRef) => {
-        return ({ nativeEvent }) => {
-            if (input.length === 0 && nextInputRef) {
-                nextInputRef.current.focus();
-            } else if (input.length === 1 && prevInputRef) {
-                prevInputRef.current.focus();
-            }
-        };
+        if (input.length === 1 && nextInputRef) {
+            nextInputRef.current.focus();
+        } else if (input.length === 0 && prevInputRef) {
+            prevInputRef.current.focus();
+        }
     };
 
-    const addCar = async () => {
+    const addCar = async (brand, year, model, color, charLicense1, charLicense2, charLicense3, licensePlateNumbers) => {
         const newCarBody = {
             uid: globalVars.getUserId(),
             brand: brand,
@@ -82,17 +85,6 @@ const NewCar = ({ route, navigation }) => {
         setModalVisible(true);
     };
 
-    const setCharLicenseFull = (data, i) => {
-        data = data.charAt(0);
-        if (i === 1) {
-            setCharLicense1(data);
-        } else if (i === 2) {
-            setCharLicense2(data);
-        } else {
-            setCharLicense3(data);
-        }
-    }
-
     const setImageFront = (response) => {
         if (!response.didCancel && !response.error) {
             setLicenseFront(response.assets[0]['base64']);
@@ -108,6 +100,7 @@ const NewCar = ({ route, navigation }) => {
     };
 
     const chooseLicenseFront = (e) => {
+        setFrontPhotoButtonTouched(true);
         ActionSheetIOS.showActionSheetWithOptions(
             {
                 options: ['Cancel', 'Take Photo', 'Choose Photo'],
@@ -127,6 +120,7 @@ const NewCar = ({ route, navigation }) => {
     };
 
     const chooseLicenseBack = (e) => {
+        setBackPhotoButtonTouched(true);
         ActionSheetIOS.showActionSheetWithOptions(
             {
                 options: ['Cancel', 'Take Photo', 'Choose Photo'],
@@ -145,39 +139,172 @@ const NewCar = ({ route, navigation }) => {
         )
     };
 
+    const newCarSchema = Yup.object().shape({
+        carBrandInput: Yup.string().required('This field is required').min(2, 'Too Short').max(20, 'Too Long'),
+        carYearInput: Yup.number().positive().integer().max(new Date().getFullYear() + 1, "Please enter a valid year"),
+        carModelInput: Yup.string().required('This field is required'),
+        carColorInput: Yup.string().required('This field is required'),
+        licensePlateLetters1: Yup.string().required(' ').max(1, ' '),
+        licensePlateLetters2: Yup.string().max(1, ' '),
+        licensePlateLetters3: Yup.string().max(1, ' '),
+        licensePlateNumbersInput: Yup.number().positive().integer().max(9999).required('This field is required'),
+    });
 
     return (
         <ScreenWrapper screenName="Add Car" navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
-                <Text style={styles.inputText}>Car Brand</Text>
-                <CustomTextInput placeholder="Car Brand (e.g. Mercedes)" iconRight="directions-car" value={brand} onChangeText={setBrand} />
+                <Formik
+                    initialValues={{
+                        carBrandInput: '',
+                        carYearInput: '',
+                        carModelInput: '',
+                        carColorInput: '',
+                        licensePlateLetters1: '',
+                        licensePlateLetters2: '',
+                        licensePlateLetters3: '',
+                        licensePlateNumbersInput: ''
+                    }}
+                    validationSchema={newCarSchema}
+                    onSubmit={(values) => {
+                        if (licenseFront && licenseBack) {
+                            addCar(
+                                values.carBrandInput,
+                                values.carYearInput,
+                                values.carModelInput,
+                                values.carColorInput,
+                                values.licensePlateLetters1,
+                                values.licensePlateLetters2,
+                                values.licensePlateLetters3,
+                                values.licensePlateNumbersInput)
+                        }
+                    }}
+                >
+                    {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
+                        <>
+                            <Text style={styles.inputText}>Car Brand</Text>
+                            <CustomTextInput
+                                placeholder="Car Brand (e.g. Mercedes)"
+                                iconRight="directions-car"
+                                value={values.carBrandInput}
+                                onChangeText={handleChange('carBrandInput')}
+                                onBlur={handleBlur('carBrandInput')}
+                                error={touched.carBrandInput && errors.carBrandInput}
+                            />
 
-                <Text style={styles.inputText}>Year of Manufacture</Text>
-                <CustomTextInput placeholder="Car Year (e.g. 2022)" iconRight="date-range" value={year} onChangeText={setYear} />
+                            <Text style={styles.inputText}>Year of Manufacture</Text>
+                            <CustomTextInput
+                                placeholder="Car Year (e.g. 2022)"
+                                iconRight="date-range"
+                                value={values.carYearInput}
+                                onChangeText={handleChange('carYearInput')}
+                                onBlur={handleBlur('carYearInput')}
+                                error={touched.carYearInput && errors.carYearInput}
+                            />
 
-                <Text style={styles.inputText}>Car Model</Text>
-                <CustomTextInput placeholder="Car Model (e.g. C180)" iconRight="badge" value={model} onChangeText={setModel} />
+                            <Text style={styles.inputText}>Car Model</Text>
+                            <CustomTextInput
+                                placeholder="Car Model (e.g. C180)"
+                                iconRight="badge"
+                                value={values.carModelInput}
+                                onChangeText={handleChange('carModelInput')}
+                                onBlur={handleBlur('carModelInput')}
+                                error={touched.carModelInput && errors.carModelInput}
+                            />
 
-                <Text style={styles.inputText}>Color</Text>
-                <CustomTextInput placeholder="Color (e.g. Red)" iconRight="palette" value={color} onChangeText={setColor} />
+                            <Text style={styles.inputText}>Color</Text>
+                            <CustomTextInput
+                                placeholder="Color (e.g. Red)"
+                                iconRight="palette"
+                                value={values.carColorInput}
+                                onChangeText={handleChange('carColorInput')}
+                                onBlur={handleBlur('carColorInput')}
+                                error={touched.carColorInput && errors.carColorInput}
+                            />
 
-                <Text style={styles.inputText}>License Plate (Letters)</Text>
-                <View style={[styles.w100, styles.flexRow]}>
-                    <CustomTextInput style={styles.flexOne} textStyles={styles.textEnd} inputRef={input3Ref} value={charLicense3} onKeyPress={handleKeyPress(charLicense3, null, input2Ref)} onChangeText={(data) => setCharLicenseFull(data, 3)} placeholder="٣" />
-                    <CustomTextInput style={[styles.flexOne, styles.ml10]} textStyles={styles.textEnd} inputRef={input2Ref} onKeyPress={handleKeyPress(charLicense2, input3Ref, input1Ref)} value={charLicense2} onChangeText={(data) => setCharLicenseFull(data, 2)} placeholder="٢" />
-                    <CustomTextInput style={[styles.flexOne, styles.ml10]} textStyles={styles.textEnd} inputRef={input1Ref} onKeyPress={handleKeyPress(charLicense1, input2Ref, null)} value={charLicense1} onChangeText={(data) => setCharLicenseFull(data, 1)} placeholder="١" />
-                </View>
+                            <Text style={styles.inputText}>License Plate (Letters) *</Text>
+                            <View style={[styles.w100, styles.flexRow]}>
+                                <CustomTextInput
+                                    style={styles.flexOne}
+                                    textStyles={styles.textEnd}
+                                    inputRef={input3Ref}
+                                    placeholder="٣"
+                                    value={values.licensePlateLetters3}
+                                    onChangeText={(data) => {
+                                        setFieldValue('licensePlateLetters3', data);
+                                        handleKeyPress(data, null, input2Ref)
+                                    }}
+                                    onBlur={handleBlur('licensePlateLetters3')}
+                                    error={touched.licensePlateLetters3 && errors.licensePlateLetters3}
+                                />
 
-                <Text style={styles.inputText}>License Plate (Numbers)</Text>
-                <CustomTextInput placeholder="License Plate Number (e.g. 1234)" value={licensePlateNumbers} onChangeText={setLicensePlateNumbers} />
+                                <CustomTextInput style={[styles.flexOne, styles.ml10]}
+                                    textStyles={styles.textEnd}
+                                    inputRef={input2Ref}
 
-                <Text style={styles.inputText}>Car License (Front)</Text>
-                <Button text={frontPhotoButtonText} bgColor={palette.accent} textColor={palette.white} onPress={chooseLicenseFront} />
+                                    placeholder="٢"
+                                    value={values.licensePlateLetters2}
+                                    onChangeText={(data) => {
+                                        setFieldValue('licensePlateLetters2', data);
+                                        handleKeyPress(data, input3Ref, input1Ref);
+                                    }}
+                                    onBlur={handleBlur('licensePlateLetters2')}
+                                    error={touched.licensePlateLetters2 && errors.licensePlateLetters2}
+                                />
 
-                <Text style={styles.inputText}>Car License (Back)</Text>
-                <Button text={backPhotoButtonText} bgColor={palette.accent} textColor={palette.white} onPress={chooseLicenseBack} />
+                                <CustomTextInput
+                                    style={[styles.flexOne, styles.ml10]}
+                                    textStyles={styles.textEnd}
+                                    inputRef={input1Ref}
 
-                <Button text="Confirm" bgColor={palette.primary} textColor={palette.white} onPress={addCar} />
+                                    value={values.licensePlateLetters1}
+                                    onChangeText={(data) => {
+                                        setFieldValue('licensePlateLetters1', data);
+                                        handleKeyPress(data, input2Ref, null);
+                                    }}
+                                    onBlur={handleBlur('licensePlateLetters1')}
+                                    error={touched.licensePlateLetters1 && errors.licensePlateLetters1}
+
+                                    placeholder="١"
+                                />
+                            </View>
+
+                            <Text style={styles.inputText}>License Plate (Numbers)</Text>
+                            <CustomTextInput
+                                placeholder="License Plate Number (e.g. 1234)"
+                                value={values.licensePlateNumbersInput}
+                                onChangeText={handleChange('licensePlateNumbersInput')}
+                                onBlur={handleBlur('licensePlateNumbersInput')}
+                                error={touched.licensePlateNumbersInput && errors.licensePlateNumbersInput}
+                            />
+
+                            <Text style={styles.inputText}>Car License (Front)</Text>
+                            <ErrorMessage condition={frontPhotoButtonTouched && !licenseFront} message="This field is required." />
+                            <Button
+                                text={frontPhotoButtonText}
+                                bgColor={palette.accent}
+                                textColor={palette.white}
+                                onPress={chooseLicenseFront}
+                            />
+
+                            <Text style={styles.inputText}>Car License (Back)</Text>
+                            <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message="This field is required." />
+                            <Button
+                                text={backPhotoButtonText}
+                                bgColor={palette.accent}
+                                textColor={palette.white}
+                                onPress={chooseLicenseBack}
+                            />
+
+                            <Button
+                                text="Confirm"
+                                bgColor={palette.primary}
+                                textColor={palette.white}
+                                onPress={handleSubmit}
+                                disabled={!isValid || !licenseBack || !licenseFront}
+                            />
+                        </>
+                    )}
+                </Formik>
             </ScrollView>
 
             <Modal visible={modalVisible} animationType="slide">

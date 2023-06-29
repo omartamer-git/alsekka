@@ -38,7 +38,7 @@ const Account = ({ route, navigation }) => {
 
     const logout = () => {
         globalVars.reset();
-        navigation.navigate('Guest');
+        navigation.replace("Guest");
     };
 
     useEffect(() => {

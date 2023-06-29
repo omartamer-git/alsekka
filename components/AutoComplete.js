@@ -26,7 +26,7 @@ import * as googleMapsAPI from '../api/googlemaps';
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;
 
-const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {} }) => {
+const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error=false }) => {
     const [text, setText] = useState('');
     const [predictions, setPredictions] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -85,7 +85,6 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
     const debounceFn = useCallback(_debounce(handleTextChange, 300), []);
     const debounceRegion = useCallback(_debounce(handleRegionChange, 300), [])
     const onChangeText = (data) => {
-        console.log("hello!!!");
         setText(data);
         debounceFn(data);
     }
@@ -133,10 +132,10 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
 
     return (
         <View style={{ width: '100%' }}>
-            <CustomTextInput onFocus={() => { setModalVisible(true); }} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} />
+            <CustomTextInput onFocus={() => { setModalVisible(true); }} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             <Modal animationType="slide" visible={modalVisible}>
                 <SafeAreaView style={{ backgroundColor: palette.primary }}>
-                    <HeaderView navType="back" screenName="Enter Location" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
+                    <HeaderView navType="back" screenName="Enter Location" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setText(''); setPredictions(null); setModalVisible(false); }} >
                         <View style={styles2.localeWrapper}>
                             <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                             <Text style={styles2.locale}>EN</Text>

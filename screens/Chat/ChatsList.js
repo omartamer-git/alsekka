@@ -55,6 +55,7 @@ const ChatsList = ({ navigation, route }) => {
                     chats &&
                     chats.map((data, index) => {
                         const secondParty = data.Sender === null ? data.Receiver : data.Sender;
+                        console.log(secondParty);
                         return (
                             <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: data.senderId == globalVars.getUserId() ? data.receiverId : data.senderId }) }} activeOpacity={0.9} key={"chat" + index} style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
                                 <Image source={{ uri: secondParty.profilePicture }} width={60} height={60} style={{ borderRadius: 60 / 2, borderWidth: 1, borderColor: palette.accent }} />
