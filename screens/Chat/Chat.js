@@ -24,7 +24,6 @@ import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../../components/FromToIndicator';
@@ -35,6 +34,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
 import * as chatAPI from '../../api/chatAPI';
 import ScreenWrapper from '../ScreenWrapper';
+import useUserStore from '../../api/accountAPI';
 
 
 const Chat = ({ navigation, route }) => {
@@ -42,6 +42,9 @@ const Chat = ({ navigation, route }) => {
     const [receiverData, setReceiverData] = useState(null);
     const [chatMessages, setChatMessages] = useState(null);
     const [messageText, setMessageText] = useState('');
+
+    const userStore = useUserStore();
+
     const ref = useRef();
     let lastSender = null;
 
@@ -100,7 +103,7 @@ const Chat = ({ navigation, route }) => {
                     chatMessages.slice(0).reverse().map((data, index) => {
                         const oldLastSender = lastSender;
 
-                        if (data.senderId === globalVars.getUserId()) {
+                        if (data.senderId === userStore.id) {
                             // I'm the sender
                             lastSender = true;
                             return (
@@ -110,7 +113,7 @@ const Chat = ({ navigation, route }) => {
                                     </View>
                                     <View style={{ width: 50 * rem, height: 50 * rem }}>
                                         {(oldLastSender === null || !oldLastSender) &&
-                                            <Image source={{ uri: globalVars.getProfilePicture() }} width={50} height={50} style={chatStyles.profilePicture} />
+                                            <Image source={{ uri: userStore.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
                                         }
                                     </View>
                                 </View>);

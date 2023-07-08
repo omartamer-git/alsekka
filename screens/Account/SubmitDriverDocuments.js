@@ -21,7 +21,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import * as licensesAPI from '../../api/licenses';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
@@ -34,6 +33,7 @@ import Pending from '../../svgs/pending';
 import HeaderLip from '../../components/HeaderLip';
 import ScreenWrapper from '../ScreenWrapper';
 import ErrorMessage from '../../components/ErrorMessage';
+import useUserStore from '../../api/accountAPI';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -50,6 +50,8 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     const [licenseStatus, setLicenseStatus] = useState(null);
     const [frontSideTouched, setFrontSideTouched] = useState(false);
     const [backSideTouched, setBackSideTouched] = useState(false);
+
+    const userStore = useUserStore();
 
     const setImageBack = (response) => {
         if (!response.didCancel && !response.error) {
@@ -79,7 +81,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
     const uploadLicense = async () => {
         const licenseBody = {
-            uid: globalVars.getUserId(),
+            uid: userStore.id,
             frontSide: licenseFront,
             backSide: licenseBack,
         };
@@ -100,7 +102,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
                     <HeaderLip />
 
-                    {globalVars.getDriver() === 0 && licenseStatus === 0 &&
+                    {userStore.driver === 0 && licenseStatus === 0 &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Text style={styles.inputText}>Front Side Driver's License Upload *</Text>
                             <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
@@ -113,7 +115,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                             <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
                         </View>
                     }
-                    {globalVars.getDriver() === 0 && licenseStatus === 'PENDING' &&
+                    {userStore.driver === 0 && licenseStatus === 'PENDING' &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Pending width="300" height="300" />
                             <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>Your documents are being reviewed</Text>

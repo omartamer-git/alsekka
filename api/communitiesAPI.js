@@ -1,14 +1,16 @@
 import { Text } from 'react-native';
 import { SERVER_URL } from '../helper';
-import * as globalVars from '../globalVars';
 import axios from 'axios';
+import useUserStore from './accountAPI';
+import useAxiosManager from '../context/axiosManager';
 
 
 export const getCommunities = async () => {
-    const url = `${SERVER_URL}/communities`;
+    const url = `/communities`;
 
     try {
-        const response = await axios.get(url);
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url);
         const data = response.data;
         return data;
     } catch (err) {
@@ -17,14 +19,15 @@ export const getCommunities = async () => {
 };
 
 export const communitiesFeed = async (communityId) => {
-    const url = `${SERVER_URL}/myfeed`;
+    const url = `/myfeed`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId(),
         communityId: communityId || ''
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -33,13 +36,14 @@ export const communitiesFeed = async (communityId) => {
 };
 
 export const searchCommunities = async (name) => {
-    const url = `${SERVER_URL}/searchcommunities`;
+    const url = `/searchcommunities`;
     const params = {
         name: name
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -48,14 +52,16 @@ export const searchCommunities = async (name) => {
 };
 
 export const getCommunityDetails = async (communityId) => {
-    const url = `${SERVER_URL}/communitydetails`;
+    const url = `/communitydetails`;
+    const uid = useUserStore.getState().id;
     const params = {
         communityId: communityId,
-        uid: globalVars.getUserId()
+        uid: uid
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -64,9 +70,10 @@ export const getCommunityDetails = async (communityId) => {
 };
 
 export const joinCommunity = async (communityId, answer) => {
-    const url = `${SERVER_URL}/joincommunity`;
+    const uid = useUserStore.getState().id;
+    const url = `/joincommunity`;
     const body = {
-        uid: globalVars.getUserId(),
+        uid: uid,
         communityId: communityId,
         answer: answer
     };
@@ -74,7 +81,8 @@ export const joinCommunity = async (communityId, answer) => {
     console.log(body);
 
     try {
-        const response = await axios.post(url, body, {
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(url, body, {
             headers: {
                 'Content-Type': 'application/json'
             }

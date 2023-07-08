@@ -1,17 +1,19 @@
 import { Text } from 'react-native';
 import { SERVER_URL, getDateTime } from '../helper';
-import * as globalVars from '../globalVars';
 import axios from 'axios';
+import useUserStore from './accountAPI';
+import useAxiosManager from '../context/axiosManager';
 
 
 export const rideDetails = async (rideId) => {
-    const url = `${SERVER_URL}/ridedetails`;
+    const url = `/ridedetails`;
     const params = {
         rideId: rideId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -20,15 +22,17 @@ export const rideDetails = async (rideId) => {
 };
 
 export const bookRide = async (rideId, paymentMethod) => {
-    const url = `${SERVER_URL}/bookride`;
+    const url = `/bookride`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId(),
+        uid: uid,
         rideId: rideId,
         paymentMethod: paymentMethod
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
 
         if (data.id) {
@@ -43,7 +47,7 @@ export const bookRide = async (rideId, paymentMethod) => {
 };
 
 export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderChoice) => {
-    const url = `${SERVER_URL}/nearbyrides`;
+    const url = `/nearbyrides`;
     const params = {
         startLng: fromLng,
         startLat: fromLat,
@@ -54,7 +58,8 @@ export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderCh
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -63,14 +68,16 @@ export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderCh
 };
 
 export const upcomingRides = async () => {
-    const url = `${SERVER_URL}/upcomingrides`;
+    const url = `/upcomingrides`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId(),
+        uid: uid,
         limit: 1
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
 
         if (data.length !== 0) {
@@ -85,14 +92,16 @@ export const upcomingRides = async () => {
 
 
 export const driverRides = async (limit) => {
-    const url = `${SERVER_URL}/driverrides`;
+    const url = `/driverrides`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId(),
+        uid: uid,
         limit: limit
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -101,7 +110,8 @@ export const driverRides = async (limit) => {
 };
 
 export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car) => {
-    const url = `${SERVER_URL}/postride`;
+    const url = `/postride`;
+    const uid = useUserStore.getState().id;
     const body = {
         fromLatitude: fromLatitude,
         fromLongitude: fromLongitude,
@@ -110,13 +120,14 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         mainTextFrom: mainTextFrom,
         mainTextTo: mainTextTo,
         pricePerSeat: pricePerSeat,
-        driver: globalVars.getUserId(),
+        driver: uid,
         datetime: getDateTime(date, false),
         car: car,
     };
 
     try {
-        const response = await axios.post(url, body);
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(url, body);
         const data = response.data;
         return data;
     } catch (err) {
@@ -125,14 +136,16 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
 };
 
 export const tripDetails = async (tripId) => {
-    const url = `${SERVER_URL}/tripdetails`;
+    const url = `/tripdetails`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId(),
+        uid: uid,
         tripId: tripId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -142,13 +155,14 @@ export const tripDetails = async (tripId) => {
 
 
 export const cancelRide = async (tripId) => {
-    const url = `${SERVER_URL}/cancelride`;
+    const url = `/cancelride`;
     const params = {
         tripId: tripId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -157,13 +171,14 @@ export const cancelRide = async (tripId) => {
 };
 
 export const startRide = async (tripId) => {
-    const url = `${SERVER_URL}/startride`;
+    const url = `/startride`;
     const params = {
         tripId: tripId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
 
         if (data.success === 1) {
@@ -176,9 +191,10 @@ export const startRide = async (tripId) => {
 };
 
 export const pastRides = async (limit, afterTime) => {
-    let url = `${SERVER_URL}/pastrides`;
+    let url = `/pastrides`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId(),
+        uid: uid,
         limit: limit
     };
 
@@ -187,7 +203,8 @@ export const pastRides = async (limit, afterTime) => {
     }
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -197,14 +214,15 @@ export const pastRides = async (limit, afterTime) => {
 
 
 export const passengerDetails = async (passengerId, tripId) => {
-    const url = `${SERVER_URL}/passengerdetails`;
+    const url = `/passengerdetails`;
     const params = {
         passenger: passengerId,
         tripId: tripId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -213,7 +231,7 @@ export const passengerDetails = async (passengerId, tripId) => {
 };
 
 export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating) => {
-    const url = `${SERVER_URL}/checkout`;
+    const url = `/checkout`;
     const body = {
         passenger: passengerId,
         tripId: tripId,
@@ -222,7 +240,8 @@ export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating)
     };
 
     try {
-        const response = await axios.post(url, body);
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(url, body);
         const data = response.data;
         return data;
     } catch (err) {
@@ -231,14 +250,15 @@ export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating)
 };
 
 export const checkPassengerIn = async (passengerId, tripId) => {
-    const url = `${SERVER_URL}/checkIn`;
+    const url = `/checkIn`;
     const params = {
         tripId: tripId,
         passenger: passengerId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
@@ -247,14 +267,15 @@ export const checkPassengerIn = async (passengerId, tripId) => {
 };
 
 export const noShow = async (passengerId, tripId) => {
-    const url = `${SERVER_URL}/noshow`;
+    const url = `/noshow`;
     const params = {
         tripId: tripId,
         passenger: passengerId
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
 
         if (data.success === 1) {

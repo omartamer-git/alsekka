@@ -21,7 +21,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import _debounce from 'lodash/debounce';
 import HeaderView from '../../components/HeaderView';
-import * as globalVars from '../../globalVars';
 import * as communitiesAPI from '../../api/communitiesAPI';
 import ScreenWrapper from '../ScreenWrapper';
 import CommunityCard from '../../components/CommunityCard';

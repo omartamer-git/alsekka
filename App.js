@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { Node } from 'react';
 
 import {
@@ -53,6 +53,14 @@ import AddBank from './screens/Account/AddBank';
 import SearchCommunities from './screens/Communities/SearchCommunities';
 import ViewCommunity from './screens/Communities/ViewCommunity';
 import Otp from './screens/Account/Otp';
+import AddMobileWallet from './screens/Account/AddMobileWallet';
+import { UserProvider } from './UserContext';
+import * as Keychain from 'react-native-keychain';
+import useAuthManager from './context/authManager';
+import useAxiosManager from './context/axiosManager';
+import useUserStore from './api/accountAPI';
+import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
+import ChangePasswordScreen from './screens/Guest/ChangePasswordScreen';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -69,22 +77,56 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
-        <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
-      </RootStack.Navigator>
-    </NavigationContainer>
-  );
+  const authManager = useAuthManager();
+  const userStore = useUserStore();
+  const [state, setState] = useState('LOADING');
+
+  const loadJWT = useCallback(async () => {
+    try {
+      const value = await Keychain.getGenericPassword();
+      const jwt = JSON.parse(value.password);
+
+      authManager.setAccessToken(jwt.accessToken || null);
+      authManager.setRefreshToken(jwt.refreshToken || null);
+      authManager.setAuthenticated(jwt.accessToken !== null);
+      await userStore.userInfo();
+      setState("LoggedIn");
+    } catch (error) {
+      console.log(`Keychain Error: ${error.message}`);
+      setState("Guest");
+      authManager.setAccessToken(null);
+      authManager.setRefreshToken(null);
+      authManager.setAuthenticated(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadJWT();
+  }, [loadJWT])
+
+  if (state === 'LOADING') {
+    return (<></>);
+  } else {
+    return (
+      <NavigationContainer>
+        <RootStack.Navigator initialRouteName={state}>
+          <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
+          <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    );
+  }
+
 }
 
 const LoggedInStack = ({ route, navigation }) => {
   return (
-    <UserStack.Navigator initialRouteName="TabScreen">
-      <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
-      <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-    </UserStack.Navigator>
+    <UserProvider>
+      <UserStack.Navigator initialRouteName="TabScreen">
+        <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
+        <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+      </UserStack.Navigator>
+    </UserProvider>
   );
 };
 
@@ -137,7 +179,9 @@ const Guest = ({ route, navigation }) => {
       <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-      <GuestStack.Screen name="Otp" component={Otp} options={{headerShown: false}} />
+      <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
     </GuestStack.Navigator>
   );
 }
@@ -183,8 +227,9 @@ const AccountNavigator = ({ route, navigation }) => {
       <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
       <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
       <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Chats List" component={ChatsList} options={{headerShown: false}} />
-      <AccountStack.Screen name="Add Bank" component={AddBank} options={{headerShown: false}} />
+      <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
     </AccountStack.Navigator>
   );
 }

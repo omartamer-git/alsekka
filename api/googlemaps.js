@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAxiosManager from '../context/axiosManager';
 
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 
@@ -12,7 +13,8 @@ export const getPredictions = async (text) => {
         language: 'en',
         locationbias: 'ipbias'
     };
-    const result = await axios.get(url, { params });
+    const axiosManager = useAxiosManager.getState();
+    const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;
     console.log(data);
     for (let i = 0; i < data.predictions.length; i++) {
@@ -28,7 +30,8 @@ export const geocode = async (latitude, longitude) => {
         latlng: `${latitude},${longitude}`,
         key: googleKey
     };
-    const result = await axios.get(url, { params });
+    const axiosManager = useAxiosManager.getState();
+    const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;
     return data.results[0];
 };
@@ -39,7 +42,8 @@ export const getLocationFromPlaceId = async (place_id) => {
         place_id: place_id,
         key: googleKey
     };
-    const result = await axios.get(url, { params });
+    const axiosManager = useAxiosManager.getState();
+    const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;
     return data.result.geometry.location;
 };

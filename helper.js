@@ -95,6 +95,33 @@ export const translateEnglishNumbers = (text) => {
     return resultText;
 }
 
+export const abbreviate = (string) => {
+    const words = string.split(' ');
+    if (words.length > 1 && string.length > 6) {
+        let abbreviation = words.map(function (word) {
+            return word.charAt(0);
+        }).join("");
+
+        return abbreviation.toUpperCase(); // Convert the abbreviation to uppercase
+    }
+    return string;
+};
+
+export const getPhoneCarrier = (phone) => {
+    const carrierCode = phone.substring(0, 3);
+    if(carrierCode === '010') {
+        return "VODA"
+    } else if(carrierCode === '011') {
+        return "ETI"
+    } else if(carrierCode === '012') {
+        return "ORG"
+    } else if(carrierCode === '015') {
+        return "WE"
+    } else {
+        return "UNK"
+    }
+}
+
 
 export const palette = {
     primary: '#2E1760',

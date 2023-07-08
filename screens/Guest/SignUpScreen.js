@@ -17,8 +17,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import { ScrollView } from 'react-native-gesture-handler';
-import { getVerified, setUserId } from '../../globalVars';
-import * as accountAPI from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 import HeaderLip from '../../components/HeaderLip';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -32,10 +31,12 @@ const SignUpScreen = ({ route, navigation }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const isDarkMode = useColorScheme === 'dark';
 
+  const userStore = useUserStore();
+
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
-    accountAPI.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
-      accountAPI.loadUserInfo().then(() => {
-        if (getVerified()) {
+    userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
+      userStore.loadUserInfo().then(() => {
+        if (userStore.verified) {
           navigation.popToTop();
           navigation.replace("LoggedIn", {
             screen: 'TabScreen',

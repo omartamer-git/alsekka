@@ -20,7 +20,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../../components/FromToIndicator';
@@ -31,7 +30,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Visa from '../../svgs/visa';
 import Mastercard from '../../svgs/mastercard';
 import ScreenWrapper from '../ScreenWrapper';
-import { addCard } from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
@@ -43,6 +42,7 @@ const AddCard = ({ navigation, route }) => {
     const [expiryDate, setExpiryDate] = useState(null);
 
     const [errorMessage, setErrorMessage] = useState(null);
+    const {addCard} = useUserStore();
 
     Yup.addMethod(Yup.string, 'luhn', function () {
         return this.test('luhn', 'Invalid card number', function (value) {

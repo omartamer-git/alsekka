@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -8,14 +8,14 @@ import {
   View,
   Image,
   TextInput,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { styles, SERVER_URL, palette, isPhoneNumberValid } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as globalVars from '../../globalVars';
-import * as accountAPI from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 import HeaderView from '../../components/HeaderView';
 import axios from 'axios';
 import { config } from '../../config';
@@ -28,6 +28,8 @@ const LoginScreen = ({ route, navigation }) => {
 
   const isDarkMode = useColorScheme === 'dark';
   const [errorMessage, setErrorMessage] = useState(null);
+  const userStore = useUserStore();
+  const formRef = useRef(null);
   // const objForm = new Form();
 
   const handleContinueClick = (phoneNum, password) => {
@@ -37,34 +39,29 @@ const LoginScreen = ({ route, navigation }) => {
       returnAfterValidation = true;
     }
 
-    accountAPI.login(phoneNum, password).then(
-      () => {
-        accountAPI.loadUserInfo().then(() => {
-          if (globalVars.getVerified()) {
-            navigation.popToTop();
-            navigation.replace("LoggedIn", {
-              screen: 'TabScreen',
-              params: {
-                screen: 'Home',
-              }
+    userStore.login(phoneNum, password).then(
+      (data) => {
+        if (data.verified) {
+          navigation.popToTop();
+          navigation.replace("LoggedIn", {
+            screen: 'TabScreen',
+            params: {
+              screen: 'Home',
+            }
+          });
+        } else {
+          navigation.navigate('Otp',
+            {
+              uid: data.id,
+              phone: phoneNum,
+              onVerify: 'login'
             });
-          } else {
-            navigation.navigate('Otp', { phone: phoneNum });
-          }
-        })
+        }
       }).catch(err => {
+        console.log(err);
         setErrorMessage(err.response.data.error.message);
       });
   };
-
-  const phoneTextChange = (text) => {
-    const numericValue = text.replace(/[^0-9]/g, '');
-    setPhone(numericValue);
-  }
-
-  const passwordTextChange = (text) => {
-    setPassword(text);
-  }
 
   const loginSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
@@ -101,6 +98,7 @@ const LoginScreen = ({ route, navigation }) => {
                 initialValues={{ phoneInput: '', passwordInput: '' }}
                 validationSchema={loginSchema}
                 onSubmit={(values) => { handleContinueClick(values.phoneInput, values.passwordInput) }}
+                innerRef={formRef}
               >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                   <>
@@ -137,9 +135,24 @@ const LoginScreen = ({ route, navigation }) => {
                 )}
               </Formik>
 
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  navigation.navigate('Forgot Password', { phone: formRef.current.values.phoneInput });
+                }}
+                style={[styles.justifyCenter, styles.alignCenter, styles.w100]}>
+                <Text style={[styles.textStart, styles.dark]}>Forgot your password?</Text>
+              </TouchableWithoutFeedback>
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
-                <Text style={styles.light}>Don't have an account? <Text style={[styles.primary, styles.bold]}>Sign up</Text></Text>
+                <TouchableWithoutFeedback onPress={() => {
+                  navigation.navigate('Sign Up');
+                }} style={[styles.justifyEnd, styles.alignCenter]}>
+                  <Text style={[styles.dark, styles.textCenter]}>
+                    Don't have an account?
+                    <Text style={[styles.primary, styles.bold, styles.ml10]}> Sign up</Text>
+                  </Text>
+                </TouchableWithoutFeedback>
+
               </View>
             </View>
           </View>

@@ -15,12 +15,11 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
-import * as globalVars from '../../globalVars';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
 import ScreenWrapper from '../ScreenWrapper';
-import { getOtp, sendOtp } from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 
 const DigitBox = ({ swap, onFocus, inputRef }) => {
     const [digit, setDigit] = useState('');
@@ -49,7 +48,7 @@ const DigitBox = ({ swap, onFocus, inputRef }) => {
 }
 
 const Otp = ({ route, navigation }) => {
-    const { phone } = route.params;
+    const { phone, onVerify } = route.params;
     const [currentInput, setCurrentInput] = useState(0);
     const numDigits = 4;
     let otpInput = useRef(Array(numDigits).fill(""));
@@ -58,24 +57,35 @@ const Otp = ({ route, navigation }) => {
     const [error, setError] = useState(null);
     const [resendAvailable, setResendAvailable] = useState(false);
     let countdownInterval = null;
+    const { getOtp, sendOtp, sendOtpSecurity } = useUserStore();
     // let filledInputs = useRef(Array(numDigits).fill(false));
 
     const verifyOtp = () => {
         console.log("verifying otp " + otpInput.current)
-        sendOtp(otpInput.current.join('')).then(response => {
-            if (response) {
-                globalVars.setVerified(true);
-                navigation.popToTop();
-                navigation.replace("LoggedIn", {
-                  screen: 'TabScreen',
-                  params: {
-                    screen: 'Home',
-                  }
-                });
-            }
-        }).catch(err => {
-            setError(err.response.data.error.message)
-        });
+        if (onVerify === 'login') {
+            sendOtp(phone, otpInput.current.join('')).then(response => {
+                if (response) {
+                    navigation.popToTop();
+                    navigation.replace("LoggedIn", {
+                        screen: 'TabScreen',
+                        params: {
+                            screen: 'Home',
+                        }
+                    });
+                }
+            }).catch(err => {
+                setError(err.response.data.error.message)
+            });
+        } else if(onVerify === 'changePassword') {
+            sendOtpSecurity(phone, otpInput.current.join('')).then(token => {
+                if (token) {
+                    navigation.popToTop();
+                    navigation.replace("Change Password", {token});
+                }
+            }).catch(err => {
+                setError(err.response.data.error.message)
+            });
+        }
     }
 
     const swap = (key, offset) => {
@@ -110,7 +120,7 @@ const Otp = ({ route, navigation }) => {
     };
 
     const resendOtp = () => {
-        getOtp().then(() => {
+        getOtp(phone).then(() => {
             triggerCountdown();
         }).catch(err => {
             setError(err.response.data.error.message)
@@ -148,8 +158,8 @@ const Otp = ({ route, navigation }) => {
 
                 <View style={[styles.w100, styles.justifyCenter, styles.alignCenter, styles.mt10]}>
                     <ErrorMessage message={error} condition={error} style={styles.mb10} />
-                    { !resendAvailable && <Text style={[styles.font12, styles.dark]}>Please wait {countdown} seconds before requesting a new code</Text> }
-                    { resendAvailable && <Text style={[styles.font12, styles.dark, styles.bold]} onPress={resendOtp}>Resend Verification Code</Text> }
+                    {!resendAvailable && <Text style={[styles.font12, styles.dark]}>Please wait {countdown} seconds before requesting a new code</Text>}
+                    {resendAvailable && <Text style={[styles.font12, styles.dark, styles.bold]} onPress={resendOtp}>Resend Verification Code</Text>}
                 </View>
             </ScrollView>
         </ScreenWrapper>

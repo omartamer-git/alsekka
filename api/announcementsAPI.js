@@ -1,16 +1,17 @@
 import { Text } from 'react-native';
 import { SERVER_URL } from '../helper';
-import * as globalVars from '../globalVars';
+import useAxiosManager from '../context/axiosManager';
 import axios from 'axios';
 
 export const getAnnouncements = async (active) => {
-  const url = `${SERVER_URL}/announcements`;
+  const url = `/announcements`;
   const params = {
     active: active
   };
 
   try {
-    const response = await axios.get(url, { params });
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
     const data = response.data;
     return data;
   } catch (err) {
@@ -20,13 +21,14 @@ export const getAnnouncements = async (active) => {
 
 
 export const getAnnouncement = async (id) => {
-  const url = `${SERVER_URL}/announcements`;
+  const url = `/announcements`;
   const params = {
     id: id
   };
 
   try {
-    const response = await axios.get(url, { params });
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
     const data = response.data;
     return data;
   } catch (err) {

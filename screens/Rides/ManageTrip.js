@@ -20,7 +20,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import * as ridesAPI from '../../api/ridesAPI';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';

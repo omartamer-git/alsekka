@@ -19,7 +19,6 @@ import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
-import * as globalVars from '../../globalVars';
 import * as carsAPI from '../../api/carsAPI';
 import DatePicker from 'react-native-date-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -29,6 +28,7 @@ import CoffeeIcon from '../../svgs/coffee';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
+import useUserStore from '../../api/accountAPI';
 
 const NewCar = ({ route, navigation }) => {
     const colorMode = useColorScheme();
@@ -46,6 +46,8 @@ const NewCar = ({ route, navigation }) => {
 
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");
+
+    const userStore = useUserStore();
 
     const [brand, setBrand] = useState('');
     const [year, setYear] = useState('');
@@ -70,7 +72,7 @@ const NewCar = ({ route, navigation }) => {
 
     const addCar = async (brand, year, model, color, charLicense1, charLicense2, charLicense3, licensePlateNumbers) => {
         const newCarBody = {
-            uid: globalVars.getUserId(),
+            uid: userStore.id,
             brand: brand,
             year: year,
             model: model,

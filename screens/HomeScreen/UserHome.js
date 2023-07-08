@@ -24,7 +24,6 @@ import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import * as ridesAPI from '../../api/ridesAPI';
 import * as announcementsAPI from '../../api/announcementsAPI';
 import DatePicker from 'react-native-date-picker';
@@ -36,6 +35,7 @@ import AWS from 'aws-sdk/dist/aws-sdk-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
 import ScreenWrapper from '../ScreenWrapper';
+import useUserStore from '../../api/accountAPI';
 
 
 const UserHome = ({ navigation, route }) => {
@@ -50,6 +50,9 @@ const UserHome = ({ navigation, route }) => {
     const [driverTripId, setDriverTripId] = useState(null);
     const [carouselWidth, setCarouselWidth] = useState(200);
     const [carouselData, setCarouselData] = useState(null);
+
+    const userStore = useUserStore();
+
     const MAX_CAROUSEL_TEXT_LENGTH = 250;
 
     const loadData = () => {
@@ -120,7 +123,7 @@ const UserHome = ({ navigation, route }) => {
                     {
                         currentTime.getHours() < 12 ? " Morning" : currentTime.getHours() < 18 ? " Afternoon" : " Evening"
                     }
-                    , {globalVars.getFirstName()}!
+                    , {userStore.firstName}!
                 </Text>
 
                 {driverElement && driverMainTextTo &&

@@ -21,7 +21,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../../components/FromToIndicator';
@@ -32,7 +31,7 @@ import * as carsAPI from '../../api/carsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import ScreenWrapper from '../ScreenWrapper';
 import BottomModal from '../../components/BottomModal';
-import { loadUserInfo } from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -54,6 +53,8 @@ const PostRide = ({ route, navigation }) => {
 
     const [fromTouched, setFromTouched] = useState(false);
     const [toTouched, setToTouched] = useState(false);
+
+    const userStore = useUserStore();
 
 
     const mapViewRef = useRef(null);
@@ -134,7 +135,6 @@ const PostRide = ({ route, navigation }) => {
 
     const onRefresh = () => {
         setRefreshing(true);
-        loadUserInfo();
         loadCars();
         setRefreshing(false);
     }
@@ -155,7 +155,7 @@ const PostRide = ({ route, navigation }) => {
             <ScrollView style={styles.wrapper} contentContainerStyle={styles.flexGrow} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
 
-                    {globalVars.getDriver() === 1 &&
+                    {userStore.driver &&
                         <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.alignStart, styles.justifyCenter, { zIndex: 5 }]}>
                             <Formik
                                 initialValues={{
@@ -325,7 +325,7 @@ const PostRide = ({ route, navigation }) => {
                             </Formik>
                         </View>
                     }
-                    {globalVars.getDriver() === 0 &&
+                    {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
                             <PiggyBank width={300} height={300} />
                             <Text style={[styles.headerText, styles.textCenter]}>Get Paid to Carpool!</Text>

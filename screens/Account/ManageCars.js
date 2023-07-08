@@ -18,7 +18,6 @@ import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HeaderView from '../../components/HeaderView';
-import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import CarCard from '../../components/CarCard';
 import * as carsAPI from '../../api/carsAPI';

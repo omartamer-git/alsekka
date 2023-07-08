@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, View, StyleSheet, Keyboard, Text } from 'react-native';
+import { TextInput, View, StyleSheet, Keyboard, Text, TouchableWithoutFeedback } from 'react-native';
 import { isEmailValid, palette, rem } from '../helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -14,35 +14,36 @@ const CustomTextInput = ({ value,
 
     return (
         <>
-            <View style={[styles.container, validationStyles, style]}>
-                {
-                    iconLeft &&
-                    <MaterialIcons name={iconLeft} size={18} style={{ paddingRight: 16 }} color={palette.primary} />
-                }
-                <TextInput
-                    style={[styles.input, textStyles]}
-                    placeholder={placeholder}
-                    value={value}
-                    keyboardType={keyboardType}
-                    editable={editable}
-                    onChangeText={onChangeText}
-                    selectTextOnFocus={selectTextOnFocus}
-                    secureTextEntry={secureTextEntry}
-                    onFocus={onFocus}
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    blurOnSubmit={true}
-                    onBlur={onBlur}
-                    onPressIn={onPressIn}
-                    placeholderTextColor={palette.light}
-                    ref={inputRef}
-                    onKeyPress={onKeyPress}
-                />
-                {
-                    iconRight &&
-                    <MaterialIcons name={iconRight} size={18} style={{ paddingLeft: 16 }} color={palette.primary} />
-                }
-            </View>
+            <TouchableWithoutFeedback onPress={onPressIn} style={[style]}>
+                <View style={[styles.container, validationStyles]}>
+                    {
+                        iconLeft &&
+                        <MaterialIcons name={iconLeft} size={18} style={{ paddingRight: 16 }} color={palette.primary} />
+                    }
+                    <TextInput
+                        style={[styles.input, textStyles]}
+                        placeholder={placeholder}
+                        value={value}
+                        keyboardType={keyboardType}
+                        editable={editable}
+                        onChangeText={onChangeText}
+                        selectTextOnFocus={selectTextOnFocus}
+                        secureTextEntry={secureTextEntry}
+                        onFocus={onFocus}
+                        autoCorrect={false}
+                        autoCapitalize='none'
+                        blurOnSubmit={true}
+                        onBlur={onBlur}
+                        placeholderTextColor={palette.light}
+                        ref={inputRef}
+                        onKeyPress={onKeyPress}
+                    />
+                    {
+                        iconRight &&
+                        <MaterialIcons name={iconRight} size={18} style={{ paddingLeft: 16 }} color={palette.primary} />
+                    }
+                </View>
+            </TouchableWithoutFeedback>
             {error && <Text adjustsFontSizeToFit numberOfLines={2} style={{ color: palette.red, fontSize: 12 * rem }}>{error}</Text>}
 
         </>

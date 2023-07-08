@@ -20,7 +20,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../../components/FromToIndicator';
@@ -31,13 +30,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import Visa from '../../svgs/visa';
 import Mastercard from '../../svgs/mastercard';
 import ScreenWrapper from '../ScreenWrapper';
-import { addBankAccount } from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import ErrorMessage from '../../components/ErrorMessage';
 
 const AddBank = ({ navigation, route }) => {
     const [addBankError, setAddBankError] = useState(null);
+    const { addBankAccount } = useUserStore();
     const addAccount = (fullName, bankName, accNumber, swiftCode) => {
         addBankAccount(fullName, bankName, accNumber, swiftCode).then(data => {
             navigation.goBack();
@@ -47,10 +47,10 @@ const AddBank = ({ navigation, route }) => {
     }
 
     const bankAccountSchema = Yup.object().shape({
-        fullNameInput: Yup.string().required('This field is required'),
-        bankNameInput: Yup.string().required('This field is required'),
-        accountNumberInput: Yup.string().required('This field is required'),
-        swiftCodeInput: Yup.string()
+        fullNameInput: Yup.string().required('This field is required').min(5, "Please enter your full name").max(60, "Your full name should be a maximum of 60 characters"),
+        bankNameInput: Yup.string().required('This field is required').max(30, "Bank name is too long, feel free to abbreviate"),
+        accountNumberInput: Yup.string().required('This field is required').max(34, "Account number too long"),
+        swiftCodeInput: Yup.string().max(11, "Swift Code too long")
     });
 
     return (

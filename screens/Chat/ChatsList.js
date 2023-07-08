@@ -24,7 +24,6 @@ import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as globalVars from '../../globalVars';
 import * as chatAPI from '../../api/chatAPI';
 import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
@@ -35,10 +34,12 @@ import AWS from 'aws-sdk/dist/aws-sdk-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
 import ScreenWrapper from '../ScreenWrapper';
+import useUserStore from '../../api/accountAPI';
 
 
 const ChatsList = ({ navigation, route }) => {
     const [chats, setChats] = useState(null);
+    const userStore = useUserStore();
     useEffect(() => {
         chatAPI.getChats().then((data) => {
             setChats(data)
@@ -57,7 +58,7 @@ const ChatsList = ({ navigation, route }) => {
                         const secondParty = data.Sender === null ? data.Receiver : data.Sender;
                         console.log(secondParty);
                         return (
-                            <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: data.senderId == globalVars.getUserId() ? data.receiverId : data.senderId }) }} activeOpacity={0.9} key={"chat" + index} style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
+                            <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: data.senderId == userStore.id ? data.receiverId : data.senderId }) }} activeOpacity={0.9} key={"chat" + index} style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
                                 <Image source={{ uri: secondParty.profilePicture }} width={60} height={60} style={{ borderRadius: 60 / 2, borderWidth: 1, borderColor: palette.accent }} />
                                 <View style={[styles.flexRow, styles.flexOne, styles.spaceBetween, styles.alignCenter]}>
                                     <Text style={[styles.ml10, styles.semiBold, styles.font18]}>{secondParty.firstName} {secondParty.lastName}</Text>

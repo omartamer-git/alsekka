@@ -17,11 +17,10 @@ import Separator from '../../components/Separator';
 import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
-import * as globalVars from '../../globalVars';
 import DatePicker from 'react-native-date-picker';
 import ScreenWrapper from '../ScreenWrapper';
 import BottomModal from '../../components/BottomModal';
-import { editEmail, editName, editPhone } from '../../api/accountAPI';
+import useUserStore from '../../api/accountAPI';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
@@ -31,19 +30,20 @@ const Account = ({ route, navigation }) => {
     const [editNameModalVisible, setEditNameModalVisible] = useState(false);
     const [editPhoneModalVisible, setEditPhoneModalVisible] = useState(false);
     const [editEmailModalVisible, setEditEmailModalVisible] = useState(false);
+    const userStore = useUserStore();
 
-    const [editPhoneText, setEditPhoneText] = useState(globalVars.getPhone());
+    const [editPhoneText, setEditPhoneText] = useState(userStore.phone);
     const [emailError, setEmailError] = useState(null);
     const [phoneError, setPhoneError] = useState(null);
 
     const logout = () => {
-        globalVars.reset();
+        // globalVars.reset();
         navigation.replace("Guest");
     };
 
     useEffect(() => {
-        const fullStars = Math.floor(globalVars.getRating());
-        const halfStars = Math.ceil(globalVars.getRating()) - Math.abs(globalVars.getRating());
+        const fullStars = Math.floor(userStore.rating);
+        const halfStars = Math.ceil(userStore.rating) - Math.abs(userStore.rating);
 
         let ratingsItems = [];
         for (let i = 0; i < fullStars; i++) {
@@ -61,9 +61,11 @@ const Account = ({ route, navigation }) => {
         firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
         lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
     });
+    
     const editEmailSchema = Yup.object().shape({
         emailInput: Yup.string().email('Please enter a valid email address').required('This field is required'),
     });
+
     const editPhoneSchema = Yup.object().shape({
         phoneInput: Yup.string().matches(
             /^01[0-2,5]{1}[0-9]{8}$/,
@@ -72,30 +74,23 @@ const Account = ({ route, navigation }) => {
     });
 
     const saveEditName = (firstNameInput, lastNameInput) => {
-        editName(firstNameInput, lastNameInput).then(data => {
-            if (data.success == "1") {
-                globalVars.setFirstName(firstNameInput);
-                globalVars.setLastName(lastNameInput);
-            }
-        });
-
-        setEditNameModalVisible(false);
+        userStore.editName(firstNameInput, lastNameInput).then(() => {
+            setEditNameModalVisible(false);
+        }).catch(err => {
+            console.log(err);
+            // name error??
+        })
     };
+
     const saveEditEmail = (emailInput) => {
-        editEmail(emailInput).then(data => {
-            if (data.success == "1") {
-                globalVars.setEmail(emailInput);
-            }
+        userStore.editEmail(emailInput).then(data => {
             setEditEmailModalVisible(false);
         }).catch(err => {
             setEmailError(err.response.data.error.message);
         });
     };
     const saveEditPhone = (phoneInput) => {
-        editPhone(phoneInput).then(data => {
-            if (data.success == "1") {
-                globalVars.setPhone(editPhoneText);
-            }
+        userStore.editPhone(phoneInput).then(() => {
             setEditPhoneModalVisible(false);
         }).catch(err => {
             setPhoneError(err.response.data.error.message);
@@ -108,7 +103,7 @@ const Account = ({ route, navigation }) => {
                 <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
                         <View style={accountStyles.profilePictureView}>
-                            {globalVars.getProfilePicture() && <Image source={{ uri: globalVars.getProfilePicture() }} style={accountStyles.profilePicture} />}
+                            {userStore.profilePicture && <Image source={{ uri: userStore.profilePicture }} style={accountStyles.profilePicture} />}
 
                             <View style={accountStyles.profilePictureOverlay}>
                                 <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
@@ -117,7 +112,7 @@ const Account = ({ route, navigation }) => {
                     </View>
 
                     <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
-                        <Text style={styles.headerText2}>{globalVars.getFirstName()} {globalVars.getLastName()}</Text>
+                        <Text style={styles.headerText2}>{userStore.firstName} {userStore.lastName}</Text>
                         <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
                             {ratings}
                         </View>
@@ -139,7 +134,7 @@ const Account = ({ route, navigation }) => {
                         <View style={{ width: '100%' }}>
                             <Button text="Manage My Cars" textColor={palette.white} bgColor={palette.primary} onPress={() => { navigation.navigate('Manage Cars') }} />
                             <CustomTextInput
-                                value={globalVars.getFirstName() + " " + globalVars.getLastName()}
+                                value={userStore.firstName + " " + userStore.lastName}
                                 iconLeft="badge"
                                 iconRight="edit"
                                 editable={false}
@@ -147,7 +142,7 @@ const Account = ({ route, navigation }) => {
                                 onPressIn={() => setEditNameModalVisible(true)}
                             />
                             <CustomTextInput
-                                value={globalVars.getPhone()}
+                                value={userStore.phone}
                                 iconLeft="phone"
                                 iconRight="edit"
                                 editable={false}
@@ -155,7 +150,7 @@ const Account = ({ route, navigation }) => {
                                 onPressIn={() => setEditPhoneModalVisible(true)}
                             />
                             <CustomTextInput
-                                value={globalVars.getEmail()}
+                                value={userStore.email}
                                 iconLeft="mail"
                                 iconRight="edit"
                                 editable={false}
@@ -174,7 +169,7 @@ const Account = ({ route, navigation }) => {
             <BottomModal onHide={() => setEditNameModalVisible(false)} modalVisible={editNameModalVisible}>
                 <View style={[styles.w100]}>
                     <Formik
-                        initialValues={{ firstNameInput: globalVars.getFirstName(), lastNameInput: globalVars.getLastName() }}
+                        initialValues={{ firstNameInput: userStore.firstName, lastNameInput: userStore.lastName }}
                         validationSchema={editNameSchema}
                         onSubmit={(values) => { saveEditName(values.firstNameInput, values.lastNameInput) }}
                     >
@@ -211,7 +206,7 @@ const Account = ({ route, navigation }) => {
                 <View style={[styles.w100]}>
                     <ErrorMessage message={emailError} condition={emailError} />
                     <Formik
-                        initialValues={{ emailInput: globalVars.getEmail() }}
+                        initialValues={{ emailInput: userStore.email }}
                         validationSchema={editEmailSchema}
                         onSubmit={(values) => { saveEditEmail(values.emailInput) }}
                     >
@@ -238,7 +233,7 @@ const Account = ({ route, navigation }) => {
                 <View style={[styles.w100]}>
                     <ErrorMessage message={phoneError} condition={phoneError} />
                     <Formik
-                        initialValues={{ phoneInput: globalVars.getPhone() }}
+                        initialValues={{ phoneInput: userStore.phone }}
                         validationSchema={editPhoneSchema}
                         onSubmit={(values) => { saveEditPhone(values.phoneInput) }}
                     >

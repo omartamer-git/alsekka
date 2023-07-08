@@ -1,14 +1,16 @@
 import { Text } from 'react-native';
 import { SERVER_URL } from '../helper';
-import * as globalVars from '../globalVars';
 import axios from 'axios';
+import useUserStore from './accountAPI';
+import useAxiosManager from '../context/axiosManager';
 
 
 export const uploadLicense = async (licenseBody) => {
-    const url = `${SERVER_URL}/submitlicense`;
+    const url = `/submitlicense`;
 
     try {
-        const response = await axios.post(url, licenseBody, {
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(url, licenseBody, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -21,13 +23,15 @@ export const uploadLicense = async (licenseBody) => {
 };
 
 export const getLicense = async () => {
-    const url = `${SERVER_URL}/license`;
+    const url = `/license`;
+    const uid = useUserStore.getState().id;
     const params = {
-        uid: globalVars.getUserId()
+        uid: uid
     };
 
     try {
-        const response = await axios.get(url, { params });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(url, { params });
         const data = response.data;
         return data;
     } catch (err) {
