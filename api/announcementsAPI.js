@@ -1,7 +1,4 @@
-import { Text } from 'react-native';
-import { SERVER_URL } from '../helper';
 import useAxiosManager from '../context/axiosManager';
-import axios from 'axios';
 
 export const getAnnouncements = async (active) => {
   const url = `/announcements`;

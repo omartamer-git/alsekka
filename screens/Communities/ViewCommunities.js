@@ -1,41 +1,20 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    Platform,
+    RefreshControl,
     ScrollView,
-    Dimensions,
-    RefreshControl
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { containerStyle, getDateShort, getTime, styles } from '../../helper';
 
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useFocusEffect } from '@react-navigation/native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import * as communitiesAPI from '../../api/communitiesAPI';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
 import AvailableRide from '../../components/AvailableRide';
-import { Notifications } from 'react-native-notifications';
-import AWS from 'aws-sdk/dist/aws-sdk-react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Carousel from 'react-native-reanimated-carousel';
 import CommunityCard from '../../components/CommunityCard';
 import ScreenWrapper from '../ScreenWrapper';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
 
 
 const ViewCommunities = ({ navigation, route }) => {

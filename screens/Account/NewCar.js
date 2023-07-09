@@ -1,36 +1,28 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
+import React, { useCallback, useRef, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    ScrollView,
     ActionSheetIOS,
     Modal,
-    Platform
+    SafeAreaView,
+    ScrollView,
+    Text,
+    View,
+    useColorScheme
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, translateEnglishNumbers, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import * as carsAPI from '../../api/carsAPI';
-import DatePicker from 'react-native-date-picker';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Pending from '../../svgs/pending';
-import ScreenWrapper from '../ScreenWrapper';
-import CoffeeIcon from '../../svgs/coffee';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
-import useUserStore from '../../api/accountAPI';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
+import * as carsAPI from '../../api/carsAPI';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import ErrorMessage from '../../components/ErrorMessage';
+import HeaderView from '../../components/HeaderView';
+import { containerStyle, palette, rem, styles } from '../../helper';
+import CoffeeIcon from '../../svgs/coffee';
+import ScreenWrapper from '../ScreenWrapper';
 
 const NewCar = ({ route, navigation }) => {
     const colorMode = useColorScheme();

@@ -1,5 +1,5 @@
 import React from "react";
-import {Svg, Path, Ellipse, Circle} from 'react-native-svg';
+import { Circle, Ellipse, Path, Svg } from 'react-native-svg';
 function CoffeeIcon({width, height}) {
   return (
     <Svg

@@ -1,31 +1,16 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    Platform,
-    ScrollView,
-    Dimensions,
-    RefreshControl
-} from 'react-native';
-import { styles, palette, containerStyle } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import _debounce from 'lodash/debounce';
-import HeaderView from '../../components/HeaderView';
-import * as communitiesAPI from '../../api/communitiesAPI';
-import ScreenWrapper from '../ScreenWrapper';
-import CommunityCard from '../../components/CommunityCard';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import _debounce from 'lodash/debounce';
+import React, { useCallback, useState } from 'react';
+import {
+    ScrollView,
+    View
+} from 'react-native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import * as communitiesAPI from '../../api/communitiesAPI';
+import CommunityCard from '../../components/CommunityCard';
+import CustomTextInput from '../../components/CustomTextInput';
+import { containerStyle, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 
 const SearchCommunities = ({ navigation, route }) => {

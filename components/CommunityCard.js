@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, translateEnglishNumbers, styles } from '../helper';
+import { palette, styles } from '../helper';
 
 const CommunityCard = ({name, picture, description, privacy={}, style={}, onPress=()=>{} }) => {
     return (

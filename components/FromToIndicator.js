@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { palette, rem } from '../helper';
 const FromToIndicator = ({circleRadius, style}) => {
     return (

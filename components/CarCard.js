@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, rem, translateEnglishNumbers, styles } from '../helper';
+import { palette, rem, styles, translateEnglishNumbers } from '../helper';
 
 const CarCard = ({approved, brand, model, year, color, licensePlateLetters, licensePlateNumbers, onPress=()=>{} }) => {
     return (

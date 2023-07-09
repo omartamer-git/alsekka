@@ -1,29 +1,24 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
 import React, { useCallback, useRef, useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
-  StyleSheet,
   Text,
-  useColorScheme,
-  View,
-  Image,
-  TextInput,
   TouchableWithoutFeedback,
+  View,
+  useColorScheme
 } from 'react-native';
-import { styles, SERVER_URL, palette, isPhoneNumberValid } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import useUserStore from '../../api/accountAPI';
-import HeaderView from '../../components/HeaderView';
-import axios from 'axios';
-import { config } from '../../config';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import ErrorMessage from '../../components/ErrorMessage';
+import HeaderView from '../../components/HeaderView';
+import { config } from '../../config';
+import { palette, styles } from '../../helper';
 
 
 const LoginScreen = ({ route, navigation }) => {

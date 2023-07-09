@@ -1,30 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    Platform,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    useColorScheme
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as ridesAPI from '../../api/ridesAPI';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import AvailableRide from '../../components/AvailableRide';
 import LinearGradient from 'react-native-linear-gradient';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as ridesAPI from '../../api/ridesAPI';
+import AvailableRide from '../../components/AvailableRide';
+import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 

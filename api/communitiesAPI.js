@@ -1,8 +1,5 @@
-import { Text } from 'react-native';
-import { SERVER_URL } from '../helper';
-import axios from 'axios';
-import useUserStore from './accountAPI';
 import useAxiosManager from '../context/axiosManager';
+import useUserStore from './accountAPI';
 
 
 export const getCommunities = async () => {

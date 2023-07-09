@@ -1,31 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    ScrollView,
-    StyleSheet
-} from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import DatePicker from 'react-native-date-picker';
-import ScreenWrapper from '../ScreenWrapper';
-import BottomModal from '../../components/BottomModal';
-import useUserStore from '../../api/accountAPI';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
+import BottomModal from '../../components/BottomModal';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import ErrorMessage from '../../components/ErrorMessage';
+import { containerStyle, palette, rem, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 const Account = ({ route, navigation }) => {
     const [ratings, setRatings] = useState(null);

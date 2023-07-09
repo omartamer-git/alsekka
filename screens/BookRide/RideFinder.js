@@ -1,30 +1,18 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    ScrollView,
-    StyleSheet
-} from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, palette, customMapStyle, getDateShort, getTime, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as ridesAPI from '../../api/ridesAPI';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import AvailableRide from '../../components/AvailableRide';
-import ScreenWrapper from '../ScreenWrapper';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    useColorScheme
+} from 'react-native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import * as ridesAPI from '../../api/ridesAPI';
+import AvailableRide from '../../components/AvailableRide';
+import CustomTextInput from '../../components/CustomTextInput';
+import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 
 const RideFinder = ({ route, navigation }) => {

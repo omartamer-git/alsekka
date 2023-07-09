@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import {
+  Image,
   SafeAreaView,
   StatusBar,
-  StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Image,
-  TextInput,
+  useColorScheme
 } from 'react-native';
-import { styles, SERVER_URL, palette } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Button from '../../components/Button';
+import { palette, styles } from '../../helper';
 
 import HeaderView from '../../components/HeaderView';
 

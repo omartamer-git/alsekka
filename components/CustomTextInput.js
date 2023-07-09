@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { TextInput, View, StyleSheet, Keyboard, Text, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
-import { isEmailValid, palette, rem } from '../helper';
+import React from 'react';
+import { StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import useAppContext from '../context/appContext';
+import { palette, rem } from '../helper';
 
 const CustomTextInput = ({ value,
     onChangeText, placeholder, style,

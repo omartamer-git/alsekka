@@ -1,26 +1,16 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
+    ScrollView,
     Text,
     TextInput,
-    Image,
-    TouchableOpacity,
-    ScrollView,
+    View
 } from 'react-native';
-import { styles, rem, containerStyle } from '../../helper';
-import Button from '../../components/Button';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
-import ScreenWrapper from '../ScreenWrapper';
-import useUserStore from '../../api/accountAPI';
-import { useFocusEffect } from '@react-navigation/native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import useUserStore from '../../api/accountAPI';
+import ErrorMessage from '../../components/ErrorMessage';
+import { containerStyle, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 const DigitBox = ({ swap, onFocus, inputRef }) => {
     const [digit, setDigit] = useState('');

@@ -1,42 +1,30 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    RefreshControl,
     SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
     ScrollView,
-    ActionSheetIOS,
+    Text,
     TouchableOpacity,
-    Modal,
-    RefreshControl
+    View,
+    useColorScheme
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import { Picker } from '@react-native-picker/picker';
-import CarCard from '../../components/CarCard';
-import PiggyBank from '../../svgs/piggybank';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
 import * as carsAPI from '../../api/carsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
-import ScreenWrapper from '../ScreenWrapper';
+import AutoComplete from '../../components/AutoComplete';
 import BottomModal from '../../components/BottomModal';
-import useUserStore from '../../api/accountAPI';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useFocusEffect } from '@react-navigation/native';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import Button from '../../components/Button';
+import CarCard from '../../components/CarCard';
+import CustomTextInput from '../../components/CustomTextInput';
+import { palette, rem, styles } from '../../helper';
+import PiggyBank from '../../svgs/piggybank';
+import ScreenWrapper from '../ScreenWrapper';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);

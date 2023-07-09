@@ -1,29 +1,25 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TouchableOpacity,
   View,
-  Image,
-  TextInput,
-  TouchableOpacity
+  useColorScheme
 } from 'react-native';
-import { styles, SERVER_URL, palette, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import { ScrollView } from 'react-native-gesture-handler';
-import useUserStore from '../../api/accountAPI';
-import HeaderLip from '../../components/HeaderLip';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import ErrorMessage from '../../components/ErrorMessage';
+import HeaderView from '../../components/HeaderView';
+import { palette, rem, styles } from '../../helper';
 
 const SignUpScreen = ({ route, navigation }) => {
   const [gender, setGender] = useState('MALE');

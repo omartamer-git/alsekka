@@ -1,40 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    Platform,
-    ScrollView,
     Dimensions,
+    RefreshControl,
+    ScrollView,
     StyleSheet,
-    RefreshControl
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as ridesAPI from '../../api/ridesAPI';
-import * as announcementsAPI from '../../api/announcementsAPI';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import AvailableRide from '../../components/AvailableRide';
-import { Notifications } from 'react-native-notifications';
-import AWS from 'aws-sdk/dist/aws-sdk-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
-import ScreenWrapper from '../ScreenWrapper';
 import useUserStore from '../../api/accountAPI';
+import * as announcementsAPI from '../../api/announcementsAPI';
+import * as ridesAPI from '../../api/ridesAPI';
+import AvailableRide from '../../components/AvailableRide';
+import ScreenWrapper from '../ScreenWrapper';
 
 
 const UserHome = ({ navigation, route }) => {

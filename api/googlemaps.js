@@ -1,4 +1,3 @@
-import axios from 'axios';
 import useAxiosManager from '../context/axiosManager';
 
 export const getPredictions = async (text) => {

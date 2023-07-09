@@ -1,7 +1,5 @@
-import { SERVER_URL } from '../helper';
-import axios from 'axios';
-import { create } from 'zustand';
 import * as Keychain from 'react-native-keychain';
+import { create } from 'zustand';
 
 const useAuthManager = create((set) => ({
     accessToken: null,

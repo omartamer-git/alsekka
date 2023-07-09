@@ -1,28 +1,20 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import {
     SafeAreaView,
     StatusBar,
-    StyleSheet,
     Text,
-    useColorScheme,
     View,
-    Image,
-    TextInput,
-    TouchableWithoutFeedback,
+    useColorScheme
 } from 'react-native';
-import { styles, SERVER_URL, palette, isPhoneNumberValid } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import useUserStore from '../../api/accountAPI';
-import HeaderView from '../../components/HeaderView';
-import { config } from '../../config';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
-import { useFocusEffect } from '@react-navigation/native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Yup from 'yup';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import HeaderView from '../../components/HeaderView';
+import { palette, styles } from '../../helper';
 
 
 const ForgotPasswordScreen = ({ route, navigation }) => {

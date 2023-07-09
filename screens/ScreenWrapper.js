@@ -1,20 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import {
     SafeAreaView,
     StatusBar,
-    useColorScheme,
     View,
-    Text,
-    TextInput,
-    ScrollView,
-    TouchableOpacity,
-    Modal
+    useColorScheme
 } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderLip from '../components/HeaderLip';
 import HeaderView from '../components/HeaderView';
 
-import { styles, loggedInStyles, palette, containerStyle, rem } from '../helper';
+import { palette, rem, styles } from '../helper';
 
 const ScreenWrapper = ({ screenName, children, navType, navAction, lip=true }) => {
     const isDarkMode = useColorScheme === 'dark';

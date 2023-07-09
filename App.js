@@ -5,62 +5,51 @@
  * @format
  * @flow strict-local
  */
-import 'react-native-gesture-handler';
 import React, { useCallback, useEffect, useState } from 'react';
-import type { Node } from 'react';
+import 'react-native-gesture-handler';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import HomeScreen from './screens/Guest/HomeScreen';
-import SignUpScreen from './screens/Guest/SignUpScreen';
-import LoginScreen from './screens/Guest/LoginScreen';
+import Account from './screens/Account/Account';
+import Wallet from './screens/Account/Wallet';
+import BookRide from './screens/BookRide/BookRide';
 import MapScreen from './screens/BookRide/MapScreen';
 import RideFinder from './screens/BookRide/RideFinder';
-import BookRide from './screens/BookRide/BookRide';
-import PostRide from './screens/PostRide/PostRide';
-import Account from './screens/Account/Account';
+import HomeScreen from './screens/Guest/HomeScreen';
+import LoginScreen from './screens/Guest/LoginScreen';
+import SignUpScreen from './screens/Guest/SignUpScreen';
 import UserHome from './screens/HomeScreen/UserHome';
+import PostRide from './screens/PostRide/PostRide';
 import ViewTrip from './screens/PostRide/ViewTrip';
 import ManageTrip from './screens/Rides/ManageTrip';
-import Wallet from './screens/Account/Wallet';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+import * as Keychain from 'react-native-keychain';
+import useUserStore from './api/accountAPI';
+import useAuthManager from './context/authManager';
 import { palette } from './helper';
-import Checkout from './screens/Rides/Checkout';
-import AllTrips from './screens/Rides/AllTrips';
+import AddBank from './screens/Account/AddBank';
 import AddCard from './screens/Account/AddCard';
+import AddMobileWallet from './screens/Account/AddMobileWallet';
 import ManageCars from './screens/Account/ManageCars';
 import NewCar from './screens/Account/NewCar';
-import Announcement from './screens/HomeScreen/Announcement';
+import Otp from './screens/Account/Otp';
 import SubmitDriverDocuments from './screens/Account/SubmitDriverDocuments';
-import ViewCommunities from './screens/Communities/ViewCommunities';
 import Chat from './screens/Chat/Chat';
 import ChatsList from './screens/Chat/ChatsList';
-import AddBank from './screens/Account/AddBank';
 import SearchCommunities from './screens/Communities/SearchCommunities';
+import ViewCommunities from './screens/Communities/ViewCommunities';
 import ViewCommunity from './screens/Communities/ViewCommunity';
-import Otp from './screens/Account/Otp';
-import AddMobileWallet from './screens/Account/AddMobileWallet';
-import * as Keychain from 'react-native-keychain';
-import useAuthManager from './context/authManager';
-import useAxiosManager from './context/axiosManager';
-import useUserStore from './api/accountAPI';
-import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
 import ChangePasswordScreen from './screens/Guest/ChangePasswordScreen';
-import { KeyboardAvoidingView } from 'react-native';
+import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
+import Announcement from './screens/HomeScreen/Announcement';
+import AllTrips from './screens/Rides/AllTrips';
+import Checkout from './screens/Rides/Checkout';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();

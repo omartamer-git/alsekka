@@ -1,32 +1,21 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Geolocation from '@react-native-community/geolocation';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
     Image,
-    TouchableOpacity,
     ScrollView,
     StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    useColorScheme
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, mapContainerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
 import AvailableRide from '../../components/AvailableRide';
-import Popover from 'react-native-popover-view/dist/Popover';
+import Button from '../../components/Button';
+import { containerStyle, customMapStyle, getDateShort, getTime, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;

@@ -1,29 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
+    RefreshControl,
     ScrollView,
-    RefreshControl
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, translateEnglishNumbers, containerStyle } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import HeaderView from '../../components/HeaderView';
-import DatePicker from 'react-native-date-picker';
-import CarCard from '../../components/CarCard';
 import * as carsAPI from '../../api/carsAPI';
-import ScreenWrapper from '../ScreenWrapper';
+import Button from '../../components/Button';
+import CarCard from '../../components/CarCard';
+import { containerStyle, palette, styles } from '../../helper';
 import CarImage from '../../svgs/car';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
+import ScreenWrapper from '../ScreenWrapper';
 
 const ManageCars = ({ route, navigation }) => {
     const [cars, setCars] = useState(null);

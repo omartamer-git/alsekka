@@ -1,21 +1,19 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
     ScrollView,
+    Text,
+    View
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
-import ScreenWrapper from '../ScreenWrapper';
-import useUserStore from '../../api/accountAPI';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
 import ErrorMessage from '../../components/ErrorMessage';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
+import { containerStyle, palette, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 const AddMobileWallet = ({ navigation, route }) => {
     const [addWalletError, setAddWalletError] = useState(null);

@@ -1,31 +1,21 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableHighlight,
-    ScrollView,
-    TouchableOpacity,
-    StyleSheet
-} from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import AvailableRide from '../../components/AvailableRide';
-import Passenger from '../../components/Passenger';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    useColorScheme
+} from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
+import AvailableRide from '../../components/AvailableRide';
+import Button from '../../components/Button';
+import Passenger from '../../components/Passenger';
+import { customMapStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 

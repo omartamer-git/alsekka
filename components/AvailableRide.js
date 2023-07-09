@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem } from '../helper';
 import FromToIndicator from './FromToIndicator';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, date, time, driverName, onPress=() => {}, style = {} }) => {
     const items = [];

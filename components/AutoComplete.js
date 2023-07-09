@@ -1,29 +1,25 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import CustomTextInput from './CustomTextInput';
-import HeaderView from './HeaderView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from '@react-native-community/geolocation';
+import { useFocusEffect } from '@react-navigation/native';
 import _debounce from 'lodash/debounce';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    ScrollView,
+    Modal,
+    NativeModules,
+    SafeAreaView,
     StyleSheet,
     Text,
-    useColorScheme,
     TouchableOpacity,
-    View,
-    Modal,
-    SafeAreaView,
-    StatusBar,
-    NativeModules,
-    Platform
+    View
 } from 'react-native';
-import { styles as styles2, palette, customMapStyle, mapPadding, rem } from '../helper';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import Button from './Button';
-import * as googleMapsAPI from '../api/googlemaps';
-import { useFocusEffect } from '@react-navigation/native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as googleMapsAPI from '../api/googlemaps';
+import { customMapStyle, mapPadding, palette, rem, styles as styles2 } from '../helper';
+import Button from './Button';
+import CustomTextInput from './CustomTextInput';
+import HeaderView from './HeaderView';
 
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;

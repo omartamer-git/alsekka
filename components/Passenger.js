@@ -1,6 +1,6 @@
-import { View, Text, Image } from "react-native";
-import { palette, rem, styles } from '../helper';
+import { Image, Text, View } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { palette, rem, styles } from '../helper';
 
 const Passenger = ({ borderTopWidth, data, children }) => {
     return (

@@ -1,28 +1,22 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  useColorScheme,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet
-} from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, palette, customMapStyle, mapContainerStyle, containerStyle, mapPadding, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import DatePicker from 'react-native-date-picker';
 import Geolocation from '@react-native-community/geolocation';
-import ScreenWrapper from '../ScreenWrapper';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme
+} from 'react-native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import DatePicker from 'react-native-date-picker';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import AutoComplete from '../../components/AutoComplete';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 const MapScreen = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);

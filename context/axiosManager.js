@@ -1,9 +1,9 @@
 import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import * as Keychain from 'react-native-keychain';
-import useAuthManager from './authManager';
-import { SERVER_URL } from '../helper';
 import { create } from 'zustand';
+import { SERVER_URL } from '../helper';
+import useAuthManager from './authManager';
 
 const useAxiosManager = create((set) => {
     const authAxios = axios.create({

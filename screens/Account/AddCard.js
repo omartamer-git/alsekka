@@ -1,41 +1,23 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import {
-    SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
-    TouchableOpacity,
-    Platform,
-    ScrollView,
-    StyleSheet
-} from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import AvailableRide from '../../components/AvailableRide';
-import { Notifications } from 'react-native-notifications';
-import AWS from 'aws-sdk/dist/aws-sdk-react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Visa from '../../svgs/visa';
-import Mastercard from '../../svgs/mastercard';
-import ScreenWrapper from '../ScreenWrapper';
-import useUserStore from '../../api/accountAPI';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import ErrorMessage from '../../components/ErrorMessage';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import { Formik } from 'formik';
+import React, { useCallback, useState } from 'react';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    View
+} from 'react-native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import LinearGradient from 'react-native-linear-gradient';
+import * as Yup from 'yup';
+import useUserStore from '../../api/accountAPI';
+import Button from '../../components/Button';
+import CustomTextInput from '../../components/CustomTextInput';
+import ErrorMessage from '../../components/ErrorMessage';
+import { containerStyle, palette, rem, styles } from '../../helper';
+import Mastercard from '../../svgs/mastercard';
+import Visa from '../../svgs/visa';
+import ScreenWrapper from '../ScreenWrapper';
 
 const AddCard = ({ navigation, route }) => {
     const [cardholderName, setCardholderName] = useState("");

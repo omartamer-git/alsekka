@@ -1,8 +1,7 @@
-import { SERVER_URL } from '../helper';
-import { create } from 'zustand';
-import useAxiosManager from '../context/axiosManager';
-import useAuthManager from '../context/authManager';
 import * as Keychain from 'react-native-keychain';
+import { create } from 'zustand';
+import useAuthManager from '../context/authManager';
+import useAxiosManager from '../context/axiosManager';
 
 const useUserStore = create((set) => ({
     id: '',

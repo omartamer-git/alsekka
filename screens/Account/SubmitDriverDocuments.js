@@ -1,40 +1,21 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     SafeAreaView,
-    StatusBar,
-    useColorScheme,
-    View,
-    Text,
-    TextInput,
-    Image,
     ScrollView,
-    ActionSheetIOS,
-    TouchableOpacity,
-    Modal,
-    StyleSheet
+    StyleSheet,
+    Text,
+    View,
+    useColorScheme
 } from 'react-native';
-import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
-import Button from '../../components/Button';
-import Separator from '../../components/Separator';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import HeaderView from '../../components/HeaderView';
-import AutoComplete from '../../components/AutoComplete';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import * as licensesAPI from '../../api/licenses';
-import DatePicker from 'react-native-date-picker';
-import Geolocation from '@react-native-community/geolocation';
-import FromToIndicator from '../../components/FromToIndicator';
-import { Picker } from '@react-native-picker/picker';
-import CarCard from '../../components/CarCard';
-import PiggyBank from '../../svgs/piggybank';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Pending from '../../svgs/pending';
-import HeaderLip from '../../components/HeaderLip';
-import ScreenWrapper from '../ScreenWrapper';
-import ErrorMessage from '../../components/ErrorMessage';
+import { launchImageLibrary } from 'react-native-image-picker';
 import useUserStore from '../../api/accountAPI';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
+import * as licensesAPI from '../../api/licenses';
+import Button from '../../components/Button';
+import ErrorMessage from '../../components/ErrorMessage';
+import HeaderLip from '../../components/HeaderLip';
+import { containerStyle, palette, rem, styles } from '../../helper';
+import Pending from '../../svgs/pending';
+import ScreenWrapper from '../ScreenWrapper';
 
 const carsAPI = require('../../api/carsAPI');
 

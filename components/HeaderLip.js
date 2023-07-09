@@ -1,6 +1,6 @@
-import { View, Text, Image } from "react-native";
+import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { styles, palette, rem } from '../helper';
+import { rem, styles } from '../helper';
 
 const HeaderLip = () => {
     return (
