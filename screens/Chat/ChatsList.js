@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -17,7 +17,6 @@ import {
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -35,6 +34,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
 import ScreenWrapper from '../ScreenWrapper';
 import useUserStore from '../../api/accountAPI';
+import { useFocusEffect } from '@react-navigation/native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 
 
 const ChatsList = ({ navigation, route }) => {

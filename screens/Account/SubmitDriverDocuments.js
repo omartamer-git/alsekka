@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -16,7 +16,6 @@ import {
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
@@ -34,6 +33,8 @@ import HeaderLip from '../../components/HeaderLip';
 import ScreenWrapper from '../ScreenWrapper';
 import ErrorMessage from '../../components/ErrorMessage';
 import useUserStore from '../../api/accountAPI';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 const carsAPI = require('../../api/carsAPI');
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -14,7 +14,6 @@ import {
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, translateEnglishNumbers, containerStyle } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import HeaderView from '../../components/HeaderView';
@@ -23,6 +22,8 @@ import CarCard from '../../components/CarCard';
 import * as carsAPI from '../../api/carsAPI';
 import ScreenWrapper from '../ScreenWrapper';
 import CarImage from '../../svgs/car';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ManageCars = ({ route, navigation }) => {
     const [cars, setCars] = useState(null);

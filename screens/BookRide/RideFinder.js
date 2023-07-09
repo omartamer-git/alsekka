@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -23,6 +23,8 @@ import Geolocation from '@react-native-community/geolocation';
 import FromToIndicator from '../../components/FromToIndicator';
 import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const RideFinder = ({ route, navigation }) => {
@@ -51,6 +53,19 @@ const RideFinder = ({ route, navigation }) => {
     }
 
     const isDarkMode = useColorScheme === 'dark';
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
 
 
     return (

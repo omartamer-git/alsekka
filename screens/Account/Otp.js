@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { styles, rem, containerStyle } from '../../helper';
 import Button from '../../components/Button';
-import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import { Formik } from 'formik';
@@ -20,6 +19,8 @@ import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
 import ScreenWrapper from '../ScreenWrapper';
 import useUserStore from '../../api/accountAPI';
+import { useFocusEffect } from '@react-navigation/native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 
 const DigitBox = ({ swap, onFocus, inputRef }) => {
     const [digit, setDigit] = useState('');
@@ -130,6 +131,20 @@ const Otp = ({ route, navigation }) => {
     useEffect(() => {
         resendOtp();
     }, [])
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
+
 
     return (
         <ScreenWrapper screenName="" navType="back" navAction={() => { navigation.goBack() }} lip={false}>

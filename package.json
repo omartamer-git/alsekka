@@ -25,6 +25,7 @@
     "formik": "^2.4.2",
     "react": "18.2.0",
     "react-native": "0.71.3",
+    "react-native-avoid-softinput": "^3.1.6",
     "react-native-date-picker": "^4.2.9",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-gesture-handler": "^2.9.0",

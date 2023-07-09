@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -15,7 +15,6 @@ import {
 import { styles, loggedInStyles, SERVER_URL, getDateTime, getDateSQL, getDateShort, getTime, palette, customMapStyle, containerStyle, rem, abbreviate, getPhoneCarrier } from '../../helper';
 import Button from '../../components/Button';
 import Separator from '../../components/Separator';
-import CustomTextInput from '../../components/CustomTextInput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderView from '../../components/HeaderView';
 import AutoComplete from '../../components/AutoComplete';
@@ -32,6 +31,8 @@ import Visa from '../../svgs/visa';
 import Mastercard from '../../svgs/mastercard';
 import ScreenWrapper from '../ScreenWrapper';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const Card = ({ type, number }) => {

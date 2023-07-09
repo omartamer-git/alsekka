@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -21,6 +21,8 @@ import { config } from '../../config';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const ChangePasswordScreen = ({ route, navigation }) => {
@@ -43,6 +45,20 @@ const ChangePasswordScreen = ({ route, navigation }) => {
             //setErrorMessage(err.response.data.error.message);
         });
     };
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
+
 
 
     return (

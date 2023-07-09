@@ -54,13 +54,13 @@ import SearchCommunities from './screens/Communities/SearchCommunities';
 import ViewCommunity from './screens/Communities/ViewCommunity';
 import Otp from './screens/Account/Otp';
 import AddMobileWallet from './screens/Account/AddMobileWallet';
-import { UserProvider } from './UserContext';
 import * as Keychain from 'react-native-keychain';
 import useAuthManager from './context/authManager';
 import useAxiosManager from './context/axiosManager';
 import useUserStore from './api/accountAPI';
 import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
 import ChangePasswordScreen from './screens/Guest/ChangePasswordScreen';
+import { KeyboardAvoidingView } from 'react-native';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -121,12 +121,10 @@ const App = () => {
 
 const LoggedInStack = ({ route, navigation }) => {
   return (
-    <UserProvider>
-      <UserStack.Navigator initialRouteName="TabScreen">
-        <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
-        <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-      </UserStack.Navigator>
-    </UserProvider>
+    <UserStack.Navigator initialRouteName="TabScreen">
+      <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
+      <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+    </UserStack.Navigator>
   );
 };
 

@@ -22,6 +22,8 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Button from './Button';
 import * as googleMapsAPI from '../api/googlemaps';
+import { useFocusEffect } from '@react-navigation/native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;
@@ -59,6 +61,19 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
         });
 
     }, [modalVisible]);
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
 
     const handleTextChange = async (data) => {
         if (data !== "") {

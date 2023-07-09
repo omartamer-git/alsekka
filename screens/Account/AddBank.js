@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -34,6 +34,8 @@ import useUserStore from '../../api/accountAPI';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import ErrorMessage from '../../components/ErrorMessage';
+import { useFocusEffect } from '@react-navigation/native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 
 const AddBank = ({ navigation, route }) => {
     const [addBankError, setAddBankError] = useState(null);
@@ -52,6 +54,20 @@ const AddBank = ({ navigation, route }) => {
         accountNumberInput: Yup.string().required('This field is required').max(34, "Account number too long"),
         swiftCodeInput: Yup.string().max(11, "Swift Code too long")
     });
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
+
 
     return (
         <ScreenWrapper screenName="Add Account" navType="back" navAction={() => navigation.goBack()}>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextInput, View, StyleSheet, Keyboard, Text, TouchableWithoutFeedback } from 'react-native';
+import { TextInput, View, StyleSheet, Keyboard, Text, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { isEmailValid, palette, rem } from '../helper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import useAppContext from '../context/appContext';
 
 const CustomTextInput = ({ value,
     onChangeText, placeholder, style,
@@ -45,7 +46,6 @@ const CustomTextInput = ({ value,
                 </View>
             </TouchableWithoutFeedback>
             {error && <Text adjustsFontSizeToFit numberOfLines={2} style={{ color: palette.red, fontSize: 12 * rem }}>{error}</Text>}
-
         </>
     );
 };

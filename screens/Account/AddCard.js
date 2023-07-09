@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -34,6 +34,8 @@ import useUserStore from '../../api/accountAPI';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import ErrorMessage from '../../components/ErrorMessage';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 const AddCard = ({ navigation, route }) => {
     const [cardholderName, setCardholderName] = useState("");
@@ -43,6 +45,20 @@ const AddCard = ({ navigation, route }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const {addCard} = useUserStore();
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
+
 
     Yup.addMethod(Yup.string, 'luhn', function () {
         return this.test('luhn', 'Invalid card number', function (value) {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     SafeAreaView,
     StatusBar,
@@ -34,6 +34,9 @@ import BottomModal from '../../components/BottomModal';
 import useUserStore from '../../api/accountAPI';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useFocusEffect } from '@react-navigation/native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -69,6 +72,20 @@ const PostRide = ({ route, navigation }) => {
                 console.error(error);
             });
     }
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
+
 
     useEffect(() => {
         loadCars();
@@ -166,9 +183,9 @@ const PostRide = ({ route, navigation }) => {
                                     priceInput: ''
                                 }}
                                 validationSchema={postRideSchema}
-                                onSubmit={(values) => { 
+                                onSubmit={(values) => {
                                     postRide(values.priceInput, values.dateInput, values.timeInput, values.carInput);
-                                 }}
+                                }}
                             >
                                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
                                     <>

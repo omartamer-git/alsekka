@@ -26,6 +26,8 @@ import ScreenWrapper from '../ScreenWrapper';
 import CommunityCard from '../../components/CommunityCard';
 import AvailableRide from '../../components/AvailableRide';
 import CoffeeIcon from '../../svgs/coffee';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const ViewCommunity = ({ navigation, route }) => {
@@ -81,6 +83,20 @@ const ViewCommunity = ({ navigation, route }) => {
         }
         );
     }
+
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
+
+    useFocusEffect(onFocusEffect); // register callback to focus events
+
 
     return (
         <ScreenWrapper screenName={"Search"} navType="back" navAction={() => navigation.goBack()}>
