@@ -74,6 +74,7 @@ const useUserStore = create((set) => ({
 
             return data;
         } catch (err) {
+            console.log("next error is in userInfo in accountAPI")
             throw err;
         }
     },
@@ -300,7 +301,29 @@ const useUserStore = create((set) => ({
         return true;
     },
 
-    sendOtpSecurity: async(phone, otp) => {
+    uploadProfilePicture: async (imageFile) => {
+        console.log(imageFile);
+        const image = imageFile.assets[0];
+        const formData = new FormData();
+        formData.append('file', {
+            uri: image.uri,
+            type: image.type,
+            name: image.fileName || image.uri.split('/').pop(),
+        });
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post("/uploadprofilepicture", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Accept: "application/json",
+            }
+        });
+
+        const data = response.data;
+        set(data);
+    },
+
+    sendOtpSecurity: async (phone, otp) => {
         const url = `/verifysecurity`;
         const state = useUserStore.getState();
 
@@ -316,11 +339,11 @@ const useUserStore = create((set) => ({
             },
         });
         const data = response.data;
-        
+
         return data.token;
     },
 
-    resetPassword: async(token, newPassword) => {
+    resetPassword: async (token, newPassword) => {
         const url = `/changepassword`;
 
         const body = {

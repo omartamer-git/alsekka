@@ -50,6 +50,7 @@ import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
 import Announcement from './screens/HomeScreen/Announcement';
 import AllTrips from './screens/Rides/AllTrips';
 import Checkout from './screens/Rides/Checkout';
+import Referral from './screens/Account/Referral';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -73,6 +74,12 @@ const App = () => {
   const loadJWT = useCallback(async () => {
     try {
       const value = await Keychain.getGenericPassword();
+      if(!value) {
+        authManager.setAccessToken(null);
+        authManager.setRefreshToken(null);
+        authManager.setAuthenticated(false);  
+        return setState("Guest");
+      }
       const jwt = JSON.parse(value.password);
 
       authManager.setAccessToken(jwt.accessToken || null);
@@ -81,6 +88,7 @@ const App = () => {
       await userStore.userInfo();
       setState("LoggedIn");
     } catch (error) {
+      console.log(error);
       console.log(`Keychain Error: ${error.message}`);
       setState("Guest");
       authManager.setAccessToken(null);
@@ -90,7 +98,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    loadJWT();
+    loadJWT()
   }, [loadJWT])
 
   if (state === 'LOADING') {
@@ -217,6 +225,7 @@ const AccountNavigator = ({ route, navigation }) => {
       <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
       <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
       <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
     </AccountStack.Navigator>
   );
 }

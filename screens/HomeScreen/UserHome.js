@@ -37,44 +37,39 @@ const UserHome = ({ navigation, route }) => {
 
     const MAX_CAROUSEL_TEXT_LENGTH = 250;
 
-    const loadData = () => {
-        setRefreshing(true);
-        const promises = [ridesAPI.upcomingRides().then((data) => {
-            if (data) {
-                setNextRideData(data);
-                setNextRideDate(new Date(data.datetime));
-            }
-        }),
+    const loadData = async () => {
+        try {
+            setRefreshing(true);
 
-        ridesAPI.driverRides(1).then((data) => {
-            if (data.length === 0) {
-                // no upcoming rides
+            const data1 = await ridesAPI.upcomingRides();
+            if (data1) {
+                setNextRideData(data1);
+                setNextRideDate(new Date(data1.datetime));
             }
-            else if (data[0].driver === 0) {
+
+            const data2 = await ridesAPI.driverRides(1);
+            if (data2.length === 0) {
+                // no upcoming rides
+            } else if (data2[0].driver === 0) {
                 setDriverElement(true);
             } else {
                 // driver, has an upcoming ride
                 setDriverElement(true);
-                setDriverTripId(data[0].id);
-                setDriverMainTextFrom(data[0].mainTextFrom);
-                setDriverMainTextTo(data[0].mainTextTo)
+                setDriverTripId(data2[0].id);
+                setDriverMainTextFrom(data2[0].mainTextFrom);
+                setDriverMainTextTo(data2[0].mainTextTo);
             }
-        }),
 
-        announcementsAPI.getAnnouncements(1).then((data) => {
-            setCarouselData(data);
-        })];
+            const data3 = await announcementsAPI.getAnnouncements(1);
+            setCarouselData(data3);
 
-        Promise.all(promises)
-            .then(() => {
-                // All API calls have succeeded
-                setRefreshing(false);
-            })
-            .catch((error) => {
-                // Handle errors if any API call fails
-                console.error("Error occurred during API calls:", error);
-                setRefreshing(false); // Set refreshing to false even in case of errors
-            });
+            // All API calls have succeeded
+            setRefreshing(false);
+        } catch (error) {
+            // Handle errors if any API call fails
+            console.error("Error occurred during API calls:", error);
+            setRefreshing(false); // Set refreshing to false even in case of errors
+        }
     };
 
     useEffect(() => {

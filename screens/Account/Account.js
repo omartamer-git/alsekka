@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
     Image,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -19,6 +20,9 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import useAuthManager from '../../context/authManager';
+import { launchImageLibrary } from 'react-native-image-picker';
+import useAxiosManager from '../../context/axiosManager';
 
 const Account = ({ route, navigation }) => {
     const [ratings, setRatings] = useState(null);
@@ -30,9 +34,10 @@ const Account = ({ route, navigation }) => {
     const [editPhoneText, setEditPhoneText] = useState(userStore.phone);
     const [emailError, setEmailError] = useState(null);
     const [phoneError, setPhoneError] = useState(null);
-
+    const authManager = useAuthManager();
+    const { authAxios } = useAxiosManager();
     const logout = () => {
-        // globalVars.reset();
+        authManager.logout();
         navigation.replace("Guest");
     };
 
@@ -70,7 +75,7 @@ const Account = ({ route, navigation }) => {
         firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
         lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
     });
-    
+
     const editEmailSchema = Yup.object().shape({
         emailInput: Yup.string().email('Please enter a valid email address').required('This field is required'),
     });
@@ -106,18 +111,28 @@ const Account = ({ route, navigation }) => {
         });
     };
 
+    const imagePickerOptions = { title: 'New Profile Picture', multiple: false, mediaType: 'photo', quality: 0.75, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
+
+
+    const onClickUpload = async (e) => {
+        const response = await launchImageLibrary(imagePickerOptions);
+        if (!response.didCancel && !response.error) {
+            userStore.uploadProfilePicture(response);
+        }
+    };
+
     return (
         <>
             <ScreenWrapper screenName="Account" navigation={navigation}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
-                        <View style={accountStyles.profilePictureView}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userStore.profilePicture && <Image source={{ uri: userStore.profilePicture }} style={accountStyles.profilePicture} />}
 
                             <View style={accountStyles.profilePictureOverlay}>
                                 <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
 
                     <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
@@ -170,6 +185,7 @@ const Account = ({ route, navigation }) => {
                     </View>
 
                     <View style={[styles.w100]}>
+                        <Button bgColor={palette.accent} textColor={palette.white} text="Refer a friend" onPress={() => { navigation.navigate('Referral') }} />
                         <Button bgColor={palette.primary} textColor={palette.white} text="Log Out" onPress={logout} />
                     </View>
                 </ScrollView>

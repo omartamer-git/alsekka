@@ -22,9 +22,9 @@ const ViewCommunities = ({ navigation, route }) => {
     const [feed, setFeed] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = () => {
+    const onRefresh = async () => {
         setRefreshing(true);
-        loadFeed();
+        await loadFeed();
         setRefreshing(false);
     };
 
@@ -32,22 +32,16 @@ const ViewCommunities = ({ navigation, route }) => {
         loadFeed();
     }, []);
 
-    const loadFeed = () => {
-        communitiesAPI.getCommunities().then(
-            data => {
-                if (data.length != 0) {
-                    setCommunities(data);
-                }
-            }
-        );
+    const loadFeed = async () => {
+        const communitiesData = await communitiesAPI.getCommunities();
+        if (communitiesData.length !== 0) {
+            setCommunities(communitiesData);
+        }
 
-        communitiesAPI.communitiesFeed().then(
-            data => {
-                if (data.length != 0) {
-                    setFeed(data);
-                }
-            }
-        );
+        const feedData = await communitiesAPI.communitiesFeed();
+        if (feedData.length !== 0) {
+            setFeed(feedData);
+        }
     };
 
     const onFocusEffect = useCallback(() => {
@@ -82,7 +76,7 @@ const ViewCommunities = ({ navigation, route }) => {
                                 return (
                                     <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
                                         <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
-                                        <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.Driver.firstName} {data.Driver.lastName} in {data.Communities[0].community_name}</Text>
+                                        <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.Driver.firstName} {data.Driver.lastName} in {data.Community.community_name}</Text>
                                     </View>
                                 );
                             })

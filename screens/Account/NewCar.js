@@ -232,7 +232,8 @@ const NewCar = ({ route, navigation }) => {
                             />
 
                             <Text style={styles.inputText}>License Plate (Letters) *</Text>
-                            <View style={[styles.w100, styles.flexRow]}>
+                            {/* <View style={[styles.w100, styles.flexRow, styles.border1]}> */}
+                            <View style={[styles.flexRow, styles.w100]}>
                                 <CustomTextInput
                                     style={styles.flexOne}
                                     textStyles={styles.textEnd}
@@ -276,7 +277,9 @@ const NewCar = ({ route, navigation }) => {
 
                                     placeholder="١"
                                 />
+
                             </View>
+                            {/* </View> */}
 
                             <Text style={styles.inputText}>License Plate (Numbers)</Text>
                             <CustomTextInput

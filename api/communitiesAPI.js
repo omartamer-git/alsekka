@@ -32,6 +32,18 @@ export const communitiesFeed = async (communityId) => {
     }
 };
 
+export const myCommunities = async () => {
+    const url = `/mycommunities`;
+    const uid = useUserStore.getState().id;
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url);
+    const data = response.data;
+    console.log("AAAAAA");
+    console.log(data);
+    return data;
+}
+
 export const searchCommunities = async (name) => {
     const url = `/searchcommunities`;
     const params = {

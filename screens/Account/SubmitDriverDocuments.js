@@ -73,6 +73,8 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     };
 
     useEffect(() => {
+        console.log(licenseStatus);
+        console.log(userStore.driver);
         licensesAPI.getLicense().then((data) => {
             setLicenseStatus(data === null ? 0 : data.status);
         });
@@ -84,7 +86,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
                     <HeaderLip />
 
-                    {userStore.driver === 0 && licenseStatus === 0 &&
+                    {!userStore.driver && !licenseStatus &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Text style={styles.inputText}>Front Side Driver's License Upload *</Text>
                             <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
@@ -97,7 +99,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                             <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
                         </View>
                     }
-                    {userStore.driver === 0 && licenseStatus === 'PENDING' &&
+                    {!userStore.driver && licenseStatus === 'PENDING' &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Pending width="300" height="300" />
                             <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>Your documents are being reviewed</Text>

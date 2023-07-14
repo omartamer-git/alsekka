@@ -107,7 +107,7 @@ export const driverRides = async (limit) => {
     }
 };
 
-export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car) => {
+export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car, community) => {
     const url = `/postride`;
     const uid = useUserStore.getState().id;
     const body = {
@@ -121,6 +121,7 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         driver: uid,
         datetime: getDateTime(date, false),
         car: car,
+        community: community
     };
 
     try {

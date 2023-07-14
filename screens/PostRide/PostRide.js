@@ -15,6 +15,7 @@ import DatePicker from 'react-native-date-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
+import * as communitiesAPI from '../../api/communitiesAPI';
 import * as carsAPI from '../../api/carsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AutoComplete from '../../components/AutoComplete';
@@ -25,6 +26,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
+import CommunityCard from '../../components/CommunityCard';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -38,7 +40,12 @@ const PostRide = ({ route, navigation }) => {
 
     const [carSelectorOpen, setCarSelectorOpen] = useState(false);
     const [carSelectorText, setCarSelectorText] = useState('Choose a car..');
+
+    const [communitySelectorOpen, setCommunitySelectorOpen] = useState(false);
+    const [communitySelectorText, setCommunitySelectorText] = useState('Choose a community..');
+
     const [usableCars, setUsableCars] = useState(null);
+    const [communities, setCommunities] = useState(null);
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -59,6 +66,12 @@ const PostRide = ({ route, navigation }) => {
             .catch((error) => {
                 console.error(error);
             });
+    };
+
+    const loadCommunities = () => {
+        communitiesAPI.myCommunities().then(data => {
+            setCommunities(data);
+        });
     }
 
     const onFocusEffect = useCallback(() => {
@@ -77,6 +90,7 @@ const PostRide = ({ route, navigation }) => {
 
     useEffect(() => {
         loadCars();
+        loadCommunities();
     }, []);
 
 
@@ -100,13 +114,13 @@ const PostRide = ({ route, navigation }) => {
         setCarSelectorOpen(false);
     };
 
-    const postRide = (pricePerSeat, date, time, selectedCar) => {
-        console.log("!!!");
-        console.log(pricePerSeat);
-        console.log(date);
-        console.log(time);
-        console.log(selectedCar);
-        console.log("!!!");
+    const selectCommunity = (data) => {
+        const communitySelectorText = data.name;
+        setCommunitySelectorText(communitySelectorText);
+        setCommunitySelectorOpen(false);
+    }
+
+    const postRide = (pricePerSeat, date, time, selectedCar, selectedCommunity) => {
         if (markerFrom && markerTo) {
             let newDate = date;
             newDate.setHours(time.getHours());
@@ -115,7 +129,7 @@ const PostRide = ({ route, navigation }) => {
             console.log(newDate);
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id);
+                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null);
         }
     }
 
@@ -149,7 +163,8 @@ const PostRide = ({ route, navigation }) => {
         timeInput: Yup.date().required('This field is required'),
         carInput: Yup.object().required('This field is required'),
         seatsInput: Yup.number().integer().max(7, 'Too many seats available').required('This field is required'),
-        priceInput: Yup.number().required('This field is required')
+        priceInput: Yup.number().required('This field is required'),
+        communityInput: Yup.object()
     });
 
     const isDarkMode = useColorScheme === 'dark';
@@ -168,11 +183,12 @@ const PostRide = ({ route, navigation }) => {
                                     timeInput: '',
                                     carInput: '',
                                     seatsInput: '',
-                                    priceInput: ''
+                                    priceInput: '',
+                                    communityInput: ''
                                 }}
                                 validationSchema={postRideSchema}
                                 onSubmit={(values) => {
-                                    postRide(values.priceInput, values.dateInput, values.timeInput, values.carInput);
+                                    postRide(values.priceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput);
                                 }}
                             >
                                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
@@ -321,6 +337,40 @@ const PostRide = ({ route, navigation }) => {
                                             error={touched.priceInput && errors.priceInput}
                                             iconLeft="attach-money"
                                         />
+
+                                        <Text style={styles.inputText}>Post to Community (Optional)</Text>
+                                        <CustomTextInput
+                                            placeholder="Select a community.."
+                                            value={communitySelectorText}
+                                            onPressIn={() => {
+                                                setFieldTouched('communityInput', true)
+                                                setCommunitySelectorOpen(true);
+                                            }}
+                                            iconLeft="chat"
+                                            editable={false}
+                                            error={touched.communityInput && errors.communityInput}
+                                        />
+
+                                        <BottomModal onHide={() => setCommunitySelectorOpen(false)} modalVisible={communitySelectorOpen}>
+                                            {communities && communities.map((data, index) => {
+                                                console.log(data);
+                                                return (
+                                                    <CommunityCard
+                                                        key={"community" + index}
+                                                        name={data.name}
+                                                        picture={data.picture}
+                                                        minified={true}
+                                                        onPress={() => {
+                                                            setFieldValue('communityInput', data);
+                                                            handleBlur('communityInput');
+                                                            selectCommunity(data);
+                                                        }}
+                                                    />
+                                                );
+                                            })}
+                                        </BottomModal>
+
+
 
                                         <Button text="Post Ride" bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} />
                                     </>

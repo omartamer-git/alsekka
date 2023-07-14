@@ -32,35 +32,34 @@ const useAxiosManager = create((set) => {
             refreshToken: useAuthManager.getState().refreshToken,
         };
 
-        const options = {
-            method: 'POST',
-            data,
-            url: `/refreshToken`,
-        };
+        console.log("REFRESHED TOKEN");
 
-        return axios(options)
-            .then(async tokenRefreshResponse => {
-                failedRequest.response.config.headers.Authorization =
-                    'Bearer ' + tokenRefreshResponse.data.accessToken;
+        return publicAxios.post(`/refreshToken`, data, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(async tokenRefreshResponse => {
+            console.log(tokenRefreshResponse);
+            failedRequest.response.config.headers.Authorization =
+                'Bearer ' + tokenRefreshResponse.data.accessToken;
 
-                useAuthManager.getState().setAccessToken(tokenRefreshResponse.data.accessToken);
+            useAuthManager.getState().setAccessToken(tokenRefreshResponse.data.accessToken);
 
-                await Keychain.setGenericPassword(
-                    'token',
-                    JSON.stringify({
-                        accessToken: tokenRefreshResponse.data.accessToken,
-                        refreshToken: useAuthManager.getState().refreshToken,
-                    }),
-                );
+            await Keychain.setGenericPassword(
+                'token',
+                JSON.stringify({
+                    accessToken: tokenRefreshResponse.data.accessToken,
+                    refreshToken: useAuthManager.getState().refreshToken,
+                }),
+            );
 
-                return Promise.resolve();
-            })
-            .catch(e => {
-                useAuthManager().getState().setAccessToken(null);
-                useAuthManager().getState().setRefreshToken(null);
-            });
+            return Promise.resolve();
+        }).catch(e => {
+            console.error(e);
+            useAuthManager.getState().setAccessToken(null);
+            useAuthManager.getState().setRefreshToken(null);
+        });
     };
-
 
     createAuthRefreshInterceptor(authAxios, refreshAuthLogic, {});
     return ({
