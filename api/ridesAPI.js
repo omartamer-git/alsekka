@@ -107,7 +107,7 @@ export const driverRides = async (limit) => {
     }
 };
 
-export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car, community) => {
+export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car, community, gender) => {
     const url = `/postride`;
     const uid = useUserStore.getState().id;
     const body = {
@@ -121,7 +121,8 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         driver: uid,
         datetime: getDateTime(date, false),
         car: car,
-        community: community
+        community: community,
+        gender: gender
     };
 
     try {
@@ -240,7 +241,11 @@ export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating)
 
     try {
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(url, body);
+        const response = await axiosManager.authAxios.post(url, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         const data = response.data;
         return data;
     } catch (err) {
@@ -249,6 +254,7 @@ export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating)
 };
 
 export const checkPassengerIn = async (passengerId, tripId) => {
+    console.log(tripId);
     const url = `/checkIn`;
     const params = {
         tripId: tripId,

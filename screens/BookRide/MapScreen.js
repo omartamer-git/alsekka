@@ -17,6 +17,7 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import useUserStore from '../../api/accountAPI';
 
 const MapScreen = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,6 +43,7 @@ const MapScreen = ({ route, navigation }) => {
   const [timePickerOpen, setTimePickerOpen] = useState(false);
   const [time, setTime] = useState(new Date());
   const [genderChoice, setGenderChoice] = useState('ANY');
+  const { gender } = useUserStore();
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
@@ -98,13 +100,13 @@ const MapScreen = ({ route, navigation }) => {
     AvoidSoftInput.setShouldMimicIOSBehavior(true);
     AvoidSoftInput.setEnabled(true);
     return () => {
-        // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-        AvoidSoftInput.setEnabled(false);
-        AvoidSoftInput.setShouldMimicIOSBehavior(false);
+      // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+      AvoidSoftInput.setEnabled(false);
+      AvoidSoftInput.setShouldMimicIOSBehavior(false);
     };
-}, []);
+  }, []);
 
-useFocusEffect(onFocusEffect); // register callback to focus events
+  useFocusEffect(onFocusEffect); // register callback to focus events
 
 
   return (
@@ -187,15 +189,21 @@ useFocusEffect(onFocusEffect); // register callback to focus events
           </Text>
 
           <View style={[styles.flexRow, styles.w100, styles.mv10]}>
-            <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
-              <Text style={mapScreenStyles.genderText}>Female Only</Text>
-            </TouchableOpacity>
+            {
+              gender === "FEMALE" &&
+              <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
+                <Text style={mapScreenStyles.genderText}>Female Only</Text>
+              </TouchableOpacity>
+            }
             <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
               <Text style={mapScreenStyles.genderText}>Any</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
-              <Text style={mapScreenStyles.genderText}>Male Only</Text>
-            </TouchableOpacity>
+            {
+              gender === "MALE" &&
+              <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
+                <Text style={mapScreenStyles.genderText}>Male Only</Text>
+              </TouchableOpacity>
+            }
           </View>
 
           <View style={styles.flexOne} />

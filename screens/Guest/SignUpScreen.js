@@ -33,7 +33,7 @@ const SignUpScreen = ({ route, navigation }) => {
 
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
     userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
-      userStore.loadUserInfo().then(() => {
+      userStore.login(phoneNum, password).then(() => {
         if (userStore.verified) {
           navigation.popToTop();
           navigation.replace("LoggedIn", {
@@ -43,9 +43,9 @@ const SignUpScreen = ({ route, navigation }) => {
             }
           });
         } else {
-          navigation.navigate('Otp', { phone: phoneNum });
+          navigation.navigate('Otp', { phone: phoneNum, onVerify: 'login' });
         }
-      });
+      })
     }).catch(err => {
       setErrorMessage(err.response.data.error.message);
     });

@@ -71,13 +71,37 @@ const App = () => {
   const userStore = useUserStore();
   const [state, setState] = useState('LOADING');
 
+  const config = {
+    screens: {
+      LoggedIn: {
+        screens: {
+          TabScreen: {
+            screens: {
+              Home: {
+                screens: {
+                  "View Trip": 'ride/:tripId'
+                }
+              }
+            }
+          }
+        },
+      },
+    },
+  };
+
+  const linking = {
+    prefixes: ['alsekka://', 'https://alsekka.com'],
+    config
+  };
+
+
   const loadJWT = useCallback(async () => {
     try {
       const value = await Keychain.getGenericPassword();
-      if(!value) {
+      if (!value) {
         authManager.setAccessToken(null);
         authManager.setRefreshToken(null);
-        authManager.setAuthenticated(false);  
+        authManager.setAuthenticated(false);
         return setState("Guest");
       }
       const jwt = JSON.parse(value.password);
@@ -105,10 +129,15 @@ const App = () => {
     return (<></>);
   } else {
     return (
-      <NavigationContainer>
-        <RootStack.Navigator initialRouteName={state}>
-          <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
-          <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+      <NavigationContainer linking={linking}>
+        <RootStack.Navigator>
+          {
+            authManager.authenticated === false ? (
+              <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
+            ) : (
+              <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+            )
+          }
         </RootStack.Navigator>
       </NavigationContainer>
     );

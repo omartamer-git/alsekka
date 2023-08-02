@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         backgroundColor: palette.white
     },
     input: {
-        height: 23 * rem,
+        height: 23,
         textAlign: 'left',
         fontWeight: '500',
         color: palette.accent,

@@ -18,7 +18,7 @@ export const sendMessage = async (receiver, messageText) => {
             id: data.id,
             message: messageText,
             receiverId: receiver,
-            senderId: uid
+            senderId: useUserStore.getState().id
         };
         return [message];
     } catch (err) {

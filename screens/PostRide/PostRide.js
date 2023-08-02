@@ -5,6 +5,7 @@ import {
     RefreshControl,
     SafeAreaView,
     ScrollView,
+    StyleSheet,
     Text,
     TouchableOpacity,
     View,
@@ -51,6 +52,8 @@ const PostRide = ({ route, navigation }) => {
 
     const [fromTouched, setFromTouched] = useState(false);
     const [toTouched, setToTouched] = useState(false);
+    
+    const [genderChoice, setGenderChoice] = useState('ANY');
 
     const userStore = useUserStore();
 
@@ -129,7 +132,7 @@ const PostRide = ({ route, navigation }) => {
             console.log(newDate);
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null);
+                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice);
         }
     }
 
@@ -163,7 +166,7 @@ const PostRide = ({ route, navigation }) => {
         timeInput: Yup.date().required('This field is required'),
         carInput: Yup.object().required('This field is required'),
         seatsInput: Yup.number().integer().max(7, 'Too many seats available').required('This field is required'),
-        priceInput: Yup.number().required('This field is required'),
+        priceInput: Yup.number().required('This field is required').min(20, "Price should be at least 20 EGP"),
         communityInput: Yup.object()
     });
 
@@ -338,6 +341,31 @@ const PostRide = ({ route, navigation }) => {
                                             iconLeft="attach-money"
                                         />
 
+                                        <Text style={[styles.dark, styles.bold]}>You Get: {Math.ceil(0.9 * values.priceInput)} EGP</Text>
+                                        <Text style={[styles.dark, styles.bold]}>Our Commission: {Math.floor(0.1 * values.priceInput)} EGP (10%)</Text>
+
+
+                                        <Text style={styles.inputText}>Gender to Carpool With</Text>
+
+                                        <View style={[styles.flexRow, styles.w100, styles.mv10]}>
+                                            {
+                                                userStore.gender === "FEMALE" &&
+                                                <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
+                                                    <Text style={postRideStyles.genderText}>Female Only</Text>
+                                                </TouchableOpacity>
+                                            }
+                                            <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
+                                                <Text style={postRideStyles.genderText}>Any</Text>
+                                            </TouchableOpacity>
+                                            {
+                                                userStore.gender === "MALE" &&
+                                                <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
+                                                    <Text style={postRideStyles.genderText}>Male Only</Text>
+                                                </TouchableOpacity>
+                                            }
+                                        </View>
+
+
                                         <Text style={styles.inputText}>Post to Community (Optional)</Text>
                                         <CustomTextInput
                                             placeholder="Select a community.."
@@ -394,6 +422,19 @@ const PostRide = ({ route, navigation }) => {
         </ScreenWrapper>
 
     );
-}
+};
+
+const postRideStyles = StyleSheet.create({
+    genderButton: {
+        ...styles.flexOne,
+        ...styles.fullCenter,
+        height: 48 * rem,
+    },
+
+    genderText: {
+        ...styles.white,
+        ...styles.bold
+    }
+});
 
 export default PostRide;

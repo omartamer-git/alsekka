@@ -12,6 +12,7 @@ const useUserStore = create((set) => ({
     email: '',
     balance: '',
     rating: '',
+    gender: '',
     driver: false,
     verified: false,
     availableCards: [],
@@ -31,7 +32,8 @@ const useUserStore = create((set) => ({
     setAvailableCards: (cards) => set((state) => ({ availableCards: cards })),
     setBankAccounts: (accounts) => set((state) => ({ bankAccounts: accounts })),
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
-
+    setGender: (gender) => set((state) => ({gender: gender})),
+    
     login: async (phoneNum, password) => {
         try {
             const axiosManager = useAxiosManager.getState();

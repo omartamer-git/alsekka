@@ -48,6 +48,7 @@ const ViewTrip = ({ route, navigation }) => {
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
+                console.log(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
                 setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
@@ -158,7 +159,7 @@ const ViewTrip = ({ route, navigation }) => {
                             {!isDriver &&
                                 <View style={[styles.flexOne, styles.alignEnd]}>
                                     <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
-                                        <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
+                                        <MaterialIcons name="chat-bubble" size={30} color={palette.primary} onPress={() => goToChat(tripDetails.Driver.id)} />
                                     </TouchableOpacity>
                                 </View>}
                         </View>

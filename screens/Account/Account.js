@@ -38,7 +38,6 @@ const Account = ({ route, navigation }) => {
     const { authAxios } = useAxiosManager();
     const logout = () => {
         authManager.logout();
-        navigation.replace("Guest");
     };
 
     useEffect(() => {

@@ -15,7 +15,7 @@ const useAuthManager = create((set) => ({
         set({
             accessToken: null,
             refreshToken: null,
-            authenticated: null
+            authenticated: false
         });
     },
 
