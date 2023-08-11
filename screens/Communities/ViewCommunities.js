@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+    Platform,
     RefreshControl,
     ScrollView,
     Text,
@@ -44,27 +45,31 @@ const ViewCommunities = ({ navigation, route }) => {
         }
     };
 
-    const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
-    }, []);
-
-    useFocusEffect(onFocusEffect); // register callback to focus events
+    if(Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
+    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
 
 
 
     return (
         <ScreenWrapper screenName={"Communities"}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  >
-                <View style={[styles.w100, styles.flexRow, styles.alignCenter, styles.spaceBetween, styles.mt20]}>
+                <View style={[styles.w100, styles.flexRow, styles.alignCenter, styles.mt20]}>
                     <Text style={[styles.headerText2]}>Communities</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Search Communities')}><MaterialIcons name="search" size={24} /></TouchableOpacity>
+                    <View style={[styles.flexOne]} />
+                    <TouchableOpacity style={[styles.mr5]} onPress={() => navigation.navigate('Search Communities')}><MaterialIcons name="search" size={24} /></TouchableOpacity>
+                    <TouchableOpacity style={[styles.ml5]} onPress={() => navigation.navigate('New Community')}><MaterialIcons name="add" size={24} /></TouchableOpacity>
                 </View>
 
                 {feed && feed.length > 0 &&
@@ -75,7 +80,7 @@ const ViewCommunities = ({ navigation, route }) => {
                                 const nextRideDate = new Date(data.datetime);
                                 return (
                                     <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                        <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
+                                        <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
                                         <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.Driver.firstName} {data.Driver.lastName} in {data.Community.community_name}</Text>
                                     </View>
                                 );

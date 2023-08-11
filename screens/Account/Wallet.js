@@ -14,24 +14,10 @@ import useUserStore from '../../api/accountAPI';
 import Button from '../../components/Button';
 import { abbreviate, containerStyle, getPhoneCarrier, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import BankCard from '../../components/BankCard';
 
 
-const Card = ({ type, number }) => {
-    return (
-        <TouchableOpacity activeOpacity={0.75} style={{ flexDirection: 'row', width: '100%', height: 48 * rem, alignItems: 'center', borderBottomWidth: 1, borderColor: palette.light }}>
-            {
-                (type == 'mastercard') ?
-                    <FontsAwesome5 name="cc-mastercard" size={24 * rem} color={palette.accent}/>
-                    :
-                    <FontsAwesome5 name="cc-visa" size={24 * rem} color={palette.accent}/>
-            }
-            <Text style={[styles.ml15, styles.semiBold]}>•••• {number}</Text>
-            <View style={[styles.flexOne, styles.alignEnd]}>
-                <FontsAwesome5 name="chevron-right" size={18 * rem} color={palette.dark}/>
-            </View>
-        </TouchableOpacity>
-    );
-};
+
 
 const WithdrawalMethod = ({ type, number }) => {
     return (
@@ -46,29 +32,8 @@ const WithdrawalMethod = ({ type, number }) => {
 };
 
 const Wallet = ({ navigation, route }) => {
-    const [balance, setBalance] = useState(0);
-    const [cards, setCards] = useState([]);
-    const [banks, setBanks] = useState([]);
-    const [mobileWallets, setMobileWallets] = useState([]);
-    const userStore = useUserStore();
+    const {availableCards, bankAccounts, mobileWallets, balance} = useUserStore();
 
-    useEffect(() => {
-        setBalance(userStore.balance);
-        userStore.getAvailableCards().then((data) => {
-            console.log(data);
-            setCards(data);
-        });
-
-        userStore.getBankAccounts().then((data) => {
-            console.log(data);
-            setBanks(data);
-        });
-
-        userStore.getMobileWallets().then((data) => {
-            console.log(data);
-            setMobileWallets(data);
-        })
-    }, []);
 
     const viewTrip = (id) => {
         navigation.navigate('View Trip', { tripId: id });
@@ -90,9 +55,9 @@ const Wallet = ({ navigation, route }) => {
 
                 <Text style={[styles.headerText3, styles.mt15]}>Payment Methods</Text>
                 {
-                    cards.map((data, index) => {
+                    availableCards.map((data, index) => {
                         return (
-                            <Card type={data.type} number={data.number} key={"card" + index} />
+                            <BankCard type={data.type} number={data.number} key={"card" + index} />
                         );
                     })
                 }
@@ -104,7 +69,7 @@ const Wallet = ({ navigation, route }) => {
                 <Text style={[styles.headerText3, styles.mt15]}>Withdrawal Options</Text>
 
                 {
-                    banks.map((data, index) => {
+                    bankAccounts.map((data, index) => {
                         return (
                             <WithdrawalMethod key={"bankacc" + index} type={abbreviate(data.bankName)} number={data.accNumber} />
                         );

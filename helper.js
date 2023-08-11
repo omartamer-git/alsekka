@@ -2,6 +2,8 @@
 
 import {
     Dimensions,
+    Platform,
+    StatusBar,
     StyleSheet,
 } from 'react-native';
 
@@ -109,13 +111,13 @@ export const abbreviate = (string) => {
 
 export const getPhoneCarrier = (phone) => {
     const carrierCode = phone.substring(0, 3);
-    if(carrierCode === '010') {
+    if (carrierCode === '010') {
         return "VODA"
-    } else if(carrierCode === '011') {
+    } else if (carrierCode === '011') {
         return "ETI"
-    } else if(carrierCode === '012') {
+    } else if (carrierCode === '012') {
         return "ORG"
-    } else if(carrierCode === '015') {
+    } else if (carrierCode === '015') {
         return "WE"
     } else {
         return "UNK"
@@ -637,6 +639,10 @@ export const styles = StyleSheet.create({
         backgroundColor: palette.light,
     },
 
+    bgDark: {
+        backgroundColor: palette.dark,
+    },
+
     bgAccent: {
         backgroundColor: palette.accent,
     },
@@ -777,6 +783,9 @@ export const styles = StyleSheet.create({
         marginTop: -20 * rem,
         borderBottomColor: palette.light,
         borderBottomWidth: 1 * rem,
+    },
+    AndroidSafeArea: {
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     }
 });
 
@@ -978,4 +987,4 @@ export const mapPadding = { bottom: 48 * rem, top: 0, left: 16 * rem, right: 0 }
 
 export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
-export const SERVER_URL = "http://127.0.0.1:3000";
+export const SERVER_URL = "http://192.168.1.22:3000";

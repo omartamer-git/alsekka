@@ -19,13 +19,15 @@ export const rideDetails = async (rideId) => {
     }
 };
 
-export const bookRide = async (rideId, paymentMethod) => {
+export const bookRide = async (rideId, seats, paymentMethod) => {
     const url = `/bookride`;
     const uid = useUserStore.getState().id;
     const params = {
         uid: uid,
         rideId: rideId,
-        paymentMethod: paymentMethod
+        paymentMethod: paymentMethod.type === 'cash' ? 'CASH' : 'CARD',
+        seats: seats || 1,
+        cardId: paymentMethod.id || null
     };
 
     try {
@@ -107,7 +109,7 @@ export const driverRides = async (limit) => {
     }
 };
 
-export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car, community, gender) => {
+export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car, community, gender, seatsAvailable) => {
     const url = `/postride`;
     const uid = useUserStore.getState().id;
     const body = {
@@ -122,7 +124,8 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         datetime: getDateTime(date, false),
         car: car,
         community: community,
-        gender: gender
+        gender: gender,
+        seatsAvailable: seatsAvailable
     };
 
     try {
@@ -160,15 +163,23 @@ export const cancelRide = async (tripId) => {
         tripId: tripId
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
-        return data;
-    } catch (err) {
-        throw err;
-    }
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
 };
+
+export const cancelPassenger = async (tripId) => {
+    const url = `/cancelpassenger`;
+    const params = {
+        tripId: tripId
+    };
+    console.log("cancelling")
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
+}
 
 export const startRide = async (tripId) => {
     const url = `/startride`;
@@ -176,18 +187,14 @@ export const startRide = async (tripId) => {
         tripId: tripId
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
 
-        if (data.success === 1) {
-            return true;
-        }
-        return false;
-    } catch (err) {
-        throw err;
+    if (data.success === 1) {
+        return true;
     }
+    return false;
 };
 
 export const pastRides = async (limit, afterTime) => {
@@ -202,14 +209,10 @@ export const pastRides = async (limit, afterTime) => {
         params.after = afterTime;
     }
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
-        return data;
-    } catch (err) {
-        throw err;
-    }
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
 };
 
 

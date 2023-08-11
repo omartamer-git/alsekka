@@ -17,6 +17,8 @@ import Button from '../../components/Button';
 import Passenger from '../../components/Passenger';
 import { customMapStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import ArrowButton from '../../components/ArrowButton';
+import BottomModal from '../../components/BottomModal';
 
 
 const ViewTrip = ({ route, navigation }) => {
@@ -28,6 +30,8 @@ const ViewTrip = ({ route, navigation }) => {
     const [location, setLocation] = useState(null);
     const [objDate, setObjDate] = useState(new Date());
     const [isDriver, setIsDriver] = useState(false);
+
+    const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
     const [tripReady, setTripReady] = useState(false);
     const [tripCancellable, setTripCancellable] = useState(false);
@@ -104,6 +108,10 @@ const ViewTrip = ({ route, navigation }) => {
         });
     };
 
+    const cancelPassenger = () => {
+        ridesAPI.cancelPassenger(tripId);
+    };
+
     const startTrip = () => {
         ridesAPI.startRide(tripId).then(data => {
             if (data) {
@@ -124,100 +132,112 @@ const ViewTrip = ({ route, navigation }) => {
     const isDarkMode = useColorScheme === 'dark';
 
     return (
-        <ScreenWrapper screenName="View Trip" navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
-                <MapView
-                    style={[styles.mapStyle]}
-                    showUserLocation={true}
-                    region={location}
-                    provider={PROVIDER_GOOGLE}
-                    ref={mapViewRef}
-                    customMapStyle={customMapStyle}
-                >
-                    {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" onLayout={fitMarkers} />}
-                    {markerTo && <Marker identifier="to" coordinate={markerTo} onLayout={fitMarkers} />}
-                </MapView>
+        <>
+            <ScreenWrapper screenName="View Trip" navAction={() => navigation.goBack()} navType="back">
+                <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
+                    <MapView
+                        style={[styles.mapStyle]}
+                        showUserLocation={true}
+                        region={location}
+                        provider={PROVIDER_GOOGLE}
+                        ref={mapViewRef}
+                        customMapStyle={customMapStyle}
+                    >
+                        {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" onLayout={fitMarkers} />}
+                        {markerTo && <Marker identifier="to" coordinate={markerTo} onLayout={fitMarkers} />}
+                    </MapView>
 
-                {
-                    tripDetails &&
-                    <AvailableRide style={viewTripStyles.availableRide} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
-                }
-                <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
-                    {tripDetails &&
-                        <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.pv16, styles.justifyStart]}>
-                            <View style={viewTripStyles.profilePictureView}>
-                                <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
+                    {
+                        tripDetails &&
+                        <AvailableRide style={viewTripStyles.availableRide} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} DriverId={tripDetails.DriverId} seatsAvailable={tripDetails.seatsAvailable} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
+                    }
+                    <View style={[styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
+                        {tripDetails &&
+                            <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.mv5, styles.justifyStart]}>
+                                <View style={viewTripStyles.profilePictureView}>
+                                    <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
+                                </View>
+                                <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
+                                    <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? "You're driving!" : tripDetails.Driver.firstName + " is driving"}</Text>
+                                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
+                                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
+                                    <View style={styles.flexRow}>
+                                        {ratings}
+                                    </View>
+                                </View>
+
+                                {!isDriver &&
+                                    <View style={[styles.ml10]}>
+                                        <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
+                                            <MaterialIcons name="chat-bubble" size={30} color={palette.primary} onPress={() => goToChat(tripDetails.Driver.id)} />
+                                        </TouchableOpacity>
+                                    </View>}
                             </View>
-                            <View style={[styles.alignStart, styles.justifyStart, styles.ml10]}>
-                                <Text style={styles.headerText2}>{isDriver ? "You're driving!" : tripDetails.Driver.firstName}</Text>
-                                <Text style={[styles.smallText, styles.dark, styles.semiBold]}>Peugeot 508</Text>
-                                <View style={styles.flexRow}>
-                                    {ratings}
+                        }
+
+
+                        {
+                            isDriver &&
+                            <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
+                                {
+                                    tripDetails.passengers.map((data, index) => {
+                                        let borderTopWidth = 1;
+                                        if (index == 0) {
+                                            borderTopWidth = 0;
+                                        }
+                                        return (
+                                            <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
+                                                <View style={[styles.flexRow, styles.alignCenter]}>
+                                                    <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.userId)}>
+                                                        <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
+                                                    </TouchableOpacity>
+                                                    <MaterialIcons name="phone" size={24} color={palette.secondary} style={styles.ml10} />
+                                                </View>
+                                            </Passenger>
+                                        );
+                                    })
+                                }
+                            </View>
+                        }
+                        {
+                            !isDriver &&
+                            <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart]}>
+                                <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text="Directions to Pickup" />
+
+                                <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
+                                    <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
+                                        <MaterialIcons name="close" size={25} />
+                                    </TouchableOpacity>
+                                    <Text style={[styles.smallText, styles.black, { marginTop: 2 * rem }]}>Cancel</Text>
                                 </View>
                             </View>
+                        }
+                        {
+                            isDriver &&
+                            <View style={[styles.w100, styles.fullCenter]}>
+                                {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text="Cancel Ride" textColor={palette.white} onPress={cancelRide} />}
 
-                            {!isDriver &&
-                                <View style={[styles.flexOne, styles.alignEnd]}>
-                                    <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
-                                        <MaterialIcons name="chat-bubble" size={30} color={palette.primary} onPress={() => goToChat(tripDetails.Driver.id)} />
-                                    </TouchableOpacity>
-                                </View>}
-                        </View>
-                    }
+                                {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text="Start Trip" textColor={palette.white} onPress={startTrip} />}
 
+                                {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text="Manage Trip" textColor={palette.white} onPress={manageTrip} />}
 
-                    {
-                        isDriver &&
-                        <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
-                            {
-                                tripDetails.passengers.map((data, index) => {
-                                    let borderTopWidth = 1;
-                                    if (index == 0) {
-                                        borderTopWidth = 0;
-                                    }
-                                    return (
-                                        <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
-                                            <View style={[styles.flexRow, styles.alignCenter]}>
-                                                <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.userId)}>
-                                                    <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
-                                                </TouchableOpacity>
-                                                <MaterialIcons name="phone" size={24} color={palette.secondary} style={styles.ml10} />
-                                            </View>
-                                        </Passenger>
-                                    );
-                                })
-                            }
-                        </View>
-                    }
-                    {
-                        !isDriver &&
-                        <View style={[styles.w100, styles.flexRow, styles.fullCenter]}>
-                            <Button bgColor={palette.secondary} textColor={palette.white} onPress={() => { }} style={[styles.mr10, styles.flexOne]} >
-                                <MaterialIcons name="check" size={24} color={palette.white} />
-                            </Button>
-                            <View style={[styles.br8, { width: 48 * rem, height: 48 * rem }]}>
-                                <TouchableOpacity style={[styles.w100, styles.br8, styles.bgRed, styles.fullCenter, { height: 48 * rem }]}>
-                                    <MaterialIcons name="close" size={24} color={palette.white} />
-                                </TouchableOpacity>
+                                {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text="Trip Cancelled" textColor={palette.white} onPress={() => { }} />}
+
                             </View>
-                        </View>
-                    }
-                    {
-                        isDriver &&
-                        <View style={[styles.w100, styles.fullCenter]}>
-                            {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text="Cancel Ride" textColor={palette.white} onPress={cancelRide} />}
+                        }
+                    </View>
+                </ScrollView>
+            </ScreenWrapper>
 
-                            {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text="Start Trip" textColor={palette.white} onPress={startTrip} />}
-
-                            {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text="Manage Trip" textColor={palette.white} onPress={manageTrip} />}
-
-                            {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text="Trip Cancelled" textColor={palette.white} onPress={() => { }} />}
-
-                        </View>
-                    }
+            <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
+                <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
+                    <Text style={[styles.headerText3, styles.mv5]}>Are you sure you want to cancel?</Text>
+                    <Text style={[styles.textCenter, styles.mv5]}>You can cancel for free up until 24 hours before the trip.</Text>
+                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text="Go Back" onPress={() => setCancelModalVisible(false)} />
+                    <Button bgColor={palette.red} textColor={palette.white} text="Cancel" onPress={cancelPassenger} />
                 </View>
-            </ScrollView>
-        </ScreenWrapper>
+            </BottomModal>
+        </>
     );
 }
 

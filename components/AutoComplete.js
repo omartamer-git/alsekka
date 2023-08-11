@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Modal,
     NativeModules,
+    Platform,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -58,18 +59,20 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
 
     }, [modalVisible]);
 
-    const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
-    }, []);
-
-    useFocusEffect(onFocusEffect); // register callback to focus events
+    if(Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
+    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
 
     const handleTextChange = async (data) => {
         if (data !== "") {
@@ -145,7 +148,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
         <View style={{ width: '100%' }}>
             <CustomTextInput onFocus={() => { setModalVisible(true); }} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             <Modal animationType="slide" visible={modalVisible}>
-                <SafeAreaView style={{ backgroundColor: palette.primary }}>
+                <SafeAreaView style={[{backgroundColor: palette.primary}, styles2.AndroidSafeArea]}>
                     <HeaderView navType="back" screenName="Enter Location" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setText(''); setPredictions(null); setModalVisible(false); }} >
                         <View style={styles2.localeWrapper}>
                             <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />

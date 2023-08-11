@@ -10,7 +10,7 @@ import HeaderView from '../components/HeaderView';
 import { palette, rem, styles } from '../helper';
 
 const ScreenWrapper = ({ screenName, children, navType, navAction, lip=true }) => {
-    const isDarkMode = useColorScheme === 'dark';
+    const isDarkMode = useColorScheme() === 'dark';
 
     return (
         <View style={styles.backgroundStyle}>

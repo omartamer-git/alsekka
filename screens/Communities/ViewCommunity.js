@@ -1,9 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Image,
+    Platform,
     ScrollView,
     Text,
+    TouchableOpacity,
     View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
@@ -15,6 +17,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, getDateShort, getTime, palette, styles } from '../../helper';
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
+import useUserStore from '../../api/accountAPI';
 
 
 const ViewCommunity = ({ navigation, route }) => {
@@ -25,6 +28,8 @@ const ViewCommunity = ({ navigation, route }) => {
     const [joinQuestion, setJoinQuestion] = useState(null);
     const [joinAnswer, setJoinAnswer] = useState(null);
     const [sentJoinRequest, setSentJoinRequest] = useState(false);
+    const [owner, setOwner] = useState(false);
+    const { id } = useUserStore();
 
     useEffect(() => {
         communitiesAPI.getCommunityDetails(communityId).then(
@@ -34,10 +39,15 @@ const ViewCommunity = ({ navigation, route }) => {
                         setSentJoinRequest(true);
                     } else {
                         loadFeed();
+                        console.log("ownid");
+                        console.log(data.Member[0].CommunityMember.UserId);
+                        console.log(id);
+                        if (data.Member[0].CommunityMember.UserId === id) {
+                            setOwner(true);
+                        }
                     }
-                } else {
-                    setJoinQuestion(data.joinQuestion);
                 }
+                setJoinQuestion(data.joinQuestion);
             }
         ).catch(err => {
             console.log(err);
@@ -71,18 +81,20 @@ const ViewCommunity = ({ navigation, route }) => {
         );
     }
 
-    const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
-    }, []);
+    if (Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
 
-    useFocusEffect(onFocusEffect); // register callback to focus events
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
 
 
     return (
@@ -91,7 +103,7 @@ const ViewCommunity = ({ navigation, route }) => {
                 {isJoined && (
                     <>
                         <View style={[styles.flexRow, styles.justifyCenter, styles.alignCenter]}>
-                            <Image width={44} height={44} style={{ borderRadius: 44 / 2 }} source={{ uri: 'data:image/png;base64,' + communityPicture }} />
+                            <Image width={44} height={44} style={{ borderRadius: 44 / 2 }} source={{ uri: communityPicture }} />
                             <View style={[styles.ml10]}>
                                 <Text style={[styles.font14, styles.dark, styles.bold]}>{communityName}</Text>
                                 <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
@@ -99,19 +111,34 @@ const ViewCommunity = ({ navigation, route }) => {
                                     <Text style={[styles.font12, styles.dark, styles.ml5]}>
                                         {communityPrivacy === true ? "Private Community" : "Public Community"}
                                     </Text>
-
                                 </View>
                             </View>
+                            <View style={styles.flexOne} />
+                            <TouchableOpacity activeOpacity={0.75} onPress={() => navigation.navigate('Community Settings', { ...route.params, owner: owner, joinQuestion: joinQuestion })}>
+                                <MaterialIcons name="settings" size={25} color={palette.dark} />
+                            </TouchableOpacity>
+                            {owner && (
+                                <TouchableOpacity activeOpacity={0.75} style={[styles.ml5]} onPress={() => navigation.navigate('Community Members', {communityId})}>
+                                    <MaterialIcons name="people" size={25} color={palette.dark} />
+                                </TouchableOpacity>
+                            )}
                         </View>
 
                         {feed && feed.map((data, index) => {
                             const nextRideDate = new Date(data.datetime);
                             return (
                                 <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                    <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
+                                    <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} DriverId={data.DriverId} seatsAvailable={data.seatsAvailable} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
                                 </View>
                             );
                         })}
+                        {feed.length === 0 && (
+                            <View style={[styles.flexOne, styles.fullCenter, styles.w100]}>
+                                <MaterialIcons name="sentiment-very-dissatisfied" color={palette.dark} size={100} />
+                                <Text style={[styles.font18, styles.dark, styles.mt10]}>No Rides Right Now!</Text>
+                            </View>
+                        )
+                        }
                     </>
                 )}
 

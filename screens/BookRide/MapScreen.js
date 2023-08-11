@@ -2,6 +2,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,13 +24,6 @@ const MapScreen = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const loc = route.params?.loc;
-
-  // const [location, setLocation] = useState({
-  //   latitude: 37.78825,
-  //   longitude: -122.4324,
-  //   latitudeDelta: 0.0922,
-  //   longitudeDelta: 0.0421,
-  // });
   const [location, setLocation] = useState(null);
   const [markerFrom, setMarkerFrom] = useState(null);
   const [markerTo, setMarkerTo] = useState(null);
@@ -45,17 +39,49 @@ const MapScreen = ({ route, navigation }) => {
   const [genderChoice, setGenderChoice] = useState('ANY');
   const { gender } = useUserStore();
 
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      info => {
-        setLocation({
-          latitude: info.coords.latitude,
-          longitude: info.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Geolocation Permission',
+          message: 'Can we access your location?',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      console.log('granted', granted);
+      if (granted === 'granted') {
+        console.log('You can use Geolocation');
+        return true;
+      } else {
+        console.log('You cannot use Geolocation');
+        return false;
       }
-    );
+    } catch (err) {
+      return false;
+    }
+  };
+
+
+  useEffect(() => {
+    const result = requestLocationPermission();
+    result.then((res) => {
+      if (res) {
+        // Geolocation.getCurrentPosition(
+        //   info => {
+        //     setLocation({
+        //       latitude: info.coords.latitude,
+        //       longitude: info.coords.longitude,
+        //       latitudeDelta: 0.0922,
+        //       longitudeDelta: 0.0421,
+        //     });
+        //   }
+        // );
+      }
+    });
+
   }, []);
 
   const adjustMarkers = () => {
@@ -95,18 +121,20 @@ const MapScreen = ({ route, navigation }) => {
 
   const isDarkMode = useColorScheme === 'dark';
 
-  const onFocusEffect = useCallback(() => {
-    // This should be run when screen gains focus - enable the module where it's needed
-    AvoidSoftInput.setShouldMimicIOSBehavior(true);
-    AvoidSoftInput.setEnabled(true);
-    return () => {
-      // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-      AvoidSoftInput.setEnabled(false);
-      AvoidSoftInput.setShouldMimicIOSBehavior(false);
-    };
-  }, []);
+  if(Platform.OS === 'ios') {
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
 
-  useFocusEffect(onFocusEffect); // register callback to focus events
+    useFocusEffect(onFocusEffect); // register callback to focus events    
+}
 
 
   return (

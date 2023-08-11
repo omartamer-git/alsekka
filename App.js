@@ -51,6 +51,10 @@ import Announcement from './screens/HomeScreen/Announcement';
 import AllTrips from './screens/Rides/AllTrips';
 import Checkout from './screens/Rides/Checkout';
 import Referral from './screens/Account/Referral';
+import { Text } from 'react-native';
+import NewCommunity from './screens/Communities/NewCommunity';
+import CommunitySettings from './screens/Communities/CommunitySettings';
+import CommunityMembers from './screens/Communities/CommunityMembers';
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -110,6 +114,11 @@ const App = () => {
       authManager.setRefreshToken(jwt.refreshToken || null);
       authManager.setAuthenticated(jwt.accessToken !== null);
       await userStore.userInfo();
+      await userStore.getAvailableCards();
+      await userStore.getBankAccounts();
+      await userStore.getMobileWallets();
+      
+
       setState("LoggedIn");
     } catch (error) {
       console.log(error);
@@ -126,7 +135,7 @@ const App = () => {
   }, [loadJWT])
 
   if (state === 'LOADING') {
-    return (<></>);
+    return (<><Text>Loading...</Text></>);
   } else {
     return (
       <NavigationContainer linking={linking}>
@@ -238,6 +247,9 @@ const CommunityNavigator = ({ route, navigator }) => {
       <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
       <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
       <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="New Community" component={NewCommunity} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="Community Settings" component={CommunitySettings} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="Community Members" component={CommunityMembers} options={{ headerShown: false }} />
     </CommunityStack.Navigator>
   );
 };

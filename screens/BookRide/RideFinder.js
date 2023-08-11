@@ -1,6 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -36,24 +37,30 @@ const RideFinder = ({ route, navigation }) => {
             );
     }, []);
 
-    const onClickRide = (rid) => {
-        navigation.navigate('Book Ride', { rideId: rid });
+    const onClickRide = (rid, driver) => {
+        if(driver) {
+            navigation.navigate('View Trip', { tripId: rid });
+        } else {
+            navigation.navigate('Book Ride', { rideId: rid });
+        }
     }
 
     const isDarkMode = useColorScheme === 'dark';
 
-    const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
-    }, []);
-
-    useFocusEffect(onFocusEffect); // register callback to focus events
+    if(Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
+    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
 
 
     return (
@@ -68,7 +75,7 @@ const RideFinder = ({ route, navigation }) => {
                 {
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
-                        return (<AvailableRide key={"ar" + index} rid={data.id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} pricePerSeat={data.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
+                        return (<AvailableRide key={"ar" + index} rid={data.id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} pricePerSeat={data.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
                     }
                     )
                 }

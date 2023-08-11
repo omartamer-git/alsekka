@@ -10,11 +10,16 @@ import {
     useColorScheme
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import useUserStore from '../../api/accountAPI';
 import * as ridesAPI from '../../api/ridesAPI';
-import AvailableRide from '../../components/AvailableRide';
+import ArrowButton from '../../components/ArrowButton';
+import BankCard from '../../components/BankCard';
+import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
-import { containerStyle, customMapStyle, getDateShort, getTime, mapContainerStyle, palette, rem, styles } from '../../helper';
+import Counter from '../../components/Counter';
+import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 const BookRide = ({ route, navigation }) => {
@@ -36,13 +41,21 @@ const BookRide = ({ route, navigation }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [ratings, setRatings] = useState([]);
+    const [seatsAvailable, setSeatsAvailable] = useState(0);
     const [profilePicture, setProfilePicture] = useState('');
 
-    const [popoverVisible, setPopoverVisible] = useState(false);
+    const [car, setCar] = useState({});
 
-
-
+    const [numSeats, setNumSeats] = useState(1);
     const [rideDetails, setRideDetails] = useState({});
+
+    const [paymentMethodModalVisible, setPaymentMethodModalVisible] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState({ type: 'cash' });
+
+    const [rideBookedModalVisible, setRideBookedModalVisible] = useState(false);
+
+    const { balance, availableCards } = useUserStore();
+
     useEffect(() => {
         Geolocation.getCurrentPosition(
             info => {
@@ -59,6 +72,7 @@ const BookRide = ({ route, navigation }) => {
             setMaintextTo(data.mainTextTo);
             setSeatsOccupied(data.seatsOccupied);
             setDateTime(data.datetime);
+            setSeatsAvailable(data.seatsAvailable);
             setPricePerSeat(data.pricePerSeat);
             setObjDate(new Date(data.datetime));
             setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
@@ -70,6 +84,8 @@ const BookRide = ({ route, navigation }) => {
             setFirstName(data.Driver.firstName);
             setLastName(data.Driver.lastName);
             setProfilePicture(data.Driver.profilePicture);
+            setCar(data.Car);
+            // console.log(data);
 
             const fullStars = Math.floor(data.Driver.rating);
             const halfStars = Math.ceil(data.Driver.rating) - Math.abs(data.Driver.rating);
@@ -87,63 +103,128 @@ const BookRide = ({ route, navigation }) => {
         });
     }, []);
 
-
+    const hideRideBooked = () => {
+        setRideBookedModalVisible(false);
+        navigation.navigate('Find a Ride');
+    };
 
     const bookRide = (e) => {
-        ridesAPI.bookRide(rideId, 'CASH'); // payment method
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod); // payment method
+        setRideBookedModalVisible(true);
     }
+
+    const choosePayment = (paymentMethod) => {
+        setPaymentMethodModalVisible(false);
+        setPaymentMethod(paymentMethod);
+    };
 
     const isDarkMode = useColorScheme === 'dark';
 
     return (
-        <ScreenWrapper screenName="Book Ride" navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
-                <MapView
-                    style={[styles.mapStyle]}
-                    showUserLocation={true}
-                    region={location}
-                    provider={PROVIDER_GOOGLE}
-                    ref={mapViewRef}
-                    customMapStyle={customMapStyle}
-                >
-                    {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
-                    {markerTo && <Marker identifier="to" coordinate={markerTo} />}
-                </MapView>
+        <>
+            <ScreenWrapper screenName="Book Ride" navType="back" navAction={() => { navigation.goBack() }}>
+                <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
+                    <MapView
+                        style={[styles.mapStyle]}
+                        showUserLocation={true}
+                        region={location}
+                        provider={PROVIDER_GOOGLE}
+                        ref={mapViewRef}
+                        customMapStyle={customMapStyle}
+                    >
+                        {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
+                        {markerTo && <Marker identifier="to" coordinate={markerTo} />}
+                    </MapView>
 
-                <AvailableRide style={[styles.br0, styles.bgWhite, styles.flexOne]} fromAddress={mainTextFrom} toAddress={mainTextTo} seatsOccupied={seatsOccupied} pricePerSeat={pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
-                <View style={[containerStyle, styles.flexOne]}>
-                    <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.pv16]}>
-                        <View style={bookRideStyles.profilePictureView}>
-                            {profilePicture && <Image source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
-                        </View>
-                        <View style={[styles.flexOne, styles.ml20]}>
-                            <Text style={styles.headerText2}>{firstName} {lastName}</Text>
-                            <Text style={[styles.smallText, styles.black]}>Something else here</Text>
-                            <View style={styles.flexRow}>
-                                {ratings}
+                    <View style={[containerStyle, styles.flexOne]}>
+                        <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
+                            <View style={bookRideStyles.profilePictureView}>
+                                {profilePicture && <Image source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
+                            </View>
+                            <View style={[styles.flexOne, styles.ml20]}>
+                                <Text style={styles.headerText2}>{firstName} {lastName}</Text>
+                                <Text>{car.year} {car.brand} {car.model}</Text>
+                                <View style={styles.flexRow}>
+                                    {ratings}
+                                </View>
+                            </View>
+                            <View style={styles.alignEnd}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
+                                    <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
+                                </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={styles.alignEnd}>
-                            <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
-                                <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
-                            </TouchableOpacity>
+
+                        <View style={[styles.flexRow]}>
+                            <ArrowButton style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
+                            <Counter text="seat" textPlural="seats" setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
                         </View>
+                        <ArrowButton bgColor={palette.light} text="Use Voucher" icon="gift" iconColor={palette.primary} />
+
+                        <View>
+                            <View style={[styles.flexRow, styles.w100]}>
+                                <Text style={[styles.bold, styles.dark]}>Fare</Text>
+                                <View style={styles.flexOne} />
+                                <Text>{numSeats} {numSeats > 1 ? "seats" : "seat"} x {pricePerSeat} EGP = {numSeats * pricePerSeat} EGP</Text>
+                            </View>
+                            <View style={[styles.flexRow, styles.w100]}>
+                                <Text style={[styles.bold, styles.dark]}>Balance{balance < 0 ? " Owed" : ""}</Text>
+                                <View style={styles.flexOne} />
+                                <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} EGP</Text>
+                            </View>
+                            <View style={[styles.flexRow, styles.w100]}>
+                                <Text style={[styles.bold, styles.dark]}>You Pay</Text>
+                                <View style={styles.flexOne} />
+                                <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} EGP</Text>
+                            </View>
+                            <View>
+                                <Button text="Book Now" bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
+                            </View>
+
+                        </View>
+
                     </View>
+                </ScrollView>
+            </ScreenWrapper>
 
-
-                    <View style={[styles.w100, styles.pv8, styles.flexRow, styles.fullCenter]}>
-                        <TouchableOpacity style={bookRideStyles.paymentMethod}>
-                            <MaterialIcons name="payments" size={18} color='#008000' />
-                            <Text style={[styles.bold, styles.ml5, styles.dark]}>Cash</Text>
-                            <MaterialIcons name="expand-more" size={18} color={palette.dark} />
-                        </TouchableOpacity>
-
-
-                        <Button text="Book Now" bgColor={palette.primary} textColor={palette.white} onPress={bookRide} style={[styles.flexOne, styles.ml20]} />
+            <BottomModal onHide={() => setPaymentMethodModalVisible(false)} modalVisible={paymentMethodModalVisible}>
+                <TouchableOpacity activeOpacity={0.75} style={{ flexDirection: 'row', width: '100%', height: 48 * rem, alignItems: 'center', borderBottomWidth: 1, borderColor: palette.light }} onPress={() => choosePayment({ type: 'cash' })}>
+                    <FontsAwesome5 name="money-bill" size={24 * rem} color={palette.success} />
+                    <Text style={[styles.ml15, styles.semiBold]}>Pay Using Cash</Text>
+                    <View style={[styles.flexOne, styles.alignEnd]}>
+                        <FontsAwesome5 name="chevron-right" size={18 * rem} color={palette.dark} />
                     </View>
+                </TouchableOpacity>
+                {
+                    availableCards.map((card, index) => (
+                        <BankCard key={"card" + index} type={card.type} number={card.number} onPress={() => choosePayment(card)} />
+                    ))
+                }
+            </BottomModal>
+
+            <BottomModal onHide={hideRideBooked} modalVisible={rideBookedModalVisible}>
+                <View style={[styles.alignCenter, styles.justifyCenter]}>
+                    <FontsAwesome5 name="check-circle" size={55} color={palette.success} />
+                    <Text style={[styles.mt10, styles.font18, styles.success]}>Trip successfully booked!</Text>
+
+                    <Text style={[styles.bold, styles.font18, styles.mt10]}>Summary</Text>
+
+                    <Text style={[styles.bold, styles.dark, styles.mt5]}>Fare</Text>
+                    <Text>{numSeats} {numSeats > 1 ? "seats" : "seat"} x {pricePerSeat} EGP = {numSeats * pricePerSeat} EGP</Text>
+
+                    {balance != 0 &&
+                        <>
+                            <Text style={[styles.bold, styles.dark, styles.mt5]}>Balance{balance < 0 ? " Owed" : ""}</Text>
+                            <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} EGP</Text>
+                        </>
+                    }
+
+                    <Text style={[styles.bold, styles.dark, styles.mt5]}>Total</Text>
+                    <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} EGP</Text>
+                    <Button text="Book Return Trip" style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
                 </View>
-            </ScrollView>
-        </ScreenWrapper>
+            </BottomModal>
+        </>
     );
 }
 
@@ -161,7 +242,7 @@ const bookRideStyles = StyleSheet.create({
         height: 75 * rem,
         width: 75 * rem,
         resizeMode: 'center',
-        borderRadius: 75/2,
+        borderRadius: 75 / 2,
         ...styles.border2,
         ...styles.borderWhite,
     },

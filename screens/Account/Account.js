@@ -56,19 +56,20 @@ const Account = ({ route, navigation }) => {
         setRatings(ratingsItems);
     }, []);
 
-    const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
-    }, []);
-
-    useFocusEffect(onFocusEffect); // register callback to focus events
-
+    if(Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
+    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
 
     const editNameSchema = Yup.object().shape({
         firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
@@ -122,7 +123,7 @@ const Account = ({ route, navigation }) => {
 
     return (
         <>
-            <ScreenWrapper screenName="Account" navigation={navigation}>
+            <ScreenWrapper screenName="Account">
                 <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
                         <TouchableOpacity activeOpacity={0.9} onPress={onClickUpload} style={accountStyles.profilePictureView}>

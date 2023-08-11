@@ -136,7 +136,7 @@ const UserHome = ({ navigation, route }) => {
                 <Text style={[styles.headerText3, styles.mt20]}>Your Upcoming Rides</Text>
                 {
                     nextRideData &&
-                    <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} seatsOccupied={nextRideData.seatsOccupied} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
+                    <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} DriverId={nextRideData.DriverId} seatsOccupied={nextRideData.seatsOccupied} seatsAvailable={nextRideData.seatsAvailable} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
                 }
                 {
                     !nextRideData &&

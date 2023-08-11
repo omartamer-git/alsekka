@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import {
@@ -39,7 +38,7 @@ const Referral = ({ navigation, route }) => {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
-    const shareMsg = `Hey! Carpool using 3alsekka and save money commuting! Get a 50 EGP voucher for your first trip with my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
+    const shareMsg = `Hey! Carpool using seaats and save money commuting! Get a 50 EGP voucher for your first trip with my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
     const onShare = async () => {
         try {
             const result = await Share.share({

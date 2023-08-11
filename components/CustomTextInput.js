@@ -37,6 +37,8 @@ const CustomTextInput = ({ value,
                     ref={inputRef}
                     onKeyPress={onKeyPress}
                     onPressIn={onPressIn}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'
                 />
                 {
                     iconRight &&
@@ -71,7 +73,8 @@ const styles = StyleSheet.create({
         backgroundColor: palette.white
     },
     input: {
-        height: 23,
+        height: 24 * rem,
+        lineHeight: 16 * rem,
         textAlign: 'left',
         fontWeight: '500',
         color: palette.accent,

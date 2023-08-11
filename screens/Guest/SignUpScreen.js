@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import {
+  Platform,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -70,18 +71,20 @@ const SignUpScreen = ({ route, navigation }) => {
     lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
   });
 
-  const onFocusEffect = useCallback(() => {
-    // This should be run when screen gains focus - enable the module where it's needed
-    AvoidSoftInput.setShouldMimicIOSBehavior(true);
-    AvoidSoftInput.setEnabled(true);
-    return () => {
-      // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-      AvoidSoftInput.setEnabled(false);
-      AvoidSoftInput.setShouldMimicIOSBehavior(false);
-    };
-  }, []);
+  if(Platform.OS === 'ios') {
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
 
-  useFocusEffect(onFocusEffect); // register callback to focus events
+    useFocusEffect(onFocusEffect); // register callback to focus events    
+}
 
 
   return (

@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useRef, useState } from 'react';
 import {
+  Platform,
   SafeAreaView,
   StatusBar,
   Text,
@@ -38,6 +39,10 @@ const LoginScreen = ({ route, navigation }) => {
 
     userStore.login(phoneNum, password).then(
       (data) => {
+        userStore.getAvailableCards();
+        userStore.getBankAccounts();
+        userStore.getMobileWallets();
+        
         if (data.verified) {
           navigation.popToTop();
           navigation.replace("LoggedIn", {
@@ -69,18 +74,20 @@ const LoginScreen = ({ route, navigation }) => {
     passwordInput: Yup.string().min(0, 'Your password should be at least 8 characters long').required('This field is required'),
   });
 
-  const onFocusEffect = useCallback(() => {
-    // This should be run when screen gains focus - enable the module where it's needed
-    AvoidSoftInput.setShouldMimicIOSBehavior(true);
-    AvoidSoftInput.setEnabled(true);
-    return () => {
-      // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-      AvoidSoftInput.setEnabled(false);
-      AvoidSoftInput.setShouldMimicIOSBehavior(false);
-    };
-  }, []);
+  if(Platform.OS === 'ios') {
+    const onFocusEffect = useCallback(() => {
+        // This should be run when screen gains focus - enable the module where it's needed
+        AvoidSoftInput.setShouldMimicIOSBehavior(true);
+        AvoidSoftInput.setEnabled(true);
+        return () => {
+            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+            AvoidSoftInput.setEnabled(false);
+            AvoidSoftInput.setShouldMimicIOSBehavior(false);
+        };
+    }, []);
 
-  useFocusEffect(onFocusEffect); // register callback to focus events
+    useFocusEffect(onFocusEffect); // register callback to focus events    
+}
 
 
 

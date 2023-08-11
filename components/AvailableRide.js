@@ -3,18 +3,26 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem } from '../helper';
 import FromToIndicator from './FromToIndicator';
+import useUserStore from '../api/accountAPI';
 
-const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, date, time, driverName, onPress=() => {}, style = {} }) => {
+const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsAvailable, date, time, driverName, DriverId, onPress=() => {}, style = {} }) => {
     const items = [];
-    for (let i = 0; i < seatsOccupied; i++) {
-        items.push(<MaterialIcons key={ "seat" + i } name="account-circle" size={16} color={palette.primary} />);
+    const rideFull = (seatsAvailable - seatsOccupied) <= 0;
+    const {id} = useUserStore();
+    if(!rideFull) {
+        for (let i = 0; i < seatsOccupied; i++) {
+            items.push(<MaterialIcons key={ "seat" + i } name="account-circle" size={16} color={palette.primary} />);
+        }
+    
+        for (let j = 0; j < seatsAvailable - seatsOccupied; j++) {
+            items.push(<MaterialIcons key={ "emptyseat" + j } name="account-circle" size={16} color={palette.light} />);
+        }    
+    } else {
+        items.push(<Text key={"full" + rid}>Ride Full!</Text>)
     }
 
-    for (let j = 0; j < 4 - seatsOccupied; j++) {
-        items.push(<MaterialIcons key={ "emptyseat" + j } name="account-circle" size={16} color={palette.light} />);
-    }
     return (
-        <TouchableOpacity style={[styles.rideView, style]} onPress={() => { onPress(rid) }}>
+        <TouchableOpacity activeOpacity={0.65} style={[styles.rideView, style]} onPress={() => { !rideFull ? onPress(rid, DriverId === id) : () => {return;} }}>
             <View style={{ flexDirection: 'row', flex: 7, padding: 16 }}>
                 <View style={{ height: '100%' }}>
                     <FromToIndicator circleRadius={5} />

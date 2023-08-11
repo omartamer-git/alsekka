@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    Platform,
     RefreshControl,
     SafeAreaView,
     ScrollView,
@@ -77,18 +78,20 @@ const PostRide = ({ route, navigation }) => {
         });
     }
 
-    const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
-    }, []);
-
-    useFocusEffect(onFocusEffect); // register callback to focus events
+    if(Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
+    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
 
 
     useEffect(() => {
@@ -123,7 +126,7 @@ const PostRide = ({ route, navigation }) => {
         setCommunitySelectorOpen(false);
     }
 
-    const postRide = (pricePerSeat, date, time, selectedCar, selectedCommunity) => {
+    const postRide = (pricePerSeat, date, time, selectedCar, selectedCommunity, seatsAvailable) => {
         if (markerFrom && markerTo) {
             let newDate = date;
             newDate.setHours(time.getHours());
@@ -132,7 +135,7 @@ const PostRide = ({ route, navigation }) => {
             console.log(newDate);
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice);
+                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity : null, genderChoice, seatsAvailable);
         }
     }
 
@@ -182,8 +185,8 @@ const PostRide = ({ route, navigation }) => {
                         <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.alignStart, styles.justifyCenter, { zIndex: 5 }]}>
                             <Formik
                                 initialValues={{
-                                    dateInput: '',
-                                    timeInput: '',
+                                    dateInput: new Date(),
+                                    timeInput: new Date().toLocaleTimeString(),
                                     carInput: '',
                                     seatsInput: '',
                                     priceInput: '',
@@ -191,7 +194,7 @@ const PostRide = ({ route, navigation }) => {
                                 }}
                                 validationSchema={postRideSchema}
                                 onSubmit={(values) => {
-                                    postRide(values.priceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput);
+                                    postRide(values.priceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput, values.seatsInput);
                                 }}
                             >
                                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
