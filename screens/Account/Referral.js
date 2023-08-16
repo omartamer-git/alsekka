@@ -19,6 +19,7 @@ import Treasure from '../../svgs/treasure';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { config } from '../../config';
 import Clipboard from '@react-native-community/clipboard';
+import { useTranslation } from 'react-i18next';
 
 const FlatList = ({ icon, headline, text }) => {
     return (
@@ -59,15 +60,17 @@ const Referral = ({ navigation, route }) => {
         }
     };
 
+    const {t} = useTranslation();
+
     return (
-        <ScreenWrapper screenName="Refer a friend" navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100, styles.alignCenter]}>
                 <Treasure width={250} height={250} />
                 <View style={[styles.w100, styles.mt5]}>
-                    <Text style={[styles.font18, styles.bold, styles.mt20]}>Share. Earn. Repeat.</Text>
-                    <FlatList icon="share" headline="Share your referral code" text="Invite an unlimited amount of friends with your referral code and reap the benefits together!" />
-                    <FlatList icon="coins" headline="Earn vouchers for every referral" text="Get a voucher worth 50 EGP for you and your loved ones for every referral" />
-                    <FlatList icon="redo" headline="Repeat as many times as you want" text="There is no limit to how many people you can invite, share your code and watch your rewards stack up!" />
+                    <Text style={[styles.font18, styles.bold, styles.mt20]}>{t('share_earn_repeat')}</Text>
+                    <FlatList icon="share" headline={t('share_your_code')} text={t('share_your_code2')} />
+                    <FlatList icon="coins" headline={t('earn_vouchers')} text={t('earn_vouchers2')} />
+                    <FlatList icon="redo" headline={t('repeat')} text={t('repeat2')} />
                 </View>
 
                 <View style={[styles.flexOne, styles.justifyEnd, styles.w100]}>
@@ -81,12 +84,12 @@ const Referral = ({ navigation, route }) => {
                         }}
                         style={[styles.w100, styles.br8, styles.mt10]}>
                         <View style={[styles.bgAccent, styles.alignCenter, styles.justifyCenter, styles.border1, styles.p8, styles.br8]}>
-                            <Text style={styles.white}>Your code is</Text>
+                            <Text style={styles.white}>{t('your_code')}</Text>
                             {!copied && <Text style={[styles.white, styles.bold]}>{config.REFERRAL_PREFIX}{config.REFERRAL_INCREMENT + id}</Text>}
-                            {copied && <Text style={[styles.white, styles.bold]}>Copied to clipboard!</Text>}
+                            {copied && <Text style={[styles.white, styles.bold]}>{t('copied')}</Text>}
                         </View>
                     </TouchableWithoutFeedback>
-                    <Button onPress={onShare} text="Share Now" bgColor={palette.primary} textColor={palette.white} />
+                    <Button onPress={onShare} text={t('share')} bgColor={palette.primary} textColor={palette.white} />
                 </View>
             </ScrollView>
         </ScreenWrapper>

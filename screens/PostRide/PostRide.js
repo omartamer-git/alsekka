@@ -29,6 +29,7 @@ import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
 import CommunityCard from '../../components/CommunityCard';
+import { useTranslation } from 'react-i18next';
 
 const PostRide = ({ route, navigation }) => {
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -175,9 +176,10 @@ const PostRide = ({ route, navigation }) => {
 
     const isDarkMode = useColorScheme === 'dark';
 
+    const {t} = useTranslation();
 
     return (
-        <ScreenWrapper screenName={"Post Ride"} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('post_ride')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.wrapper} contentContainerStyle={styles.flexGrow} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
 
@@ -199,21 +201,21 @@ const PostRide = ({ route, navigation }) => {
                             >
                                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
                                     <>
-                                        <Text style={styles.inputText}>Starting Point</Text>
+                                        <Text style={styles.inputText}>{t('pickup_point')}</Text>
                                         <AutoComplete
                                             key="autoCompleteFrom"
                                             type="my-location"
-                                            placeholder="From..."
+                                            placeholder={t('from')}
                                             handleLocationSelect={setLocationFrom}
                                             inputStyles={styles.bgWhite}
                                             error={!markerFrom && fromTouched && "This field is required"}
                                         />
 
-                                        <Text style={styles.inputText}>Destination</Text>
+                                        <Text style={styles.inputText}>{t('destination')}</Text>
                                         <AutoComplete
                                             key="autoCompleteTo"
                                             type="place"
-                                            placeholder="To..."
+                                            placeholder={t('to')}
                                             handleLocationSelect={setLocationTo}
                                             inputStyles={styles.bgWhite}
                                             error={!markerTo && toTouched && "This field is required"}
@@ -233,10 +235,10 @@ const PostRide = ({ route, navigation }) => {
                                             }}
                                         />
 
-                                        <Text style={styles.inputText}>Date</Text>
+                                        <Text style={styles.inputText}>{t('date')}</Text>
 
                                         <CustomTextInput
-                                            placeholder="Date"
+                                            placeholder={t('date')}
                                             value={values.dateInput ? values.dateInput.toDateString() : new Date().toDateString()}
                                             onBlur={handleBlur('dateInput')}
                                             textColor={palette.black}
@@ -249,10 +251,10 @@ const PostRide = ({ route, navigation }) => {
                                             error={touched.dateInput && errors.dateInput}
                                         />
 
-                                        <Text style={styles.inputText}>Time</Text>
+                                        <Text style={styles.inputText}>{t('time')}</Text>
 
                                         <CustomTextInput
-                                            placeholder="Time"
+                                            placeholder={t('time')}
                                             value={values.timeInput ? new Date(values.timeInput).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                             textColor={palette.black}
                                             onPressIn={() => {
@@ -281,10 +283,10 @@ const PostRide = ({ route, navigation }) => {
                                             }}
                                         />
 
-                                        <Text style={styles.inputText}>Select a Car</Text>
+                                        <Text style={styles.inputText}>{t('select_car')}</Text>
 
                                         <CustomTextInput
-                                            placeholder="Select a car.."
+                                            placeholder={t('select_car')}
                                             value={carSelectorText}
                                             onPressIn={() => {
                                                 setFieldTouched('carInput', true)
@@ -316,16 +318,16 @@ const PostRide = ({ route, navigation }) => {
                                                 );
                                             })}
 
-                                            <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, flexDirection: 'row', alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, ...styles.flexRow, alignItems: 'center' }}>
                                                 <MaterialIcons name="add" size={18} color={palette.black} />
-                                                <Text style={{ fontSize: 14, fontWeight: '600' }}>Add New Car</Text>
+                                                <Text style={{ fontSize: 14, fontWeight: '600' }}>{t('add_new_car')}</Text>
                                             </TouchableOpacity>
                                         </BottomModal>
 
-                                        <Text style={styles.inputText}>Seats Available</Text>
+                                        <Text style={styles.inputText}>{t('seats_available')}</Text>
 
                                         <CustomTextInput
-                                            placeholder="Number of empty seats"
+                                            placeholder={t('num_empty_seats')}
                                             value={values.seatsInput}
                                             onChangeText={handleChange('seatsInput')}
                                             onBlur={handleBlur('seatsInput')}
@@ -333,10 +335,10 @@ const PostRide = ({ route, navigation }) => {
                                             iconLeft="groups"
                                         />
 
-                                        <Text style={styles.inputText}>Price Per Seat</Text>
+                                        <Text style={styles.inputText}>{t('price_per_seat')}</Text>
 
                                         <CustomTextInput
-                                            placeholder="Price For One Seat"
+                                            placeholder={t('price_one_seat')}
                                             value={values.priceInput}
                                             onChangeText={handleChange('priceInput')}
                                             onBlur={handleBlur('priceInput')}
@@ -344,34 +346,34 @@ const PostRide = ({ route, navigation }) => {
                                             iconLeft="attach-money"
                                         />
 
-                                        <Text style={[styles.dark, styles.bold]}>You Get: {Math.ceil(0.9 * values.priceInput)} EGP</Text>
-                                        <Text style={[styles.dark, styles.bold]}>Our Commission: {Math.floor(0.1 * values.priceInput)} EGP (10%)</Text>
+                                        <Text style={[styles.dark, styles.bold]}>{t('your_share')} {Math.ceil(0.9 * values.priceInput)} EGP</Text>
+                                        <Text style={[styles.dark, styles.bold]}>{t('service_fees')}{Math.floor(0.1 * values.priceInput)} EGP (10%)</Text>
 
 
-                                        <Text style={styles.inputText}>Gender to Carpool With</Text>
+                                        <Text style={styles.inputText}>{t('gender_to_carpool')}</Text>
 
                                         <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                             {
                                                 userStore.gender === "FEMALE" &&
                                                 <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
-                                                    <Text style={postRideStyles.genderText}>Female Only</Text>
+                                                    <Text style={postRideStyles.genderText}>{t('female_only')}</Text>
                                                 </TouchableOpacity>
                                             }
                                             <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
-                                                <Text style={postRideStyles.genderText}>Any</Text>
+                                                <Text style={postRideStyles.genderText}>{t('any')}</Text>
                                             </TouchableOpacity>
                                             {
                                                 userStore.gender === "MALE" &&
                                                 <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
-                                                    <Text style={postRideStyles.genderText}>Male Only</Text>
+                                                    <Text style={postRideStyles.genderText}>{t('male_only')}</Text>
                                                 </TouchableOpacity>
                                             }
                                         </View>
 
 
-                                        <Text style={styles.inputText}>Post to Community (Optional)</Text>
+                                        <Text style={styles.inputText}>{t('post_to_community')}</Text>
                                         <CustomTextInput
-                                            placeholder="Select a community.."
+                                            placeholder={t('select_community')}
                                             value={communitySelectorText}
                                             onPressIn={() => {
                                                 setFieldTouched('communityInput', true)
@@ -403,7 +405,7 @@ const PostRide = ({ route, navigation }) => {
 
 
 
-                                        <Button text="Post Ride" bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} />
+                                        <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} />
                                     </>
                                 )}
 
@@ -414,9 +416,9 @@ const PostRide = ({ route, navigation }) => {
                     {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
                             <PiggyBank width={300} height={300} />
-                            <Text style={[styles.headerText, styles.textCenter]}>Get Paid to Carpool!</Text>
-                            <Text style={[styles.textCenter, styles.font18, styles.mt10]}>Submit your license and become a vehicle owner to start making money on your commute!</Text>
-                            <Button bgColor={palette.primary} textColor={palette.white} text="Let's Do It" onPress={() => navigation.navigate("Driver Documents")} />
+                            <Text style={[styles.headerText, styles.textCenter]}>{t('get_paid')}</Text>
+                            <Text style={[styles.textCenter, styles.font18, styles.mt10]}>{t('submit_license')}</Text>
+                            <Button bgColor={palette.primary} textColor={palette.white} text={t('cta_submit_driver')} onPress={() => navigation.navigate("Driver Documents")} />
                         </View>
                     }
 

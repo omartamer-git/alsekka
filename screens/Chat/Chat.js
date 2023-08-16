@@ -15,6 +15,7 @@ import { palette, rem, styles } from '../../helper';
 import useUserStore from '../../api/accountAPI';
 import * as chatAPI from '../../api/chatAPI';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const Chat = ({ navigation, route }) => {
@@ -72,9 +73,10 @@ const Chat = ({ navigation, route }) => {
 
 
     const isDarkMode = useColorScheme === 'dark';
+    const {t} = useTranslation();
 
     return (
-        <ScreenWrapper screenName="Chat" navAction={() => navigation.goBack()} navType="back">
+        <ScreenWrapper screenName={t('chat')} navAction={() => navigation.goBack()} navType="back">
             <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
             ref={ref}
             onContentSizeChange={() => ref.current.scrollToEnd({animated: true})}>
@@ -116,7 +118,7 @@ const Chat = ({ navigation, route }) => {
             </ScrollView>
             <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5]}>
                 <View style={chatStyles.messageView}>
-                    <TextInput style={styles.flexOne} placeholder="Send a message..." value={messageText} onChangeText={(text) => { setMessageText(text) }} />
+                    <TextInput style={styles.flexOne} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
                 </View>
                 <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>
                     <MaterialIcons name="send" size={22} color={palette.white} />

@@ -12,6 +12,7 @@ import useUserStore from '../../api/accountAPI';
 import ErrorMessage from '../../components/ErrorMessage';
 import { containerStyle, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const DigitBox = ({ swap, onFocus, inputRef }) => {
     const [digit, setDigit] = useState('');
@@ -138,15 +139,16 @@ const Otp = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
 
     return (
-        <ScreenWrapper screenName="" navType="back" navAction={() => { navigation.goBack() }} lip={false}>
+        <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={() => { navigation.goBack() }} lip={false}>
             <View style={[styles.bgPrimary, styles.w100, styles.p24]}>
                 <Text style={[styles.white, styles.bold, styles.font28]}>
-                    Verification Code
+                    {t('verification_code')}
                 </Text>
                 <Text style={[styles.white, styles.font12, styles.mt5]}>
-                    We have sent an SMS with the verification code to
+                   {t('code_sent')}
                 </Text>
                 <Text style={[styles.white, styles.bold, styles.font12, styles.mt5]}>
                     +2{phone}
@@ -166,8 +168,8 @@ const Otp = ({ route, navigation }) => {
 
                 <View style={[styles.w100, styles.justifyCenter, styles.alignCenter, styles.mt10]}>
                     <ErrorMessage message={error} condition={error} style={styles.mb10} />
-                    {!resendAvailable && <Text style={[styles.font12, styles.dark]}>Please wait {countdown} seconds before requesting a new code</Text>}
-                    {resendAvailable && <Text style={[styles.font12, styles.dark, styles.bold]} onPress={resendOtp}>Resend Verification Code</Text>}
+                    {!resendAvailable && <Text style={[styles.font12, styles.dark]}>{t('please_wait')} {countdown} {t('seconds_before_requesting')}</Text>}
+                    {resendAvailable && <Text style={[styles.font12, styles.dark, styles.bold]} onPress={resendOtp}>{t('resend')} {t('verification_code')}</Text>}
                 </View>
             </ScrollView>
         </ScreenWrapper>

@@ -21,6 +21,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
 import { palette, rem, styles } from '../../helper';
+import { useTranslation } from 'react-i18next';
 
 const SignUpScreen = ({ route, navigation }) => {
   const [gender, setGender] = useState('MALE');
@@ -71,20 +72,22 @@ const SignUpScreen = ({ route, navigation }) => {
     lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
   });
 
-  if(Platform.OS === 'ios') {
+  if (Platform.OS === 'ios') {
     const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
+      // This should be run when screen gains focus - enable the module where it's needed
+      AvoidSoftInput.setShouldMimicIOSBehavior(true);
+      AvoidSoftInput.setEnabled(true);
+      return () => {
+        // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+        AvoidSoftInput.setEnabled(false);
+        AvoidSoftInput.setShouldMimicIOSBehavior(false);
+      };
     }, []);
 
     useFocusEffect(onFocusEffect); // register callback to focus events    
-}
+  }
+
+  const { t } = useTranslation();
 
 
   return (
@@ -101,13 +104,13 @@ const SignUpScreen = ({ route, navigation }) => {
 
       <ScrollView style={styles.wrapper} contentContainerStyle={[styles.flexGrow, { paddingBottom: 40 }]}>
         <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-          <Text style={[styles.headerText, styles.white]}>Sign Up</Text>
+          <Text style={[styles.headerText, styles.white]}>{t('sign_up')}</Text>
         </View>
         <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
           <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
             <View style={[styles.flexOne, styles.w100, styles.defaultPaddingVertical]}>
-              <Text style={[styles.headerText, styles.black]}>Let's get started!</Text>
-              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>Hello there, you'll need to create an account to continue!</Text>
+              <Text style={[styles.headerText, styles.black]}>{t('get_started')}</Text>
+              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('account_needed')}</Text>
               <ErrorMessage condition={errorMessage} message={errorMessage} />
               <Formik
                 initialValues={{ phoneInput: '', passwordInput: '', emailInput: '', firstNameInput: '', lastNameInput: '' }}
@@ -118,55 +121,55 @@ const SignUpScreen = ({ route, navigation }) => {
                   <>
                     <View style={styles.flexRow}>
                       <View style={[styles.flexOne, styles.pr8]}>
-                        <Text style={styles.inputText}>First Name</Text>
+                        <Text style={styles.inputText}>{t('first_name')}</Text>
                         <CustomTextInput
                           value={values.firstNameInput}
                           onChangeText={handleChange('firstNameInput')}
                           onBlur={handleBlur('firstNameInput')}
                           error={touched.firstNameInput && errors.firstNameInput}
-                          placeholder="First Name"
+                          placeholder={t('first_name')}
                         />
                       </View>
 
                       <View style={[styles.flexOne, styles.pl8]}>
-                        <Text style={styles.inputText}>Last Name</Text>
+                        <Text style={styles.inputText}>{t('last_name')}</Text>
                         <CustomTextInput
                           value={values.lastNameInput}
                           onChangeText={handleChange('lastNameInput')}
                           onBlur={handleBlur('lastNameInput')}
                           error={touched.lastNameInput && errors.lastNameInput}
-                          placeholder="Last Name"
+                          placeholder={t('last_name')}
                         />
                       </View>
 
                     </View>
 
 
-                    <Text style={styles.inputText}>Phone Number</Text>
+                    <Text style={styles.inputText}>{t('phone_number')}</Text>
                     <CustomTextInput
                       value={values.phoneInput}
                       onChangeText={handleChange('phoneInput')}
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
-                      placeholder="Enter your phone number"
+                      placeholder={'enter_phone'}
                     />
 
                     <Text style={styles.inputText}>
-                      Email
+                      {t('email')}
                     </Text>
                     <CustomTextInput
                       value={values.emailInput}
                       onChangeText={handleChange('emailInput')}
-                      placeholder="Enter your email address"
+                      placeholder={t('enter_email')}
                       onBlur={handleBlur('emailInput')}
                       error={touched.emailInput && errors.emailInput}
                     />
 
-                    <Text style={styles.inputText}>Password</Text>
+                    <Text style={styles.inputText}>{t('password')}</Text>
                     <CustomTextInput
                       value={values.passwordInput}
                       onChangeText={handleChange('passwordInput')}
-                      placeholder="Enter your password"
+                      placeholder={t('enter_password')}
                       secureTextEntry={true}
                       onBlur={handleBlur('passwordInput')}
                       error={touched.passwordInput && errors.passwordInput}
@@ -175,18 +178,18 @@ const SignUpScreen = ({ route, navigation }) => {
                     <View style={[styles.flexRow, styles.w100, styles.mt20]}>
                       <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.primary : palette.white }]}
                         onPress={toggleGender}>
-                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>Male</Text>
+                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>{t('male')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.primary : palette.white }]}
                         onPress={toggleGender}>
-                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>Female</Text>
+                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>{t('female')}</Text>
                       </TouchableOpacity>
                     </View>
 
 
                     <Button
                       style={[styles.continueBtn, styles.mt20]}
-                      text="Create Account"
+                      text={t('create_account')}
                       bgColor={palette.primary}
                       textColor={palette.white}
                       onPress={handleSubmit}
@@ -198,7 +201,7 @@ const SignUpScreen = ({ route, navigation }) => {
 
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
-                <Text style={styles.light}>Already have an account? <Text style={[styles.primary, styles.bold]}>Sign up</Text></Text>
+                <Text style={styles.light}>{t('account_exists')} <Text style={[styles.primary, styles.bold]}>{t('sign_in')}</Text></Text>
               </View>
             </View>
           </View>

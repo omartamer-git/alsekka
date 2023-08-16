@@ -51,10 +51,20 @@ import Announcement from './screens/HomeScreen/Announcement';
 import AllTrips from './screens/Rides/AllTrips';
 import Checkout from './screens/Rides/Checkout';
 import Referral from './screens/Account/Referral';
-import { Text } from 'react-native';
 import NewCommunity from './screens/Communities/NewCommunity';
 import CommunitySettings from './screens/Communities/CommunitySettings';
 import CommunityMembers from './screens/Communities/CommunityMembers';
+import Withdraw from './screens/Account/Withdraw';
+import { I18nManager, NativeModules, Platform } from 'react-native';
+import RNRestart from 'react-native-restart'; // Import package from node modules
+
+import Button from './components/Button';
+import { Text } from 'react-native';
+import useLocale from './locale/localeContext';
+import './locale/translate';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
+
 
 const RootStack = createNativeStackNavigator();
 const GuestStack = createNativeStackNavigator();
@@ -71,9 +81,13 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  const {t, i18n} = useTranslation();
+
   const authManager = useAuthManager();
   const userStore = useUserStore();
   const [state, setState] = useState('LOADING');
+  I18nManager.allowRTL(true);
+  // const { t } = useTranslation();
 
   const config = {
     screens: {
@@ -98,6 +112,38 @@ const App = () => {
     config
   };
 
+  const localeContext = useLocale();
+
+  useEffect(() => {
+    let locale;
+    if (Platform.OS === "ios") {
+      locale = NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0];
+    } else {
+      locale = NativeModules.I18nManager.localeIdentifier;
+    }
+
+    if (locale.split('_')[0] === 'ar') {
+      localeContext.setLanguage('ar');
+      if (I18nManager.isRTL) {
+        // OK - do nothing
+        i18n.changeLanguage('ar');
+      } else {
+        I18nManager.forceRTL(true);
+        RNRestart.restart();
+      }
+    } else {
+      if (I18nManager.isRTL) {
+        I18nManager.forceRTL(false);
+        RNRestart.restart();
+      } else {
+        // OK - do nothing
+        i18n.changeLanguage('en');
+      }
+    }
+
+  }, []);
+
 
   const loadJWT = useCallback(async () => {
     try {
@@ -117,7 +163,7 @@ const App = () => {
       await userStore.getAvailableCards();
       await userStore.getBankAccounts();
       await userStore.getMobileWallets();
-      
+
 
       setState("LoggedIn");
     } catch (error) {
@@ -132,7 +178,7 @@ const App = () => {
 
   useEffect(() => {
     loadJWT()
-  }, [loadJWT])
+  }, [loadJWT]);
 
   if (state === 'LOADING') {
     return (<><Text>Loading...</Text></>);
@@ -166,35 +212,35 @@ const LoggedInStack = ({ route, navigation }) => {
 const LoggedInHome = ({ route, navigation }) => {
   return (
     <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.dark }}>
-      <Tab.Screen name="Home" component={UserHomeNavigator}
+      <Tab.Screen name={t("home")} component={UserHomeNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
         }} />
-      <Tab.Screen name="Find Rides" component={BookRideNavigator}
+      <Tab.Screen name={t('find_rides')} component={BookRideNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="search" size={size} color={color} />
           ),
         }} />
-      <Tab.Screen name="Post Rides" component={PostRideNavigator}
+      <Tab.Screen name={t('post_ride')} component={PostRideNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="directions-car" size={size} color={color} />);
           }
         }} />
-      <Tab.Screen name="Communities" component={CommunityNavigator}
+      <Tab.Screen name={t('communities')} component={CommunityNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="forum" size={size} color={color} />);
           }
         }} />
-      <Tab.Screen name="Account" component={AccountNavigator}
+      <Tab.Screen name={t('account')} component={AccountNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
@@ -259,6 +305,7 @@ const AccountNavigator = ({ route, navigation }) => {
     <AccountStack.Navigator initialRouteName='Account Home'>
       <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
       <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
       <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
       <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
       <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />

@@ -21,6 +21,7 @@ import { customMapStyle, mapPadding, palette, rem, styles as styles2 } from '../
 import Button from './Button';
 import CustomTextInput from './CustomTextInput';
 import HeaderView from './HeaderView';
+import { useTranslation } from 'react-i18next';
 
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;
@@ -34,6 +35,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
     const [modalMap, setModalMap] = useState(false);
     const [location, setLocation] = useState(null);
     const [mapPred, setMapPred] = useState(null);
+    const {t} = useTranslation();
 
     const mapViewRef = useRef(null);
 
@@ -149,7 +151,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
             <CustomTextInput onFocus={() => { setModalVisible(true); }} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             <Modal animationType="slide" visible={modalVisible}>
                 <SafeAreaView style={[{backgroundColor: palette.primary}, styles2.AndroidSafeArea]}>
-                    <HeaderView navType="back" screenName="Enter Location" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setText(''); setPredictions(null); setModalVisible(false); }} >
+                    <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setText(''); setPredictions(null); setModalVisible(false); }} >
                         <View style={styles2.localeWrapper}>
                             <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                             <Text style={styles2.locale}>EN</Text>
@@ -207,7 +209,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                                         }
                                         <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={() => { setModalMap(true) }}>
                                             <MaterialIcons name="place" size={16} color={palette.black} />
-                                            <Text style={styles2.ml10}>Choose Location on Map</Text>
+                                            <Text style={styles2.ml10}>{t('choose_location')}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -217,7 +219,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                     </View>
 
                     { modalMap && <View style={[styles2.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8}]}>
-                        <Button text="Choose Location" bgColor={palette.primary} textColor={palette.white} onPress={() => {moveInput(mapPred)}}/>
+                        <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={() => {moveInput(mapPred)}}/>
                     </View> }
 
                     {modalMap &&
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
         padding: 5,
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexDirection: 'row'
+        ...styles2.flexRow
     },
     container: {
         flex: 1,

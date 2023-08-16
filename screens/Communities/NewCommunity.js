@@ -10,6 +10,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { launchImageLibrary } from "react-native-image-picker";
 import { createCommunity } from "../../api/communitiesAPI";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 
 export default function NewCommunity({ navigation, route }) {
@@ -42,8 +43,10 @@ export default function NewCommunity({ navigation, route }) {
         }
     }
 
+    const {t} = useTranslation();
+
     return (
-        <ScreenWrapper screenName="New Community">
+        <ScreenWrapper screenName={t('new_community')}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Formik
                     initialValues={{ communityNameInput: '', communityDescriptionInput: '', communityPrivacyInput: 0, joinQuestionInput: '' }}
@@ -54,27 +57,27 @@ export default function NewCommunity({ navigation, route }) {
                             <TouchableOpacity onPress={openImagePicker} style={[styles.fullCenter, styles.bgLight, { width: 100 * rem, height: 100 * rem, borderRadius: 50 * rem, borderWidth: 2 * rem, alignSelf: 'center' }]}>
                                 <MaterialIcons name="photo-camera" size={50} style={[styles.positionAbsolute, { borderRadius: 50 * rem }]} color={palette.dark} />
                             </TouchableOpacity>
-                            <Text style={styles.inputText}>Community Name</Text>
+                            <Text style={styles.inputText}>{t('community_name')}</Text>
                             <CustomTextInput
-                                placeholder="Name of Community"
+                                placeholder={t('community_name')}
                                 value={values.communityNameInput}
                                 onBlur={handleBlur('communityNameInput')}
                                 onChangeText={handleChange('communityNameInput')}
                                 error={touched.communityNameInput && errors.communityNameInput}
                             />
 
-                            <Text style={styles.inputText}>Community Description</Text>
+                            <Text style={styles.inputText}>{t('community_description')}</Text>
                             <TextArea
-                                placeholder="Description"
+                                placeholder={t('community_description')}
                                 value={values.communityDescriptionInput}
                                 onBlur={handleBlur('communityDescriptionInput')}
                                 onChangeText={handleChange('communityDescriptionInput')}
                                 error={touched.communityDescriptionInput && errors.communityDescriptionInput}
                             />
 
-                            <Text style={styles.inputText}>Community Privacy</Text>
+                            <Text style={styles.inputText}>{t('community_privacy')}</Text>
                             <Selector
-                                options={[{ value: 0, text: "Public" }, { value: 1, text: "Private" }]}
+                                options={[{ value: 0, text: t('public') }, { value: 1, text: t('private') }]}
                                 value={values.communityPrivacyInput}
                                 setValue={(value) => setFieldValue('communityPrivacyInput', value)}
                             />
@@ -82,9 +85,9 @@ export default function NewCommunity({ navigation, route }) {
                             {
                                 values.communityPrivacyInput === 1 && (
                                     <>
-                                        <Text style={styles.inputText}>Privacy question</Text>
+                                        <Text style={styles.inputText}>{t('privacy_question')}</Text>
                                         <CustomTextInput
-                                            placeholder="Example: What is your university ID number?"
+                                            placeholder={t('privacy_question_example')}
                                             value={values.joinQuestionInput}
                                             onBlur={handleBlur('joinQuestionInput')}
                                             onChangeText={handleChange('joinQuestionInput')}
@@ -97,7 +100,7 @@ export default function NewCommunity({ navigation, route }) {
                             <Button
                                 bgColor={palette.primary}
                                 textColor={palette.white}
-                                text="Create Community"
+                                text={t('create_community')}
                                 onPress={handleSubmit}
                                 disabled={!isValid}
                             />

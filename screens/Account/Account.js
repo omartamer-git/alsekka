@@ -23,6 +23,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import useAuthManager from '../../context/authManager';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useAxiosManager from '../../context/axiosManager';
+import { useTranslation } from 'react-i18next';
 
 const Account = ({ route, navigation }) => {
     const [ratings, setRatings] = useState(null);
@@ -121,9 +122,11 @@ const Account = ({ route, navigation }) => {
         }
     };
 
+    const {t} = useTranslation();
+
     return (
         <>
-            <ScreenWrapper screenName="Account">
+            <ScreenWrapper screenName={t('account')}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
                         <TouchableOpacity activeOpacity={0.9} onPress={onClickUpload} style={accountStyles.profilePictureView}>
@@ -143,20 +146,20 @@ const Account = ({ route, navigation }) => {
                         <View style={accountStyles.acctButtonsView}>
                             <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Chats List') }}>
                                 <MaterialIcons name="message" size={40} color={palette.white} />
-                                <Text style={accountStyles.acctButtonsText}>Messages</Text>
+                                <Text style={accountStyles.acctButtonsText}>{t('messages')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Wallet') }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
-                                <Text style={accountStyles.acctButtonsText}>Wallet</Text>
+                                <Text style={accountStyles.acctButtonsText}>{t('wallet')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('All Trips') }}>
                                 <MaterialIcons name="history" size={40} color={palette.white} />
-                                <Text style={accountStyles.acctButtonsText}>Trips</Text>
+                                <Text style={accountStyles.acctButtonsText}>{t('trips')}</Text>
                             </TouchableOpacity>
                         </View>
 
                         <View style={{ width: '100%' }}>
-                            <Button text="Manage My Cars" textColor={palette.white} bgColor={palette.primary} onPress={() => { navigation.navigate('Manage Cars') }} />
+                            <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={() => { navigation.navigate('Manage Cars') }} />
                             <CustomTextInput
                                 value={userStore.firstName + " " + userStore.lastName}
                                 iconLeft="badge"
@@ -185,8 +188,8 @@ const Account = ({ route, navigation }) => {
                     </View>
 
                     <View style={[styles.w100]}>
-                        <Button bgColor={palette.accent} textColor={palette.white} text="Refer a friend" onPress={() => { navigation.navigate('Referral') }} />
-                        <Button bgColor={palette.primary} textColor={palette.white} text="Log Out" onPress={logout} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
+                        <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
                     </View>
                 </ScrollView>
             </ScreenWrapper>
@@ -200,7 +203,7 @@ const Account = ({ route, navigation }) => {
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                             <>
-                                <Text style={styles.inputText}>First Name</Text>
+                                <Text style={styles.inputText}>{t('first_name')}</Text>
                                 <CustomTextInput
                                     value={values.firstNameInput}
                                     iconLeft="badge"
@@ -210,7 +213,7 @@ const Account = ({ route, navigation }) => {
                                     error={touched.firstNameInput && errors.firstNameInput}
                                 />
 
-                                <Text style={styles.inputText}>Last Name</Text>
+                                <Text style={styles.inputText}>{t('last_name')}</Text>
                                 <CustomTextInput
                                     value={values.lastNameInput}
                                     iconLeft="badge"
@@ -220,7 +223,7 @@ const Account = ({ route, navigation }) => {
                                     error={touched.lastNameInput && errors.lastNameInput}
                                 />
 
-                                <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
+                                <Button text={t("save")} textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
                             </>
                         )}
                     </Formik>
@@ -237,7 +240,7 @@ const Account = ({ route, navigation }) => {
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                             <>
-                                <Text style={styles.inputText}>Email</Text>
+                                <Text style={styles.inputText}>{t('email')}</Text>
                                 <CustomTextInput
                                     value={values.emailInput}
                                     iconLeft="badge"
@@ -247,7 +250,7 @@ const Account = ({ route, navigation }) => {
                                     error={touched.emailInput && errors.emailInput}
                                 />
 
-                                <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
+                                <Button text={t('save')} textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
                             </>
                         )}
                     </Formik>
@@ -264,7 +267,7 @@ const Account = ({ route, navigation }) => {
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                             <>
-                                <Text style={styles.inputText}>Phone Number</Text>
+                                <Text style={styles.inputText}>{t('phone_number')}</Text>
                                 <CustomTextInput
                                     value={values.phoneInput}
                                     iconLeft="badge"
@@ -274,7 +277,7 @@ const Account = ({ route, navigation }) => {
                                     error={touched.phoneInput && errors.phoneInput}
                                 />
 
-                                <Button text="Save" textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
+                                <Button text={t('save')} textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
                             </>
                         )}
                     </Formik>

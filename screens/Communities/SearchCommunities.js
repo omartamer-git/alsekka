@@ -12,6 +12,7 @@ import CommunityCard from '../../components/CommunityCard';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const SearchCommunities = ({ navigation, route }) => {
@@ -54,11 +55,13 @@ const SearchCommunities = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
+
 
     return (
-        <ScreenWrapper screenName={"Search"} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('search')} navType="back" navAction={() => navigation.goBack()}>
             <View style={[styles.defaultPadding]}>
-                <CustomTextInput placeholder="Search for a Community" iconLeft="search" value={searchText} onChangeText={onChangeText} />
+                <CustomTextInput placeholder={t('search_for_community')} iconLeft="search" value={searchText} onChangeText={onChangeText} />
             </View>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {

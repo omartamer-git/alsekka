@@ -24,8 +24,11 @@ import HeaderView from '../../components/HeaderView';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const NewCar = ({ route, navigation }) => {
+    const {t} = useTranslation();
+
     const colorMode = useColorScheme();
     const isDarkMode = colorMode === 'dark';
     const [cars, setCars] = useState(null);
@@ -50,8 +53,8 @@ const NewCar = ({ route, navigation }) => {
     const [color, setColor] = useState('');
     const [licensePlateNumbers, setLicensePlateNumbers] = useState('');
 
-    const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Choose Photo...");
-    const [backPhotoButtonText, setBackPhotoButtonText] = useState("Choose Photo...");
+    const [frontPhotoButtonText, setFrontPhotoButtonText] = useState(t("choose_photo"));
+    const [backPhotoButtonText, setBackPhotoButtonText] = useState(t("choose_photo"));
     const [frontPhotoButtonTouched, setFrontPhotoButtonTouched] = useState(false);
     const [backPhotoButtonTouched, setBackPhotoButtonTouched] = useState(false);
 
@@ -85,14 +88,14 @@ const NewCar = ({ route, navigation }) => {
     const setImageFront = (response) => {
         if (!response.didCancel && !response.error) {
             setLicenseFront(response.assets[0]['base64']);
-            setFrontPhotoButtonText("Front Side Chosen");
+            setFrontPhotoButtonText(t('front_chosen'));
         }
     };
 
     const setImageBack = (response) => {
         if (!response.didCancel && !response.error) {
             setLicenseBack(response.assets[0]['base64']);
-            setBackPhotoButtonText("Back Side Chosen");
+            setBackPhotoButtonText(t('back_chosen'));
         }
     };
 
@@ -164,7 +167,7 @@ const NewCar = ({ route, navigation }) => {
 
 
     return (
-        <ScreenWrapper screenName="Add Car" navType="back" navAction={() => { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('add_car')} navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Formik
                     initialValues={{
@@ -194,9 +197,9 @@ const NewCar = ({ route, navigation }) => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>
-                            <Text style={styles.inputText}>Car Brand</Text>
+                            <Text style={styles.inputText}>{t('car_brand')}</Text>
                             <CustomTextInput
-                                placeholder="Car Brand (e.g. Mercedes)"
+                                placeholder={t('car_brand2')}
                                 iconRight="directions-car"
                                 value={values.carBrandInput}
                                 onChangeText={handleChange('carBrandInput')}
@@ -204,9 +207,9 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carBrandInput && errors.carBrandInput}
                             />
 
-                            <Text style={styles.inputText}>Year of Manufacture</Text>
+                            <Text style={styles.inputText}>{t('yom')}</Text>
                             <CustomTextInput
-                                placeholder="Car Year (e.g. 2022)"
+                                placeholder={t('yom2')}
                                 iconRight="date-range"
                                 value={values.carYearInput}
                                 onChangeText={handleChange('carYearInput')}
@@ -214,9 +217,9 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carYearInput && errors.carYearInput}
                             />
 
-                            <Text style={styles.inputText}>Car Model</Text>
+                            <Text style={styles.inputText}>{t('car_model')}</Text>
                             <CustomTextInput
-                                placeholder="Car Model (e.g. C180)"
+                                placeholder={t('car_model2')}
                                 iconRight="badge"
                                 value={values.carModelInput}
                                 onChangeText={handleChange('carModelInput')}
@@ -224,9 +227,9 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carModelInput && errors.carModelInput}
                             />
 
-                            <Text style={styles.inputText}>Color</Text>
+                            <Text style={styles.inputText}>{t('color')}</Text>
                             <CustomTextInput
-                                placeholder="Color (e.g. Red)"
+                                placeholder={t('color2')}
                                 iconRight="palette"
                                 value={values.carColorInput}
                                 onChangeText={handleChange('carColorInput')}
@@ -234,8 +237,8 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carColorInput && errors.carColorInput}
                             />
 
-                            <Text style={styles.inputText}>License Plate (Letters) *</Text>
-                            {/* <View style={[styles.w100, styles.flexRow, styles.border1]}> */}
+                            <Text style={styles.inputText}>{t('license_letters')}</Text>
+
                             <View style={[styles.flexRow, styles.w100]}>
                                 <CustomTextInput
                                     style={styles.flexOne}
@@ -282,18 +285,17 @@ const NewCar = ({ route, navigation }) => {
                                 />
 
                             </View>
-                            {/* </View> */}
 
-                            <Text style={styles.inputText}>License Plate (Numbers)</Text>
+                            <Text style={styles.inputText}>{t('license_numbers')}</Text>
                             <CustomTextInput
-                                placeholder="License Plate Number (e.g. 1234)"
+                                placeholder={t('license_numbers2')}
                                 value={values.licensePlateNumbersInput}
                                 onChangeText={handleChange('licensePlateNumbersInput')}
                                 onBlur={handleBlur('licensePlateNumbersInput')}
                                 error={touched.licensePlateNumbersInput && errors.licensePlateNumbersInput}
                             />
 
-                            <Text style={styles.inputText}>Car License (Front)</Text>
+                            <Text style={styles.inputText}>{t('car_license_front')}</Text>
                             <ErrorMessage condition={frontPhotoButtonTouched && !licenseFront} message="This field is required." />
                             <Button
                                 text={frontPhotoButtonText}
@@ -302,7 +304,7 @@ const NewCar = ({ route, navigation }) => {
                                 onPress={chooseLicenseFront}
                             />
 
-                            <Text style={styles.inputText}>Car License (Back)</Text>
+                            <Text style={styles.inputText}>{t('car_license_back')}</Text>
                             <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message="This field is required." />
                             <Button
                                 text={backPhotoButtonText}
@@ -312,7 +314,7 @@ const NewCar = ({ route, navigation }) => {
                             />
 
                             <Button
-                                text="Confirm"
+                                text={t('confirm')}
                                 bgColor={palette.primary}
                                 textColor={palette.white}
                                 onPress={handleSubmit}
@@ -334,9 +336,9 @@ const NewCar = ({ route, navigation }) => {
                 </SafeAreaView>
                 <View style={[styles.defaultContainer, styles.defaultPadding, styles.justifyCenter, styles.alignCenter]}>
                     <CoffeeIcon width={250} height={250} />
-                    <Text style={[styles.font28, styles.bold, styles.mt10]}>Hang Tight!</Text>
-                    <Text style={[styles.font18, styles.mt5, styles.textCenter]}>We'll be processing your information soon.</Text>
-                    <Button bgColor={palette.primary} textColor={palette.white} text="Go Back" onPress={() => { navigation.goBack(); }}></Button>
+                    <Text style={[styles.font28, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
+                    <Text style={[styles.font18, styles.mt5, styles.textCenter]}>{t('wait_processing2')}</Text>
+                    <Button bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => { navigation.goBack(); }}></Button>
                 </View>
             </Modal>
         </ScreenWrapper>

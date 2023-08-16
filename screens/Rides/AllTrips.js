@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+    I18nManager,
     ScrollView,
     StyleSheet,
     Text,
@@ -13,6 +14,7 @@ import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const AllTrips = ({ navigation, route }) => {
@@ -63,23 +65,24 @@ const AllTrips = ({ navigation, route }) => {
     };
 
     const isDarkMode = useColorScheme === 'dark';
+    const {t} = useTranslation();
 
     return (
         <ScreenWrapper screenName="All Trips" navAction={() => navigation.goBack()} navType="back">
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={[styles.headerText2, { marginTop: 20 }]}>
-                    Trips
+                    {t('trips')}
                 </Text>
 
                 {driverElement && driverMainTextTo &&
                     <LinearGradient style={[styles.mt20, styles.w100, styles.br8]} colors={[palette.primary, palette.secondary]}>
                         <TouchableOpacity style={[styles.rideView, styles.pv8, styles.ph16, styles.flexOne, styles.alignCenter, styles.justifyStart, styles.flexRow, styles.bgTransparent]}
                             onPress={() => { viewTrip(driverTripId); }}>
-                            <Text style={[styles.white, styles.flexOne]}>View your upcoming trip to {driverMainTextTo}</Text>
+                            <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
                             <View>
                                 <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
-                                    <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
+                                    <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
                                 </TouchableOpacity>
                             </View>
                         </TouchableOpacity>
@@ -88,11 +91,11 @@ const AllTrips = ({ navigation, route }) => {
                 {
                     driverElement && !driverMainTextTo &&
                     <View style={[styles.rideView, styles.pv8, styles.ph16, styles.mt20, styles.bgSecondary, styles.alignCenter, styles.justifyStart, styles.flexRow]}>
-                        <Text style={[styles.white, styles.flexOne]}>You haven't applied to be a vehicle owner yet, apply now!</Text>
+                        <Text style={[styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
 
                         <View>
                             <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
-                                <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
+                                <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -110,11 +113,11 @@ const AllTrips = ({ navigation, route }) => {
                     !nextRides &&
                     <View style={allTripsStyle.noRides} >
                         <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                        <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>Your next ride is just a tap away. Book or post a ride now!</Text>
+                        <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                     </View>
                 }
                 <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
-                    <Text style={[styles.bold, styles.primary]}>Load More Trips...</Text>
+                    <Text style={[styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
                 </TouchableOpacity>
             </ScrollView>
         </ScreenWrapper>

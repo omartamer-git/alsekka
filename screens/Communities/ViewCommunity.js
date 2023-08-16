@@ -18,6 +18,7 @@ import { containerStyle, getDateShort, getTime, palette, styles } from '../../he
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
 import useUserStore from '../../api/accountAPI';
+import { useTranslation } from 'react-i18next';
 
 
 const ViewCommunity = ({ navigation, route }) => {
@@ -96,9 +97,11 @@ const ViewCommunity = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
+
 
     return (
-        <ScreenWrapper screenName={"Search"} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('search')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {isJoined && (
                     <>
@@ -109,7 +112,7 @@ const ViewCommunity = ({ navigation, route }) => {
                                 <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
                                     {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                                     <Text style={[styles.font12, styles.dark, styles.ml5]}>
-                                        {communityPrivacy === true ? "Private Community" : "Public Community"}
+                                        {communityPrivacy === true ? t('private') : t('public')}
                                     </Text>
                                 </View>
                             </View>
@@ -135,7 +138,7 @@ const ViewCommunity = ({ navigation, route }) => {
                         {feed.length === 0 && (
                             <View style={[styles.flexOne, styles.fullCenter, styles.w100]}>
                                 <MaterialIcons name="sentiment-very-dissatisfied" color={palette.dark} size={100} />
-                                <Text style={[styles.font18, styles.dark, styles.mt10]}>No Rides Right Now!</Text>
+                                <Text style={[styles.font18, styles.dark, styles.mt10]}>{t('no_rides')}</Text>
                             </View>
                         )
                         }
@@ -152,7 +155,7 @@ const ViewCommunity = ({ navigation, route }) => {
                             <Text style={[styles.font18, styles.bold, styles.mt10]}>{communityName}</Text>
                             <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
                                 <Text style={[styles.font12, styles.dark, styles.mr5]}>
-                                    {communityPrivacy === true ? "Private Community" : "Public Community"}
+                                    {communityPrivacy === true ? t('private') : t('public')}
                                 </Text>
                                 {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                             </View>
@@ -161,11 +164,11 @@ const ViewCommunity = ({ navigation, route }) => {
                             {communityPrivacy && joinQuestion && (
                                 <View style={[styles.w100, styles.mt10]}>
                                     <Text style={[styles.font14, styles.mt10, styles.textCenter, styles.w100]}>{joinQuestion}</Text>
-                                    <CustomTextInput placeholder="Answer" style={[styles.mt10]} value={joinAnswer} onChangeText={(data) => setJoinAnswer(data)} />
+                                    <CustomTextInput placeholder={t('answer')} style={[styles.mt10]} value={joinAnswer} onChangeText={(data) => setJoinAnswer(data)} />
                                 </View>
                             )}
 
-                            <Button text={communityPrivacy ? "Request to Join" : "Join Community"} bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={joinCommunity} />
+                            <Button text={communityPrivacy ? t('request_join') : t('join_community')} bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={joinCommunity} />
                         </View>
                     </>
                 )}
@@ -173,12 +176,12 @@ const ViewCommunity = ({ navigation, route }) => {
                 {sentJoinRequest && (
                     <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
                         <CoffeeIcon width={200} height={200} />
-                        <Text style={[styles.font28, styles.primary, styles.bold, styles.mt10]}>Hang tight!</Text>
+                        <Text style={[styles.font28, styles.primary, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
                         <Text
                             style={[styles.font14, styles.mt10, styles.textCenter, styles.ph8]}>
-                            Your request to join this community has been sent, and you'll be getting a reply soon!
+                            {t('community_request_sent')}
                         </Text>
-                        <Button text="Go Back" bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={() => navigation.goBack()} />
+                        <Button text={t('back')} bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={() => navigation.goBack()} />
                     </View>
                 )}
             </ScrollView>

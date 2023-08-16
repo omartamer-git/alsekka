@@ -12,6 +12,7 @@ import Button from '../../components/Button';
 import { palette, styles } from '../../helper';
 
 import HeaderView from '../../components/HeaderView';
+import { useTranslation } from 'react-i18next';
 
 const HomeScreen = ({ navigation }) => {
   const [phoneNumberText, setPhone] = useState('');
@@ -25,6 +26,8 @@ const HomeScreen = ({ navigation }) => {
   const handleSignUpClick = (e) => {
     navigation.navigate('Sign Up');
   };
+
+  const {t} = useTranslation();
 
   return (
     <View style={styles.backgroundStyle}>
@@ -42,22 +45,14 @@ const HomeScreen = ({ navigation }) => {
           <View style={[styles.w100, styles.alignStart, styles.flexOne, styles.justifyCenter]}>
             <Text style={[styles.headerText, styles.homeScreenHeaderTextMargin, styles.white]}>Welcome</Text>
 
-            <Text style={styles.subText}>Omar's Carpooling</Text>
-            <Text style={[styles.subText, { fontWeight: 'bold' }]}>Ride together.. Save together</Text>
+            <Text style={styles.subText}>{t('seaats')}</Text>
+            <Text style={[styles.subText, { fontWeight: 'bold' }]}>{t('seaats_slogan')}</Text>
 
           </View>
 
           <Button
-            text="Sign in with Google"
-            bgColor={palette.white}
-            textColor={palette.primary}
-            icon="google"
-            iconColor={palette.primary}
-          />
-
-          <Button
             style={styles.continueBtn}
-            text="Create an account"
+            text={t('create_account')}
             bgColor={palette.primary}
             textColor={palette.white}
             borderColor={palette.white}
@@ -65,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
           />
 
           <View style={styles.footer}>
-            <Text style={styles.smallText} onPress={handleLoginClick}>Already have an account? <Text style={[styles.white, styles.bold]}>Sign in</Text></Text>
+            <Text style={styles.smallText} onPress={handleLoginClick}>{t('account_exists')} <Text style={[styles.white, styles.bold]}>{t('sign_in')}</Text></Text>
           </View>
         </View>
       </SafeAreaView>

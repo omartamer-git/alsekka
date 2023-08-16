@@ -16,6 +16,7 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const Checkout = ({ route, navigation }) => {
@@ -75,30 +76,31 @@ const Checkout = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
 
 
     return (
-        <ScreenWrapper screenName="Checkout Passenger" navType={"back"} navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('checkout_passenger')} navType={"back"} navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
 
                 {
                     passengerDetails &&
-                    <Text style={styles.headerText3}>Checking Out {passengerDetails.firstName}</Text>
+                    <Text style={styles.headerText3}>{t('checking_out')} {passengerDetails.firstName}</Text>
                 }
-                <Text>Amount Due: {passengerDetails && passengerDetails.amountDue} EGP</Text>
+                <Text>{t('amount_due')} {passengerDetails && passengerDetails.amountDue} {t('EGP')}</Text>
 
                 {
                     passengerDetails &&
                     passengerDetails.paymentMethod === 0 &&
-                    <Text style={styles.inputText}>Enter Amount Paid</Text>
+                    <Text style={styles.inputText}>{t('amount_paid')}</Text>
                 }
 
                 {
                     passengerDetails &&
                     passengerDetails.paymentMethod === 0 &&
-                    <CustomTextInput value={amountPaid} placeholder="Amount Paid" style={styles.bgWhite} onChangeText={onChangeAmountPaid} />}
+                    <CustomTextInput value={amountPaid} placeholder={t('amount_paid')} style={styles.bgWhite} onChangeText={onChangeAmountPaid} />}
 
-                <Text style={styles.inputText}>Rate {passengerDetails && passengerDetails.firstName}</Text>
+                <Text style={styles.inputText}>{t('rate')} {passengerDetails && passengerDetails.firstName}</Text>
                 <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
                     {Array.from({ length: 5 }, (_, index) => {
                         return (
@@ -108,7 +110,7 @@ const Checkout = ({ route, navigation }) => {
                         );
                     })}
                 </View>
-                <Button text="Checkout" bgColor={palette.primary} textColor={palette.white} onPress={checkout} />
+                <Button text={t('checkout')} bgColor={palette.primary} textColor={palette.white} onPress={checkout} />
             </ScrollView>
         </ScreenWrapper>
     );

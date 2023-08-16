@@ -14,6 +14,7 @@ import AvailableRide from '../../components/AvailableRide';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const RideFinder = ({ route, navigation }) => {
@@ -62,6 +63,7 @@ const RideFinder = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
 
     return (
         <ScreenWrapper>
@@ -71,7 +73,7 @@ const RideFinder = ({ route, navigation }) => {
                     <CustomTextInput key="toText" iconLeft="place" value={textTo} style={[rideFinderStyles.autoCompleteStyles, rideFinderStyles.autoCompleteBottom]} />
                 </View>
 
-                <Text style={[styles.headerText3, styles.black, styles.mt20]}>Available Rides</Text>
+                <Text style={[styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
                 {
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);

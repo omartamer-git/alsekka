@@ -16,6 +16,8 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import HeaderView from '../../components/HeaderView';
 import { palette, styles } from '../../helper';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 
 const ForgotPasswordScreen = ({ route, navigation }) => {
@@ -50,6 +52,8 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
+
 
 
     return (
@@ -65,7 +69,7 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
             </SafeAreaView>
             <View style={styles.wrapper}>
                 <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-                    <Text style={[styles.headerText, styles.white]}>Forgot Password</Text>
+                    <Text style={[styles.headerText, styles.white]}>{t('forgot_password')}</Text>
                 </View>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
                     <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
@@ -77,18 +81,18 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
                             >
                                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                                     <>
-                                        <Text style={styles.inputText}>Phone Number</Text>
+                                        <Text style={styles.inputText}>{t('phone_number')}</Text>
                                         <CustomTextInput
                                             value={values.phoneInput}
                                             onChangeText={handleChange('phoneInput')}
                                             onBlur={handleBlur('phoneInput')}
-                                            placeholder="Enter your phone number"
+                                            placeholder={t('enter_phone')}
                                             error={touched.phoneInput && errors.phoneInput}
                                         />
 
                                         <Button
                                             style={[styles.continueBtn, styles.mt20]}
-                                            text="Send Verification Code"
+                                            text={t('send_verification_code')}
                                             bgColor={palette.primary}
                                             textColor={palette.white}
                                             onPress={handleSubmit}

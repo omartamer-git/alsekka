@@ -1,9 +1,11 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { rem, styles } from "../helper";
+import { rem, styles, translateEnglishNumbers } from "../helper";
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useState } from "react";
+import useLocale from "../locale/localeContext";
 
 export default function Counter({ counter, setCounter, text, textPlural, min=0, max=4 }) {
+    const {language} = useLocale();
 
     return (
         <>
@@ -17,7 +19,7 @@ export default function Counter({ counter, setCounter, text, textPlural, min=0, 
 
 
                 <View style={[styles.flexOne, styles.justifyCenter, styles.alignCenter]}>
-                    <Text>{counter}</Text>
+                    <Text>{language === 'ar' ? translateEnglishNumbers(counter) : counter}</Text>
                     <Text>{counter <= 1 ? text : textPlural}</Text>
                 </View>
 

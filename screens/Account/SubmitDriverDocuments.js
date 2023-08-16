@@ -16,19 +16,22 @@ import HeaderLip from '../../components/HeaderLip';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const carsAPI = require('../../api/carsAPI');
 
 const SubmitDriverDocuments = ({ route, navigation }) => {
     useEffect(() => {
     }, []);
+    const {t} = useTranslation();
+
 
     const isDarkMode = useColorScheme === 'dark';
-    const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
+    const imagePickerOptions = { title: 'Drivers\' License Photo', mediaType: 'photo', quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");
-    const [frontPhotoButtonText, setFrontPhotoButtonText] = useState("Front Side");
-    const [backPhotoButtonText, setBackPhotoButtonText] = useState("Back Side");
+    const [frontPhotoButtonText, setFrontPhotoButtonText] = useState(t('front_side'));
+    const [backPhotoButtonText, setBackPhotoButtonText] = useState(t('back_side'));
     const [licenseStatus, setLicenseStatus] = useState(null);
     const [frontSideTouched, setFrontSideTouched] = useState(false);
     const [backSideTouched, setBackSideTouched] = useState(false);
@@ -37,15 +40,15 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
     const setImageBack = (response) => {
         if (!response.didCancel && !response.error) {
-            setLicenseBack(response.assets[0]['base64']);
-            setBackPhotoButtonText("Back Side Chosen");
+            setLicenseBack(response);
+            setBackPhotoButtonText(t('back_chosen'));
         }
     };
 
     const setImageFront = (response) => {
         if (!response.didCancel && !response.error) {
-            setLicenseFront(response.assets[0]['base64']);
-            setFrontPhotoButtonText("Front Side Chosen");
+            setLicenseFront(response);
+            setFrontPhotoButtonText(t('front_chosen'));
         }
     };
 
@@ -63,7 +66,6 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
     const uploadLicense = async () => {
         const licenseBody = {
-            uid: userStore.id,
             frontSide: licenseFront,
             backSide: licenseBack,
         };
@@ -73,37 +75,36 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     };
 
     useEffect(() => {
-        console.log(licenseStatus);
-        console.log(userStore.driver);
         licensesAPI.getLicense().then((data) => {
             setLicenseStatus(data === null ? 0 : data.status);
         });
     }, []);
 
+
     return (
-        <ScreenWrapper screenName="Submit Documents" navType="back" navAction={() => { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('submit_documents')} navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
                     <HeaderLip />
 
                     {!userStore.driver && !licenseStatus &&
                         <View style={driverDocumentsStyles.wrapper}>
-                            <Text style={styles.inputText}>Front Side Driver's License Upload *</Text>
+                            <Text style={styles.inputText}>{t('front_side_drivers_license')}</Text>
                             <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
                             <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
 
-                            <Text style={[styles.inputText]}>Back Side Driver's License Upload *</Text>
+                            <Text style={[styles.inputText]}>{t('back_side_drivers_license')}</Text>
                             <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
                             <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
                             
-                            <Button bgColor={palette.primary} textColor={palette.white} text="Upload" onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
+                            <Button bgColor={palette.primary} textColor={palette.white} text={t('submit')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
                         </View>
                     }
                     {!userStore.driver && licenseStatus === 'PENDING' &&
                         <View style={driverDocumentsStyles.wrapper}>
                             <Pending width="300" height="300" />
-                            <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>Your documents are being reviewed</Text>
-                            <Text style={[styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>To ensure the safety of our community, we have to carefully verify all documents sent to us. Please allow up to 24 hours for verification.</Text>
+                            <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>{t('wait_processing')}</Text>
+                            <Text style={[styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
                         </View>
                     }
 

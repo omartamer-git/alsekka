@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { I18nManager, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { palette, rem } from '../helper';
+import { palette, rem, styles } from '../helper';
 
 const ArrowButton = ({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) => {
     let borderColor_ = borderColor;
@@ -11,25 +11,25 @@ const ArrowButton = ({ text, onPress, bgColor, disabled, textColor, style, icon,
 
     return (
         <TouchableOpacity
-            style={[styles.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
+            style={[styles2.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
             activeOpacity={0.9}
             onPress={onPress}
             disabled={disabled}
         >
-            {icon === undefined ? null : <FontsAwesome5 style={styles.icon} name={icon} size={13 * rem} color={iconColor} />}
-            <View style={[styles.viewStyle, icon ? {} : { marginRight: 20 }]}>
-                { text && <Text style={[styles.continueBtnText, { color: textColor }]}>{text}</Text> }
+            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={13 * rem} color={iconColor} />}
+            <View style={[styles2.viewStyle, icon ? {} : { marginEnd: 20 }]}>
+                { text && <Text style={[styles2.continueBtnText, { color: textColor }]}>{text}</Text> }
             </View>
             <View style={{alignItems: 'flex-end'}}>
-                <FontsAwesome5 name="chevron-right" size={13 * rem} />
+                <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={13 * rem} color={iconColor || palette.black} />
             </View>
         </TouchableOpacity>
     );
 };
 
-const styles = StyleSheet.create({
+const styles2 = StyleSheet.create({
     viewStyle: {
-        flexDirection: 'row',
+        ...styles.flexRow,
         alignItems: 'center',
         justifyContent: 'flex-start',
         flex: 1
@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 6 * rem,
-        paddingLeft: 16 * rem,
-        flexDirection: 'row',
-        paddingRight: 16 * rem,
+        paddingStart: 16 * rem,
+        ...styles.flexRow,
+        paddingEnd: 16 * rem,
         marginTop: 8 * rem,
         marginBottom: 8 * rem,
         borderWidth: 1,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     icon: {
-        marginRight: 8
+        marginEnd: 8
     }
 });
 

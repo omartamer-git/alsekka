@@ -15,6 +15,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const AddMobileWallet = ({ navigation, route }) => {
     const [addWalletError, setAddWalletError] = useState(null);
@@ -50,9 +51,10 @@ const AddMobileWallet = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
 
     return (
-        <ScreenWrapper screenName="Add Mobile Wallet" navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('add_wallet')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, { alignItems: 'flex-start' }]}>
                 <ErrorMessage message={addWalletError} condition={addWalletError} />
                 <Formik
@@ -62,10 +64,10 @@ const AddMobileWallet = ({ navigation, route }) => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                         <>
-                            <Text style={styles.inputText}>Phone Number</Text>
+                            <Text style={styles.inputText}>{t('phone_number')}</Text>
 
                             <CustomTextInput
-                                placeholder="Phone Number (i.e 01000012345)"
+                                placeholder={t('phone_number') + " (i.e 01234567890)"}
                                 value={values.phoneInput}
                                 onBlur={handleBlur('phoneInput')}
                                 onChangeText={handleChange('phoneInput')}
@@ -74,7 +76,7 @@ const AddMobileWallet = ({ navigation, route }) => {
                             />
 
                             <View style={styles.flexOne} />
-                            <Button text="Add Wallet" bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} />
+                            <Button text={t('add_wallet')} bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} />
                         </>
                     )}
                 </Formik>

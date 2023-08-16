@@ -16,6 +16,7 @@ import * as communitiesAPI from '../../api/communitiesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import CommunityCard from '../../components/CommunityCard';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const ViewCommunities = ({ navigation, route }) => {
@@ -60,13 +61,13 @@ const ViewCommunities = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-
+    const {t} = useTranslation();
 
     return (
-        <ScreenWrapper screenName={"Communities"}>
+        <ScreenWrapper screenName={t('communities')}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  >
                 <View style={[styles.w100, styles.flexRow, styles.alignCenter, styles.mt20]}>
-                    <Text style={[styles.headerText2]}>Communities</Text>
+                    <Text style={[styles.headerText2]}>{t('communities')}</Text>
                     <View style={[styles.flexOne]} />
                     <TouchableOpacity style={[styles.mr5]} onPress={() => navigation.navigate('Search Communities')}><MaterialIcons name="search" size={24} /></TouchableOpacity>
                     <TouchableOpacity style={[styles.ml5]} onPress={() => navigation.navigate('New Community')}><MaterialIcons name="add" size={24} /></TouchableOpacity>
@@ -74,23 +75,23 @@ const ViewCommunities = ({ navigation, route }) => {
 
                 {feed && feed.length > 0 &&
                     <View style={[styles.w100, styles.mt10, styles.borderLight, styles.pb8, { borderTopWidth: 1 }]}>
-                        <Text style={[styles.headerText3, styles.mt10]}>Your Feed</Text>
+                        <Text style={[styles.headerText3, styles.mt10]}>{t('your_feed')}</Text>
                         {
                             feed.map((data, index) => {
                                 const nextRideDate = new Date(data.datetime);
                                 return (
                                     <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
                                         <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
-                                        <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>Posted by {data.Driver.firstName} {data.Driver.lastName} in {data.Community.community_name}</Text>
+                                        <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>{t('posted_by')} {data.Driver.firstName} {data.Driver.lastName} {t('in')} {data.Community.community_name}</Text>
                                     </View>
                                 );
                             })
                         }
-                        <Text style={[styles.alignSelfCenter, styles.mt10, styles.bold, styles.accent]}>See More</Text>
+                        <Text style={[styles.alignSelfCenter, styles.mt10, styles.bold, styles.accent]}>{t('see_more')}</Text>
                     </View>}
 
                 <View style={[styles.flexOne, styles.mt10, styles.w100, styles.borderLight, { borderTopWidth: 1 }]}>
-                    <Text style={[styles.headerText3, styles.mt10]}>Recommended Communities</Text>
+                    <Text style={[styles.headerText3, styles.mt10]}>{t('rec_communities')}</Text>
                     {
                         communities && communities.map((data, index) => {
                             return (

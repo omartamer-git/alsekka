@@ -23,7 +23,7 @@ const Announcement = ({ navigation, route }) => {
     const isDarkMode = useColorScheme === 'dark';
 
     return (
-        <ScreenWrapper screenName={"Announcement"} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('announcement')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {announcement && <Text style={[styles.headerText2, styles.mt20]}>
                     {announcement.title}

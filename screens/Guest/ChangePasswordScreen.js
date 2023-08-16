@@ -18,6 +18,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
 import { palette, styles } from '../../helper';
+import { useTranslation } from 'react-i18next';
 
 
 const ChangePasswordScreen = ({ route, navigation }) => {
@@ -56,7 +57,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-
+    const {t} = useTranslation();
 
     return (
         <View style={styles.backgroundStyle}>
@@ -71,7 +72,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
             </SafeAreaView>
             <View style={styles.wrapper}>
                 <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-                    <Text style={[styles.headerText, styles.white]}>Reset Password</Text>
+                    <Text style={[styles.headerText, styles.white]}>{t('reset_password')}</Text>
                 </View>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
                     <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
@@ -84,29 +85,29 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                             >
                                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                                     <>
-                                        <Text style={styles.inputText}>Password</Text>
+                                        <Text style={styles.inputText}>{t('password')}</Text>
                                         <CustomTextInput
                                             value={values.passwordInput}
                                             onChangeText={handleChange('passwordInput')}
                                             onBlur={handleBlur('passwordInput')}
-                                            placeholder="Password"
+                                            placeholder={t('password')}
                                             error={touched.passwordInput && errors.passwordInput}
                                             secureTextEntry={true}
                                         />
 
-                                        <Text style={styles.inputText}>Confirm Password</Text>
+                                        <Text style={styles.inputText}>{t('confirm_password')}</Text>
                                         <CustomTextInput
                                             value={values.password2Input}
                                             onChangeText={handleChange('password2Input')}
                                             onBlur={handleBlur('password2Input')}
-                                            placeholder="Confirm Password"
+                                            placeholder={t('confirm_password')}
                                             error={touched.password2Input && errors.password2Input}
                                             secureTextEntry={true}
                                         />
 
                                         <Button
                                             style={[styles.continueBtn, styles.mt20]}
-                                            text="Reset Password"
+                                            text={t('reset_password')}
                                             bgColor={palette.primary}
                                             textColor={palette.white}
                                             onPress={handleSubmit}

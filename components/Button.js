@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { palette, rem } from '../helper';
+import { palette, rem, styles } from '../helper';
 
 const Button = ({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) => {
     let borderColor_ = borderColor;
@@ -11,23 +11,23 @@ const Button = ({ text, onPress, bgColor, disabled, textColor, style, icon, icon
 
     return (
         <TouchableOpacity
-            style={[styles.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
+            style={[styles2.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
             activeOpacity={0.9}
             onPress={onPress}
             disabled={disabled}
         >
-            {icon === undefined ? null : <FontsAwesome5 style={styles.icon} name={icon} size={20} color={iconColor} />}
-            <View style={[styles.viewStyle, icon === undefined ? {} : { marginRight: 20 }]}>
-                { text && <Text style={[styles.continueBtnText, { color: textColor }]}>{text}</Text> }
+            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={20} color={iconColor} />}
+            <View style={[styles2.viewStyle, icon === undefined ? {} : { marginEnd: 20 }]}>
+                { text && <Text style={[styles2.continueBtnText, { color: textColor }]}>{text}</Text> }
                 { children }
             </View>
         </TouchableOpacity>
     );
 };
 
-const styles = StyleSheet.create({
+const styles2 = StyleSheet.create({
     viewStyle: {
-        flexDirection: 'row',
+        ...styles.flexRow,
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1
@@ -37,9 +37,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 6 * rem,
-        paddingLeft: 24 * rem,
-        flexDirection: 'row',
-        paddingRight: 24 * rem,
+        paddingStart: 24 * rem,
+        ...styles.flexRow,
+        paddingEnd: 24 * rem,
         marginTop: 8 * rem,
         marginBottom: 8 * rem,
         borderWidth: 1,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     icon: {
-        marginRight: 8
+        marginEnd: 8
     }
 });
 

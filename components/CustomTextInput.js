@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, rem } from '../helper';
+import { palette, rem, styles } from '../helper';
 
 const CustomTextInput = ({ value,
     onChangeText, placeholder, style,
@@ -9,18 +9,18 @@ const CustomTextInput = ({ value,
     secureTextEntry, onFocus, onPressIn,
     iconLeft, iconRight, inputRef,
     onKeyPress, textStyles, onBlur, error }) => {
-    const validationStyles = error ? styles.warningBorder : null;
+    const validationStyles = error ? styles2.warningBorder : null;
     let key;
 
     return (
         <>
-            <TouchableOpacity activeOpacity={1} onPress={onPressIn} style={[styles.container, validationStyles, style]}>
+            <TouchableOpacity activeOpacity={1} onPress={onPressIn} style={[styles2.container, validationStyles, style]}>
                 {
                     iconLeft &&
-                    <MaterialIcons name={iconLeft} size={18} style={{ paddingRight: 16 }} color={palette.primary} />
+                    <MaterialIcons name={iconLeft} size={18} color={palette.primary} />
                 }
                 <TextInput
-                    style={[styles.input, textStyles]}
+                    style={[styles2.input, textStyles]}
                     placeholder={placeholder}
                     value={value}
                     keyboardType={keyboardType}
@@ -42,7 +42,7 @@ const CustomTextInput = ({ value,
                 />
                 {
                     iconRight &&
-                    <MaterialIcons name={iconRight} size={18} style={{ paddingLeft: 16 }} color={palette.primary} />
+                    <MaterialIcons name={iconRight} size={18} color={palette.primary} />
                 }
             </TouchableOpacity>
             {error && <Text adjustsFontSizeToFit numberOfLines={2} style={{ color: palette.red, fontSize: 12 * rem }}>{error}</Text>}
@@ -59,15 +59,15 @@ CustomTextInput.defaultProps = {
     onPressIn: () => { },
 };
 
-const styles = StyleSheet.create({
+const styles2 = StyleSheet.create({
     container: {
         height: 48 * rem,
         alignItems: 'center',
         justifyContent: 'flex-start',
         borderRadius: 4,
-        flexDirection: 'row',
-        paddingLeft: 24,
-        paddingRight: 24,
+        ...styles.flexRow,
+        paddingStart: 24,
+        paddingEnd: 24,
         marginTop: 8,
         marginBottom: 8,
         backgroundColor: palette.white
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
         lineHeight: 16 * rem,
         textAlign: 'left',
         fontWeight: '500',
+        marginHorizontal: 8 * rem,
         color: palette.accent,
         flex: 1
     },

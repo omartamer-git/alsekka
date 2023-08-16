@@ -4,6 +4,7 @@ import { containerStyle, palette, rem, styles } from "../../helper";
 import { useEffect, useState } from "react";
 import { acceptCommunityMember, getCommunityMemberRequests, rejectCommunityMember } from "../../api/communitiesAPI";
 import Button from "../../components/Button";
+import { useTranslation } from "react-i18next";
 
 const CommunityMembers = ({ route, navigation }) => {
     const { communityId } = route.params;
@@ -23,16 +24,18 @@ const CommunityMembers = ({ route, navigation }) => {
         rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id)))
     };
 
+    const {t} = useTranslation();
+
     return (
         <>
-            <ScreenWrapper screenName="Manage Members" navType="back" navAction={navigation.goBack}>
+            <ScreenWrapper screenName={t('manage_members')} navType="back" navAction={navigation.goBack}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                     {
                         members.length === 0 && 
                         (
                             <View style={[styles.w100, styles.flexOne, styles.fullCenter]}>
-                                <Text style={[styles.headerText, styles.dark]}>All Set!</Text>
-                                <Text style={[styles.dark]}>No new requests yet.</Text>
+                                <Text style={[styles.headerText, styles.dark]}>{t('done')}</Text>
+                                <Text style={[styles.dark]}>{t('no_new')}</Text>
                             </View>
                         )
                     }
@@ -48,8 +51,8 @@ const CommunityMembers = ({ route, navigation }) => {
                                             <Text style={[styles.headerText2]}>{member.User.firstName} {member.User.lastName}</Text>
                                             <Text style={[styles.smallText, styles.dark]}>{member.joinAnswer}</Text>
                                             <View style={[styles.w100, styles.flexRow]}>
-                                                <Button onPress={() => acceptMember(member.id)} style={[styles.flexOne, styles.mr5]} bgColor={palette.green} text="Accept" textColor={palette.white} />
-                                                <Button onPress={() => rejectMember(member.id)} style={[styles.flexOne, styles.ml5]} bgColor={palette.red} text="Reject" textColor={palette.white} />
+                                                <Button onPress={() => acceptMember(member.id)} style={[styles.flexOne, styles.mr5]} bgColor={palette.green} text={t('accept')} textColor={palette.white} />
+                                                <Button onPress={() => rejectMember(member.id)} style={[styles.flexOne, styles.ml5]} bgColor={palette.red} text={t('reject')} textColor={palette.white} />
                                             </View>
                                         </View>
                                     </View>

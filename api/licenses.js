@@ -4,14 +4,31 @@ import useUserStore from './accountAPI';
 
 export const uploadLicense = async (licenseBody) => {
     const url = `/submitlicense`;
+    const imageFront = licenseBody.frontSide.assets[0];
+    const imageBack = licenseBody.backSide.assets[0];
+
+    const formData = new FormData();
+    formData.append('front', {
+        uri: imageFront.uri,
+        type: imageFront.type,
+        name: imageFront.fileName || imageFront.uri.split('/').pop(),
+    });
+
+    formData.append('back', {
+        uri: imageBack.uri,
+        type: imageBack.type,
+        name: imageBack.fileName || imageBack.uri.split('/').pop(),
+    });
 
     try {
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(url, licenseBody, {
+        const response = await axiosManager.authAxios.post(url, formData, {
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "multipart/form-data",
+                Accept: "application/json",
             }
         });
+        
         const data = response.data;
         return data;
     } catch (err) {

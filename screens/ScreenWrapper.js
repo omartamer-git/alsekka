@@ -16,12 +16,7 @@ const ScreenWrapper = ({ screenName, children, navType, navAction, lip=true }) =
         <View style={styles.backgroundStyle}>
             <StatusBar barStyle={isDarkMode ? 'dark-content' : 'light-content'} />
             <SafeAreaView>
-                <HeaderView navType={navType} screenName={screenName} borderVisible={false} action={navAction} >
-                    <View style={styles.localeWrapper}>
-                        {/* <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                        <Text style={styles.locale}>EN</Text> */}
-                    </View>
-                </HeaderView>
+                <HeaderView navType={navType} screenName={screenName} borderVisible={false} action={navAction} />
             </SafeAreaView>
 
             <View style={styles.wrapper}>

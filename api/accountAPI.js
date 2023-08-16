@@ -32,8 +32,8 @@ const useUserStore = create((set) => ({
     setAvailableCards: (cards) => set((state) => ({ availableCards: cards })),
     setBankAccounts: (accounts) => set((state) => ({ bankAccounts: accounts })),
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
-    setGender: (gender) => set((state) => ({gender: gender})),
-    
+    setGender: (gender) => set((state) => ({ gender: gender })),
+
     login: async (phoneNum, password) => {
         try {
             const axiosManager = useAxiosManager.getState();
@@ -107,13 +107,8 @@ const useUserStore = create((set) => ({
 
     getAvailableCards: async () => {
         try {
-            const state = useUserStore.getState();
             const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.get(`/wallet`, {
-                params: {
-                    uid: state.id,
-                },
-            });
+            const response = await axiosManager.authAxios.get(`/wallet`);
 
             const data = response.data;
             set((state) => ({ availableCards: data }));
@@ -124,13 +119,8 @@ const useUserStore = create((set) => ({
     },
 
     getBankAccounts: async () => {
-        const state = useUserStore.getState();
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(`/banks`, {
-            params: {
-                uid: state.id,
-            },
-        });
+        const response = await axiosManager.authAxios.get(`/banks`);
 
         const data = response.data;
         set((state) => ({ bankAccounts: data }));
@@ -138,13 +128,8 @@ const useUserStore = create((set) => ({
     },
 
     getMobileWallets: async () => {
-        const state = useUserStore.getState();
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(`/mobilewallets`, {
-            params: {
-                uid: state.id,
-            },
-        });
+        const response = await axiosManager.authAxios.get(`/mobilewallets`);
 
         const data = response.data;
         set((state) => ({ mobileWallets: data }));
@@ -152,9 +137,7 @@ const useUserStore = create((set) => ({
     },
 
     editName: async (firstName, lastName) => {
-        const state = useUserStore.getState();
         const body = {
-            uid: state.id,
             firstName: firstName,
             lastName: lastName,
         };
@@ -176,9 +159,7 @@ const useUserStore = create((set) => ({
     },
 
     editEmail: async (email) => {
-        const state = useUserStore.getState();
         const body = {
-            uid: state.id,
             email: email,
         };
 
@@ -199,10 +180,7 @@ const useUserStore = create((set) => ({
     },
 
     editPhone: async (phone) => {
-        const state = useUserStore.getState();
-
         const body = {
-            uid: state.id,
             phone: phone,
         };
 
@@ -223,10 +201,8 @@ const useUserStore = create((set) => ({
     },
 
     addBankAccount: async (fullName, bankName, accNumber, swiftCode) => {
-        const state = useUserStore.getState();
 
         const body = {
-            uid: state.id,
             fullName: fullName,
             bankName: bankName,
             accNumber: accNumber,
@@ -249,10 +225,7 @@ const useUserStore = create((set) => ({
     },
 
     addMobileWallet: async (phone) => {
-        const state = useUserStore.getState();
-
         const body = {
-            uid: state.id,
             phone: phone,
         };
 
@@ -273,7 +246,6 @@ const useUserStore = create((set) => ({
 
     getOtp: async (phone) => {
         const url = `/verify`;
-        const state = useUserStore.getState();
 
         const axiosManager = useAxiosManager.getState();
         axiosManager.publicAxios.get(url, {
@@ -285,7 +257,6 @@ const useUserStore = create((set) => ({
 
     sendOtp: async (phone, otp) => {
         const url = `/verify`;
-        const state = useUserStore.getState();
 
         const axiosManager = useAxiosManager.getState();
 
@@ -304,7 +275,6 @@ const useUserStore = create((set) => ({
     },
 
     uploadProfilePicture: async (imageFile) => {
-        console.log(imageFile);
         const image = imageFile.assets[0];
         const formData = new FormData();
         formData.append('file', {
@@ -327,7 +297,6 @@ const useUserStore = create((set) => ({
 
     sendOtpSecurity: async (phone, otp) => {
         const url = `/verifysecurity`;
-        const state = useUserStore.getState();
 
         const axiosManager = useAxiosManager.getState();
 
@@ -365,29 +334,39 @@ const useUserStore = create((set) => ({
     },
 
     addCard: async (cardNumber, cardExpiry, cardholderName) => {
-        const state = useUserStore.getState();
-
         const body = {
-            uid: state.id,
             cardholderName: cardholderName,
             cardNumber: cardNumber,
             cardExpiry: cardExpiry,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.post(`/card`, body, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(`/card`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            const data = response.data;
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        const data = response.data;
+        return data;
     },
+
+    sendWithdrawalRequest: async (paymentMethodType, paymentMethodId) => {
+        const body = {
+            paymentMethodType,
+            paymentMethodId
+        };
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post('/withdrawalrequest', body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = response.data;
+        set(data);
+    }
 }));
 
 export default useUserStore;

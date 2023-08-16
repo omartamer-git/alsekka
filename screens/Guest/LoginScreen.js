@@ -20,6 +20,7 @@ import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
 import { config } from '../../config';
 import { palette, styles } from '../../helper';
+import { useTranslation } from 'react-i18next';
 
 
 const LoginScreen = ({ route, navigation }) => {
@@ -42,7 +43,7 @@ const LoginScreen = ({ route, navigation }) => {
         userStore.getAvailableCards();
         userStore.getBankAccounts();
         userStore.getMobileWallets();
-        
+
         if (data.verified) {
           navigation.popToTop();
           navigation.replace("LoggedIn", {
@@ -74,20 +75,22 @@ const LoginScreen = ({ route, navigation }) => {
     passwordInput: Yup.string().min(0, 'Your password should be at least 8 characters long').required('This field is required'),
   });
 
-  if(Platform.OS === 'ios') {
+  if (Platform.OS === 'ios') {
     const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
+      // This should be run when screen gains focus - enable the module where it's needed
+      AvoidSoftInput.setShouldMimicIOSBehavior(true);
+      AvoidSoftInput.setEnabled(true);
+      return () => {
+        // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+        AvoidSoftInput.setEnabled(false);
+        AvoidSoftInput.setShouldMimicIOSBehavior(false);
+      };
     }, []);
 
     useFocusEffect(onFocusEffect); // register callback to focus events    
-}
+  }
+
+  const { t } = useTranslation();
 
 
 
@@ -104,13 +107,13 @@ const LoginScreen = ({ route, navigation }) => {
       </SafeAreaView>
       <View style={styles.wrapper}>
         <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-          <Text style={[styles.headerText, styles.white]}>Sign In</Text>
+          <Text style={[styles.headerText, styles.white]}>{t('sign_in')}</Text>
         </View>
         <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
           <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
             <View style={[styles.w100, styles.flexOne, styles.defaultPaddingVertical]}>
-              <Text style={[styles.headerText, styles.black]}>Welcome Back</Text>
-              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>Hello there, sign in to continue!</Text>
+              <Text style={[styles.headerText, styles.black]}>{t('welcome_back')}</Text>
+              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('welcome_message')}</Text>
               <ErrorMessage message={errorMessage} condition={errorMessage} />
               <Formik
                 initialValues={{ phoneInput: '', passwordInput: '' }}
@@ -120,22 +123,22 @@ const LoginScreen = ({ route, navigation }) => {
               >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                   <>
-                    <Text style={styles.inputText}>Phone Number</Text>
+                    <Text style={styles.inputText}>{t('phone_number')}</Text>
                     <CustomTextInput
                       value={values.phoneInput}
                       onChangeText={handleChange('phoneInput')}
                       onBlur={handleBlur('phoneInput')}
-                      placeholder="Enter your phone number"
+                      placeholder={t('enter_phone')}
                       error={touched.phoneInput && errors.phoneInput}
                     />
 
-                    <Text style={styles.inputText}>Password</Text>
+                    <Text style={styles.inputText}>{t('password')}</Text>
 
                     <CustomTextInput
                       value={values.passwordInput}
                       onChangeText={handleChange('passwordInput')}
                       onBlur={handleBlur('passwordInput')}
-                      placeholder="Enter your password"
+                      placeholder={t('enter_password')}
                       secureTextEntry={true}
                       error={touched.passwordInput && errors.passwordInput}
                     />
@@ -143,7 +146,7 @@ const LoginScreen = ({ route, navigation }) => {
 
                     <Button
                       style={[styles.continueBtn, styles.mt20]}
-                      text="Sign in"
+                      text={t('sign_in')}
                       bgColor={palette.primary}
                       textColor={palette.white}
                       onPress={handleSubmit}
@@ -158,7 +161,7 @@ const LoginScreen = ({ route, navigation }) => {
                   navigation.navigate('Forgot Password', { phone: formRef.current.values.phoneInput });
                 }}
                 style={[styles.justifyCenter, styles.alignCenter, styles.w100]}>
-                <Text style={[styles.textStart, styles.dark]}>Forgot your password?</Text>
+                <Text style={[styles.textStart, styles.dark]}>{t('forgot_password')}</Text>
               </TouchableWithoutFeedback>
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
@@ -166,8 +169,8 @@ const LoginScreen = ({ route, navigation }) => {
                   navigation.navigate('Sign Up');
                 }} style={[styles.justifyEnd, styles.alignCenter]}>
                   <Text style={[styles.dark, styles.textCenter]}>
-                    Don't have an account?
-                    <Text style={[styles.primary, styles.bold, styles.ml10]}> Sign up</Text>
+                    {t('no_account')}
+                    <Text style={[styles.primary, styles.bold, styles.ml10]}> {t('sign_up')}</Text>
                   </Text>
                 </TouchableWithoutFeedback>
 

@@ -19,6 +19,7 @@ import { customMapStyle, getDateShort, getTime, palette, rem, styles } from '../
 import ScreenWrapper from '../ScreenWrapper';
 import ArrowButton from '../../components/ArrowButton';
 import BottomModal from '../../components/BottomModal';
+import { useTranslation } from 'react-i18next';
 
 
 const ViewTrip = ({ route, navigation }) => {
@@ -130,10 +131,10 @@ const ViewTrip = ({ route, navigation }) => {
 
 
     const isDarkMode = useColorScheme === 'dark';
-
+    const {t} = useTranslation();
     return (
         <>
-            <ScreenWrapper screenName="View Trip" navAction={() => navigation.goBack()} navType="back">
+            <ScreenWrapper screenName={t('view_trip')} navAction={() => navigation.goBack()} navType="back">
                 <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
                     <MapView
                         style={[styles.mapStyle]}
@@ -158,7 +159,7 @@ const ViewTrip = ({ route, navigation }) => {
                                     <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
                                 </View>
                                 <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
-                                    <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? "You're driving!" : tripDetails.Driver.firstName + " is driving"}</Text>
+                                    <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName + " " + t('is_driving')}</Text>
                                     <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
                                     <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
                                     <View style={styles.flexRow}>
@@ -202,26 +203,26 @@ const ViewTrip = ({ route, navigation }) => {
                         {
                             !isDriver &&
                             <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart]}>
-                                <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text="Directions to Pickup" />
+                                <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
 
                                 <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
                                     <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
                                         <MaterialIcons name="close" size={25} />
                                     </TouchableOpacity>
-                                    <Text style={[styles.smallText, styles.black, { marginTop: 2 * rem }]}>Cancel</Text>
+                                    <Text style={[styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
                                 </View>
                             </View>
                         }
                         {
                             isDriver &&
                             <View style={[styles.w100, styles.fullCenter]}>
-                                {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text="Cancel Ride" textColor={palette.white} onPress={cancelRide} />}
+                                {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text={t('cancel_ride')} textColor={palette.white} onPress={cancelRide} />}
 
-                                {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text="Start Trip" textColor={palette.white} onPress={startTrip} />}
+                                {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text={t('start_ride')} textColor={palette.white} onPress={startTrip} />}
 
-                                {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text="Manage Trip" textColor={palette.white} onPress={manageTrip} />}
+                                {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={"إدارة الرحلة"} textColor={palette.white} onPress={manageTrip} />}
 
-                                {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text="Trip Cancelled" textColor={palette.white} onPress={() => { }} />}
+                                {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={() => { }} />}
 
                             </View>
                         }
@@ -231,10 +232,9 @@ const ViewTrip = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
-                    <Text style={[styles.headerText3, styles.mv5]}>Are you sure you want to cancel?</Text>
-                    <Text style={[styles.textCenter, styles.mv5]}>You can cancel for free up until 24 hours before the trip.</Text>
-                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text="Go Back" onPress={() => setCancelModalVisible(false)} />
-                    <Button bgColor={palette.red} textColor={palette.white} text="Cancel" onPress={cancelPassenger} />
+                    <Text style={[styles.headerText3, styles.mv5]}>{t('cancel_confirm')}</Text>
+                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
+                    <Button bgColor={palette.red} textColor={palette.white} text={t('cancel')} onPress={cancelPassenger} />
                 </View>
             </BottomModal>
         </>

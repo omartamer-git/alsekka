@@ -1,20 +1,20 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { rem } from '../helper';
+import { rem, styles } from '../helper';
 
 const Separator = ({ text }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.line} />
-      <Text style={styles.text}>{text}</Text>
-      <View style={styles.line} />
+    <View style={styles2.container}>
+      <View style={styles2.line} />
+      <Text style={styles2.text}>{text}</Text>
+      <View style={styles2.line} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const styles2 = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    ...styles.flexRow,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10 * rem,

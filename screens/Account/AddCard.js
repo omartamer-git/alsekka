@@ -19,6 +19,7 @@ import { containerStyle, palette, rem, styles } from '../../helper';
 import Mastercard from '../../svgs/mastercard';
 import Visa from '../../svgs/visa';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const AddCard = ({ navigation, route }) => {
     const [cardholderName, setCardholderName] = useState("");
@@ -136,8 +137,10 @@ const AddCard = ({ navigation, route }) => {
         expiryDateInput: Yup.string().matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, 'Invalid expiry date. Enter in the form MM/YY').required('This field is required')
     });
 
+    const {t} = useTranslation();
+
     return (
-        <ScreenWrapper screenName="Add Card" navType="back" navAction={() => { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('add_card')} navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <LinearGradient colors={[palette.secondary, palette.accent]} style={addCardStyles.card}>
                     <Text adjustsFontSizeToFit
@@ -146,7 +149,7 @@ const AddCard = ({ navigation, route }) => {
                     <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween, styles.alignEnd]}>
                         <>
                             <View style={styles.flexOne}>
-                                <Text style={addCardStyles.cardDetailsText}>EXP: {expiryDate}</Text>
+                                <Text style={addCardStyles.cardDetailsText}>{t('EXP')}: {expiryDate}</Text>
                                 <Text style={[addCardStyles.cardDetailsText, styles.mt5]}>{cardholderName.toUpperCase()}</Text>
                             </View>
                             {
@@ -164,7 +167,7 @@ const AddCard = ({ navigation, route }) => {
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>
                             <View style={styles.w100}>
-                                <Text style={styles.inputText}>Card Number</Text>
+                                <Text style={styles.inputText}>{t('card_number')}</Text>
                                 <CustomTextInput
                                     iconLeft="credit-card"
                                     placeholder="1234 5678 9123 4567"
@@ -184,10 +187,10 @@ const AddCard = ({ navigation, route }) => {
 
                             <View style={[styles.flexRow, styles.w100]}>
                                 <View style={{ flex: 1.5 }}>
-                                    <Text style={styles.inputText}>Card Holder Name</Text>
+                                    <Text style={styles.inputText}>{t('cardholder_name')}</Text>
                                     <CustomTextInput
                                         iconLeft="badge"
-                                        placeholder="Cardholder Name"
+                                        placeholder={t('cardholder_name')}
                                         value={values.cardHolderNameInput}
                                         onChangeText={(data) => {
                                             setCardholderName(data);
@@ -199,7 +202,7 @@ const AddCard = ({ navigation, route }) => {
                                 </View>
 
                                 <View style={[styles.flexOne, styles.ml5]}>
-                                    <Text style={styles.inputText}>Expiry Date</Text>
+                                    <Text style={styles.inputText}>{t('expiry_date')}</Text>
                                     <CustomTextInput
                                         placeholder="MM/YY"
                                         value={values.expiryDateInput}
@@ -218,7 +221,7 @@ const AddCard = ({ navigation, route }) => {
                             <Button
                                 bgColor={palette.primary}
                                 textColor={palette.white}
-                                text="Add Card"
+                                text={t("add_card")}
                                 onPress={handleSubmit}
                                 disabled={!isValid}
                             />

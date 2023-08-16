@@ -7,6 +7,7 @@ import { Formik } from 'formik';
 import Button from '../../components/Button';
 import { leaveCommunity, updateCommunity } from '../../api/communitiesAPI';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 const { ScrollView, Text, Image, TouchableOpacity, View } = require("react-native");
 const { styles, containerStyle, rem, palette } = require("../../helper");
 const { default: ScreenWrapper } = require("../ScreenWrapper");
@@ -45,9 +46,11 @@ const CommunitySettings = ({ route, navigation }) => {
         updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack());
     };
 
+    const {t} = useTranslation();
+
     return (
         <>
-            <ScreenWrapper screenName="Community Settings" navType="back" navAction={navigation.goBack}>
+            <ScreenWrapper screenName={t('community_settings')} navType="back" navAction={navigation.goBack}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     {
                         owner &&
@@ -68,18 +71,18 @@ const CommunitySettings = ({ route, navigation }) => {
 
                                         <Text style={[styles.headerText3, styles.mt5]}>{communityName}</Text>
 
-                                        <Text style={styles.inputText}>Community Description</Text>
+                                        <Text style={styles.inputText}>{t('community_description')}</Text>
                                         <TextArea
-                                            placeholder="Description"
+                                            placeholder={t('description')}
                                             value={values.communityDescriptionInput}
                                             onBlur={handleBlur('communityDescriptionInput')}
                                             onChangeText={handleChange('communityDescriptionInput')}
                                             error={touched.communityDescriptionInput && errors.communityDescriptionInput}
                                         />
 
-                                        <Text style={styles.inputText}>Community Privacy</Text>
+                                        <Text style={styles.inputText}>{t('community_privacy')}</Text>
                                         <Selector
-                                            options={[{ value: 0, text: "Public" }, { value: 1, text: "Private" }]}
+                                            options={[{ value: 0, text: t('public') }, { value: 1, text: t('private') }]}
                                             value={values.communityPrivacyInput}
                                             setValue={(value) => setFieldValue('communityPrivacyInput', value)}
                                         />
@@ -87,9 +90,9 @@ const CommunitySettings = ({ route, navigation }) => {
                                         {
                                             values.communityPrivacyInput === 1 && (
                                                 <>
-                                                    <Text style={styles.inputText}>Privacy question</Text>
+                                                    <Text style={styles.inputText}>{t('privacy_question')}</Text>
                                                     <CustomTextInput
-                                                        placeholder="Example: What is your university ID number?"
+                                                        placeholder={t('privacy_question_example')}
                                                         value={values.joinQuestionInput}
                                                         onBlur={handleBlur('joinQuestionInput')}
                                                         onChangeText={handleChange('joinQuestionInput')}
@@ -102,7 +105,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                         <Button
                                             bgColor={palette.primary}
                                             textColor={palette.white}
-                                            text="Update"
+                                            text={t('update')}
                                             onPress={handleSubmit}
                                             disabled={!isValid}
                                         />
@@ -121,7 +124,7 @@ const CommunitySettings = ({ route, navigation }) => {
 
                             <Text style={[styles.headerText3, styles.mt5]}>{communityName}</Text>
 
-                            <Button bgColor={palette.red} textColor={palette.white} text="Leave Community" onPress={() => leaveCommunity(communityId)} />
+                            <Button bgColor={palette.red} textColor={palette.white} text={t('leave_community')} onPress={() => leaveCommunity(communityId)} />
                         </View>
                     }
                 </ScrollView>

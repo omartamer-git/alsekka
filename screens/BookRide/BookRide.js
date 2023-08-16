@@ -1,6 +1,7 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+    I18nManager,
     Image,
     ScrollView,
     StyleSheet,
@@ -21,6 +22,7 @@ import Button from '../../components/Button';
 import Counter from '../../components/Counter';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -119,10 +121,11 @@ const BookRide = ({ route, navigation }) => {
     };
 
     const isDarkMode = useColorScheme === 'dark';
+    const {t} = useTranslation();
 
     return (
         <>
-            <ScreenWrapper screenName="Book Ride" navType="back" navAction={() => { navigation.goBack() }}>
+            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={() => { navigation.goBack() }}>
                 <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
                     <MapView
                         style={[styles.mapStyle]}
@@ -157,28 +160,28 @@ const BookRide = ({ route, navigation }) => {
 
                         <View style={[styles.flexRow]}>
                             <ArrowButton style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
-                            <Counter text="seat" textPlural="seats" setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
+                            <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
                         </View>
-                        <ArrowButton bgColor={palette.light} text="Use Voucher" icon="gift" iconColor={palette.primary} />
+                        <ArrowButton bgColor={palette.light} text={t('use_voucher')} icon="gift" iconColor={palette.primary} />
 
                         <View>
                             <View style={[styles.flexRow, styles.w100]}>
-                                <Text style={[styles.bold, styles.dark]}>Fare</Text>
+                                <Text style={[styles.bold, styles.dark]}>{t('fare')}</Text>
                                 <View style={styles.flexOne} />
-                                <Text>{numSeats} {numSeats > 1 ? "seats" : "seat"} x {pricePerSeat} EGP = {numSeats * pricePerSeat} EGP</Text>
+                                <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat") } x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
                             </View>
                             <View style={[styles.flexRow, styles.w100]}>
-                                <Text style={[styles.bold, styles.dark]}>Balance{balance < 0 ? " Owed" : ""}</Text>
+                                <Text style={[styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
                                 <View style={styles.flexOne} />
-                                <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} EGP</Text>
+                                <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
                             </View>
                             <View style={[styles.flexRow, styles.w100]}>
-                                <Text style={[styles.bold, styles.dark]}>You Pay</Text>
+                                <Text style={[styles.bold, styles.dark]}>{t('you_pay')}</Text>
                                 <View style={styles.flexOne} />
-                                <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} EGP</Text>
+                                <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} {t('EGP')}</Text>
                             </View>
                             <View>
-                                <Button text="Book Now" bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
+                                <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
                             </View>
 
                         </View>
@@ -188,11 +191,11 @@ const BookRide = ({ route, navigation }) => {
             </ScreenWrapper>
 
             <BottomModal onHide={() => setPaymentMethodModalVisible(false)} modalVisible={paymentMethodModalVisible}>
-                <TouchableOpacity activeOpacity={0.75} style={{ flexDirection: 'row', width: '100%', height: 48 * rem, alignItems: 'center', borderBottomWidth: 1, borderColor: palette.light }} onPress={() => choosePayment({ type: 'cash' })}>
+                <TouchableOpacity activeOpacity={0.75} style={{ ...styles.flexRow, width: '100%', height: 48 * rem, alignItems: 'center', borderBottomWidth: 1, borderColor: palette.light }} onPress={() => choosePayment({ type: 'cash' })}>
                     <FontsAwesome5 name="money-bill" size={24 * rem} color={palette.success} />
-                    <Text style={[styles.ml15, styles.semiBold]}>Pay Using Cash</Text>
+                    <Text style={[styles.ml15, styles.semiBold]}>{t('pay_using_cash')}</Text>
                     <View style={[styles.flexOne, styles.alignEnd]}>
-                        <FontsAwesome5 name="chevron-right" size={18 * rem} color={palette.dark} />
+                        <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
                     </View>
                 </TouchableOpacity>
                 {
@@ -205,23 +208,23 @@ const BookRide = ({ route, navigation }) => {
             <BottomModal onHide={hideRideBooked} modalVisible={rideBookedModalVisible}>
                 <View style={[styles.alignCenter, styles.justifyCenter]}>
                     <FontsAwesome5 name="check-circle" size={55} color={palette.success} />
-                    <Text style={[styles.mt10, styles.font18, styles.success]}>Trip successfully booked!</Text>
+                    <Text style={[styles.mt10, styles.font18, styles.success]}>{t('booked_successfully')}</Text>
 
-                    <Text style={[styles.bold, styles.font18, styles.mt10]}>Summary</Text>
+                    <Text style={[styles.bold, styles.font18, styles.mt10]}>{t('bill_summary')}</Text>
 
-                    <Text style={[styles.bold, styles.dark, styles.mt5]}>Fare</Text>
-                    <Text>{numSeats} {numSeats > 1 ? "seats" : "seat"} x {pricePerSeat} EGP = {numSeats * pricePerSeat} EGP</Text>
+                    <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('fare')}</Text>
+                    <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
 
                     {balance != 0 &&
                         <>
-                            <Text style={[styles.bold, styles.dark, styles.mt5]}>Balance{balance < 0 ? " Owed" : ""}</Text>
-                            <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} EGP</Text>
+                            <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
+                            <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
                         </>
                     }
 
-                    <Text style={[styles.bold, styles.dark, styles.mt5]}>Total</Text>
-                    <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} EGP</Text>
-                    <Button text="Book Return Trip" style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
+                    <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
+                    <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} {t('EGP')}</Text>
+                    <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
                 </View>
             </BottomModal>
         </>

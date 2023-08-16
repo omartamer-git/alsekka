@@ -19,6 +19,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import useUserStore from '../../api/accountAPI';
+import { useTranslation } from 'react-i18next';
 
 const MapScreen = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -121,24 +122,26 @@ const MapScreen = ({ route, navigation }) => {
 
   const isDarkMode = useColorScheme === 'dark';
 
-  if(Platform.OS === 'ios') {
+  if (Platform.OS === 'ios') {
     const onFocusEffect = useCallback(() => {
-        // This should be run when screen gains focus - enable the module where it's needed
-        AvoidSoftInput.setShouldMimicIOSBehavior(true);
-        AvoidSoftInput.setEnabled(true);
-        return () => {
-            // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-            AvoidSoftInput.setEnabled(false);
-            AvoidSoftInput.setShouldMimicIOSBehavior(false);
-        };
+      // This should be run when screen gains focus - enable the module where it's needed
+      AvoidSoftInput.setShouldMimicIOSBehavior(true);
+      AvoidSoftInput.setEnabled(true);
+      return () => {
+        // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+        AvoidSoftInput.setEnabled(false);
+        AvoidSoftInput.setShouldMimicIOSBehavior(false);
+      };
     }, []);
 
     useFocusEffect(onFocusEffect); // register callback to focus events    
-}
+  }
+
+  const {t} = useTranslation();
 
 
   return (
-    <ScreenWrapper screenName="Search Rides">
+    <ScreenWrapper screenName={t('search_rides')}>
       <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
         <MapView
           style={styles.mapStyle}
@@ -156,8 +159,8 @@ const MapScreen = ({ route, navigation }) => {
         <View style={[containerStyle, styles.flexOne]}>
 
           <View style={mapScreenStyles.autoCompletePair}>
-            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder="From..." handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
-            <AutoComplete key="autoCompleteTo" type="place" placeholder="To..." handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
+            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
+            <AutoComplete key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
           </View>
 
           <DatePicker
@@ -174,10 +177,10 @@ const MapScreen = ({ route, navigation }) => {
             }}
           />
 
-          <Text style={styles.inputText}>Date</Text>
+          <Text style={styles.inputText}>{t('date')}</Text>
 
           <CustomTextInput
-            placeholder="Date"
+            placeholder={t('date')}
             value={date.toDateString()}
             onPressIn={() => {
               setDatePickerOpen(true)
@@ -186,10 +189,10 @@ const MapScreen = ({ route, navigation }) => {
             editable={false}
           />
 
-          <Text style={styles.inputText}>Time</Text>
+          <Text style={styles.inputText}>{t('time')}</Text>
 
           <CustomTextInput
-            placeholder="Time"
+            placeholder={t('time')}
             value={time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
             onPressIn={() => {
               setTimePickerOpen(true)
@@ -213,23 +216,23 @@ const MapScreen = ({ route, navigation }) => {
           />
 
           <Text style={styles.inputText}>
-            Gender to Carpool With
+            {t('gender_to_carpool')}
           </Text>
 
           <View style={[styles.flexRow, styles.w100, styles.mv10]}>
             {
               gender === "FEMALE" &&
               <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
-                <Text style={mapScreenStyles.genderText}>Female Only</Text>
+                <Text style={mapScreenStyles.genderText}>{t('female_only')}</Text>
               </TouchableOpacity>
             }
             <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
-              <Text style={mapScreenStyles.genderText}>Any</Text>
+              <Text style={mapScreenStyles.genderText}>{t('any')}</Text>
             </TouchableOpacity>
             {
               gender === "MALE" &&
               <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
-                <Text style={mapScreenStyles.genderText}>Male Only</Text>
+                <Text style={mapScreenStyles.genderText}>{t('male_only')}</Text>
               </TouchableOpacity>
             }
           </View>
@@ -237,7 +240,7 @@ const MapScreen = ({ route, navigation }) => {
           <View style={styles.flexOne} />
 
           <Button
-            text="Search"
+            text={t('search')}
             bgColor={palette.primary}
             textColor={palette.white}
             onPress={goFindRides}

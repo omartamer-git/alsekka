@@ -13,6 +13,7 @@ import * as ridesAPI from '../../api/ridesAPI';
 import Passenger from '../../components/Passenger';
 import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 
 const ManageTrip = ({ route, navigation }) => {
@@ -76,8 +77,10 @@ const ManageTrip = ({ route, navigation }) => {
         });
     };
 
+    const {t} = useTranslation();
+
     return (
-        <ScreenWrapper screenName="Manage Trip" navType={"back"} navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('manage_trip')} navType={"back"} navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
                     {tripDetails &&
@@ -91,7 +94,7 @@ const ManageTrip = ({ route, navigation }) => {
                                     {
                                         data.status === 'CONFIRMED' &&
                                         <TouchableOpacity onPress={() => { console.log(data.UserId); checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
-                                            <Text style={manageTripStyles.manageBtnText}>Check In</Text>
+                                            <Text style={manageTripStyles.manageBtnText}>{t('check_in')}</Text>
                                         </TouchableOpacity>
                                     }
                                     {
@@ -103,7 +106,7 @@ const ManageTrip = ({ route, navigation }) => {
                                     {
                                         data.status === 'ENROUTE' &&
                                         <TouchableOpacity onPress={() => { checkOut(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
-                                            <Text style={manageTripStyles.manageBtnText}>Check Out</Text>
+                                            <Text style={manageTripStyles.manageBtnText}>{t('check_out')}</Text>
                                         </TouchableOpacity>
                                     }
                                 </Passenger>

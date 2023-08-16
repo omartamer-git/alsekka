@@ -15,6 +15,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import { useTranslation } from 'react-i18next';
 
 const AddBank = ({ navigation, route }) => {
     const [addBankError, setAddBankError] = useState(null);
@@ -49,9 +50,10 @@ const AddBank = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
+    const {t} = useTranslation();
 
     return (
-        <ScreenWrapper screenName="Add Account" navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('add_bank_account')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, { alignItems: 'flex-start' }]}>
                 <ErrorMessage message={addBankError} condition={addBankError} />
                 <Formik
@@ -61,10 +63,10 @@ const AddBank = ({ navigation, route }) => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                         <>
-                            <Text style={styles.inputText}>Account Holder Full Name</Text>
+                            <Text style={styles.inputText}>{t('account_holder_name')}</Text>
 
                             <CustomTextInput
-                                placeholder="Account Holder Full Name"
+                                placeholder={t('account_holder_name')}
                                 value={values.fullNameInput}
                                 onBlur={handleBlur('fullNameInput')}
                                 onChangeText={handleChange('fullNameInput')}
@@ -73,10 +75,10 @@ const AddBank = ({ navigation, route }) => {
                             />
 
 
-                            <Text style={styles.inputText}>Bank Name</Text>
+                            <Text style={styles.inputText}>{t('bank_name')}</Text>
 
                             <CustomTextInput
-                                placeholder="Bank Name"
+                                placeholder={t('bank_name')}
                                 value={values.bankNameInput}
                                 onBlur={handleBlur('bankNameInput')}
                                 onChangeText={handleChange('bankNameInput')}
@@ -84,10 +86,10 @@ const AddBank = ({ navigation, route }) => {
                                 iconLeft="account-balance"
                             />
 
-                            <Text style={styles.inputText}>IBAN/Account Number</Text>
+                            <Text style={styles.inputText}>{t('account_number')}</Text>
 
                             <CustomTextInput
-                                placeholder="IBAN/Account Number"
+                                placeholder={t('account_number')}
                                 value={values.accountNumberInput}
                                 onBlur={handleBlur('accountNumberInput')}
                                 onChangeText={handleChange('accountNumberInput')}
@@ -96,10 +98,10 @@ const AddBank = ({ navigation, route }) => {
                             />
 
 
-                            <Text style={styles.inputText}>SWIFT Code</Text>
+                            <Text style={styles.inputText}>{t('swift_code')}</Text>
 
                             <CustomTextInput
-                                placeholder="SWIFT Code"
+                                placeholder={t('swift_code')}
                                 value={values.swiftCodeInput}
                                 onBlur={handleBlur('swiftCodeInput')}
                                 onChangeText={handleChange('swiftCodeInput')}
@@ -108,7 +110,7 @@ const AddBank = ({ navigation, route }) => {
                             />
 
                             <View style={styles.flexOne} />
-                            <Button text="Add Account" bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} />
+                            <Button text={t('add_account')} bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} />
                         </>
                     )}
                 </Formik>

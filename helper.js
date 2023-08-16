@@ -2,10 +2,12 @@
 
 import {
     Dimensions,
+    I18nManager,
     Platform,
     StatusBar,
     StyleSheet,
 } from 'react-native';
+import useLocale from './locale/localeContext';
 
 function validateCardNumber(cardNumber) {
     // Remove any spaces or dashes from the card number
@@ -89,6 +91,9 @@ export const translateEnglishNumbers = (text) => {
             case '9':
                 resultText += "٩";
                 break;
+            case '.':
+                resultText += "،";
+                break;
             default:
                 resultText += letter;
                 break;
@@ -137,6 +142,7 @@ export const palette = {
     success: '#198754',
     green: '#198754',
     red: '#dc3545',
+    black: '#000',
 };
 
 export const getDateShort = (date) => {
@@ -206,8 +212,8 @@ export const styles = StyleSheet.create({
     },
 
     defaultPadding: {
-        paddingLeft: 24 * rem,
-        paddingRight: 24 * rem,
+        paddingStart: 24 * rem,
+        paddingEnd: 24 * rem,
     },
 
     defaultPaddingVertical: {
@@ -322,7 +328,7 @@ export const styles = StyleSheet.create({
     },
 
     icon: {
-        marginRight: 6 * rem,
+        marginEnd: 6 * rem,
     },
 
     phoneInput: {
@@ -400,11 +406,11 @@ export const styles = StyleSheet.create({
     },
 
     ml5: {
-        marginLeft: 5 * rem,
+        marginStart: 5 * rem,
     },
 
     mr5: {
-        marginRight: 5 * rem,
+        marginEnd: 5 * rem,
     },
 
     m10: {
@@ -420,11 +426,11 @@ export const styles = StyleSheet.create({
     },
 
     ml10: {
-        marginLeft: 10 * rem,
+        marginStart: 10 * rem,
     },
 
     mr10: {
-        marginRight: 10 * rem,
+        marginEnd: 10 * rem,
     },
 
     m15: {
@@ -440,11 +446,11 @@ export const styles = StyleSheet.create({
     },
 
     ml15: {
-        marginLeft: 15 * rem,
+        marginStart: 15 * rem,
     },
 
     mr15: {
-        marginRight: 15 * rem,
+        marginEnd: 15 * rem,
     },
 
     m20: {
@@ -460,11 +466,11 @@ export const styles = StyleSheet.create({
     },
 
     ml20: {
-        marginLeft: 20 * rem,
+        marginStart: 20 * rem,
     },
 
     mr20: {
-        marginRight: 20 * rem,
+        marginEnd: 20 * rem,
     },
 
     p8: {
@@ -480,11 +486,11 @@ export const styles = StyleSheet.create({
     },
 
     pl8: {
-        paddingLeft: 8 * rem,
+        paddingStart: 8 * rem,
     },
 
     pr8: {
-        paddingRight: 8 * rem,
+        paddingEnd: 8 * rem,
     },
 
     p16: {
@@ -500,11 +506,11 @@ export const styles = StyleSheet.create({
     },
 
     pl16: {
-        paddingLeft: 16 * rem,
+        paddingStart: 16 * rem,
     },
 
     pr16: {
-        paddingRight: 16 * rem,
+        paddingEnd: 16 * rem,
     },
 
     p24: {
@@ -520,11 +526,11 @@ export const styles = StyleSheet.create({
     },
 
     pl24: {
-        paddingLeft: 24 * rem,
+        paddingStart: 24 * rem,
     },
 
     pr24: {
-        paddingRight: 24 * rem,
+        paddingEnd: 24 * rem,
     },
 
     w100: {
@@ -536,7 +542,7 @@ export const styles = StyleSheet.create({
     },
 
     flexRow: {
-        flexDirection: 'row',
+        flexDirection: I18nManager.isRTL ? 'row' : 'row',
     },
 
     flexCol: {
