@@ -23,9 +23,11 @@ import Counter from '../../components/Counter';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
+import CustomTextInput from '../../components/CustomTextInput';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
+    const { t } = useTranslation();
 
     const [location, setLocation] = useState(null);
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -46,6 +48,12 @@ const BookRide = ({ route, navigation }) => {
     const [seatsAvailable, setSeatsAvailable] = useState(0);
     const [profilePicture, setProfilePicture] = useState('');
 
+    const [voucherText, setVoucherText] = useState("");
+    const [voucherErrorMessage, setVoucherErrorMessage] = useState("");
+    const [voucher, setVoucher] = useState(null);
+
+    const voucherDiscount = useRef(0);
+
     const [car, setCar] = useState({});
 
     const [numSeats, setNumSeats] = useState(1);
@@ -55,6 +63,8 @@ const BookRide = ({ route, navigation }) => {
     const [paymentMethod, setPaymentMethod] = useState({ type: 'cash' });
 
     const [rideBookedModalVisible, setRideBookedModalVisible] = useState(false);
+    const [useVoucherText, setUseVoucherText] = useState(t('use_voucher'));
+    const [voucherModalVisible, setVoucherModalVisible] = useState(false);
 
     const { balance, availableCards } = useUserStore();
 
@@ -111,7 +121,9 @@ const BookRide = ({ route, navigation }) => {
     };
 
     const bookRide = (e) => {
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod); // payment method
+        const voucherId = voucher ? voucher.id : null;
+        console.log("BookRide VID: " + voucher);
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId); // payment method
         setRideBookedModalVisible(true);
     }
 
@@ -120,8 +132,19 @@ const BookRide = ({ route, navigation }) => {
         setPaymentMethod(paymentMethod);
     };
 
+    const verifyVoucher = () => {
+        ridesAPI.tryVerifyVoucher(voucherText).then((data) => {
+            voucherDiscount.current = Math.min(data.maxValue, (data.type === "PERCENTAGE" ? ((data.value / 100) * pricePerSeat) : data.value));
+            setVoucherModalVisible(false);
+            setVoucherErrorMessage("");
+            setVoucher(data);
+            setUseVoucherText(t('voucher_applied') + " - " + voucherText)
+        }).catch((err) => {
+            setVoucherErrorMessage(err.response.data.error.message);
+        });
+    }
+
     const isDarkMode = useColorScheme === 'dark';
-    const {t} = useTranslation();
 
     return (
         <>
@@ -162,23 +185,49 @@ const BookRide = ({ route, navigation }) => {
                             <ArrowButton style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
                             <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
                         </View>
-                        <ArrowButton bgColor={palette.light} text={t('use_voucher')} icon="gift" iconColor={palette.primary} />
+                        <ArrowButton
+                            bgColor={palette.light}
+                            text={useVoucherText}
+                            icon="gift"
+                            iconColor={palette.primary}
+                            onPress={() => setVoucherModalVisible(true)}
+                        />
 
                         <View>
                             <View style={[styles.flexRow, styles.w100]}>
                                 <Text style={[styles.bold, styles.dark]}>{t('fare')}</Text>
                                 <View style={styles.flexOne} />
-                                <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat") } x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
+                                <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
                             </View>
-                            <View style={[styles.flexRow, styles.w100]}>
-                                <Text style={[styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
-                                <View style={styles.flexOne} />
-                                <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
-                            </View>
+                            {balance != 0 &&
+                                <View style={[styles.flexRow, styles.w100]}>
+                                    <Text style={[styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
+                                    <View style={styles.flexOne} />
+                                    <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
+                                </View>
+                            }
+                            {
+                                voucher &&
+                                <View style={[styles.flexRow, styles.w100]}>
+                                    <Text style={[styles.bold, styles.dark]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                                    <View style={styles.flexOne} />
+                                    <Text>-{voucherDiscount.current} {t('EGP')}</Text>
+                                </View>
+                            }
                             <View style={[styles.flexRow, styles.w100]}>
                                 <Text style={[styles.bold, styles.dark]}>{t('you_pay')}</Text>
                                 <View style={styles.flexOne} />
-                                <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} {t('EGP')}</Text>
+                                <Text>
+                                    {
+                                        Math.max(0,
+                                            Math.abs(
+                                                -(pricePerSeat * numSeats)
+                                                + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
+                                            )
+                                            - voucherDiscount.current
+                                        )
+                                    }
+                                    &nbsp;{t('EGP')}</Text>
                             </View>
                             <View>
                                 <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
@@ -222,10 +271,26 @@ const BookRide = ({ route, navigation }) => {
                         </>
                     }
 
+                    {voucher &&
+                        <>
+                            <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                            <View style={styles.flexOne} />
+                            <Text>-{voucherDiscount.current} {t('EGP')}</Text>
+                        </>
+                    }
+
                     <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
-                    <Text>{Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance))))} {t('EGP')}</Text>
+                    <Text>{
+                    Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current
+                    } {t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
                 </View>
+            </BottomModal>
+
+            <BottomModal onHide={() => setVoucherModalVisible(false)} modalVisible={voucherModalVisible}>
+                <Text style={[styles.headerText2, styles.mt10]}>{t('redeem')} {t('voucher')}</Text>
+                <CustomTextInput placeholder={t('voucher')} value={voucherText} onChangeText={(value) => setVoucherText(value)} error={voucherErrorMessage} />
+                <Button text={t('redeem')} bgColor={palette.primary} textColor={palette.white} onPress={verifyVoucher} />
             </BottomModal>
         </>
     );

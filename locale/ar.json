@@ -169,7 +169,7 @@
         "back_side": "الجانب الخلفي",
         "withdraw": "سحب",
         "send_withdrawal_request": "إرسال طلب سحب",
-        "use_voucher": "استخدم القسيمة",
+        "use_voucher": "إستخدم كود الخصم",
         "book_now": "احجز الآن",
         "book_return": "حجز رحلة العودة",
         "search": "البحث",
@@ -209,7 +209,10 @@
         "answer": "الاجابة",
         "enter_password": "أدخل كلمة المرور",
         "enter_email": "أدخل بريدك الإلكتروني",
-        "select_community": "..اختر مجتمعًا"
+        "select_community": "..اختر مجتمعًا",
+        "voucher":  "كود الخصم",
+        "redeem": "استخدام",
+        "voucher_applied": "تم تطبيق القسيمة"
 
 
     }

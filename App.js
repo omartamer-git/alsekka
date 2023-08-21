@@ -187,7 +187,7 @@ const App = () => {
       <NavigationContainer linking={linking}>
         <RootStack.Navigator>
           {
-            authManager.authenticated === false ? (
+            authManager.authenticated === false || userStore.verified === false ? (
               <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
             ) : (
               <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />

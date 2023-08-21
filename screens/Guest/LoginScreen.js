@@ -43,6 +43,7 @@ const LoginScreen = ({ route, navigation }) => {
         userStore.getAvailableCards();
         userStore.getBankAccounts();
         userStore.getMobileWallets();
+        // console.log(data);
 
         if (data.verified) {
           navigation.popToTop();
@@ -53,6 +54,7 @@ const LoginScreen = ({ route, navigation }) => {
             }
           });
         } else {
+          console.log("navigating to otp");
           navigation.navigate('Otp',
             {
               uid: data.id,

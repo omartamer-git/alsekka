@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+    I18nManager,
     ScrollView,
     Text,
     useColorScheme
@@ -26,11 +27,11 @@ const Announcement = ({ navigation, route }) => {
         <ScreenWrapper screenName={t('announcement')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {announcement && <Text style={[styles.headerText2, styles.mt20]}>
-                    {announcement.title}
+                    {I18nManager.isRTL ? announcement.title_ar : announcement.title_en}
                 </Text>}
 
                 {announcement && <Text style={styles.mt20}>
-                    {announcement.text}
+                    {I18nManager.isRTL ? announcement.text_ar : announcement.text_en}
                 </Text>}
             </ScrollView>
         </ScreenWrapper>

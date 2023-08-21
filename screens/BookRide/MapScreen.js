@@ -145,7 +145,7 @@ const MapScreen = ({ route, navigation }) => {
       <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
         <MapView
           style={styles.mapStyle}
-          showUserLocation={true}
+          showsUserLocation={true}
           initialRegion={location}
           provider={PROVIDER_GOOGLE}
           ref={mapViewRef}

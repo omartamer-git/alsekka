@@ -66,7 +66,7 @@ const RideFinder = ({ route, navigation }) => {
     const {t} = useTranslation();
 
     return (
-        <ScreenWrapper>
+        <ScreenWrapper navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={rideFinderStyles.autoCompletePair}>
                     <CustomTextInput key="fromText" iconLeft="my-location" value={textFrom} style={[rideFinderStyles.autoCompleteStyles, rideFinderStyles.autoCompleteTop]} />

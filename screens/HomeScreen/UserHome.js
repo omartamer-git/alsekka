@@ -34,7 +34,7 @@ const UserHome = ({ navigation, route }) => {
     const [driverTripId, setDriverTripId] = useState(null);
     const [carouselWidth, setCarouselWidth] = useState(200);
     const [carouselData, setCarouselData] = useState(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const userStore = useUserStore();
 
@@ -155,15 +155,21 @@ const UserHome = ({ navigation, route }) => {
                 <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
                     {carouselData && carouselData.length !== 0 &&
                         <Carousel loop style={[styles.bgAccent, styles.br8]} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
-                            ({ index }) => (
+                            ({ index }) => {
+                                const announcementText = I18nManager.isRTL ? carouselData[index].text_ar : carouselData[index].text_en;
+                                const announcementTitle = I18nManager.isRTL ? carouselData[index].title_ar : carouselData[index].title_en;
+                                return (
                                 <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>
                                     <Text style={[styles.white, styles.bold, styles.font18]}>
-                                        {carouselData[index].title}
+                                        { announcementTitle }
                                     </Text>
                                     <Text style={[styles.light, styles.semiBold, styles.mt10, styles.font14]}>
-                                        {carouselData[index].text.substring(0, MAX_CAROUSEL_TEXT_LENGTH) + (carouselData[index].text.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")}
+                                        {
+                                            announcementText.substring(0, MAX_CAROUSEL_TEXT_LENGTH) +
+                                            (announcementText.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")
+                                        }
                                     </Text>
-                                    {carouselData[index].text.length > MAX_CAROUSEL_TEXT_LENGTH &&
+                                    {announcementText.length > MAX_CAROUSEL_TEXT_LENGTH &&
                                         <TouchableOpacity
                                             onPress={
                                                 () => {
@@ -174,7 +180,7 @@ const UserHome = ({ navigation, route }) => {
                                             <Text style={[styles.mt5, styles.dark, styles.font14]}>{t('read_more')}</Text></TouchableOpacity>
                                     }
                                 </View>
-                            )
+                            )}
                         }></Carousel>}
                 </View>
 

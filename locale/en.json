@@ -209,8 +209,9 @@
         "answer": "Answer",
         "enter_password": "Enter your password",
         "enter_email": "Enter your email address",
-        "select_community": "Select a community.."
-
-
+        "select_community": "Select a community..",
+        "voucher": "Voucher Code",
+        "redeem": "Redeem",
+        "voucher_applied": "Voucher Applied"
     }
 }
