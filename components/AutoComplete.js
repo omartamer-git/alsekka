@@ -188,9 +188,9 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                                 )
                             }
                             {!modalMap && !predictions &&
-                                <View style={[styles.flexOne, styles.w100]}>
+                                <View style={[styles2.flexOne, styles2.w100]}>
                                     <Text style={[styles2.headerText3, { marginTop: 30 }]}>Favorites</Text>
-                                    <View style={{ flex: 1, width: '100%', marginTop: 10 }}>
+                                    <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
                                         {
                                             favoritePlaces &&
                                             favoritePlaces.map(

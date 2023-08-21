@@ -98,7 +98,7 @@ const LoginScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'dark-content' : 'light-content'} />
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <SafeAreaView>
         <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
           <View style={styles.localeWrapper}>

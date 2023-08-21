@@ -781,7 +781,7 @@ export const styles = StyleSheet.create({
         textAlign: 'right',
     },
     mapStyle: {
-        height: 300 * rem,
+        height: 350 * rem,
         width: '100%',
         zIndex: 3,
         elevation: 3,
@@ -993,4 +993,4 @@ export const mapPadding = { bottom: 48 * rem, top: 0, left: 16 * rem, right: 0 }
 
 export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
-export const SERVER_URL = "http://127.0.0.1:3000";
+export const SERVER_URL = "http://192.168.1.4:3000";

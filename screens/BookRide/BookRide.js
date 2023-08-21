@@ -24,6 +24,7 @@ import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import CustomTextInput from '../../components/CustomTextInput';
+import MapViewDirections from 'react-native-maps-directions';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -51,6 +52,13 @@ const BookRide = ({ route, navigation }) => {
     const [voucherText, setVoucherText] = useState("");
     const [voucherErrorMessage, setVoucherErrorMessage] = useState("");
     const [voucher, setVoucher] = useState(null);
+
+    
+    const [distanceToPickup, setDistanceToPickup] = useState(null);
+    const [distanceOfTrip, setDistanceOfTrip] = useState(null);
+    const [durationToPickup, setDurationToPickup] = useState(null);
+    const [durationOfTrip, setDurationOfTrip] = useState(null);
+
 
     const voucherDiscount = useRef(0);
 
@@ -142,7 +150,17 @@ const BookRide = ({ route, navigation }) => {
         }).catch((err) => {
             setVoucherErrorMessage(err.response.data.error.message);
         });
-    }
+    };
+
+    const onReadyDirectionsToPickup = ({distance, duration}) => {
+        setDistanceToPickup(distance);
+        setDurationToPickup(duration);
+    };
+
+    const onReadyTripDirections = ({distance, duration}) => {
+        setDistanceOfTrip(distance);
+        setDurationToPickup(duration);
+    };
 
     const isDarkMode = useColorScheme === 'dark';
 
@@ -160,6 +178,25 @@ const BookRide = ({ route, navigation }) => {
                     >
                         {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
                         {markerTo && <Marker identifier="to" coordinate={markerTo} />}
+
+                        {markerFrom && durationToPickup <= 45 && <MapViewDirections
+                            origin={`${location.latitude},${location.longitude}`}
+                            destination={`${markerFrom.latitude},${markerFrom.longitude}`}
+                            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+                            strokeWidth={3}
+                            strokeColor={palette.accent}
+                            onReady={onReadyDirectionsToPickup}
+                        />}
+
+                        {markerFrom && markerTo && <MapViewDirections
+                            origin={`${markerFrom.latitude},${markerFrom.longitude}`}
+                            destination={`${markerTo.latitude},${markerTo.longitude}`}
+                            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+                            strokeWidth={3}
+                            strokeColor={palette.secondary}
+                            onReady={onReadyTripDirections}
+                        />}
+
                     </MapView>
 
                     <View style={[containerStyle, styles.flexOne]}>
@@ -281,7 +318,7 @@ const BookRide = ({ route, navigation }) => {
 
                     <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
                     <Text>{
-                    Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current
+                        Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current
                     } {t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
                 </View>
