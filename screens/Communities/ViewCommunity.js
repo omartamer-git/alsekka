@@ -33,8 +33,10 @@ const ViewCommunity = ({ navigation, route }) => {
     const { id } = useUserStore();
 
     useEffect(() => {
+        console.log("CMID: " + communityId);
         communitiesAPI.getCommunityDetails(communityId).then(
             data => {
+                console.log(data);
                 if (data.Member.length !== 0) {
                     if (data.Member[0].CommunityMember.joinStatus === "PENDING") {
                         setSentJoinRequest(true);
@@ -43,7 +45,7 @@ const ViewCommunity = ({ navigation, route }) => {
                         console.log("ownid");
                         console.log(data.Member[0].CommunityMember.UserId);
                         console.log(id);
-                        if (data.Member[0].CommunityMember.UserId === id) {
+                        if (data.OwnerId === id) {
                             setOwner(true);
                         }
                     }
@@ -109,7 +111,7 @@ const ViewCommunity = ({ navigation, route }) => {
                             <Image width={44} height={44} style={{ borderRadius: 44 / 2 }} source={{ uri: communityPicture }} />
                             <View style={[styles.ml10]}>
                                 <Text style={[styles.font14, styles.dark, styles.bold]}>{communityName}</Text>
-                                <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
+                                <View style={[styles.flexRow, styles.alignCenter]}>
                                     {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                                     <Text style={[styles.font12, styles.dark, styles.ml5]}>
                                         {communityPrivacy === true ? t('private') : t('public')}
@@ -151,7 +153,7 @@ const ViewCommunity = ({ navigation, route }) => {
                 {!isJoined && !sentJoinRequest && (
                     <>
                         <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
-                            <Image width={80} height={80} style={{ borderRadius: 80 / 2 }} source={{ uri: 'data:image/png;base64,' + communityPicture }} />
+                            <Image width={100} height={100} style={{ borderRadius: 100 / 2 }} source={{ uri: communityPicture }} />
                             <Text style={[styles.font18, styles.bold, styles.mt10]}>{communityName}</Text>
                             <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
                                 <Text style={[styles.font12, styles.dark, styles.mr5]}>
