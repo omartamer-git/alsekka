@@ -10,7 +10,7 @@ import {
     View,
     useColorScheme
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../../api/accountAPI';
@@ -53,7 +53,7 @@ const BookRide = ({ route, navigation }) => {
     const [voucherErrorMessage, setVoucherErrorMessage] = useState("");
     const [voucher, setVoucher] = useState(null);
 
-    
+
     const [distanceToPickup, setDistanceToPickup] = useState(null);
     const [distanceOfTrip, setDistanceOfTrip] = useState(null);
     const [durationToPickup, setDurationToPickup] = useState(null);
@@ -105,7 +105,6 @@ const BookRide = ({ route, navigation }) => {
             setLastName(data.Driver.lastName);
             setProfilePicture(data.Driver.profilePicture);
             setCar(data.Car);
-            // console.log(data);
 
             const fullStars = Math.floor(data.Driver.rating);
             const halfStars = Math.ceil(data.Driver.rating) - Math.abs(data.Driver.rating);
@@ -152,12 +151,12 @@ const BookRide = ({ route, navigation }) => {
         });
     };
 
-    const onReadyDirectionsToPickup = ({distance, duration}) => {
+    const onReadyDirectionsToPickup = ({ distance, duration }) => {
         setDistanceToPickup(distance);
         setDurationToPickup(duration);
     };
 
-    const onReadyTripDirections = ({distance, duration}) => {
+    const onReadyTripDirections = ({ distance, duration }) => {
         setDistanceOfTrip(distance);
         setDurationToPickup(duration);
     };
@@ -170,23 +169,28 @@ const BookRide = ({ route, navigation }) => {
                 <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
                     <MapView
                         style={[styles.mapStyle]}
-                        showUserLocation={true}
+                        showsUserLocation={true}
                         region={location}
                         provider={PROVIDER_GOOGLE}
                         ref={mapViewRef}
                         customMapStyle={customMapStyle}
+                        showsMyLocationButton
                     >
-                        {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" />}
+                        {markerFrom &&
+                            <Marker identifier="from" coordinate={markerFrom} pinColor={palette.secondary}>
+                            </Marker>}
                         {markerTo && <Marker identifier="to" coordinate={markerTo} />}
 
-                        {markerFrom && durationToPickup <= 45 && <MapViewDirections
-                            origin={`${location.latitude},${location.longitude}`}
-                            destination={`${markerFrom.latitude},${markerFrom.longitude}`}
-                            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
-                            strokeWidth={3}
-                            strokeColor={palette.accent}
-                            onReady={onReadyDirectionsToPickup}
-                        />}
+                        {markerFrom && (distanceToPickup * 1 / distanceOfTrip) < 1 / 3 &&
+                            <MapViewDirections
+                                origin={`${location.latitude},${location.longitude}`}
+                                destination={`${markerFrom.latitude},${markerFrom.longitude}`}
+                                apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+                                strokeWidth={3}
+                                strokeColor={palette.accent}
+                                onReady={onReadyDirectionsToPickup}
+                            />
+                        }
 
                         {markerFrom && markerTo && <MapViewDirections
                             origin={`${markerFrom.latitude},${markerFrom.longitude}`}
@@ -196,6 +200,7 @@ const BookRide = ({ route, navigation }) => {
                             strokeColor={palette.secondary}
                             onReady={onReadyTripDirections}
                         />}
+
 
                     </MapView>
 

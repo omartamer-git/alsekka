@@ -14,8 +14,6 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
     const {t} = useTranslation();
     const {language} = useLocale();
 
-    console.log(language);
-
     if(!rideFull) {
         for (let i = 0; i < seatsOccupied; i++) {
             items.push(<MaterialIcons key={ "seat" + i } name="account-circle" size={16} color={palette.primary} />);

@@ -781,7 +781,7 @@ export const styles = StyleSheet.create({
         textAlign: 'right',
     },
     mapStyle: {
-        height: 350 * rem,
+        height: 300 * rem,
         width: '100%',
         zIndex: 3,
         elevation: 3,
@@ -807,6 +807,65 @@ export const loggedInStyles = StyleSheet.create({
         backgroundColor: palette.white,
         alignItems: 'center',
         justifyContent: 'top'
+    }
+});
+
+export const translatedFormat = (str, arrValues) => {
+    let newStr = str;
+    for(let val of arrValues) {
+        newStr = newStr.replace('%%', val);
+    }
+
+    return newStr;
+};
+
+export const chatStyles = StyleSheet.create({
+    message: {
+        ...styles.flexRow,
+        ...styles.mt10,
+        width: '85%',
+    },
+    receiverBubble: {
+        ...styles.flexOne,
+        ...styles.p16,
+        ...styles.bgAccent,
+        ...styles.br8,
+        ...styles.ml10
+    },
+    receiverBubbleText: {
+        ...styles.white,
+    },
+
+    senderBubble: {
+        ...styles.flexOne,
+        ...styles.p16,
+        ...styles.bgPrimary,
+        ...styles.br8,
+        ...styles.mr10
+    },
+    senderBubbleText: {
+        ...styles.white
+    },
+    profilePicture: {
+        borderRadius: 25,
+    },
+    messageView: {
+        ...styles.flexOne,
+        height: 48 * rem,
+        ...styles.border1,
+        ...styles.br8,
+        ...styles.pl16,
+        ...styles.borderLight
+    },
+    sendBtn: {
+        ...styles.fullCenter,
+        ...styles.border1,
+        ...styles.borderDark,
+        ...styles.bgPrimary,
+        height: 48 * rem,
+        width: 48 * rem,
+        borderRadius: 48 * rem/2,
+        ...styles.ml10
     }
 });
 
@@ -993,4 +1052,4 @@ export const mapPadding = { bottom: 48 * rem, top: 0, left: 16 * rem, right: 0 }
 
 export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
-export const SERVER_URL = "http://192.168.1.4:3000";
+export const SERVER_URL = "https://api.seaats.app/api";

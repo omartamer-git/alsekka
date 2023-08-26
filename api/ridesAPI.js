@@ -174,7 +174,6 @@ export const cancelPassenger = async (tripId) => {
     const params = {
         tripId: tripId
     };
-    console.log("cancelling")
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.get(url, { params });
     const data = response.data;

@@ -21,7 +21,7 @@ import { config } from '../../config';
 import Clipboard from '@react-native-community/clipboard';
 import { useTranslation } from 'react-i18next';
 
-const FlatList = ({ icon, headline, text }) => {
+const List = ({ icon, headline, text }) => {
     return (
         <View style={[styles.flexRow, styles.w100, styles.mt15]}>
             <View>
@@ -39,7 +39,7 @@ const Referral = ({ navigation, route }) => {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
-    const shareMsg = `Hey! Carpool using seaats and save money commuting! Get a 50 EGP voucher for your first trip with my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
+    const shareMsg = `Hey! Carpool using seaats and save money commuting! Get 50 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
     const onShare = async () => {
         try {
             const result = await Share.share({
@@ -68,9 +68,9 @@ const Referral = ({ navigation, route }) => {
                 <Treasure width={250} height={250} />
                 <View style={[styles.w100, styles.mt5]}>
                     <Text style={[styles.font18, styles.bold, styles.mt20]}>{t('share_earn_repeat')}</Text>
-                    <FlatList icon="share" headline={t('share_your_code')} text={t('share_your_code2')} />
-                    <FlatList icon="coins" headline={t('earn_vouchers')} text={t('earn_vouchers2')} />
-                    <FlatList icon="redo" headline={t('repeat')} text={t('repeat2')} />
+                    <List icon="share" headline={t('share_your_code')} text={t('share_your_code2')} />
+                    <List icon="coins" headline={t('earn_vouchers')} text={t('earn_vouchers2')} />
+                    <List icon="redo" headline={t('repeat')} text={t('repeat2')} />
                 </View>
 
                 <View style={[styles.flexOne, styles.justifyEnd, styles.w100]}>

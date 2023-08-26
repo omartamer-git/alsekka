@@ -39,8 +39,6 @@ export const myCommunities = async () => {
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.get(url);
     const data = response.data;
-    console.log("AAAAAA");
-    console.log(data);
     return data;
 }
 

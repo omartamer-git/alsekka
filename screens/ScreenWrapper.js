@@ -16,9 +16,9 @@ const ScreenWrapper = ({ screenName, children, navType, navAction, lip = true })
     const isDarkMode = useColorScheme() === 'dark';
 
     return (
-        <TouchableOpacity style={styles.backgroundStyle} onPress={Keyboard.dismiss} activeOpacity={1}>
+        <View style={styles.backgroundStyle} activeOpacity={1}>
             <>
-                <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+                <StatusBar barStyle='light-content' />
                 <SafeAreaView>
                     <HeaderView navType={navType} screenName={screenName} borderVisible={false} action={navAction} />
                 </SafeAreaView>
@@ -29,13 +29,16 @@ const ScreenWrapper = ({ screenName, children, navType, navAction, lip = true })
 
                         </View>}
 
-
-                        {children}
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <>
+                                {children}
+                            </>
+                        </TouchableWithoutFeedback>
                     </SafeAreaView>
                 </View >
 
             </>
-        </TouchableOpacity>
+        </View>
     );
 };
 

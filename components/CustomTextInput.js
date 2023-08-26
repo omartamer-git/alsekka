@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
@@ -12,9 +12,20 @@ const CustomTextInput = ({ value,
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
 
+    if(!inputRef) {
+        inputRef = useRef(null);
+    }
+
+    const onPressIn_ = (e) => {
+        if (onPressIn) {
+            onPressIn(e);
+        }
+        inputRef.current.focus();
+    }
+
     return (
         <>
-            <TouchableOpacity activeOpacity={1} onPress={onPressIn} style={[styles2.container, validationStyles, style]}>
+            <TouchableOpacity activeOpacity={1} onPress={onPressIn_} style={[styles2.container, validationStyles, style]}>
                 {
                     iconLeft &&
                     <MaterialIcons name={iconLeft} size={18} color={palette.primary} />

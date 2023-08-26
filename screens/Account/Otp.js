@@ -54,7 +54,6 @@ const Otp = ({ route, navigation }) => {
     // let filledInputs = useRef(Array(numDigits).fill(false));
 
     const verifyOtp = () => {
-        console.log("verifying otp " + otpInput.current)
         if (onVerify === 'login') {
             sendOtp(phone, otpInput.current.join('')).then(response => {
                 if (response) {

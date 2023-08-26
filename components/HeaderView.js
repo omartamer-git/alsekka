@@ -22,7 +22,7 @@ const HeaderView = ({ screenName, navType, action, children, colorMode="light", 
                 {
                     navType &&
                     (
-                        <TouchableOpacity style={{width: 44 * rem }} onPress={action}>
+                        <TouchableOpacity style={{width: 44 * rem, height: '100%', justifyContent: 'center' }} onPress={action}>
                             {
                                 (navType == "close" && <MaterialIcons name="close" size={22} color={colorModeColor} />) ||
                                 (navType == "back" && <MaterialIcons name={I18nManager.isRTL ? "arrow-forward" : "arrow-back"} size={22} color={colorModeColor} />) ||

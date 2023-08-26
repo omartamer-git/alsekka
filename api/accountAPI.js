@@ -76,7 +76,6 @@ const useUserStore = create((set) => ({
 
             return data;
         } catch (err) {
-            console.log("next error is in userInfo in accountAPI")
             throw err;
         }
     },

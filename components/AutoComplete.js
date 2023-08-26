@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect } from '@react-navigation/native';
 import _debounce from 'lodash/debounce';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import {
     Modal,
     NativeModules,
@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;
 
-const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error=false }) => {
+const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error=false }, ref) => {
     const [text, setText] = useState('');
     const [predictions, setPredictions] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -35,13 +35,20 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
     const [modalMap, setModalMap] = useState(false);
     const [location, setLocation] = useState(null);
     const [mapPred, setMapPred] = useState(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const mapViewRef = useRef(null);
 
     const [statusBarHeight, setStatusBarHeight] = useState(0);
 
     let placeIds = [];
+
+    useImperativeHandle(ref, () => ({
+        setCompletionText(txt) {
+            setText(txt);
+        }
+    }));
+
 
     useEffect(() => {
         setModalMap(false);
@@ -61,7 +68,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
 
     }, [modalVisible]);
 
-    if(Platform.OS === 'ios') {
+    if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -72,7 +79,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
@@ -150,7 +157,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
         <View style={{ width: '100%' }}>
             <CustomTextInput onFocus={() => { setModalVisible(true); }} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             <Modal animationType="slide" visible={modalVisible}>
-                <SafeAreaView style={[{backgroundColor: palette.primary}, styles2.AndroidSafeArea]}>
+                <SafeAreaView style={[{ backgroundColor: palette.primary }, styles2.AndroidSafeArea]}>
                     <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setText(''); setPredictions(null); setModalVisible(false); }} >
                         <View style={styles2.localeWrapper}>
                             <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
@@ -218,9 +225,9 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
                         </View>
                     </View>
 
-                    { modalMap && <View style={[styles2.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8}]}>
-                        <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={() => {moveInput(mapPred)}}/>
-                    </View> }
+                    {modalMap && <View style={[styles2.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>
+                        <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={() => { moveInput(mapPred) }} />
+                    </View>}
 
                     {modalMap &&
                         <MapView
@@ -240,7 +247,7 @@ const AutoComplete = ({ style = {}, type, placeholder, handleLocationSelect, inp
             </Modal>
         </View>
     );
-}
+});
 
 const styles = StyleSheet.create({
     modalStyle: {

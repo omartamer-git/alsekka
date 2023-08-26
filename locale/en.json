@@ -212,6 +212,8 @@
         "select_community": "Select a community..",
         "voucher": "Voucher Code",
         "redeem": "Redeem",
-        "voucher_applied": "Voucher Applied"
+        "voucher_applied": "Voucher Applied",
+        "customer_service": "Customer Service",
+        "cs_chat_message": "Hi, %% 👋! Thank you for contacing seaats customer service. Please type in your inquiry and a customer service agent will be assigned to you shortly! 😄"
     }
 }

@@ -12,6 +12,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 
+import { useTranslation } from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
 import useUserStore from '../../api/accountAPI';
@@ -19,8 +20,6 @@ import * as announcementsAPI from '../../api/announcementsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
-import useLocale from '../../locale/localeContext';
-import { useTranslation } from 'react-i18next';
 
 const UserHome = ({ navigation, route }) => {
     const [nextRideData, setNextRideData] = useState(null);
@@ -70,7 +69,8 @@ const UserHome = ({ navigation, route }) => {
             setRefreshing(false);
         } catch (error) {
             // Handle errors if any API call fails
-            console.error("Error occurred during API calls:", error);
+            // console.error("Error occurred during API calls:", error);
+            console.log(error.stack)
             setRefreshing(false); // Set refreshing to false even in case of errors
         }
     };
@@ -98,7 +98,7 @@ const UserHome = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('home')}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+            <ScrollView style={[styles.flexOne]} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <Text style={[styles.headerText2, styles.mt20]}>
                     {
                         currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')

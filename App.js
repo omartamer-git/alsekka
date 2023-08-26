@@ -64,6 +64,8 @@ import useLocale from './locale/localeContext';
 import './locale/translate';
 import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
+import CustomerService from './screens/Chat/CustomerService';
+import SplashScreen from 'react-native-splash-screen';
 
 
 const RootStack = createNativeStackNavigator();
@@ -81,7 +83,7 @@ const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const authManager = useAuthManager();
   const userStore = useUserStore();
@@ -115,6 +117,9 @@ const App = () => {
   const localeContext = useLocale();
 
   useEffect(() => {
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
     let locale;
     if (Platform.OS === "ios") {
       locale = NativeModules.SettingsManager.settings.AppleLocale ||
@@ -205,6 +210,7 @@ const LoggedInStack = ({ route, navigation }) => {
     <UserStack.Navigator initialRouteName="TabScreen">
       <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
       <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+      <UserStack.Screen name="Customer Service" component={CustomerService} options={{ headerShown: false }} />
     </UserStack.Navigator>
   );
 };

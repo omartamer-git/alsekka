@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Image,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -10,24 +11,26 @@ import {
     useColorScheme
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, rem, styles } from '../../helper';
+import { chatStyles, palette, rem, styles } from '../../helper';
 
 import useUserStore from '../../api/accountAPI';
 import * as chatAPI from '../../api/chatAPI';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const Chat = ({ navigation, route }) => {
     const { receiver } = route.params;
     const [receiverData, setReceiverData] = useState(null);
-    const [chatMessages, setChatMessages] = useState(null);
+    const [chatMessages, setChatMessages] = useState([]);
     const [messageText, setMessageText] = useState('');
 
     const userStore = useUserStore();
 
     const ref = useRef();
-    let lastSender = null;
+    const lastSender = useRef(null);
 
     const sendMessage = () => {
         if(! (messageText.trim())) return;
@@ -69,7 +72,23 @@ const Chat = ({ navigation, route }) => {
 
         // Cleanup function to clear the interval when the component unmounts
         return () => clearInterval(intervalId);
-    }, [chatMessages])
+    }, [chatMessages]);
+
+    if (Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(() => {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+        }, []);
+
+        useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
+
 
 
     const isDarkMode = useColorScheme === 'dark';
@@ -83,11 +102,11 @@ const Chat = ({ navigation, route }) => {
                 {
                     chatMessages &&
                     chatMessages.slice(0).reverse().map((data, index) => {
-                        const oldLastSender = lastSender;
+                        const oldLastSender = lastSender.current;
 
                         if (data.senderId === userStore.id) {
                             // I'm the sender
-                            lastSender = true;
+                            lastSender.current = true;
                             return (
                                 <View key={"message" + index} style={[chatStyles.message, styles.alignEnd]}>
                                     <View style={chatStyles.senderBubble}>
@@ -101,7 +120,7 @@ const Chat = ({ navigation, route }) => {
                                 </View>);
                         } else {
                             // He's the sender
-                            lastSender = false;
+                            lastSender.current = false;
                             return (
                                 <View key={"message" + index} style={[chatStyles.message, styles.alignStart]}>
                                     <View style={{ height: 50 * rem, width: 50 * rem }}>
@@ -118,7 +137,7 @@ const Chat = ({ navigation, route }) => {
             </ScrollView>
             <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5]}>
                 <View style={chatStyles.messageView}>
-                    <TextInput style={styles.flexOne} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
+                    <TextInput style={[styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
                 </View>
                 <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>
                     <MaterialIcons name="send" size={22} color={palette.white} />
@@ -127,57 +146,5 @@ const Chat = ({ navigation, route }) => {
         </ScreenWrapper >
     );
 };
-
-const chatStyles = StyleSheet.create({
-    message: {
-        ...styles.flexRow,
-        ...styles.mt10,
-        width: '80%',
-    },
-    receiverBubble: {
-        ...styles.flexOne,
-        ...styles.p16,
-        ...styles.bgAccent,
-        ...styles.br8,
-        ...styles.ml10
-    },
-    receiverBubbleText: {
-        ...styles.white,
-    },
-
-    senderBubble: {
-        ...styles.flexOne,
-        ...styles.p16,
-        ...styles.bgPrimary,
-        ...styles.br8,
-        ...styles.mr10
-    },
-    senderBubbleText: {
-        ...styles.white
-    },
-    profilePicture: {
-        borderRadius: 25,
-        ...styles.border1,
-        ...styles.borderAccent
-    },
-    messageView: {
-        ...styles.flexOne,
-        height: 48 * rem,
-        ...styles.border1,
-        ...styles.br8,
-        ...styles.pl16,
-        ...styles.borderLight
-    },
-    sendBtn: {
-        ...styles.fullCenter,
-        ...styles.border1,
-        ...styles.borderDark,
-        ...styles.bgPrimary,
-        height: 48 * rem,
-        width: 48 * rem,
-        borderRadius: 48 * rem/2,
-        ...styles.ml10
-    }
-});
 
 export default Chat;

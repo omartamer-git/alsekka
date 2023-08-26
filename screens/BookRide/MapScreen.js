@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import DatePicker from 'react-native-date-picker';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import AutoComplete from '../../components/AutoComplete';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -20,6 +20,8 @@ import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPaddi
 import ScreenWrapper from '../ScreenWrapper';
 import useUserStore from '../../api/accountAPI';
 import { useTranslation } from 'react-i18next';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 
 const MapScreen = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,50 +42,59 @@ const MapScreen = ({ route, navigation }) => {
   const [genderChoice, setGenderChoice] = useState('ANY');
   const { gender } = useUserStore();
 
+  const fromRef = useRef(null);
+  const toRef = useRef(null);
+
   const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Geolocation Permission',
-          message: 'Can we access your location?',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      console.log('granted', granted);
-      if (granted === 'granted') {
-        console.log('You can use Geolocation');
-        return true;
-      } else {
-        console.log('You cannot use Geolocation');
-        return false;
-      }
-    } catch (err) {
-      return false;
+    if (Platform.OS === 'ios') {
+      const auth = Geolocation.requestAuthorization();
+      return true;
     }
+
+    if (Platform.OS === 'android') {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
 
   useEffect(() => {
     const result = requestLocationPermission();
     result.then((res) => {
+      console.log(res);
       if (res) {
-        // Geolocation.getCurrentPosition(
-        //   info => {
-        //     setLocation({
-        //       latitude: info.coords.latitude,
-        //       longitude: info.coords.longitude,
-        //       latitudeDelta: 0.0922,
-        //       longitudeDelta: 0.0421,
-        //     });
-        //   }
-        // );
+        Geolocation.getCurrentPosition(
+          info => {
+            setLocation({
+              latitude: info.coords.latitude,
+              longitude: info.coords.longitude
+            });
+          }
+        );
       }
     });
 
   }, []);
+
+  const swapDestinations = () => {
+    const markerFrom_old = markerFrom;
+    const textFrom_old = textFrom;
+
+    setTextFrom(textTo);
+    setMarkerFrom(markerTo);
+    fromRef.current.setCompletionText(textTo);
+
+    setTextTo(textFrom_old);
+    setMarkerTo(markerFrom_old);
+    toRef.current.setCompletionText(textFrom_old);
+
+  }
 
   const adjustMarkers = () => {
     if (markerFrom && markerTo) {
@@ -137,30 +148,42 @@ const MapScreen = ({ route, navigation }) => {
     useFocusEffect(onFocusEffect); // register callback to focus events    
   }
 
-  const {t} = useTranslation();
+  // const []
+
+  const { t } = useTranslation();
 
 
   return (
     <ScreenWrapper screenName={t('search_rides')}>
       <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
         <MapView
-          style={styles.mapStyle}
+          style={[styles.mapStyle]}
           showsUserLocation={true}
-          initialRegion={location}
+          region={location}
           provider={PROVIDER_GOOGLE}
           ref={mapViewRef}
           customMapStyle={customMapStyle}
           mapPadding={mapPadding}
+          showsMyLocationButton
+          maxZoomLevel={18}
         >
-          {markerFrom && <Marker identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue" />}
-          {markerTo && <Marker identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />}
+          {markerFrom &&
+            <Marker identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue">
+            </Marker>
+          }
+          {markerTo &&
+            <Marker identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />
+          }
         </MapView>
 
         <View style={[containerStyle, styles.flexOne]}>
 
           <View style={mapScreenStyles.autoCompletePair}>
-            <AutoComplete key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
-            <AutoComplete key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
+            <AutoComplete ref={fromRef} key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
+            <AutoComplete ref={toRef} key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
+            <TouchableOpacity activeOpacity={0.8} onPress={swapDestinations} style={[styles.positionAbsolute, styles.alignCenter, styles.justifyCenter, styles.bgWhite, styles.borderSecondary, { top: 24 * rem, right: 5 * rem, height: 48 * rem, width: 48 * rem, borderRadius: 24 * rem, shadowColor: palette.black, shadowRadius: 12 * rem, shadowOpacity: 0.2 }]}>
+              <MaterialIcons name="swap-vert" size={22} color={palette.primary} />
+            </TouchableOpacity>
           </View>
 
           <DatePicker
