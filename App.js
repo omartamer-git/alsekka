@@ -32,7 +32,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Keychain from 'react-native-keychain';
 import useUserStore from './api/accountAPI';
 import useAuthManager from './context/authManager';
-import { palette } from './helper';
+import { palette, rem, styles } from './helper';
 import AddBank from './screens/Account/AddBank';
 import AddCard from './screens/Account/AddCard';
 import AddMobileWallet from './screens/Account/AddMobileWallet';
@@ -55,7 +55,7 @@ import NewCommunity from './screens/Communities/NewCommunity';
 import CommunitySettings from './screens/Communities/CommunitySettings';
 import CommunityMembers from './screens/Communities/CommunityMembers';
 import Withdraw from './screens/Account/Withdraw';
-import { I18nManager, NativeModules, Platform } from 'react-native';
+import { I18nManager, NativeModules, Platform, StatusBar, View } from 'react-native';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 
 import Button from './components/Button';
@@ -186,7 +186,12 @@ const App = () => {
   }, [loadJWT]);
 
   if (state === 'LOADING') {
-    return (<><Text>Loading...</Text></>);
+    return (
+      <View style={[styles.bgPrimary, styles.h100, styles.w100, styles.fullCenter]}>
+        <StatusBar barStyle='light-content' />
+        <Text style={{fontFamily: 'Free Sans Bold', fontSize: 75 * rem, color: 'white', letterSpacing: -3 * rem}}>seaats</Text>
+      </View>
+    );
   } else {
     return (
       <NavigationContainer linking={linking}>

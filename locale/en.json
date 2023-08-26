@@ -1,7 +1,7 @@
 {
     "translation": {
         "seaats": "seaats",
-        "seaats_slogan": "Ride together.. Save together",
+        "seaats_slogan": "Connecting Egypt - Driving Change",
         "greeting_morning": "Good Morning",
         "greeting_afternoon": "Good Afternoon",
         "greeting_night": "Good Evening",
@@ -214,6 +214,7 @@
         "redeem": "Redeem",
         "voucher_applied": "Voucher Applied",
         "customer_service": "Customer Service",
-        "cs_chat_message": "Hi, %% 👋! Thank you for contacing seaats customer service. Please type in your inquiry and a customer service agent will be assigned to you shortly! 😄"
+        "cs_chat_message": "Hi, %% 👋! Thank you for contacing seaats customer service. Please type in your inquiry and a customer service agent will be assigned to you shortly! 😄",
+        "google_signin": "Continue with Google"
     }
 }

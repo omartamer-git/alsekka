@@ -17,6 +17,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-alsekka-alsekkaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-alsekka-alsekkaTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		F6A4BE7562FE4A7D8B453BEE /* Free Sans Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2CF98D3DEF1D4E6FBC30F695 /* Free Sans Bold.otf */; };
+		87D4DB448B764A1CAC42476A /* TheSansArabic-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 41ED0D83DE744355B8F7FF86 /* TheSansArabic-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = alsekka/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-alsekka-alsekkaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-alsekka-alsekkaTests.release.xcconfig"; path = "Target Support Files/Pods-alsekka-alsekkaTests/Pods-alsekka-alsekkaTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		2CF98D3DEF1D4E6FBC30F695 /* Free Sans Bold.otf */ = {isa = PBXFileReference; name = "Free Sans Bold.otf"; path = "../assets/fonts/Free Sans Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		41ED0D83DE744355B8F7FF86 /* TheSansArabic-Bold.ttf */ = {isa = PBXFileReference; name = "TheSansArabic-Bold.ttf"; path = "../assets/fonts/TheSansArabic-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +135,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				0484B7F62A5AD3D0006F7C07 /* alsekka-Bridging-Header.h */,
+				F86A7EED62184A868B25D71F /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -156,6 +161,16 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		F86A7EED62184A868B25D71F /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				2CF98D3DEF1D4E6FBC30F695 /* Free Sans Bold.otf */,
+				41ED0D83DE744355B8F7FF86 /* TheSansArabic-Bold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -257,6 +272,8 @@
 				04B380732A55ED6300CD8852 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				F6A4BE7562FE4A7D8B453BEE /* Free Sans Bold.otf in Resources */,
+				87D4DB448B764A1CAC42476A /* TheSansArabic-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

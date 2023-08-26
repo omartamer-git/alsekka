@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
+  I18nManager,
   Image,
+  Platform,
   SafeAreaView,
   StatusBar,
   Text,
@@ -9,7 +11,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Button from '../../components/Button';
-import { palette, styles } from '../../helper';
+import { palette, rem, styles } from '../../helper';
 
 import HeaderView from '../../components/HeaderView';
 import { useTranslation } from 'react-i18next';
@@ -27,11 +29,11 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('Sign Up');
   };
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle={'light-content'} />
 
       <SafeAreaView style={styles.wrapper}>
         <HeaderView borderVisible={false}>
@@ -42,13 +44,33 @@ const HomeScreen = ({ navigation }) => {
         </HeaderView>
         <View style={[styles.defaultContainer, styles.defaultPadding]}>
           <Image source={require('../../assets/homescreen_car.png')} style={styles.logo} />
-          <View style={[styles.w100, styles.alignStart, styles.flexOne, styles.justifyCenter]}>
-            <Text style={[styles.headerText, styles.homeScreenHeaderTextMargin, styles.white]}>Welcome</Text>
-
-            <Text style={styles.subText}>{t('seaats')}</Text>
-            <Text style={[styles.subText, { fontWeight: 'bold' }]}>{t('seaats_slogan')}</Text>
-
+          <View style={[styles.w100, styles.alignCenter, styles.flexOne, styles.justifyCenter]}>
+            <Text style={{
+              ...(I18nManager.isRTL
+                ? {
+                  fontFamily: 'TheSansArabic-Bold',
+                }
+                : {
+                  fontFamily: 'Free Sans Bold',
+                  letterSpacing: -0.060 * 55 * rem
+                }
+              ),
+              color: 'white',
+              fontSize: 55 * rem,
+            }}>
+              {t('seaats')}
+            </Text>
+            <Text style={[{ fontWeight: 'bold', color: 'white' }]}>{t('seaats_slogan')}</Text>
           </View>
+
+          <Button
+            text={t('google_signin')}
+            disabled={true}
+            bgColor={palette.white}
+            textColor={palette.primary}
+            icon="google"
+            iconColor={palette.primary}
+          />
 
           <Button
             style={styles.continueBtn}
@@ -63,8 +85,8 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.smallText} onPress={handleLoginClick}>{t('account_exists')} <Text style={[styles.white, styles.bold]}>{t('sign_in')}</Text></Text>
           </View>
         </View>
-      </SafeAreaView>
-    </View>
+      </SafeAreaView >
+    </View >
   );
 }
 

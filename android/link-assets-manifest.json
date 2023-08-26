@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Free Sans Bold.otf",
+      "sha1": "e795021c188f8e616a624ee5d6b77039b1d522ed"
+    },
+    {
+      "path": "assets/fonts/TheSansArabic-Bold.ttf",
+      "sha1": "b630de954396ae4ad70713f531c10e8aa18a0d74"
+    }
+  ]
+}
