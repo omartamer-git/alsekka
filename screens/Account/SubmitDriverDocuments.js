@@ -23,7 +23,7 @@ const carsAPI = require('../../api/carsAPI');
 const SubmitDriverDocuments = ({ route, navigation }) => {
     useEffect(() => {
     }, []);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
 
     const isDarkMode = useColorScheme === 'dark';
@@ -74,9 +74,13 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         setLicenseStatus("PENDING");
     };
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
+        setLoading(true);
         licensesAPI.getLicense().then((data) => {
             setLicenseStatus(data === null ? 0 : data.status);
+            setLoading(false);
         });
     }, []);
 
@@ -84,45 +88,54 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     return (
         <ScreenWrapper screenName={t('submit_documents')} navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
-                <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexGrow]}>
+                <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.fullCenter]}>
                     <HeaderLip />
+                    {!loading &&
+                        <>
+                            {!userStore.driver && !licenseStatus &&
+                                <>
+                                    <Text style={styles.inputText}>{t('front_side_drivers_license')}</Text>
+                                    <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
+                                    <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
 
-                    {!userStore.driver && !licenseStatus &&
-                        <View style={driverDocumentsStyles.wrapper}>
-                            <Text style={styles.inputText}>{t('front_side_drivers_license')}</Text>
-                            <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
-                            <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
+                                    <Text style={[styles.inputText]}>{t('back_side_drivers_license')}</Text>
+                                    <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
+                                    <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
 
-                            <Text style={[styles.inputText]}>{t('back_side_drivers_license')}</Text>
-                            <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
-                            <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
-                            
-                            <Button bgColor={palette.primary} textColor={palette.white} text={t('submit')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
-                        </View>
+                                    <Button bgColor={palette.primary} textColor={palette.white} text={t('submit')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
+                                </>
+                            }
+                            {!userStore.driver && licenseStatus === 'PENDING' &&
+                                <>
+                                    <Pending width="300" height="300" />
+                                    <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>{t('wait_processing')}</Text>
+                                    <Text style={[styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
+                                </>
+                            }
+                        </>
                     }
-                    {!userStore.driver && licenseStatus === 'PENDING' &&
-                        <View style={driverDocumentsStyles.wrapper}>
-                            <Pending width="300" height="300" />
-                            <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>{t('wait_processing')}</Text>
-                            <Text style={[styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
-                        </View>
+
+                    {loading &&
+                        <>
+                            <View style={styles.w100}>
+
+                            </View>
+                        </>
                     }
 
-                </SafeAreaView>
+                </View>
             </ScrollView>
         </ScreenWrapper>
     );
 }
 
-const driverDocumentsStyles = StyleSheet.create({
-    wrapper: {
-        ...styles.defaultContainer,
-        ...styles.defaultPadding,
-        ...styles.bgLightGray,
-        ...styles.w100,
-        ...styles.fullCenter,
-        zIndex: 5,
-    },
-});
+// const driverDocumentsStyles = StyleSheet.create({
+//     wrapper: {
+//         ...styles.bgLightGray,
+//         ...styles.w100,
+//         ...styles.fullCenter,
+//         zIndex: 5,
+//     },
+// });
 
 export default SubmitDriverDocuments;

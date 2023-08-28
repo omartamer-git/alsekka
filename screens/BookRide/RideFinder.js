@@ -18,6 +18,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AutoComplete from '../../components/AutoComplete';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const RideFinder = ({ route, navigation }) => {
@@ -40,15 +41,19 @@ const RideFinder = ({ route, navigation }) => {
 
     const [location, setLocation] = useState(null);
 
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         fromRef.current.setCompletionText(textFrom);
         toRef.current.setCompletionText(textTo);
 
+        setLoading(true);
         ridesAPI.nearbyRides(fromLng, fromLat, toLng, toLat, date, genderChoice).then
             (
                 data => {
                     setAvailableRides(data);
+                    setLoading(false);
                 }
             );
     }, [fromLng, fromLat, toLng, toLat, date, genderChoice]);
@@ -122,14 +127,35 @@ const RideFinder = ({ route, navigation }) => {
                 </View>
 
                 <Text style={[styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
-                {
+                { !loading &&
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
                         return (<AvailableRide key={"ar" + index} rid={data.id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} pricePerSeat={data.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
                     }
                     )
                 }
-                <View style={styles.flexOne} />
+                {
+                    loading && 
+                    <>
+                        <View style={styles.w100}>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginTop={10 * rem} height={140 * rem} />
+                            </SkeletonPlaceholder>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginTop={10 * rem} height={140 * rem} />
+                            </SkeletonPlaceholder>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginTop={10 * rem} height={140 * rem} />
+                            </SkeletonPlaceholder>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginTop={10 * rem} height={140 * rem} />
+                            </SkeletonPlaceholder>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginTop={10 * rem} height={140 * rem} />
+                            </SkeletonPlaceholder>
+                        </View>
+                    </>
+                }
             </ScrollView>
 
         </ScreenWrapper>

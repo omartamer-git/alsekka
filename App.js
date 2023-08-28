@@ -55,7 +55,7 @@ import NewCommunity from './screens/Communities/NewCommunity';
 import CommunitySettings from './screens/Communities/CommunitySettings';
 import CommunityMembers from './screens/Communities/CommunityMembers';
 import Withdraw from './screens/Account/Withdraw';
-import { I18nManager, NativeModules, Platform, StatusBar, View } from 'react-native';
+import { I18nManager, NativeModules, Platform, StatusBar, TextInput, View } from 'react-native';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 
 import Button from './components/Button';
@@ -66,6 +66,7 @@ import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
 import CustomerService from './screens/Chat/CustomerService';
 import SplashScreen from 'react-native-splash-screen';
+import AddReferral from './screens/Account/AddReferral';
 
 
 const RootStack = createNativeStackNavigator();
@@ -101,6 +102,11 @@ const App = () => {
                 screens: {
                   "View Trip": 'ride/:tripId'
                 }
+              },
+              Account: {
+                screens: {
+                  "Add Referral": 'referral/:referralCode'
+                }
               }
             }
           }
@@ -110,11 +116,17 @@ const App = () => {
   };
 
   const linking = {
-    prefixes: ['alsekka://', 'https://alsekka.com'],
+    prefixes: ['seaats://', 'https://seaats.app'],
     config
   };
 
   const localeContext = useLocale();
+  Text.defaultProps = {};
+  Text.defaultProps.maxFontSizeMultiplier = 1.3;
+
+  TextInput.defaultProps = {};
+  TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
+
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -189,7 +201,7 @@ const App = () => {
     return (
       <View style={[styles.bgPrimary, styles.h100, styles.w100, styles.fullCenter]}>
         <StatusBar barStyle='light-content' />
-        <Text style={{fontFamily: 'Free Sans Bold', fontSize: 75 * rem, color: 'white', letterSpacing: -3 * rem}}>seaats</Text>
+        <Text style={{ fontFamily: 'Free Sans Bold', fontSize: 75 * rem, color: 'white', letterSpacing: -3 * rem }}>seaats</Text>
       </View>
     );
   } else {
@@ -223,40 +235,45 @@ const LoggedInStack = ({ route, navigation }) => {
 const LoggedInHome = ({ route, navigation }) => {
   return (
     <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.dark }}>
-      <Tab.Screen name={t("home")} component={UserHomeNavigator}
+      <Tab.Screen name="Home" component={UserHomeNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
+          title: t('home')
         }} />
-      <Tab.Screen name={t('find_rides')} component={BookRideNavigator}
+      <Tab.Screen name="Find Rides" component={BookRideNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="search" size={size} color={color} />
           ),
+          title: t('find_rides')
         }} />
-      <Tab.Screen name={t('post_ride')} component={PostRideNavigator}
+      <Tab.Screen name="Post Ride" component={PostRideNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="directions-car" size={size} color={color} />);
-          }
+          },
+          title: t('post_ride')
         }} />
-      <Tab.Screen name={t('communities')} component={CommunityNavigator}
+      <Tab.Screen name="Communities" component={CommunityNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="forum" size={size} color={color} />);
-          }
+          },
+          title: t('communities')
         }} />
-      <Tab.Screen name={t('account')} component={AccountNavigator}
+      <Tab.Screen name="Account" component={AccountNavigator}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="person" size={size} color={color} />);
-          }
+          },
+          title: t('account')
         }} />
 
     </Tab.Navigator>
@@ -326,6 +343,7 @@ const AccountNavigator = ({ route, navigation }) => {
       <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
       <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
       <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
     </AccountStack.Navigator>
   );
 }

@@ -43,17 +43,8 @@ const LoginScreen = ({ route, navigation }) => {
         userStore.getAvailableCards();
         userStore.getBankAccounts();
         userStore.getMobileWallets();
-        // console.log(data);
 
-        if (data.verified) {
-          navigation.popToTop();
-          navigation.replace("LoggedIn", {
-            screen: 'TabScreen',
-            params: {
-              screen: 'Home',
-            }
-          });
-        } else {
+        if (!data.verified) {
           console.log("navigating to otp");
           navigation.navigate('Otp',
             {

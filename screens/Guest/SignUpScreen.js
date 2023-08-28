@@ -151,7 +151,7 @@ const SignUpScreen = ({ route, navigation }) => {
                       onChangeText={handleChange('phoneInput')}
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
-                      placeholder={'enter_phone'}
+                      placeholder={t('enter_phone')}
                     />
 
                     <Text style={styles.inputText}>

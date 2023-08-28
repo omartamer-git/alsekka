@@ -32,13 +32,14 @@ const CommunitySettings = ({ route, navigation }) => {
         quality: 0.75,
         maxWidth: 500 * rem,
         maxHeight: 500 * rem,
-        storageOptions: { skipBackup: true, path: 'images' }
+        storageOptions: { skipBackup: true, path: 'images' },
     };
 
     const openImagePicker = async (e) => {
         const response = await launchImageLibrary(imagePickerOptions);
         if (!response.didCancel && !response.error) {
             setCommunityPhoto(response);
+            console.log(response);
         }
     }
 
@@ -63,7 +64,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                                     <>
                                         <TouchableOpacity onPress={openImagePicker} style={[styles.fullCenter, styles.bgLight, { width: 110 * rem, height: 110 * rem, borderRadius: 110 / 2 * rem, borderWidth: 2 * rem, alignSelf: 'center' }]}>
-                                            <Image source={{ uri: communityPicture }} width={100 * rem} height={100 * rem} style={{ borderRadius: 50 * rem }} />
+                                            <Image source={{ uri: communityPhoto ? communityPhoto.assets[0].uri : communityPicture }} width={100 * rem} height={100 * rem} style={{ borderRadius: 50 * rem }} />
                                             <View style={[styles.positionAbsolute, styles.fullCenter, { height: 100 * rem, width: 100 * rem, borderRadius: 50 * rem, backgroundColor: 'rgba(125, 125, 125, 0.5)' }]}>
                                                 <MaterialIcons name="photo-camera" size={50} color={palette.light} />
                                             </View>
