@@ -26,6 +26,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
     const isDarkMode = useColorScheme === 'dark';
     const [errorMessage, setErrorMessage] = useState(null);
     const { resetPassword } = useUserStore();
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const changePasswordSchema = Yup.object().shape({
         passwordInput: Yup.string().min(8, 'Your password should be at least 8 characters long').required('This field is required'),
@@ -34,11 +35,13 @@ const ChangePasswordScreen = ({ route, navigation }) => {
 
 
     const handleContinueClick = (newPassword) => {
+        setSubmitDisabled(true);
         resetPassword(token, newPassword).then(() => {
             navigation.replace("Guest");
         }).catch(err => {
-            console.log(err);
-            //setErrorMessage(err.response.data.error.message);
+            setErrorMessage(err.response.data.error.message);
+        }).finally(() => {
+            setSubmitDisabled(false);
         });
     };
 
@@ -111,7 +114,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                                             bgColor={palette.primary}
                                             textColor={palette.white}
                                             onPress={handleSubmit}
-                                            disabled={!isValid}
+                                            disabled={!isValid || submitDisabled}
                                         />
                                     </>
                                 )}

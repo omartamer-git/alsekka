@@ -23,6 +23,7 @@ const ManageTrip = ({ route, navigation }) => {
     const isDarkMode = useColorScheme === 'dark';
     const [tripDetails, setTripDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -49,8 +50,11 @@ const ManageTrip = ({ route, navigation }) => {
     };
 
     const checkInConfirmed = (passengerId) => {
+        setSubmitDisabled(true);
         ridesAPI.checkPassengerIn(passengerId, tripId).then(data => {
-            // set checked in somehow
+            navigation.goBack();
+        }).catch(console.error).finally(() => {
+            setSubmitDisabled(false);
         });
     }
 
@@ -99,19 +103,19 @@ const ManageTrip = ({ route, navigation }) => {
                                         <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity onPress={() => { console.log(data.UserId); checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={() => { console.log(data.UserId); checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
                                                     <Text style={manageTripStyles.manageBtnText}>{t('check_in')}</Text>
                                                 </TouchableOpacity>
                                             }
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity onPress={() => { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={() => { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
                                                     <MaterialIcons name="close" size={14} color={palette.white} />
                                                 </TouchableOpacity>
                                             }
                                             {
                                                 data.status === 'ENROUTE' &&
-                                                <TouchableOpacity onPress={() => { checkOut(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={() => { checkOut(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
                                                     <Text style={manageTripStyles.manageBtnText}>{t('check_out')}</Text>
                                                 </TouchableOpacity>
                                             }

@@ -27,12 +27,12 @@ const LoginScreen = ({ route, navigation }) => {
 
   const isDarkMode = useColorScheme === 'dark';
   const [errorMessage, setErrorMessage] = useState(null);
+  const [submitDisabled, setSubmitDisabled] = useState(false);
   const userStore = useUserStore();
   const formRef = useRef(null);
   // const objForm = new Form();
 
   const handleContinueClick = (phoneNum, password) => {
-
     if (password.length < config.PASSWORD_MIN_LENGTH) {
       setPasswordError(true);
       returnAfterValidation = true;
@@ -40,6 +40,7 @@ const LoginScreen = ({ route, navigation }) => {
 
     userStore.login(phoneNum, password).then(
       (data) => {
+        setSubmitDisabled(true);
         userStore.getAvailableCards();
         userStore.getBankAccounts();
         userStore.getMobileWallets();
@@ -56,6 +57,8 @@ const LoginScreen = ({ route, navigation }) => {
       }).catch(err => {
         console.log(err);
         setErrorMessage(err.response.data.error.message);
+      }).finally(() => {
+        setSubmitDisabled(false);
       });
   };
 
@@ -143,7 +146,7 @@ const LoginScreen = ({ route, navigation }) => {
                       bgColor={palette.primary}
                       textColor={palette.white}
                       onPress={handleSubmit}
-                      disabled={!isValid}
+                      disabled={!isValid || submitDisabled}
                     />
                   </>
                 )}

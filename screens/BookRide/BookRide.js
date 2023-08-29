@@ -70,6 +70,7 @@ const BookRide = ({ route, navigation }) => {
 
     const [paymentMethodModalVisible, setPaymentMethodModalVisible] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState({ type: 'cash' });
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const [rideBookedModalVisible, setRideBookedModalVisible] = useState(false);
     const [useVoucherText, setUseVoucherText] = useState(t('use_voucher'));
@@ -132,10 +133,16 @@ const BookRide = ({ route, navigation }) => {
     };
 
     const bookRide = (e) => {
+        setSubmitDisabled(true);
         const voucherId = voucher ? voucher.id : null;
-        console.log("BookRide VID: " + voucher);
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId); // payment method
-        setRideBookedModalVisible(true);
+
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId).then(() => {
+            setRideBookedModalVisible(true);
+        }).catch((e) => {
+            console.error(e);
+        }).finally(() => {
+            setSubmitDisabled(false);
+        });
     }
 
     const choosePayment = (paymentMethod) => {
@@ -277,7 +284,7 @@ const BookRide = ({ route, navigation }) => {
                                             &nbsp;{t('EGP')}</Text>
                                     </View>
                                     <View>
-                                        <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
+                                        <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} disabled={submitDisabled} />
                                     </View>
 
                                 </View>

@@ -32,6 +32,7 @@ const NewCar = ({ route, navigation }) => {
     const colorMode = useColorScheme();
     const isDarkMode = colorMode === 'dark';
     const [cars, setCars] = useState(null);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const input1Ref = useRef(null);
     const input2Ref = useRef(null);
@@ -69,6 +70,7 @@ const NewCar = ({ route, navigation }) => {
     };
 
     const addCar = async (brand, year, model, color, charLicense1, charLicense2, charLicense3, licensePlateNumbers) => {
+        setSubmitDisabled(true);
         const newCarBody = {
             uid: userStore.id,
             brand: brand,
@@ -81,8 +83,7 @@ const NewCar = ({ route, navigation }) => {
             license_back: licenseBack,
         };
 
-        await carsAPI.newCar(newCarBody);
-        setModalVisible(true);
+        carsAPI.newCar(newCarBody).then(() => setModalVisible(true)).catch((e) => console.error(e)).finally(() => setSubmitDisabled(false));
     };
 
     const setImageFront = (response) => {
@@ -318,7 +319,7 @@ const NewCar = ({ route, navigation }) => {
                                 bgColor={palette.primary}
                                 textColor={palette.white}
                                 onPress={handleSubmit}
-                                disabled={!isValid || !licenseBack || !licenseFront}
+                                disabled={!isValid || !licenseBack || !licenseFront || submitDisabled}
                             />
                         </>
                     )}

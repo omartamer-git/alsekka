@@ -24,6 +24,7 @@ const CommunitySettings = ({ route, navigation }) => {
     } = route.params;
 
     const [communityPhoto, setCommunityPhoto] = useState(null);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const imagePickerOptions = {
         title: 'Community Photo',
@@ -44,10 +45,14 @@ const CommunitySettings = ({ route, navigation }) => {
     }
 
     const handleSubmit = (description, privacy, joinQuestion) => {
-        updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack());
+        setSubmitDisabled(true);
+        updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack()).catch(console.error).finally(() => {
+            setSubmitDisabled(false);
+        });
     };
 
     const {t} = useTranslation();
+
 
     return (
         <>
@@ -108,7 +113,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                             textColor={palette.white}
                                             text={t('update')}
                                             onPress={handleSubmit}
-                                            disabled={!isValid}
+                                            disabled={!isValid || submitDisabled}
                                         />
                                     </>
                                 )}

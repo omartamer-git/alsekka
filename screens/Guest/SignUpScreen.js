@@ -29,11 +29,13 @@ const SignUpScreen = ({ route, navigation }) => {
   const [phoneNumExists, setPhoneNumExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [submitDisabled, setSubmitDisabled] = useState(false);
   const isDarkMode = useColorScheme === 'dark';
 
   const userStore = useUserStore();
 
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
+    setSubmitDisabled(true);
     userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
       userStore.login(phoneNum, password).then(() => {
         if (userStore.verified) {
@@ -50,6 +52,8 @@ const SignUpScreen = ({ route, navigation }) => {
       })
     }).catch(err => {
       setErrorMessage(err.response.data.error.message);
+    }).finally(() => {
+      setSubmitDisabled(false);
     });
   };
 
@@ -193,7 +197,7 @@ const SignUpScreen = ({ route, navigation }) => {
                       bgColor={palette.primary}
                       textColor={palette.white}
                       onPress={handleSubmit}
-                      disabled={!isValid}
+                      disabled={!isValid || submitDisabled}
                     />
                   </>
                 )}

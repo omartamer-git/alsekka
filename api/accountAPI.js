@@ -365,6 +365,7 @@ const useUserStore = create((set) => ({
 
         const data = response.data;
         set(data);
+        return data;
     }
 }));
 

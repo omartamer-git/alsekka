@@ -33,6 +33,7 @@ import { useTranslation } from 'react-i18next';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const PostRide = ({ route, navigation }) => {
+    const [submitDisabled, setSubmitDisabled] = useState(false);
     const [loading, setLoading] = useState(true);
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
@@ -136,6 +137,7 @@ const PostRide = ({ route, navigation }) => {
     }
 
     const postRide = (pricePerSeat, date, time, selectedCar, selectedCommunity, seatsAvailable) => {
+        setSubmitDisabled(true);
         if (markerFrom && markerTo) {
             let newDate = date;
             newDate.setHours(time.getHours());
@@ -144,8 +146,13 @@ const PostRide = ({ route, navigation }) => {
             console.log(newDate);
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity : null, genderChoice, seatsAvailable);
+                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity : null, genderChoice, seatsAvailable).then(() => {
+                    navigation.goBack();
+                }).catch(console.error).finally(() => {
+                    setSubmitDisabled(false);
+                });
         }
+        setSubmitDisabled(false);
     }
 
     const onChangePricePerSeat = (data) => {
@@ -408,7 +415,7 @@ const PostRide = ({ route, navigation }) => {
 
 
 
-                                                <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} />
+                                                <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} disabled={submitDisabled} onPress={handleSubmit} />
                                             </>
                                         )}
 

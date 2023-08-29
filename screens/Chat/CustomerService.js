@@ -35,9 +35,9 @@ const CustomerService = ({ navigation, route }) => {
 
     const sendMessage = () => {
         if (!(messageText.trim())) return;
+        setMessageText('');
         chatAPI.sendCSMessage(messageText).then(data => {
             setChatMessages([data].concat(chatMessages));
-            setMessageText('');
         }).catch(err => console.log(err.stack))
     };
 

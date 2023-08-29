@@ -20,11 +20,16 @@ import { useTranslation } from 'react-i18next';
 const AddMobileWallet = ({ navigation, route }) => {
     const [addWalletError, setAddWalletError] = useState(null);
     const {addMobileWallet} = useUserStore();
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+
     const addAccount = (phoneInput) => {
+        setSubmitDisabled(true);
         addMobileWallet(phoneInput).then(data => {
             navigation.goBack();
         }).catch(err => {
             setAddWalletError(err.response.data.error.message);
+        }).finally(() => {
+            setSubmitDisabled(false);
         });
     }
 
@@ -76,7 +81,7 @@ const AddMobileWallet = ({ navigation, route }) => {
                             />
 
                             <View style={styles.flexOne} />
-                            <Button text={t('add_wallet')} bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} />
+                            <Button text={t('add_wallet')} bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} disabled={submitDisabled} />
                         </>
                     )}
                 </Formik>

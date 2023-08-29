@@ -28,6 +28,8 @@ const AddCard = ({ navigation, route }) => {
     const [expiryDate, setExpiryDate] = useState(null);
 
     const [errorMessage, setErrorMessage] = useState(null);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+
     const {addCard} = useUserStore();
 
     if(Platform.OS === 'ios') {
@@ -106,10 +108,13 @@ const AddCard = ({ navigation, route }) => {
     }
 
     const addNewCard = () => {
+        setSubmitDisabled(true);
         addCard(cardNumber.replace(/\s+/g, ''), expiryDate, cardholderName).then(data => {
             navigation.goBack();
         }).catch(err => {
             setErrorMessage(err.response.data.error.message);
+        }).finally(() => {
+            setSubmitDisabled(false);
         });
     };
 
@@ -223,7 +228,7 @@ const AddCard = ({ navigation, route }) => {
                                 textColor={palette.white}
                                 text={t("add_card")}
                                 onPress={handleSubmit}
-                                disabled={!isValid}
+                                disabled={!isValid || submitDisabled}
                             />
                         </>
                     )}

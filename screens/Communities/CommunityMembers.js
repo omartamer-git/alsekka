@@ -11,21 +11,28 @@ const CommunityMembers = ({ route, navigation }) => {
     const { communityId } = route.params;
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     useEffect(() => {
         setLoading(true);
         getCommunityMemberRequests(communityId).then(members => {
             setMembers(members);
             setLoading(false);
-        })
+        });
     }, []);
 
     const acceptMember = (id) => {
-        acceptCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id)));
+        setSubmitDisabled(true);
+        acceptCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally(() => {
+            setSubmitDisabled(false);
+        });
     };
 
     const rejectMember = (id) => {
-        rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id)))
+        setSubmitDisabled(true);
+        rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally(() => {
+            setSubmitDisabled(false);
+        });
     };
 
     const { t } = useTranslation();
@@ -58,8 +65,8 @@ const CommunityMembers = ({ route, navigation }) => {
                                                     <Text style={[styles.headerText2]}>{member.User.firstName} {member.User.lastName}</Text>
                                                     <Text style={[styles.smallText, styles.dark]}>{member.joinAnswer}</Text>
                                                     <View style={[styles.w100, styles.flexRow]}>
-                                                        <Button onPress={() => acceptMember(member.id)} style={[styles.flexOne, styles.mr5]} bgColor={palette.green} text={t('accept')} textColor={palette.white} />
-                                                        <Button onPress={() => rejectMember(member.id)} style={[styles.flexOne, styles.ml5]} bgColor={palette.red} text={t('reject')} textColor={palette.white} />
+                                                        <Button disabled={submitDisabled} onPress={() => acceptMember(member.id)} style={[styles.flexOne, styles.mr5]} bgColor={palette.green} text={t('accept')} textColor={palette.white} />
+                                                        <Button disabled={submitDisabled} onPress={() => rejectMember(member.id)} style={[styles.flexOne, styles.ml5]} bgColor={palette.red} text={t('reject')} textColor={palette.white} />
                                                     </View>
                                                 </View>
                                             </View>

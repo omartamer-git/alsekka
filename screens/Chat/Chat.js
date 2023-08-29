@@ -36,11 +36,11 @@ const Chat = ({ navigation, route }) => {
 
     const sendMessage = () => {
         if (!(messageText.trim())) return;
+        setMessageText('');
 
         chatAPI.sendMessage(receiver, messageText).then(
             data => {
                 setChatMessages(data.concat(chatMessages));
-                setMessageText('');
             }
         );
     };

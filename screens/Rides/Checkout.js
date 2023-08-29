@@ -28,6 +28,7 @@ const Checkout = ({ route, navigation }) => {
     const [amountPaid, setAmountPaid] = useState("");
     const [rating, setRating] = useState(5);
     const [loading, setLoading] = useState(true);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -59,8 +60,11 @@ const Checkout = ({ route, navigation }) => {
     };
 
     const checkoutConfirmed = () => {
+        setSubmitDisabled(true);
         ridesAPI.checkPassengerOut(passengerId, tripId, amountPaid, rating).then(
             data => {
+            }).catch(console.error).finally(() => {
+                setSubmitDisabled(false);
             });
     }
 
@@ -116,7 +120,7 @@ const Checkout = ({ route, navigation }) => {
                                 );
                             })}
                         </View>
-                        <Button text={t('checkout')} bgColor={palette.primary} textColor={palette.white} onPress={checkout} />
+                        <Button disabled={submitDisabled} text={t('checkout')} bgColor={palette.primary} textColor={palette.white} onPress={checkout} />
 
                     </>
                 }

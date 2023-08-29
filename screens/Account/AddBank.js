@@ -19,12 +19,17 @@ import { useTranslation } from 'react-i18next';
 
 const AddBank = ({ navigation, route }) => {
     const [addBankError, setAddBankError] = useState(null);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+
     const { addBankAccount } = useUserStore();
     const addAccount = (fullName, bankName, accNumber, swiftCode) => {
+        setSubmitDisabled(true);
         addBankAccount(fullName, bankName, accNumber, swiftCode).then(data => {
             navigation.goBack();
         }).catch(err => {
             setAddBankError(err.response.data.error.message);
+        }).finally(() => {
+            setSubmitDisabled(false);
         });
     }
 
@@ -110,7 +115,7 @@ const AddBank = ({ navigation, route }) => {
                             />
 
                             <View style={styles.flexOne} />
-                            <Button text={t('add_account')} bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} />
+                            <Button text={t('add_account')} bgColor={palette.accent} textColor={palette.white} onPress={handleSubmit} disabled={submitDisabled} />
                         </>
                     )}
                 </Formik>

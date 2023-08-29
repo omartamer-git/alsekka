@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 const Withdraw = ({ route, navigation }) => {
     const { bankAccounts, mobileWallets, balance, sendWithdrawalRequest } = useUserStore();
     const [modalVisible, setModalVisible] = useState(false);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
     
     const withdrawalType = useRef("BANK");
     const withdrawalId = useRef(null);
@@ -31,9 +32,11 @@ const Withdraw = ({ route, navigation }) => {
     }
 
     const sendRequest = () => {
+        setSubmitDisabled(true);
         if(withdrawalId.current !== null) {
-            sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack());
+            sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack()).catch(console.error).finally(() => { setSubmitDisabled(false); });
         }
+        setSubmitDisabled(false);
     };
 
     const {t} = useTranslation();

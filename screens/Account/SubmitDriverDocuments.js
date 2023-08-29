@@ -26,7 +26,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     }, []);
     const { t } = useTranslation();
 
-
+    const [submitDisabled, setSubmitDisabled] = useState(false);
     const isDarkMode = useColorScheme === 'dark';
     const imagePickerOptions = { title: 'Drivers\' License Photo', mediaType: 'photo', quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
     const [licenseFront, setLicenseFront] = useState("");
@@ -66,13 +66,19 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     };
 
     const uploadLicense = async () => {
+        setSubmitDisabled(true);
         const licenseBody = {
             frontSide: licenseFront,
             backSide: licenseBack,
         };
 
-        await licensesAPI.uploadLicense(licenseBody);
-        setLicenseStatus("PENDING");
+        licensesAPI.uploadLicense(licenseBody).then(() => {
+            setLicenseStatus("PENDING");
+        }).catch(err => {
+            console.error(err);
+        }).finally(() => {
+            setSubmitDisabled(false);
+        });
     };
 
     const [loading, setLoading] = useState(true);
