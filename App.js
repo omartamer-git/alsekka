@@ -200,23 +200,29 @@ const App = () => {
   if (state === 'LOADING') {
     return (
       <View style={[styles.bgPrimary, styles.h100, styles.w100, styles.fullCenter]}>
-        <StatusBar barStyle='light-content' />
-        <Text style={{ fontFamily: 'Free Sans Bold', fontSize: 75 * rem, color: 'white', letterSpacing: -3 * rem }}>seaats</Text>
+        <StatusBar barStyle={'light-content'} />
+        <Text style={[styles.freeSans, styles.white,
+        { fontSize: 75 * rem, letterSpacing: -3 * rem }
+        ]
+        }>seaats</Text>
       </View>
     );
   } else {
     return (
-      <NavigationContainer linking={linking}>
-        <RootStack.Navigator>
-          {
-            authManager.authenticated === false || userStore.verified === false ? (
-              <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
-            ) : (
-              <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
-            )
-          }
-        </RootStack.Navigator>
-      </NavigationContainer>
+      <>
+        <StatusBar barStyle={'light-content'} />
+        <NavigationContainer linking={linking}>
+          <RootStack.Navigator>
+            {
+              authManager.authenticated === false || userStore.verified === false ? (
+                <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
+              ) : (
+                <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+              )
+            }
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </>
     );
   }
 

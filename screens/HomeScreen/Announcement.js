@@ -3,13 +3,12 @@ import {
     I18nManager,
     ScrollView,
     Text,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
-import { containerStyle, rem, styles } from '../../helper';
-import * as announcementsAPI from '../../api/announcementsAPI';
-import ScreenWrapper from '../ScreenWrapper';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import * as announcementsAPI from '../../api/announcementsAPI';
+import { containerStyle, rem, styles } from '../../helper';
+import ScreenWrapper from '../ScreenWrapper';
 
 
 const Announcement = ({ navigation, route }) => {
@@ -27,7 +26,6 @@ const Announcement = ({ navigation, route }) => {
         );
     }, []);
 
-    const isDarkMode = useColorScheme === 'dark';
 
     return (
         <ScreenWrapper screenName={t('announcement')} navType="back" navAction={() => navigation.goBack()}>

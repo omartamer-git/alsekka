@@ -1,29 +1,27 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Platform,
     ScrollView,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const Checkout = ({ route, navigation }) => {
     const { tripId, passengerId } = route.params;
 
-    const isDarkMode = useColorScheme === 'dark';
     const [passengerDetails, setPassengerDetails] = useState(null);
     const [amountPaid, setAmountPaid] = useState("");
     const [rating, setRating] = useState(5);

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-    SafeAreaView,
     ScrollView,
-    StyleSheet,
     Text,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as licensesAPI from '../../api/licenses';
 import Button from '../../components/Button';
@@ -16,8 +15,6 @@ import HeaderLip from '../../components/HeaderLip';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -27,7 +24,6 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
     const { t } = useTranslation();
 
     const [submitDisabled, setSubmitDisabled] = useState(false);
-    const isDarkMode = useColorScheme === 'dark';
     const imagePickerOptions = { title: 'Drivers\' License Photo', mediaType: 'photo', quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");

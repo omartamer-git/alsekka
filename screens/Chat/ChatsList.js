@@ -5,17 +5,16 @@ import {
     ScrollView,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { containerStyle, palette, rem, styles } from '../../helper';
 
+import { useTranslation } from 'react-i18next';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as chatAPI from '../../api/chatAPI';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const ChatsList = ({ navigation, route }) => {
@@ -31,7 +30,6 @@ const ChatsList = ({ navigation, route }) => {
     }, []);
 
 
-    const isDarkMode = useColorScheme === 'dark';
     const { t } = useTranslation();
 
     return (

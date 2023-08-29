@@ -1,6 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     ActionSheetIOS,
     Modal,
@@ -8,8 +9,7 @@ import {
     SafeAreaView,
     ScrollView,
     Text,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -24,12 +24,10 @@ import HeaderView from '../../components/HeaderView';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
 
 const NewCar = ({ route, navigation }) => {
     const {t} = useTranslation();
 
-    const colorMode = useColorScheme();
     const isDarkMode = colorMode === 'dark';
     const [cars, setCars] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);

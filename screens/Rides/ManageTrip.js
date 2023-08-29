@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Alert,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
 import Passenger from '../../components/Passenger';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const ManageTrip = ({ route, navigation }) => {
     const { tripId } = route.params;
 
-    const isDarkMode = useColorScheme === 'dark';
     const [tripDetails, setTripDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitDisabled, setSubmitDisabled] = useState(false);

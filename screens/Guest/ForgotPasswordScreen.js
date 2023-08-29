@@ -1,13 +1,12 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Platform,
     SafeAreaView,
-    StatusBar,
     Text,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,14 +15,11 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import HeaderView from '../../components/HeaderView';
 import { palette, styles } from '../../helper';
-import { t } from 'i18next';
-import { useTranslation } from 'react-i18next';
 
 
 const ForgotPasswordScreen = ({ route, navigation }) => {
     const { phone } = route.params;
     console.log(route.params);
-    const isDarkMode = useColorScheme === 'dark';
     const [errorMessage, setErrorMessage] = useState(null);
     const loginSchema = Yup.object().shape({
         phoneInput: Yup.string().matches(
@@ -58,7 +54,6 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.backgroundStyle}>
-            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
             <SafeAreaView>
                 <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
                     <View style={styles.localeWrapper}>

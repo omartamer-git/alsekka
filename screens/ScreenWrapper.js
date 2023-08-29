@@ -2,23 +2,18 @@ import React from 'react';
 import {
     Keyboard,
     SafeAreaView,
-    StatusBar,
-    TouchableOpacity,
     TouchableWithoutFeedback,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import HeaderView from '../components/HeaderView';
 
 import { palette, rem, styles } from '../helper';
 
 const ScreenWrapper = ({ screenName, children, navType, navAction, lip = true }) => {
-    const isDarkMode = useColorScheme() === 'dark';
 
     return (
         <View style={styles.backgroundStyle} activeOpacity={1}>
             <>
-                <StatusBar barStyle='light-content' />
                 <SafeAreaView>
                     <HeaderView navType={navType} screenName={screenName} borderVisible={false} action={navAction} />
                 </SafeAreaView>

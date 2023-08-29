@@ -1,36 +1,33 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Platform,
-    RefreshControl,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import DatePicker from 'react-native-date-picker';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
-import * as communitiesAPI from '../../api/communitiesAPI';
 import * as carsAPI from '../../api/carsAPI';
+import * as communitiesAPI from '../../api/communitiesAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AutoComplete from '../../components/AutoComplete';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import CarCard from '../../components/CarCard';
+import CommunityCard from '../../components/CommunityCard';
 import CustomTextInput from '../../components/CustomTextInput';
 import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
-import CommunityCard from '../../components/CommunityCard';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const PostRide = ({ route, navigation }) => {
     const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -183,7 +180,6 @@ const PostRide = ({ route, navigation }) => {
         communityInput: Yup.object()
     });
 
-    const isDarkMode = useColorScheme === 'dark';
 
     const { t } = useTranslation();
 

@@ -1,5 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     I18nManager,
     Image,
@@ -7,10 +8,11 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../../api/accountAPI';
@@ -20,12 +22,9 @@ import BankCard from '../../components/BankCard';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import Counter from '../../components/Counter';
+import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import CustomTextInput from '../../components/CustomTextInput';
-import MapViewDirections from 'react-native-maps-directions';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -172,7 +171,6 @@ const BookRide = ({ route, navigation }) => {
         setDurationToPickup(duration);
     };
 
-    const isDarkMode = useColorScheme === 'dark';
 
     return (
         <>

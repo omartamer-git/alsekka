@@ -1,15 +1,14 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Platform,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  useColorScheme
+  View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -21,7 +20,6 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
 import { palette, rem, styles } from '../../helper';
-import { useTranslation } from 'react-i18next';
 
 const SignUpScreen = ({ route, navigation }) => {
   const [gender, setGender] = useState('MALE');
@@ -30,7 +28,6 @@ const SignUpScreen = ({ route, navigation }) => {
   const [emailExists, setEmailExists] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
-  const isDarkMode = useColorScheme === 'dark';
 
   const userStore = useUserStore();
 
@@ -96,7 +93,6 @@ const SignUpScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.backgroundStyle} >
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <SafeAreaView>
         <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
           <View style={styles.localeWrapper}>

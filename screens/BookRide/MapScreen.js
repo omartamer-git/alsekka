@@ -1,26 +1,25 @@
 import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  useColorScheme
+  View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import DatePicker from 'react-native-date-picker';
-import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import useUserStore from '../../api/accountAPI';
 import AutoComplete from '../../components/AutoComplete';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import useUserStore from '../../api/accountAPI';
-import { useTranslation } from 'react-i18next';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 const MapScreen = ({ route, navigation }) => {
@@ -131,7 +130,6 @@ const MapScreen = ({ route, navigation }) => {
     }
   }
 
-  const isDarkMode = useColorScheme === 'dark';
 
   if (Platform.OS === 'ios') {
     const onFocusEffect = useCallback(() => {

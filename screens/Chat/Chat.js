@@ -3,23 +3,21 @@ import {
     Image,
     Platform,
     ScrollView,
-    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { chatStyles, palette, rem, styles } from '../../helper';
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as chatAPI from '../../api/chatAPI';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { useFocusEffect } from '@react-navigation/native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const Chat = ({ navigation, route }) => {
@@ -99,7 +97,6 @@ const Chat = ({ navigation, route }) => {
 
 
 
-    const isDarkMode = useColorScheme === 'dark';
     const { t } = useTranslation();
 
     return (

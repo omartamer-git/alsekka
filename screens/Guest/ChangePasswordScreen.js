@@ -1,13 +1,12 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Platform,
     SafeAreaView,
-    StatusBar,
     Text,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -18,12 +17,10 @@ import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
 import { palette, styles } from '../../helper';
-import { useTranslation } from 'react-i18next';
 
 
 const ChangePasswordScreen = ({ route, navigation }) => {
     const { token } = route.params;
-    const isDarkMode = useColorScheme === 'dark';
     const [errorMessage, setErrorMessage] = useState(null);
     const { resetPassword } = useUserStore();
     const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -64,7 +61,6 @@ const ChangePasswordScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.backgroundStyle}>
-            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
             <SafeAreaView>
                 <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
                     <View style={styles.localeWrapper}>

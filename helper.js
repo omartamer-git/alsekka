@@ -200,6 +200,12 @@ export const getDateTime = (date, viweing = true) => {
 export const rem = Dimensions.get('window').width / 380;
 
 export const styles = StyleSheet.create({
+    freeSans: {
+        fontFamily: 'FreeSansBold'
+    },
+    freeSansArabic: {
+        fontFamily: 'TheSansArabic-Bold'
+    },
     backgroundStyle: {
         backgroundColor: palette.primary,
         flex: 1

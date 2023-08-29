@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     I18nManager,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../../api/accountAPI';
+import BankCard from '../../components/BankCard';
 import Button from '../../components/Button';
+import WithdrawalMethod from '../../components/WithdrawalMethod';
 import { abbreviate, containerStyle, getPhoneCarrier, palette, rem, styles, translateEnglishNumbers } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import BankCard from '../../components/BankCard';
-import WithdrawalMethod from '../../components/WithdrawalMethod';
-import { useTranslation } from 'react-i18next';
 
 const Wallet = ({ navigation, route }) => {
     const {availableCards, bankAccounts, mobileWallets, balance} = useUserStore();
@@ -27,7 +25,6 @@ const Wallet = ({ navigation, route }) => {
         navigation.navigate('View Trip', { tripId: id });
     };
 
-    const isDarkMode = useColorScheme === 'dark';
     const {t} = useTranslation();
 
     return (

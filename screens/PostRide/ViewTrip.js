@@ -1,26 +1,25 @@
 import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Image,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
+import ArrowButton from '../../components/ArrowButton';
 import AvailableRide from '../../components/AvailableRide';
+import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import Passenger from '../../components/Passenger';
 import { customMapStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import ArrowButton from '../../components/ArrowButton';
-import BottomModal from '../../components/BottomModal';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const ViewTrip = ({ route, navigation }) => {
@@ -134,7 +133,6 @@ const ViewTrip = ({ route, navigation }) => {
     };
 
 
-    const isDarkMode = useColorScheme === 'dark';
     const { t } = useTranslation();
     return (
         <>

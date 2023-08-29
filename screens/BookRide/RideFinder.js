@@ -1,24 +1,22 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Platform,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    useColorScheme
+    View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
+import AutoComplete from '../../components/AutoComplete';
 import AvailableRide from '../../components/AvailableRide';
-import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AutoComplete from '../../components/AutoComplete';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const RideFinder = ({ route, navigation }) => {
@@ -66,7 +64,6 @@ const RideFinder = ({ route, navigation }) => {
         }
     }
 
-    const isDarkMode = useColorScheme === 'dark';
 
     if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {

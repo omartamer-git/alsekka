@@ -2,23 +2,19 @@ import React, { useState } from 'react';
 import {
   I18nManager,
   Image,
-  Platform,
   SafeAreaView,
-  StatusBar,
   Text,
-  View,
-  useColorScheme
+  View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Button from '../../components/Button';
 import { palette, rem, styles } from '../../helper';
 
-import HeaderView from '../../components/HeaderView';
 import { useTranslation } from 'react-i18next';
+import HeaderView from '../../components/HeaderView';
 
 const HomeScreen = ({ navigation }) => {
   const [phoneNumberText, setPhone] = useState('');
-  const isDarkMode = useColorScheme === 'dark';
 
 
 
@@ -33,7 +29,6 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.backgroundStyle}>
-      <StatusBar barStyle={'light-content'} />
 
       <SafeAreaView style={styles.wrapper}>
         <HeaderView borderVisible={false}>
@@ -45,19 +40,19 @@ const HomeScreen = ({ navigation }) => {
         <View style={[styles.defaultContainer, styles.defaultPadding]}>
           <Image source={require('../../assets/homescreen_car.png')} style={styles.logo} />
           <View style={[styles.w100, styles.alignCenter, styles.flexOne, styles.justifyCenter]}>
-            <Text style={{
+            <Text style={[{
               ...(I18nManager.isRTL
                 ? {
-                  fontFamily: 'TheSansArabic-Bold',
+                  ...styles.freeSansArabic
                 }
                 : {
-                  fontFamily: 'Free Sans Bold',
+                  ...styles.freeSans,
                   letterSpacing: -0.060 * 55 * rem
                 }
               ),
               color: 'white',
               fontSize: 55 * rem,
-            }}>
+            }]}>
               {t('seaats')}
             </Text>
             <Text style={[{ fontWeight: 'bold', color: 'white' }]}>{t('seaats_slogan')}</Text>
