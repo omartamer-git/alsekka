@@ -7,7 +7,7 @@ const CustomTextInput = ({ value,
     onChangeText, placeholder, style,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn,
-    iconLeft, iconRight, inputRef,
+    iconLeft, emojiLeft, iconRight, inputRef,
     onKeyPress, textStyles, onBlur, error }) => {
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
@@ -27,8 +27,12 @@ const CustomTextInput = ({ value,
         <>
             <TouchableOpacity activeOpacity={1} onPress={onPressIn_} style={[styles2.container, validationStyles, style]}>
                 {
-                    iconLeft &&
+                    iconLeft && !emojiLeft &&
                     <MaterialIcons name={iconLeft} size={18} color={palette.primary} />
+                }
+                {
+                    emojiLeft &&
+                    <Text style={styles.font14}>{emojiLeft}</Text>
                 }
                 <TextInput
                     style={[styles2.input, textStyles]}

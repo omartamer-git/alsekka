@@ -33,6 +33,8 @@ const SignUpScreen = ({ route, navigation }) => {
 
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
     setSubmitDisabled(true);
+    phoneNum = "0" + phoneNum;
+
     userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
       userStore.login(phoneNum, password).then(() => {
         if (userStore.verified) {
@@ -63,7 +65,7 @@ const SignUpScreen = ({ route, navigation }) => {
   }
   const signUpSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
-      /^01[0-2,5]{1}[0-9]{8}$/,
+      /^1[0-2,5]{1}[0-9]{8}$/,
       'Please enter a valid phone number in international format'
     )
       .required('This field is required'),
@@ -147,8 +149,13 @@ const SignUpScreen = ({ route, navigation }) => {
 
                     <Text style={styles.inputText}>{t('phone_number')}</Text>
                     <CustomTextInput
-                      value={values.phoneInput}
-                      onChangeText={handleChange('phoneInput')}
+                      value={"+20 " + values.phoneInput}
+                      emojiLeft={"🇪🇬"}
+                      onChangeText={(text) => {
+                        if(text == '') return;
+                        let sanitizedText = text.replace("+20", "").trim();
+                        handleChange('phoneInput')(sanitizedText);
+                      }}
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
                       placeholder={t('enter_phone')}

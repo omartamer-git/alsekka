@@ -226,7 +226,7 @@ const ViewTrip = ({ route, navigation }) => {
 
                                         {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text={t('start_ride')} textColor={palette.white} onPress={startTrip} />}
 
-                                        {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={"إدارة الرحلة"} textColor={palette.white} onPress={manageTrip} />}
+                                        {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={t('manage_trip')} textColor={palette.white} onPress={manageTrip} />}
 
                                         {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={() => { }} />}
 

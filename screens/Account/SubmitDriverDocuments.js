@@ -105,7 +105,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                                     <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
 
-                                    <Button bgColor={palette.primary} textColor={palette.white} text={t('submit')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack} />
+                                    <Button bgColor={palette.primary} textColor={palette.white} text={t('submit')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack || submitDisabled} />
                                 </>
                             }
                             {!userStore.driver && licenseStatus === 'PENDING' &&

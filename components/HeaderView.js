@@ -8,8 +8,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
-const HeaderView = ({ screenName, navType, action, children, colorMode="light", borderVisible=true, style={} }) => {
-    const colorModeColor = colorMode === "light" ? palette.white : palette.dark;
+const HeaderView = ({ screenName, navType, action, children, borderVisible=true, style={} }) => {
     let modifierStyles = {};
     if(borderVisible) {
         modifierStyles = { borderBottomWidth: 1 };
@@ -24,9 +23,9 @@ const HeaderView = ({ screenName, navType, action, children, colorMode="light", 
                     (
                         <TouchableOpacity style={{width: 44 * rem, height: '100%', justifyContent: 'center' }} onPress={action}>
                             {
-                                (navType == "close" && <MaterialIcons name="close" size={22} color={colorModeColor} />) ||
-                                (navType == "back" && <MaterialIcons name={I18nManager.isRTL ? "arrow-forward" : "arrow-back"} size={22} color={colorModeColor} />) ||
-                                (navType == "menu" && <MaterialIcons name="menu" size={22} color={colorModeColor} />)
+                                (navType == "close" && <MaterialIcons name="close" size={22} color={palette.white} />) ||
+                                (navType == "back" && <MaterialIcons name={I18nManager.isRTL ? "arrow-forward" : "arrow-back"} size={22} color={palette.white} />) ||
+                                (navType == "menu" && <MaterialIcons name="menu" size={22} color={palette.white} />)
                             }
                         </TouchableOpacity>
                     )
@@ -34,7 +33,7 @@ const HeaderView = ({ screenName, navType, action, children, colorMode="light", 
             </View>
             
             <View style={{ flex: 1, alignItems: 'center', paddingEnd: navType ? 44 * rem : 0 }}>
-                {screenName && <View style={styles2.screenName}><Text style={{ textAlign: 'center', color: colorModeColor, fontWeight: '600', fontSize: 16 }}>{screenName}</Text></View>}
+                {screenName && <View style={styles2.screenName}><Text style={{ textAlign: 'center', color: palette.white, fontWeight: '600', fontSize: 16 }}>{screenName}</Text></View>}
             </View>
         </View>
     );

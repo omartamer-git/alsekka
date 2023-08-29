@@ -28,7 +28,6 @@ import ScreenWrapper from '../ScreenWrapper';
 const NewCar = ({ route, navigation }) => {
     const {t} = useTranslation();
 
-    const isDarkMode = colorMode === 'dark';
     const [cars, setCars] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
@@ -104,7 +103,6 @@ const NewCar = ({ route, navigation }) => {
             {
                 options: ['Cancel', 'Take Photo', 'Choose Photo'],
                 cancelButtonIndex: 0,
-                userInterfaceStyle: colorMode,
             },
             async (buttonIndex) => {
                 if (buttonIndex === 1) {
@@ -124,7 +122,6 @@ const NewCar = ({ route, navigation }) => {
             {
                 options: ['Cancel', 'Take Photo', 'Choose Photo'],
                 cancelButtonIndex: 0,
-                userInterfaceStyle: colorMode,
             },
             async (buttonIndex) => {
                 if (buttonIndex === 1) {
