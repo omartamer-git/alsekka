@@ -18,6 +18,7 @@ import CommunityCard from '../../components/CommunityCard';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import Loading from '../../components/Loading';
 
 
 

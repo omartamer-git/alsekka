@@ -25,6 +25,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import CustomTextInput from '../../components/CustomTextInput';
 import MapViewDirections from 'react-native-maps-directions';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -74,6 +75,8 @@ const BookRide = ({ route, navigation }) => {
     const [useVoucherText, setUseVoucherText] = useState(t('use_voucher'));
     const [voucherModalVisible, setVoucherModalVisible] = useState(false);
 
+    const [loading, setLoading] = useState(true);
+
     const { balance, availableCards } = useUserStore();
 
     useEffect(() => {
@@ -86,7 +89,7 @@ const BookRide = ({ route, navigation }) => {
             }
         );
 
-
+        setLoading(true);
         const data = ridesAPI.rideDetails(rideId).then((data) => {
             setMainTextFrom(data.mainTextFrom);
             setMaintextTo(data.mainTextTo);
@@ -119,6 +122,7 @@ const BookRide = ({ route, navigation }) => {
             }
 
             setRatings(ratingsItems);
+            setLoading(false);
         });
     }, []);
 
@@ -200,82 +204,117 @@ const BookRide = ({ route, navigation }) => {
                             strokeColor={palette.secondary}
                             onReady={onReadyTripDirections}
                         />}
-
-
                     </MapView>
 
                     <View style={[containerStyle, styles.flexOne]}>
-                        <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
-                            <View style={bookRideStyles.profilePictureView}>
-                                {profilePicture && <Image source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
-                            </View>
-                            <View style={[styles.flexOne, styles.ml20]}>
-                                <Text style={styles.headerText2}>{firstName} {lastName}</Text>
-                                <Text>{car.year} {car.brand} {car.model}</Text>
-                                <View style={styles.flexRow}>
-                                    {ratings}
+                        {
+                            !loading &&
+                            <>
+                                <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
+                                    <View style={bookRideStyles.profilePictureView}>
+                                        {profilePicture && <Image source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
+                                    </View>
+                                    <View style={[styles.flexOne, styles.ml20]}>
+                                        <Text style={styles.headerText2}>{firstName} {lastName}</Text>
+                                        <Text>{car.year} {car.brand} {car.model}</Text>
+                                        <View style={styles.flexRow}>
+                                            {ratings}
+                                        </View>
+                                    </View>
+                                    <View style={styles.alignEnd}>
+                                        <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
+                                            <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={styles.alignEnd}>
-                                <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
-                                    <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
 
-                        <View style={[styles.flexRow]}>
-                            <ArrowButton style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
-                            <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
-                        </View>
-                        <ArrowButton
-                            bgColor={palette.light}
-                            text={useVoucherText}
-                            icon="gift"
-                            iconColor={palette.primary}
-                            onPress={() => setVoucherModalVisible(true)}
-                        />
+                                <View style={[styles.flexRow]}>
+                                    <ArrowButton style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
+                                    <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
+                                </View>
+                                <ArrowButton
+                                    bgColor={palette.light}
+                                    text={useVoucherText}
+                                    icon="gift"
+                                    iconColor={palette.primary}
+                                    onPress={() => setVoucherModalVisible(true)}
+                                />
 
-                        <View>
-                            <View style={[styles.flexRow, styles.w100]}>
-                                <Text style={[styles.bold, styles.dark]}>{t('fare')}</Text>
-                                <View style={styles.flexOne} />
-                                <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
-                            </View>
-                            {balance != 0 &&
-                                <View style={[styles.flexRow, styles.w100]}>
-                                    <Text style={[styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
-                                    <View style={styles.flexOne} />
-                                    <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
-                                </View>
-                            }
-                            {
-                                voucher &&
-                                <View style={[styles.flexRow, styles.w100]}>
-                                    <Text style={[styles.bold, styles.dark]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
-                                    <View style={styles.flexOne} />
-                                    <Text>-{voucherDiscount.current} {t('EGP')}</Text>
-                                </View>
-                            }
-                            <View style={[styles.flexRow, styles.w100]}>
-                                <Text style={[styles.bold, styles.dark]}>{t('you_pay')}</Text>
-                                <View style={styles.flexOne} />
-                                <Text>
-                                    {
-                                        Math.max(0,
-                                            Math.abs(
-                                                -(pricePerSeat * numSeats)
-                                                + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
-                                            )
-                                            - voucherDiscount.current
-                                        )
+                                <View>
+                                    <View style={[styles.flexRow, styles.w100]}>
+                                        <Text style={[styles.bold, styles.dark]}>{t('fare')}</Text>
+                                        <View style={styles.flexOne} />
+                                        <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
+                                    </View>
+                                    {balance != 0 &&
+                                        <View style={[styles.flexRow, styles.w100]}>
+                                            <Text style={[styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
+                                            <View style={styles.flexOne} />
+                                            <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
+                                        </View>
                                     }
-                                    &nbsp;{t('EGP')}</Text>
-                            </View>
-                            <View>
-                                <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
-                            </View>
+                                    {
+                                        voucher &&
+                                        <View style={[styles.flexRow, styles.w100]}>
+                                            <Text style={[styles.bold, styles.dark]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                                            <View style={styles.flexOne} />
+                                            <Text>-{voucherDiscount.current} {t('EGP')}</Text>
+                                        </View>
+                                    }
+                                    <View style={[styles.flexRow, styles.w100]}>
+                                        <Text style={[styles.bold, styles.dark]}>{t('you_pay')}</Text>
+                                        <View style={styles.flexOne} />
+                                        <Text>
+                                            {
+                                                Math.max(0,
+                                                    Math.abs(
+                                                        -(pricePerSeat * numSeats)
+                                                        + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
+                                                    )
+                                                    - voucherDiscount.current
+                                                )
+                                            }
+                                            &nbsp;{t('EGP')}</Text>
+                                    </View>
+                                    <View>
+                                        <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} />
+                                    </View>
 
-                        </View>
+                                </View>
+
+                            </>
+                        }
+
+                        {
+                            loading &&
+                            <>
+                                <View style={styles.w100}>
+                                    <SkeletonPlaceholder>
+                                        <SkeletonPlaceholder.Item width={'100%'} height={80 * rem} marginVertical={5 * rem} />
+                                    </SkeletonPlaceholder>
+
+                                    <SkeletonPlaceholder>
+                                        <SkeletonPlaceholder.Item width={'100%'} height={48 * rem} marginVertical={5 * rem} />
+                                    </SkeletonPlaceholder>
+
+                                    <SkeletonPlaceholder>
+                                        <SkeletonPlaceholder.Item width={'100%'} height={48 * rem} marginVertical={5 * rem} />
+                                    </SkeletonPlaceholder>
+
+                                    <SkeletonPlaceholder>
+                                        <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginVertical={5 * rem} />
+                                    </SkeletonPlaceholder>
+
+                                    <SkeletonPlaceholder>
+                                        <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginVertical={5 * rem} />
+                                    </SkeletonPlaceholder>
+
+                                    <SkeletonPlaceholder>
+                                        <SkeletonPlaceholder.Item width={'100%'} height={48 * rem} marginVertical={5 * rem} />
+                                    </SkeletonPlaceholder>
+                                </View>
+                            </>
+                        }
 
                     </View>
                 </ScrollView>

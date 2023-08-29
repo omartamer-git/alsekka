@@ -17,6 +17,7 @@ import { containerStyle, palette, rem, styles } from '../../helper';
 import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -117,15 +118,29 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
                     {loading &&
                         <>
-                            <View style={styles.w100}>
+                            <View style={[styles.w100]}>
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'70%'} height={20 * rem} alignSelf='center' marginVertical={10 * rem} />
+                                </SkeletonPlaceholder>
 
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'80%'} height={45 * rem} alignSelf='center' marginVertical={10 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'70%'} height={20 * rem} alignSelf='center' marginVertical={10 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'80%'} height={45 * rem} alignSelf='center' marginVertical={10 * rem} />
+                                </SkeletonPlaceholder>
                             </View>
                         </>
                     }
 
                 </View>
             </ScrollView>
-        </ScreenWrapper>
+        </ScreenWrapper >
     );
 }
 

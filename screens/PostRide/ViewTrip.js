@@ -20,6 +20,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import ArrowButton from '../../components/ArrowButton';
 import BottomModal from '../../components/BottomModal';
 import { useTranslation } from 'react-i18next';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const ViewTrip = ({ route, navigation }) => {
@@ -37,6 +38,7 @@ const ViewTrip = ({ route, navigation }) => {
     const [tripReady, setTripReady] = useState(false);
     const [tripCancellable, setTripCancellable] = useState(false);
     const [tripStatus, setTripStatus] = useState('SCHEDULED');
+    const [loading, setLoading] = useState(true);
 
     const mapViewRef = useRef(null);
 
@@ -50,6 +52,7 @@ const ViewTrip = ({ route, navigation }) => {
             }
         );
 
+        setLoading(true);
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
@@ -74,6 +77,7 @@ const ViewTrip = ({ route, navigation }) => {
                 }
 
                 setRatings(ratingsItems);
+                setLoading(false);
             }
         );
 
@@ -131,11 +135,12 @@ const ViewTrip = ({ route, navigation }) => {
 
 
     const isDarkMode = useColorScheme === 'dark';
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     return (
         <>
             <ScreenWrapper screenName={t('view_trip')} navAction={() => navigation.goBack()} navType="back">
                 <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
+
                     <MapView
                         style={[styles.mapStyle]}
                         showUserLocation={true}
@@ -149,84 +154,110 @@ const ViewTrip = ({ route, navigation }) => {
                     </MapView>
 
                     {
-                        tripDetails &&
-                        <AvailableRide style={viewTripStyles.availableRide} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} DriverId={tripDetails.DriverId} seatsAvailable={tripDetails.seatsAvailable} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
-                    }
-                    <View style={[styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
-                        {tripDetails &&
-                            <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.mv5, styles.justifyStart]}>
-                                <View style={viewTripStyles.profilePictureView}>
-                                    <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
-                                </View>
-                                <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
-                                    <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName + " " + t('is_driving')}</Text>
-                                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
-                                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
-                                    <View style={styles.flexRow}>
-                                        {ratings}
+                        !loading &&
+                        <>
+                            {
+                                tripDetails &&
+                                <AvailableRide style={viewTripStyles.availableRide} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} DriverId={tripDetails.DriverId} seatsAvailable={tripDetails.seatsAvailable} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
+                            }
+                            <View style={[styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
+                                {tripDetails &&
+                                    <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.mv5, styles.justifyStart]}>
+                                        <View style={viewTripStyles.profilePictureView}>
+                                            <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
+                                        </View>
+                                        <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName + " " + t('is_driving')}</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
+                                            <View style={styles.flexRow}>
+                                                {ratings}
+                                            </View>
+                                        </View>
+
+                                        {!isDriver &&
+                                            <View style={[styles.ml10]}>
+                                                <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
+                                                    <MaterialIcons name="chat-bubble" size={30} color={palette.primary} onPress={() => goToChat(tripDetails.Driver.id)} />
+                                                </TouchableOpacity>
+                                            </View>}
                                     </View>
-                                </View>
-
-                                {!isDriver &&
-                                    <View style={[styles.ml10]}>
-                                        <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
-                                            <MaterialIcons name="chat-bubble" size={30} color={palette.primary} onPress={() => goToChat(tripDetails.Driver.id)} />
-                                        </TouchableOpacity>
-                                    </View>}
-                            </View>
-                        }
+                                }
 
 
-                        {
-                            isDriver &&
-                            <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
                                 {
-                                    tripDetails.passengers.map((data, index) => {
-                                        let borderTopWidth = 1;
-                                        if (index == 0) {
-                                            borderTopWidth = 0;
+                                    isDriver &&
+                                    <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
+                                        {
+                                            tripDetails.passengers.map((data, index) => {
+                                                let borderTopWidth = 1;
+                                                if (index == 0) {
+                                                    borderTopWidth = 0;
+                                                }
+                                                return (
+                                                    <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
+                                                        <View style={[styles.flexRow, styles.alignCenter]}>
+                                                            <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.userId)}>
+                                                                <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
+                                                            </TouchableOpacity>
+                                                            <MaterialIcons name="phone" size={24} color={palette.secondary} style={styles.ml10} />
+                                                        </View>
+                                                    </Passenger>
+                                                );
+                                            })
                                         }
-                                        return (
-                                            <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
-                                                <View style={[styles.flexRow, styles.alignCenter]}>
-                                                    <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.userId)}>
-                                                        <MaterialIcons name="chat-bubble" size={24} color={palette.secondary} />
-                                                    </TouchableOpacity>
-                                                    <MaterialIcons name="phone" size={24} color={palette.secondary} style={styles.ml10} />
-                                                </View>
-                                            </Passenger>
-                                        );
-                                    })
+                                    </View>
+                                }
+                                {
+                                    !isDriver &&
+                                    <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart]}>
+                                        <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+
+                                        <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
+                                            <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
+                                                <MaterialIcons name="close" size={25} />
+                                            </TouchableOpacity>
+                                            <Text style={[styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
+                                        </View>
+                                    </View>
+                                }
+                                {
+                                    isDriver &&
+                                    <View style={[styles.w100, styles.fullCenter]}>
+                                        {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text={t('cancel_ride')} textColor={palette.white} onPress={cancelRide} />}
+
+                                        {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text={t('start_ride')} textColor={palette.white} onPress={startTrip} />}
+
+                                        {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={"إدارة الرحلة"} textColor={palette.white} onPress={manageTrip} />}
+
+                                        {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={() => { }} />}
+
+                                    </View>
                                 }
                             </View>
-                        }
-                        {
-                            !isDriver &&
-                            <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart]}>
-                                <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+                        </>
 
-                                <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
-                                    <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
-                                        <MaterialIcons name="close" size={25} />
-                                    </TouchableOpacity>
-                                    <Text style={[styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
-                                </View>
+                    }
+
+                    {
+                        loading &&
+                        <>
+                            <View style={styles.w100}>
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item height={140 * rem} marginBottom={5 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width='90%' alignSelf='center' marginVertical={5 * rem} height={80 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width='90%' alignSelf='center' marginVertical={5 * rem} height={44 * rem} />
+                                </SkeletonPlaceholder>
                             </View>
-                        }
-                        {
-                            isDriver &&
-                            <View style={[styles.w100, styles.fullCenter]}>
-                                {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text={t('cancel_ride')} textColor={palette.white} onPress={cancelRide} />}
+                        </>
+                    }
 
-                                {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text={t('start_ride')} textColor={palette.white} onPress={startTrip} />}
-
-                                {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={"إدارة الرحلة"} textColor={palette.white} onPress={manageTrip} />}
-
-                                {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={() => { }} />}
-
-                            </View>
-                        }
-                    </View>
                 </ScrollView>
             </ScreenWrapper>
 

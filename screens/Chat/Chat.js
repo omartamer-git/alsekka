@@ -19,6 +19,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const Chat = ({ navigation, route }) => {
@@ -31,9 +32,11 @@ const Chat = ({ navigation, route }) => {
 
     const ref = useRef();
     const lastSender = useRef(null);
+    const [loading, setLoading] = useState(true);
 
     const sendMessage = () => {
-        if(! (messageText.trim())) return;
+        if (!(messageText.trim())) return;
+
         chatAPI.sendMessage(receiver, messageText).then(
             data => {
                 setChatMessages(data.concat(chatMessages));
@@ -43,14 +46,19 @@ const Chat = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        chatAPI.loadChat(receiver).then((data) => {
-            setReceiverData(data);
-        });
-
-
-        chatAPI.chatHistory(receiver).then((data) => {
-            setChatMessages(data);
-        });
+        setLoading(true);
+        Promise.all([
+            chatAPI.loadChat(receiver),
+            chatAPI.chatHistory(receiver)
+        ])
+            .then(([receiverData, chatMessages]) => {
+                setReceiverData(receiverData);
+                setChatMessages(chatMessages);
+                setLoading(false);
+            })
+            .catch(error => {
+                // Handle error if needed
+            });
     }, []);
 
     useEffect(() => {
@@ -92,14 +100,15 @@ const Chat = ({ navigation, route }) => {
 
 
     const isDarkMode = useColorScheme === 'dark';
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <ScreenWrapper screenName={t('chat')} navAction={() => navigation.goBack()} navType="back">
             <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
-            ref={ref}
-            onContentSizeChange={() => ref.current.scrollToEnd({animated: true})}>
+                ref={ref}
+                onContentSizeChange={() => ref.current.scrollToEnd({ animated: true })}>
                 {
+                    !loading &&
                     chatMessages &&
                     chatMessages.slice(0).reverse().map((data, index) => {
                         const oldLastSender = lastSender.current;
@@ -133,6 +142,40 @@ const Chat = ({ navigation, route }) => {
                             );
                         }
                     })
+                }
+                {
+                    loading &&
+                    <>
+                        <View style={[styles.w100]}>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+                        </View>
+                    </>
                 }
             </ScrollView>
             <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5]}>

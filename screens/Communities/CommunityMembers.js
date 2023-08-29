@@ -5,14 +5,18 @@ import { useEffect, useState } from "react";
 import { acceptCommunityMember, getCommunityMemberRequests, rejectCommunityMember } from "../../api/communitiesAPI";
 import Button from "../../components/Button";
 import { useTranslation } from "react-i18next";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const CommunityMembers = ({ route, navigation }) => {
     const { communityId } = route.params;
     const [members, setMembers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         getCommunityMemberRequests(communityId).then(members => {
             setMembers(members);
+            setLoading(false);
         })
     }, []);
 
@@ -24,41 +28,89 @@ const CommunityMembers = ({ route, navigation }) => {
         rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id)))
     };
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <>
             <ScreenWrapper screenName={t('manage_members')} navType="back" navAction={navigation.goBack}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                     {
-                        members.length === 0 && 
-                        (
-                            <View style={[styles.w100, styles.flexOne, styles.fullCenter]}>
-                                <Text style={[styles.headerText, styles.dark]}>{t('done')}</Text>
-                                <Text style={[styles.dark]}>{t('no_new')}</Text>
-                            </View>
-                        )
+                        !loading &&
+                        <>
+                            {
+                                members.length === 0 &&
+                                (
+                                    <View style={[styles.w100, styles.flexOne, styles.fullCenter]}>
+                                        <Text style={[styles.headerText, styles.dark]}>{t('done')}</Text>
+                                        <Text style={[styles.dark]}>{t('no_new')}</Text>
+                                    </View>
+                                )
+                            }
+                            {
+                                members.map((member, index) => {
+                                    return (
+                                        <>
+                                            <View style={[styles.w100, styles.flexRow, styles.fullCenter, { borderBottomWidth: 1 }, styles.borderLight]}>
+                                                <Image
+                                                    source={{ uri: member.User.profilePicture }}
+                                                    style={[{ width: 60 * rem, height: 60 * rem, borderRadius: (60 / 2) * rem }]} />
+                                                <View style={[styles.ml10, styles.flexOne]}>
+                                                    <Text style={[styles.headerText2]}>{member.User.firstName} {member.User.lastName}</Text>
+                                                    <Text style={[styles.smallText, styles.dark]}>{member.joinAnswer}</Text>
+                                                    <View style={[styles.w100, styles.flexRow]}>
+                                                        <Button onPress={() => acceptMember(member.id)} style={[styles.flexOne, styles.mr5]} bgColor={palette.green} text={t('accept')} textColor={palette.white} />
+                                                        <Button onPress={() => rejectMember(member.id)} style={[styles.flexOne, styles.ml5]} bgColor={palette.red} text={t('reject')} textColor={palette.white} />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </>
+                                    )
+                                })
+                            }
+                        </>
                     }
                     {
-                        members.map((member, index) => {
-                            return (
-                                <>
-                                    <View style={[styles.w100, styles.flexRow, styles.fullCenter, { borderBottomWidth: 1 }, styles.borderLight]}>
-                                        <Image
-                                            source={{ uri: member.User.profilePicture }}
-                                            style={[{ width: 60 * rem, height: 60 * rem, borderRadius: (60 / 2) * rem }]} />
-                                        <View style={[styles.ml10, styles.flexOne]}>
-                                            <Text style={[styles.headerText2]}>{member.User.firstName} {member.User.lastName}</Text>
-                                            <Text style={[styles.smallText, styles.dark]}>{member.joinAnswer}</Text>
-                                            <View style={[styles.w100, styles.flexRow]}>
-                                                <Button onPress={() => acceptMember(member.id)} style={[styles.flexOne, styles.mr5]} bgColor={palette.green} text={t('accept')} textColor={palette.white} />
-                                                <Button onPress={() => rejectMember(member.id)} style={[styles.flexOne, styles.ml5]} bgColor={palette.red} text={t('reject')} textColor={palette.white} />
-                                            </View>
-                                        </View>
-                                    </View>
-                                </>
-                            )
-                        })
+                        loading &&
+                        <>
+                            <View style={styles.w100}>
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginVertical={5 * rem} />
+                                </SkeletonPlaceholder>
+                            </View>
+                        </>
                     }
                 </ScrollView>
             </ScreenWrapper>

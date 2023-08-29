@@ -18,6 +18,7 @@ import useUserStore from '../../api/accountAPI';
 import * as chatAPI from '../../api/chatAPI';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import { useFocusEffect } from '@react-navigation/native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const CustomerService = ({ navigation, route }) => {
@@ -30,6 +31,7 @@ const CustomerService = ({ navigation, route }) => {
     const [chatMessages, setChatMessages] = useState([]);
     const [chatActive, setChatActive] = useState(false);
     const lastSender = useRef(false);
+    const [loading, setLoading] = useState(true);
 
     const sendMessage = () => {
         if (!(messageText.trim())) return;
@@ -40,12 +42,14 @@ const CustomerService = ({ navigation, route }) => {
     };
 
     useEffect(() => {
+        setLoading(true);
         chatAPI.csChatHistory().then((data) => {
             if (data.length !== 0) {
                 setChatActive(true);
             }
             console.log(data);
             setChatMessages(data);
+            setLoading(false);
         });
     }, []);
 
@@ -97,56 +101,94 @@ const CustomerService = ({ navigation, route }) => {
             <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
                 ref={ref}
                 onContentSizeChange={() => ref.current.scrollToEnd({ animated: true })}>
+                {!loading &&
+                    <>
+                        <View key={"message_default"} style={[chatStyles.message, styles.alignStart]}>
+                            <View style={{ height: 50 * rem, width: 50 * rem }}>
+                                <Image
+                                    source={{ uri: cs_profile_pic }}
+                                    width={50} height={50}
+                                    style={chatStyles.profilePicture}
+                                />
+                            </View>
+                            <View style={chatStyles.receiverBubble}>
+                                <Text style={chatStyles.receiverBubbleText}>
+                                    {translatedFormat(t('cs_chat_message'), [firstName])}
+                                </Text>
+                            </View>
+                        </View>
 
-                <View key={"message_default"} style={[chatStyles.message, styles.alignStart]}>
-                    <View style={{ height: 50 * rem, width: 50 * rem }}>
-                        <Image
-                            source={{ uri: cs_profile_pic }}
-                            width={50} height={50}
-                            style={chatStyles.profilePicture}
-                        />
-                    </View>
-                    <View style={chatStyles.receiverBubble}>
-                        <Text style={chatStyles.receiverBubbleText}>
-                            {translatedFormat(t('cs_chat_message'), [firstName])}
-                        </Text>
-                    </View>
-                </View>
+                        {
+                            chatMessages &&
+                            chatMessages.slice(0).reverse().map((data, index) => {
+                                const oldLastSender = lastSender.current;
+
+                                if (data.sentByUser === true) {
+                                    // I'm the sender
+                                    lastSender.current = true;
+                                    return (
+                                        <View key={"message" + index} style={[chatStyles.message, styles.alignEnd]}>
+                                            <View style={chatStyles.senderBubble}>
+                                                <Text style={chatStyles.senderBubbleText}>{data.message}</Text>
+                                            </View>
+                                            <View style={{ width: 50 * rem, height: 50 * rem }}>
+                                                {(oldLastSender === null || !oldLastSender) &&
+                                                    <Image source={{ uri: userStore.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
+                                                }
+                                            </View>
+                                        </View>);
+                                } else {
+                                    // He's the sender
+                                    lastSender.current = false;
+                                    return (
+                                        <View key={"message" + index} style={[chatStyles.message, styles.alignStart]}>
+                                            <View style={{ height: 50 * rem, width: 50 * rem }}>
+                                                {(oldLastSender === null || oldLastSender) && <Image source={{ uri: cs_profile_pic }} width={50} height={50} style={chatStyles.profilePicture} />}
+                                            </View>
+                                            <View style={chatStyles.receiverBubble}>
+                                                <Text style={chatStyles.receiverBubbleText}>{data.message}</Text>
+                                            </View>
+                                        </View>
+                                    );
+                                }
+                            })
+                        }
+                    </>
+                }
 
                 {
-                    chatMessages &&
-                    chatMessages.slice(0).reverse().map((data, index) => {
-                        const oldLastSender = lastSender.current;
+                    loading &&
+                    <>
+                        <View style={[styles.w100]}>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
 
-                        if (data.sentByUser === true) {
-                            // I'm the sender
-                            lastSender.current = true;
-                            return (
-                                <View key={"message" + index} style={[chatStyles.message, styles.alignEnd]}>
-                                    <View style={chatStyles.senderBubble}>
-                                        <Text style={chatStyles.senderBubbleText}>{data.message}</Text>
-                                    </View>
-                                    <View style={{ width: 50 * rem, height: 50 * rem }}>
-                                        {(oldLastSender === null || !oldLastSender) &&
-                                            <Image source={{ uri: userStore.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
-                                        }
-                                    </View>
-                                </View>);
-                        } else {
-                            // He's the sender
-                            lastSender.current = false;
-                            return (
-                                <View key={"message" + index} style={[chatStyles.message, styles.alignStart]}>
-                                    <View style={{ height: 50 * rem, width: 50 * rem }}>
-                                        {(oldLastSender === null || oldLastSender) && <Image source={{ uri: cs_profile_pic }} width={50} height={50} style={chatStyles.profilePicture} />}
-                                    </View>
-                                    <View style={chatStyles.receiverBubble}>
-                                        <Text style={chatStyles.receiverBubbleText}>{data.message}</Text>
-                                    </View>
-                                </View>
-                            );
-                        }
-                    })
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item alignSelf='center' flexDirection='row' width={'90%'} height={65 * rem} marginTop={10 * rem} />
+                            </SkeletonPlaceholder>
+                        </View>
+                    </>
                 }
 
 

@@ -20,6 +20,7 @@ import * as announcementsAPI from '../../api/announcementsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const UserHome = ({ navigation, route }) => {
     const [nextRideData, setNextRideData] = useState(null);
@@ -33,6 +34,8 @@ const UserHome = ({ navigation, route }) => {
     const [driverTripId, setDriverTripId] = useState(null);
     const [carouselWidth, setCarouselWidth] = useState(200);
     const [carouselData, setCarouselData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const { t } = useTranslation();
 
     const userStore = useUserStore();
@@ -76,7 +79,8 @@ const UserHome = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        loadData();
+        setLoading(true);
+        loadData().then(() => setLoading(false));
     }, []);
 
 
@@ -99,90 +103,128 @@ const UserHome = ({ navigation, route }) => {
     return (
         <ScreenWrapper screenName={t('home')}>
             <ScrollView style={[styles.flexOne]} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-                <Text style={[styles.headerText2, styles.mt20]}>
-                    {
-                        currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
-                    }
-                    , {userStore.firstName}!
-                </Text>
+                {
+                    !loading &&
+                    <>
+                        <Text style={[styles.headerText2, styles.mt20]}>
+                            {
+                                currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
+                            }
+                            , {userStore.firstName}!
+                        </Text>
 
-                {driverElement && driverMainTextTo &&
-                    <LinearGradient style={userHomeStyles.selfUpcomingRide} colors={[palette.primary, palette.secondary]}>
-                        <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgTransparent]}
-                            onPress={() => { viewTrip(driverTripId); }}>
-                            <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
+                        {driverElement && driverMainTextTo &&
+                            <LinearGradient style={userHomeStyles.selfUpcomingRide} colors={[palette.primary, palette.secondary]}>
+                                <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgTransparent]}
+                                    onPress={() => { viewTrip(driverTripId); }}>
+                                    <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
-                            <View>
-                                <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
-                                    <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
+                                    <View>
+                                        <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
+                                            <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
+                                        </TouchableOpacity>
+                                    </View>
                                 </TouchableOpacity>
-                            </View>
-                        </TouchableOpacity>
-                    </LinearGradient>
-                }
-                {
-                    driverElement && !driverMainTextTo &&
-                    <TouchableOpacity
-                        onPress={() => { navigation.navigate('Driver Documents') }}
-                        activeOpacity={0.9}
-                        style={[userHomeStyles.topAlert, styles.bgPrimary]}>
-                        <Text style={[styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
+                            </LinearGradient>
+                        }
+                        {
+                            driverElement && !driverMainTextTo &&
+                            <TouchableOpacity
+                                onPress={() => { navigation.navigate('Driver Documents') }}
+                                activeOpacity={0.9}
+                                style={[userHomeStyles.topAlert, styles.bgPrimary]}>
+                                <Text style={[styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
 
-                        <View>
-                            <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
-                                <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
-                            </TouchableOpacity>
-                        </View>
-                    </TouchableOpacity>
-                }
-
-                <Text style={[styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
-                {
-                    nextRideData &&
-                    <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} DriverId={nextRideData.DriverId} seatsOccupied={nextRideData.seatsOccupied} seatsAvailable={nextRideData.seatsAvailable} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
-                }
-                {
-                    !nextRideData &&
-                    <View style={userHomeStyles.noRides} >
-                        <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                        <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
-                    </View>
-                }
-                <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={() => { navigation.navigate('All Trips') }}>
-                    <Text style={[styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
-                </TouchableOpacity>
-
-                <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
-                    {carouselData && carouselData.length !== 0 &&
-                        <Carousel loop style={[styles.bgAccent, styles.br8]} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
-                            ({ index }) => {
-                                const announcementText = I18nManager.isRTL ? carouselData[index].text_ar : carouselData[index].text_en;
-                                const announcementTitle = I18nManager.isRTL ? carouselData[index].title_ar : carouselData[index].title_en;
-                                return (
-                                <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>
-                                    <Text style={[styles.white, styles.bold, styles.font18]}>
-                                        { announcementTitle }
-                                    </Text>
-                                    <Text style={[styles.light, styles.semiBold, styles.mt10, styles.font14]}>
-                                        {
-                                            announcementText.substring(0, MAX_CAROUSEL_TEXT_LENGTH) +
-                                            (announcementText.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")
-                                        }
-                                    </Text>
-                                    {announcementText.length > MAX_CAROUSEL_TEXT_LENGTH &&
-                                        <TouchableOpacity
-                                            onPress={
-                                                () => {
-                                                    navigation.navigate('Announcement', { id: carouselData[index].id });
-                                                }
-                                            }
-                                        >
-                                            <Text style={[styles.mt5, styles.dark, styles.font14]}>{t('read_more')}</Text></TouchableOpacity>
-                                    }
+                                <View>
+                                    <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
+                                        <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
+                                    </TouchableOpacity>
                                 </View>
-                            )}
-                        }></Carousel>}
-                </View>
+                            </TouchableOpacity>
+                        }
+
+                        <Text style={[styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
+                        {
+                            nextRideData &&
+                            <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} DriverId={nextRideData.DriverId} seatsOccupied={nextRideData.seatsOccupied} seatsAvailable={nextRideData.seatsAvailable} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
+                        }
+                        {
+                            !nextRideData &&
+                            <View style={userHomeStyles.noRides} >
+                                <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
+                                <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
+                            </View>
+                        }
+                        <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={() => { navigation.navigate('All Trips') }}>
+                            <Text style={[styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
+                        </TouchableOpacity>
+
+                        <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
+                            {carouselData && carouselData.length !== 0 &&
+                                <Carousel loop style={[styles.bgAccent, styles.br8]} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
+                                    ({ index }) => {
+                                        const announcementText = I18nManager.isRTL ? carouselData[index].text_ar : carouselData[index].text_en;
+                                        const announcementTitle = I18nManager.isRTL ? carouselData[index].title_ar : carouselData[index].title_en;
+                                        return (
+                                            <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>
+                                                <Text style={[styles.white, styles.bold, styles.font18]}>
+                                                    {announcementTitle}
+                                                </Text>
+                                                <Text style={[styles.light, styles.semiBold, styles.mt10, styles.font14]}>
+                                                    {
+                                                        announcementText.substring(0, MAX_CAROUSEL_TEXT_LENGTH) +
+                                                        (announcementText.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")
+                                                    }
+                                                </Text>
+                                                {announcementText.length > MAX_CAROUSEL_TEXT_LENGTH &&
+                                                    <TouchableOpacity
+                                                        onPress={
+                                                            () => {
+                                                                navigation.navigate('Announcement', { id: carouselData[index].id });
+                                                            }
+                                                        }
+                                                    >
+                                                        <Text style={[styles.mt5, styles.dark, styles.font14]}>{t('read_more')}</Text></TouchableOpacity>
+                                                }
+                                            </View>
+                                        )
+                                    }
+                                }></Carousel>}
+                        </View>
+                    </>
+                }
+
+                {
+                    loading &&
+                    <>
+                        <View style={styles.w100}>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginVertical={20 * rem} width={'100%'} height={60 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginVertical={10 * rem} width={'100%'} height={45 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginVertical={10 * rem} width={'100%'} height={45 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginVertical={10 * rem} width={'100%'} height={45 * rem} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginVertical={20 * rem} width={'100%'} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item marginVertical={10 * rem} width={'100%'} height={45 * rem} />
+                            </SkeletonPlaceholder>
+                        </View>
+                    </>
+                }
+
 
             </ScrollView>
         </ScreenWrapper>

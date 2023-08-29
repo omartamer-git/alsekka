@@ -14,9 +14,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
-import { containerStyle, palette, styles } from '../../helper';
+import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const Checkout = ({ route, navigation }) => {
@@ -26,12 +27,15 @@ const Checkout = ({ route, navigation }) => {
     const [passengerDetails, setPassengerDetails] = useState(null);
     const [amountPaid, setAmountPaid] = useState("");
     const [rating, setRating] = useState(5);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         ridesAPI.passengerDetails(passengerId, tripId).then(
             data => {
                 setPassengerDetails(data);
                 setAmountPaid(String(data.amountDue));
+                setLoading(false);
             });
     }, []);
 
@@ -61,7 +65,7 @@ const Checkout = ({ route, navigation }) => {
     }
 
 
-    if(Platform.OS === 'ios') {
+    if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -72,45 +76,83 @@ const Checkout = ({ route, navigation }) => {
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
 
     return (
         <ScreenWrapper screenName={t('checkout_passenger')} navType={"back"} navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
-
                 {
-                    passengerDetails &&
-                    <Text style={styles.headerText3}>{t('checking_out')} {passengerDetails.firstName}</Text>
+                    !loading &&
+                    <>
+                        {
+                            passengerDetails &&
+                            <Text style={styles.headerText3}>{t('checking_out')} {passengerDetails.firstName}</Text>
+                        }
+                        <Text>{t('amount_due')} {passengerDetails && passengerDetails.amountDue} {t('EGP')}</Text>
+
+                        {
+                            passengerDetails &&
+                            passengerDetails.paymentMethod === 0 &&
+                            <Text style={styles.inputText}>{t('amount_paid')}</Text>
+                        }
+
+                        {
+                            passengerDetails &&
+                            passengerDetails.paymentMethod === 0 &&
+                            <CustomTextInput value={amountPaid} placeholder={t('amount_paid')} style={styles.bgWhite} onChangeText={onChangeAmountPaid} />}
+
+                        <Text style={styles.inputText}>{t('rate')} {passengerDetails && passengerDetails.firstName}</Text>
+                        <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
+                            {Array.from({ length: 5 }, (_, index) => {
+                                return (
+                                    <TouchableOpacity key={"ratingStar" + index} onPress={() => { setRating(index + 1) }}>
+                                        <MaterialIcons name="star" size={30} color={(rating <= index) ? palette.light : palette.primary} />
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                        <Button text={t('checkout')} bgColor={palette.primary} textColor={palette.white} onPress={checkout} />
+
+                    </>
                 }
-                <Text>{t('amount_due')} {passengerDetails && passengerDetails.amountDue} {t('EGP')}</Text>
 
                 {
-                    passengerDetails &&
-                    passengerDetails.paymentMethod === 0 &&
-                    <Text style={styles.inputText}>{t('amount_paid')}</Text>
+                    loading &&
+                    <>
+                        <View style={styles.w100}>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item height={25 * rem} marginVertical={5} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item height={25 * rem} marginVertical={5} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item height={44 * rem} marginVertical={5} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item height={25 * rem} marginVertical={5} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item height={44 * rem} marginVertical={5} />
+                            </SkeletonPlaceholder>
+
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item height={44 * rem} marginVertical={5} />
+                            </SkeletonPlaceholder>
+                        </View>
+                    </>
                 }
 
-                {
-                    passengerDetails &&
-                    passengerDetails.paymentMethod === 0 &&
-                    <CustomTextInput value={amountPaid} placeholder={t('amount_paid')} style={styles.bgWhite} onChangeText={onChangeAmountPaid} />}
 
-                <Text style={styles.inputText}>{t('rate')} {passengerDetails && passengerDetails.firstName}</Text>
-                <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
-                    {Array.from({ length: 5 }, (_, index) => {
-                        return (
-                            <TouchableOpacity key={"ratingStar" + index} onPress={() => { setRating(index + 1) }}>
-                                <MaterialIcons name="star" size={30} color={(rating <= index) ? palette.light : palette.primary} />
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-                <Button text={t('checkout')} bgColor={palette.primary} textColor={palette.white} onPress={checkout} />
             </ScrollView>
         </ScreenWrapper>
     );
