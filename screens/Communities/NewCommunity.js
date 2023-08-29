@@ -42,7 +42,7 @@ export default function NewCommunity({ navigation, route }) {
         } catch(e) {
             console.error(e);
         } finally {
-            setSubmitDisabled(false):
+            setSubmitDisabled(false);
         }
     }
 
