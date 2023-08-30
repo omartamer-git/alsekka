@@ -201,10 +201,10 @@ export const rem = Dimensions.get('window').width / 380;
 
 export const styles = StyleSheet.create({
     freeSans: {
-        fontFamily: 'FreeSansBold'
+        fontFamily: I18nManager.isRTL ? 'TheSansArabic-Bold' : 'FreeSansBold',
     },
-    freeSansArabic: {
-        fontFamily: 'TheSansArabic-Bold'
+    logoSpacing: {
+        letterSpacing: I18nManager.isRTL ? 0 : -3 * rem
     },
     backgroundStyle: {
         backgroundColor: palette.primary,

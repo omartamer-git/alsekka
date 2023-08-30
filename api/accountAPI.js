@@ -2,6 +2,7 @@ import * as Keychain from 'react-native-keychain';
 import { create } from 'zustand';
 import useAuthManager from '../context/authManager';
 import useAxiosManager from '../context/axiosManager';
+import { config } from '../config';
 
 const useUserStore = create((set) => ({
     id: '',
@@ -348,6 +349,22 @@ const useUserStore = create((set) => ({
 
         const data = response.data;
         return data;
+    },
+
+    addReferral: async(referralCode) => {
+        const adjustedReferralCode = parseInt(referralCode.replace(config.REFERRAL_PREFIX, "")) - config.REFERRAL_INCREMENT;
+        const body = {
+            referralCode: adjustedReferralCode
+        }
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post('/referral', body, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
     },
 
     sendWithdrawalRequest: async (paymentMethodType, paymentMethodId) => {

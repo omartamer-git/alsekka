@@ -201,8 +201,8 @@ const App = () => {
     return (
       <View style={[styles.bgPrimary, styles.h100, styles.w100, styles.fullCenter]}>
         <StatusBar barStyle={'light-content'} />
-        <Text style={[styles.freeSans, styles.white,
-        { fontSize: 75 * rem, letterSpacing: -3 * rem }
+        <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
+        { fontSize: 75 * rem }
         ]
         }>seaats</Text>
       </View>

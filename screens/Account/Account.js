@@ -189,6 +189,7 @@ const Account = ({ route, navigation }) => {
 
                     <View style={[styles.w100]}>
                         <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
+                        <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={() => { navigation.navigate('Add Referral') }} />
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
                     </View>
                 </ScrollView>

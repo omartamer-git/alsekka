@@ -201,6 +201,7 @@
         "new_community": "New Community",
         "announcement": "Announcement",
         "view_trip": "View Trip",
+        "view_community": "Community",
         "all_trips": "All Trips",
         "checkout_passenger": "Checkout Passenger",
         "from": "From...",
@@ -215,6 +216,9 @@
         "voucher_applied": "Voucher Applied",
         "customer_service": "Customer Service",
         "cs_chat_message": "Hi, %% 👋! Thank you for contacing seaats customer service. Please type in your inquiry and a customer service agent will be assigned to you shortly! 😄",
-        "google_signin": "Continue with Google"
+        "google_signin": "Continue with Google",
+        "referral_code": "Referral Code",
+        "add_referral": "Submit Referral Code",
+        "eg": "e.g."
     }
 }

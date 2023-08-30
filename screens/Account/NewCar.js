@@ -26,7 +26,7 @@ import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
 
 const NewCar = ({ route, navigation }) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const [cars, setCars] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -97,42 +97,16 @@ const NewCar = ({ route, navigation }) => {
         }
     };
 
-    const chooseLicenseFront = (e) => {
+    const chooseLicenseFront = async (e) => {
         setFrontPhotoButtonTouched(true);
-        ActionSheetIOS.showActionSheetWithOptions(
-            {
-                options: ['Cancel', 'Take Photo', 'Choose Photo'],
-                cancelButtonIndex: 0,
-            },
-            async (buttonIndex) => {
-                if (buttonIndex === 1) {
-                    const response = await launchCamera(imagePickerOptions);
-                    setImageFront(response);
-                } else if (buttonIndex === 2) {
-                    const response = await launchImageLibrary(imagePickerOptions);
-                    setImageFront(response);
-                }
-            }
-        )
+        const response = await launchCamera(imagePickerOptions);
+        setImageFront(response);
     };
 
-    const chooseLicenseBack = (e) => {
+    const chooseLicenseBack = async (e) => {
         setBackPhotoButtonTouched(true);
-        ActionSheetIOS.showActionSheetWithOptions(
-            {
-                options: ['Cancel', 'Take Photo', 'Choose Photo'],
-                cancelButtonIndex: 0,
-            },
-            async (buttonIndex) => {
-                if (buttonIndex === 1) {
-                    const response = await launchCamera(imagePickerOptions);
-                    setImageBack(response);
-                } else if (buttonIndex === 2) {
-                    const response = await launchImageLibrary(imagePickerOptions);
-                    setImageBack(response);
-                }
-            }
-        )
+        const response = await launchCamera(imagePickerOptions);
+        setImageBack(response);
     };
 
     const newCarSchema = Yup.object().shape({
@@ -146,7 +120,7 @@ const NewCar = ({ route, navigation }) => {
         licensePlateNumbersInput: Yup.number().positive().integer().max(9999).required('This field is required'),
     });
 
-    if(Platform.OS === 'ios') {
+    if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -157,7 +131,7 @@ const NewCar = ({ route, navigation }) => {
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 

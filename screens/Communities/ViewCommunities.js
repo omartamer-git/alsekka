@@ -8,17 +8,16 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
+import { containerStyle, getDateShort, getTime, rem, styles } from '../../helper';
 
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import * as communitiesAPI from '../../api/communitiesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import CommunityCard from '../../components/CommunityCard';
 import ScreenWrapper from '../ScreenWrapper';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import Loading from '../../components/Loading';
 
 
 

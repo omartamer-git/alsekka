@@ -20,6 +20,7 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import MapViewDirections from 'react-native-maps-directions';
 
 
 const MapScreen = ({ route, navigation }) => {
@@ -36,8 +37,8 @@ const MapScreen = ({ route, navigation }) => {
   const [textFrom, setTextFrom] = useState('');
   const [textTo, setTextTo] = useState('');
 
-  const [timePickerOpen, setTimePickerOpen] = useState(false);
-  const [time, setTime] = useState(new Date());
+  // const [timePickerOpen, setTimePickerOpen] = useState(false);
+  // const [time, setTime] = useState(new Date());
   const [genderChoice, setGenderChoice] = useState('ANY');
   const { gender } = useUserStore();
 
@@ -172,6 +173,14 @@ const MapScreen = ({ route, navigation }) => {
           {markerTo &&
             <Marker identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />
           }
+
+          {markerFrom && markerTo && <MapViewDirections
+            origin={`${markerFrom.latitude},${markerFrom.longitude}`}
+            destination={`${markerTo.latitude},${markerTo.longitude}`}
+            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+            strokeWidth={3}
+            strokeColor={palette.accent}
+          />}
         </MapView>
 
         <View style={[containerStyle, styles.flexOne]}>
@@ -186,7 +195,9 @@ const MapScreen = ({ route, navigation }) => {
 
           <DatePicker
             modal
-            mode="date"
+            mode="datetime"
+            minimumDate={new Date()}
+            minuteInterval={30}
             open={datePickerOpen}
             date={date}
             onConfirm={(date) => {
@@ -198,42 +209,34 @@ const MapScreen = ({ route, navigation }) => {
             }}
           />
 
-          <Text style={styles.inputText}>{t('date')}</Text>
+          <Text style={styles.inputText}>{t('date')} & {t('time')}</Text>
 
           <CustomTextInput
             placeholder={t('date')}
-            value={date.toDateString()}
+            value={(function () {
+              const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+              const months = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+              ];
+
+              const dayOfWeek = daysOfWeek[date.getDay()];
+              const day = date.getDate();
+              const month = months[date.getMonth()];
+              const hours = date.getHours();
+              let minutes = date.getMinutes();
+              minutes = minutes == 0 ? '00' : minutes;
+              const period = hours >= 12 ? 'PM' : 'AM';
+              const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+
+              const formattedDate = `${dayOfWeek} ${day} ${month} ${formattedHours}:${minutes}${period}`;
+
+              return formattedDate;
+            })()}
             onPressIn={() => {
               setDatePickerOpen(true)
             }}
             iconRight="date-range"
             editable={false}
-          />
-
-          <Text style={styles.inputText}>{t('time')}</Text>
-
-          <CustomTextInput
-            placeholder={t('time')}
-            value={time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-            onPressIn={() => {
-              setTimePickerOpen(true)
-            }}
-            iconRight="schedule"
-            editable={false}
-          />
-
-          <DatePicker
-            modal
-            mode="time"
-            open={timePickerOpen}
-            date={time}
-            onConfirm={(time) => {
-              setTimePickerOpen(false)
-              setTime(time)
-            }}
-            onCancel={() => {
-              setTimePickerOpen(false)
-            }}
           />
 
           <Text style={styles.inputText}>

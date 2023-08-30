@@ -232,13 +232,15 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                     {modalMap &&
                         <MapView
                             style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}
-                            showUserLocation={true}
-                            region={location}
+                            showsUserLocation={true}
+                            initialRegion={location}
                             onRegionChangeComplete={(region) => onChangeRegion(region)}
                             provider={PROVIDER_GOOGLE}
                             ref={mapViewRef}
                             customMapStyle={customMapStyle}
-                            mapPadding={mapPadding}
+                            mapPadding={{bottom: 96 * rem, top: 0, left: 0 * rem, right: 0}}
+                            minZoomLevel={6}
+                            showsMyLocationButton
                         >
                             <MaterialIcons name="place" size={48} color={palette.red} />
                         </MapView>}

@@ -40,16 +40,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={[styles.defaultContainer, styles.defaultPadding]}>
           <Image source={require('../../assets/homescreen_car.png')} style={styles.logo} />
           <View style={[styles.w100, styles.alignCenter, styles.flexOne, styles.justifyCenter]}>
-            <Text style={[{
-              ...(I18nManager.isRTL
-                ? {
-                  ...styles.freeSansArabic
-                }
-                : {
-                  ...styles.freeSans,
-                  letterSpacing: -0.060 * 55 * rem
-                }
-              ),
+            <Text style={[styles.freeSans, styles.logoSpacing, {
               color: 'white',
               fontSize: 55 * rem,
             }]}>

@@ -48,6 +48,8 @@ const ViewCommunity = ({ navigation, route }) => {
                             setOwner(true);
                         }
                     }
+                } else {
+                    setLoading(false);
                 }
                 setJoinQuestion(data.joinQuestion);
             }
@@ -103,7 +105,7 @@ const ViewCommunity = ({ navigation, route }) => {
 
 
     return (
-        <ScreenWrapper screenName={t('search')} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('view_community')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {!loading &&
                     <>

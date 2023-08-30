@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  Touchable,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -37,15 +38,7 @@ const SignUpScreen = ({ route, navigation }) => {
 
     userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
       userStore.login(phoneNum, password).then(() => {
-        if (userStore.verified) {
-          navigation.popToTop();
-          navigation.replace("LoggedIn", {
-            screen: 'TabScreen',
-            params: {
-              screen: 'Home',
-            }
-          });
-        } else {
+        if (!userStore.verified) {
           navigation.navigate('Otp', { phone: phoneNum, onVerify: 'login' });
         }
       })
@@ -207,9 +200,9 @@ const SignUpScreen = ({ route, navigation }) => {
               </Formik>
 
 
-              <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
-                <Text style={styles.light}>{t('account_exists')} <Text style={[styles.primary, styles.bold]}>{t('sign_in')}</Text></Text>
-              </View>
+              <TouchableOpacity style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]} onPress={() => navigation.navigate('Login')} activeOpacity={0.7}>
+                <Text style={styles.dark}>{t('account_exists')} <Text style={[styles.primary, styles.bold]}>{t('sign_in')}</Text></Text>
+              </TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>

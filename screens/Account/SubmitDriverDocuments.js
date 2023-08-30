@@ -5,7 +5,7 @@ import {
     Text,
     View
 } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as licensesAPI from '../../api/licenses';
@@ -51,13 +51,13 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
     const onClickUploadFront = async (e) => {
         setFrontSideTouched(true);
-        const response = await launchImageLibrary(imagePickerOptions);
+        const response = await launchCamera(imagePickerOptions);
         setImageFront(response);
     };
 
     const onClickUploadBack = async (e) => {
         setBackSideTouched(true);
-        const response = await launchImageLibrary(imagePickerOptions);
+        const response = await launchCamera(imagePickerOptions);
         setImageBack(response);
     };
 
