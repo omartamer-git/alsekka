@@ -291,7 +291,7 @@ const Account = ({ route, navigation }) => {
 const profilePictureSizing = {
     height: 100 * rem,
     width: 100 * rem,
-    borderRadius: 100 * rem / 2,
+    borderRadius: (100 * rem) / 2,
 };
 
 const accountStyles = StyleSheet.create({
@@ -328,7 +328,6 @@ const accountStyles = StyleSheet.create({
     },
 
     profilePicture: {
-        resizeMode: 'center',
         borderWidth: 2 * rem,
         ...profilePictureSizing,
         ...styles.borderWhite,

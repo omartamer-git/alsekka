@@ -58,6 +58,7 @@ const ViewTrip = ({ route, navigation }) => {
                 console.log(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
+                console.log(data.datetime);
                 setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
                 setMarkerTo({ latitude: data.toLatitude, longitude: data.toLongitude });
                 fitMarkers();
@@ -184,7 +185,7 @@ const ViewTrip = ({ route, navigation }) => {
 
 
                                 {
-                                    isDriver &&
+                                    isDriver && !tripReady &&
                                     <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
                                         {
                                             tripDetails.passengers.map((data, index) => {

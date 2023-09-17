@@ -219,6 +219,8 @@
         "google_signin": "Continue with Google",
         "referral_code": "Referral Code",
         "add_referral": "Submit Referral Code",
-        "eg": "e.g."
+        "eg": "e.g.",
+        "current_location": "Your current location",
+        "no_show": "No Show"
     }
 }

@@ -219,6 +219,8 @@
         "google_signin": "الاستمرار مع جوجل",
         "referral_code": "كود الإحالة",
         "add_referral": "أضف كود الإحالة",
-        "eg": "مثلاً"
+        "eg": "مثلاً",
+        "current_location": "موقعك الحالي",
+        "no_show": "الراكب لم يأتي"
     }
 }

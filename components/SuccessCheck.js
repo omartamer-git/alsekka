@@ -1,10 +1,10 @@
 import LottieView from "lottie-react-native";
 import { rem } from "../helper";
 
-const SuccessCheck = () => {
+const SuccessCheck = ({width=125, height=125}) => {
     return (
         <>
-            <LottieView style={{width: 125 * rem, height: 125 * rem, alignSelf: 'center'}} source={require("../assets/success_checkmark.json")} autoPlay loop={false} />
+            <LottieView style={{width: width * rem, height: height * rem, alignSelf: 'center'}} source={require("../assets/success_checkmark.json")} autoPlay loop={false} />
         </>
     );
 }

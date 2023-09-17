@@ -19,30 +19,27 @@ export const rideDetails = async (rideId) => {
     }
 };
 
-export const bookRide = async (rideId, seats, paymentMethod) => {
+export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLocation) => {
     const url = `/bookride`;
-    const uid = useUserStore.getState().id;
     const params = {
-        uid: uid,
         rideId: rideId,
         paymentMethod: paymentMethod.type === 'cash' ? 'CASH' : 'CARD',
         seats: seats || 1,
-        cardId: paymentMethod.id || null
+        cardId: paymentMethod.id || null,
+        voucherId: voucherId,
+        pickupLocationLat: pickupLocation.lat,
+        pickupLocationLng: pickupLocation.lng
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
 
-        if (data.id) {
-            return true;
-        } else {
-            console.log("Failed to insert " + data);
-            return false;
-        }
-    } catch (err) {
-        throw err;
+    if (data.id) {
+        return true;
+    } else {
+        console.log("Failed to insert " + data);
+        return false;
     }
 };
 
@@ -57,14 +54,10 @@ export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderCh
         gender: genderChoice
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
-        return data;
-    } catch (err) {
-        throw err;
-    }
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
 };
 
 export const upcomingRides = async () => {
@@ -109,9 +102,12 @@ export const driverRides = async (limit) => {
     }
 };
 
-export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, date, car, community, gender, seatsAvailable) => {
+export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, date, car, community, gender, seatsAvailable) => {
     const url = `/postride`;
     const uid = useUserStore.getState().id;
+    console.log("in api");
+    console.log(pickupEnabled);
+    console.log(pickupPrice);
     const body = {
         fromLatitude: fromLatitude,
         fromLongitude: fromLongitude,
@@ -120,13 +116,17 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         mainTextFrom: mainTextFrom,
         mainTextTo: mainTextTo,
         pricePerSeat: pricePerSeat,
+        pickupEnabled,
+        pickupPrice,
         driver: uid,
-        datetime: getDateTime(date, false),
+        datetime: date.toISOString().slice(0, 19).replace('T', ' '),
         car: car,
         community: community,
         gender: gender,
         seatsAvailable: seatsAvailable
     };
+
+    console.log(body);
 
     try {
         const axiosManager = useAxiosManager.getState();
@@ -134,26 +134,34 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         const data = response.data;
         return data;
     } catch (err) {
+        console.log(err);
         throw err;
     }
 };
 
 export const tripDetails = async (tripId) => {
     const url = `/tripdetails`;
-    const uid = useUserStore.getState().id;
     const params = {
-        uid: uid,
         tripId: tripId
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
-        return data;
-    } catch (err) {
-        throw err;
-    }
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
+
+};
+
+export const tryVerifyVoucher = async (code) => {
+    const url = `/verifyvoucher`;
+    const params = {
+        code
+    };
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
 };
 
 

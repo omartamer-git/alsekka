@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import useAuthManager from '../context/authManager';
 import useAxiosManager from '../context/axiosManager';
 import { config } from '../config';
+import useAppManager from '../context/appManager';
 
 const useUserStore = create((set) => ({
     id: '',
@@ -53,6 +54,11 @@ const useUserStore = create((set) => ({
             authManager.setRefreshToken(data.refreshToken);
             authManager.setAuthenticated(true);
 
+            const appManager = useAppManager.getState();
+            appManager.setPassengerFee(data.passengerFee);
+            appManager.setDriverFee(data.driverFee);
+            appManager.setCardsEnabled(data.cardsEnabled);
+
             await Keychain.setGenericPassword(
                 'token',
                 JSON.stringify({
@@ -74,6 +80,11 @@ const useUserStore = create((set) => ({
 
             const data = response.data;
             set(data);
+
+            const appManager = useAppManager.getState();
+            appManager.setPassengerFee(data.passengerFee);
+            appManager.setDriverFee(data.driverFee);
+            appManager.setCardsEnabled(data.cardsEnabled);
 
             return data;
         } catch (err) {

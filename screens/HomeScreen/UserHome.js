@@ -21,6 +21,7 @@ import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import SuccessCheck from '../../components/SuccessCheck';
 
 const UserHome = ({ navigation, route }) => {
     const [nextRideData, setNextRideData] = useState(null);
@@ -52,17 +53,16 @@ const UserHome = ({ navigation, route }) => {
                 setNextRideDate(new Date(data1.datetime));
             }
 
-            const data2 = await ridesAPI.driverRides(1);
-            if (data2.length === 0) {
-                // no upcoming rides
-            } else if (data2[0].driver === 0) {
-                setDriverElement(true);
+            if(userStore.driver) {
+                const data2 = await ridesAPI.driverRides(1);
+                if(data2.length !== 0) {
+                    setDriverElement(true);
+                    setDriverTripId(data2[0].id);
+                    setDriverMainTextFrom(data2[0].mainTextFrom);
+                    setDriverMainTextTo(data2[0].mainTextTo);    
+                }
             } else {
-                // driver, has an upcoming ride
                 setDriverElement(true);
-                setDriverTripId(data2[0].id);
-                setDriverMainTextFrom(data2[0].mainTextFrom);
-                setDriverMainTextTo(data2[0].mainTextTo);
             }
 
             const data3 = await announcementsAPI.getAnnouncements(1);

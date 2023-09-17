@@ -1,5 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
-import React, { useEffect, useRef, useState } from 'react';
+import _debounce from 'lodash/debounce';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     I18nManager,
@@ -10,7 +11,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -23,8 +24,10 @@ import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import Counter from '../../components/Counter';
 import CustomTextInput from '../../components/CustomTextInput';
+import useAppManager from '../../context/appManager';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import * as googleMapsAPI from '../../api/googlemaps';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -42,6 +45,8 @@ const BookRide = ({ route, navigation }) => {
     const [pricePerSeat, setPricePerSeat] = useState(0);
     const [objDate, setObjDate] = useState(new Date());
 
+    const [modalMapOpen, setModalMapOpen] = useState(false);
+
     const [driver, setDriver] = useState(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -52,7 +57,6 @@ const BookRide = ({ route, navigation }) => {
     const [voucherText, setVoucherText] = useState("");
     const [voucherErrorMessage, setVoucherErrorMessage] = useState("");
     const [voucher, setVoucher] = useState(null);
-
 
     const [distanceToPickup, setDistanceToPickup] = useState(null);
     const [distanceOfTrip, setDistanceOfTrip] = useState(null);
@@ -74,10 +78,19 @@ const BookRide = ({ route, navigation }) => {
     const [rideBookedModalVisible, setRideBookedModalVisible] = useState(false);
     const [useVoucherText, setUseVoucherText] = useState(t('use_voucher'));
     const [voucherModalVisible, setVoucherModalVisible] = useState(false);
+    const [serviceFee, setServiceFee] = useState(0);
+
+    const [wantPickup, setWantPickup] = useState(false);
+    const [pickupEnabled, setPickupEnabled] = useState(false);
+    const [pickupPrice, setPickupPrice] = useState(0);
+    const [pickupLocation, setPickupLocation] = useState(null);
+    const [pickupText, setPickupText] = useState("Choose Location on Map")
+    const [placeId, setPlaceId] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
     const { balance, availableCards } = useUserStore();
+    const { cardsEnabled, passengerFee } = useAppManager();
 
     useEffect(() => {
         Geolocation.getCurrentPosition(
@@ -100,6 +113,9 @@ const BookRide = ({ route, navigation }) => {
             setObjDate(new Date(data.datetime));
             setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
             setMarkerTo({ latitude: data.toLatitude, longitude: data.toLongitude });
+            setPickupEnabled(data.pickupEnabled);
+            setPickupPrice(data.pickupPrice);
+            setServiceFee(Math.floor(data.pricePerSeat * passengerFee));
             if (mapViewRef) {
                 mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
             }
@@ -108,7 +124,7 @@ const BookRide = ({ route, navigation }) => {
             setLastName(data.Driver.lastName);
             setProfilePicture(data.Driver.profilePicture);
             setCar(data.Car);
-
+            console.log(data);
             const fullStars = Math.floor(data.Driver.rating);
             const halfStars = Math.ceil(data.Driver.rating) - Math.abs(data.Driver.rating);
 
@@ -135,7 +151,7 @@ const BookRide = ({ route, navigation }) => {
         setSubmitDisabled(true);
         const voucherId = voucher ? voucher.id : null;
 
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId).then(() => {
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null).then(() => {
             setRideBookedModalVisible(true);
         }).catch((e) => {
             console.error(e);
@@ -155,8 +171,10 @@ const BookRide = ({ route, navigation }) => {
             setVoucherModalVisible(false);
             setVoucherErrorMessage("");
             setVoucher(data);
+            console.log(data);
             setUseVoucherText(t('voucher_applied') + " - " + voucherText)
         }).catch((err) => {
+            console.error(err);
             setVoucherErrorMessage(err.response.data.error.message);
         });
     };
@@ -170,6 +188,70 @@ const BookRide = ({ route, navigation }) => {
         setDistanceOfTrip(distance);
         setDurationToPickup(duration);
     };
+
+
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        // This function should calculate the distance between two coordinates.
+        // You can use Haversine formula or any suitable method for your use case.
+        // There are libraries available to calculate distance based on coordinates.
+        // Example: https://www.npmjs.com/package/geolib
+        // For simplicity, let's assume a constant radius of the Earth in meters.
+        const earthRadius = 6371000; // Radius of Earth in meters
+
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLon = (lon2 - lon1) * (Math.PI / 180);
+
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) *
+            Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = earthRadius * c;
+
+        return distance;
+    };
+
+    const isPointInsideCircle = (point, circleCenter, radius) => {
+        const distance = calculateDistance(point.lat, point.lng, circleCenter.latitude, circleCenter.longitude);
+
+        return distance <= radius;
+    };
+
+    const handleRegionChange = async (region) => {
+        const results = await googleMapsAPI.geocode(region.latitude, region.longitude);
+
+        const description = results.formatted_address;
+        const placeId = results.place_id;
+
+        console.log(results);
+
+        setPickupText(description);
+        setPlaceId(placeId);
+    }
+
+    const debounceRegion = useCallback(_debounce(handleRegionChange, 300), [])
+
+    const onChangeRegion = (region) => {
+        debounceRegion(region);
+    };
+
+
+
+    const choosePickupLocation = async () => {
+        const loc = await googleMapsAPI.getLocationFromPlaceId(placeId);
+        console.log(loc);
+        console.log(markerFrom);
+        if (isPointInsideCircle(loc, markerFrom, 5000)) {
+            setPickupLocation(loc);
+            setModalMapOpen(false);
+        } else {
+        }
+    }
+
+
 
 
     return (
@@ -244,6 +326,28 @@ const BookRide = ({ route, navigation }) => {
                                     iconColor={palette.primary}
                                     onPress={() => setVoucherModalVisible(true)}
                                 />
+                                {pickupEnabled &&
+                                    <>
+
+                                        <Text style={styles.inputText}>Do you want to be picked up? (+{pickupPrice} EGP)</Text>
+
+                                        <View style={[styles.flexRow, styles.w100, styles.mv10]}>
+                                            <TouchableOpacity onPress={() => { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
+                                                <Text style={[styles.white, styles.bold]}>Yes</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
+                                                <Text style={[styles.white, styles.bold]}>No</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        {
+                                            wantPickup &&
+                                            <View style={styles.w100}>
+                                                <Text style={styles.inputText}>Pick Up From</Text>
+                                                <Button onPress={() => setModalMapOpen(true)} bgColor={palette.white} textColor={palette.primary} borderColor={palette.primary} text={pickupText} />
+                                            </View>
+                                        }
+                                    </>
+                                }
 
                                 <View>
                                     <View style={[styles.flexRow, styles.w100]}>
@@ -266,6 +370,22 @@ const BookRide = ({ route, navigation }) => {
                                             <Text>-{voucherDiscount.current} {t('EGP')}</Text>
                                         </View>
                                     }
+                                    {
+                                        wantPickup &&
+                                        <View style={[styles.flexRow, styles.w100]}>
+                                            <Text style={[styles.bold, styles.dark]}>Pick Up Fee</Text>
+                                            <View style={styles.flexOne} />
+                                            <Text>+ {pickupPrice} {t('EGP')}</Text>
+                                        </View>
+                                    }
+                                    {
+                                        passengerFee !== 0 &&
+                                        <View style={[styles.flexRow, styles.w100]}>
+                                            <Text style={[styles.bold, styles.dark]}>{t('service_fees')}</Text>
+                                            <View style={styles.flexOne} />
+                                            <Text>+ {serviceFee * numSeats} {t('EGP')}</Text>
+                                        </View>
+                                    }
                                     <View style={[styles.flexRow, styles.w100]}>
                                         <Text style={[styles.bold, styles.dark]}>{t('you_pay')}</Text>
                                         <View style={styles.flexOne} />
@@ -277,6 +397,8 @@ const BookRide = ({ route, navigation }) => {
                                                         + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
                                                     )
                                                     - voucherDiscount.current
+                                                    + (serviceFee * numSeats)
+                                                    + (wantPickup ? pickupPrice : 0)
                                                 )
                                             }
                                             &nbsp;{t('EGP')}</Text>
@@ -333,7 +455,7 @@ const BookRide = ({ route, navigation }) => {
                         <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
                     </View>
                 </TouchableOpacity>
-                {
+                {cardsEnabled &&
                     availableCards.map((card, index) => (
                         <BankCard key={"card" + index} type={card.type} number={card.number} onPress={() => choosePayment(card)} />
                     ))
@@ -349,11 +471,18 @@ const BookRide = ({ route, navigation }) => {
 
                     <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('fare')}</Text>
                     <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
-
                     {balance != 0 &&
                         <>
                             <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
                             <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
+                        </>
+                    }
+
+                    {
+                        passengerFee !== 0 &&
+                        <>
+                            <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('service_fees')}{balance < 0 ? t('owed') : ""}</Text>
+                            <Text>+ {serviceFee * numSeats} {t('EGP')}</Text>
                         </>
                     }
 
@@ -367,7 +496,7 @@ const BookRide = ({ route, navigation }) => {
 
                     <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
                     <Text>{
-                        Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current
+                        Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current + (serviceFee * numSeats)
                     } {t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
                 </View>
@@ -378,6 +507,27 @@ const BookRide = ({ route, navigation }) => {
                 <CustomTextInput placeholder={t('voucher')} value={voucherText} onChangeText={(value) => setVoucherText(value)} error={voucherErrorMessage} />
                 <Button text={t('redeem')} bgColor={palette.primary} textColor={palette.white} onPress={verifyVoucher} />
             </BottomModal>
+
+            {modalMapOpen && <View style={[styles.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>
+                <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={choosePickupLocation} />
+            </View>}
+
+            {modalMapOpen &&
+                <MapView
+                    style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}
+                    showsUserLocation={true}
+                    region={markerFrom}
+                    onRegionChangeComplete={(region) => onChangeRegion(region)}
+                    provider={PROVIDER_GOOGLE}
+                    ref={mapViewRef}
+                    customMapStyle={customMapStyle}
+                    mapPadding={{ bottom: 144 * rem, top: 0, left: 0 * rem, right: 0 }}
+                    minZoomLevel={6}
+                    showsMyLocationButton
+                >
+                    <Circle center={markerFrom} radius={5000} fillColor='rgba(46, 23, 96, 0.3)' />
+                    <MaterialIcons name="place" size={48} color={palette.red} />
+                </MapView>}
         </>
     );
 }
@@ -395,7 +545,7 @@ const bookRideStyles = StyleSheet.create({
     profilePicture: {
         height: 75 * rem,
         width: 75 * rem,
-        resizeMode: 'center',
+        resizeMode: 'cover',
         borderRadius: 75 / 2,
         ...styles.border2,
         ...styles.borderWhite,

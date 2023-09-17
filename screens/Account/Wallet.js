@@ -16,16 +16,18 @@ import Button from '../../components/Button';
 import WithdrawalMethod from '../../components/WithdrawalMethod';
 import { abbreviate, containerStyle, getPhoneCarrier, palette, rem, styles, translateEnglishNumbers } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import useAppManager from '../../context/appManager';
 
 const Wallet = ({ navigation, route }) => {
-    const {availableCards, bankAccounts, mobileWallets, balance} = useUserStore();
+    const { availableCards, bankAccounts, mobileWallets, balance } = useUserStore();
 
 
     const viewTrip = (id) => {
         navigation.navigate('View Trip', { tripId: id });
     };
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+    const { cardsEnabled } = useAppManager();
 
     return (
         <ScreenWrapper screenName={t('wallet')} navType="back" navAction={() => { navigation.goBack() }}>
@@ -35,22 +37,27 @@ const Wallet = ({ navigation, route }) => {
                     <Text style={[styles.white, styles.bold]}>{t('balance')}</Text>
                     <Text style={[styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(balance) : balance}</Text>
                     <View style={[styles.justifyEnd, styles.mb5, styles.flexOne]}>
-                        <Button text={t('withdraw')} bgColor={palette.white} style={{width: '50%'}} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
+                        <Button text={t('withdraw')} bgColor={palette.white} style={{ width: '50%' }} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
                     </View>
                 </LinearGradient>
 
-                <Text style={[styles.headerText3, styles.mt15]}>{t('payment_methods')}</Text>
-                {
-                    availableCards.map((data, index) => {
-                        return (
-                            <BankCard type={data.type} number={data.number} key={"card" + index} />
-                        );
-                    })
+                { cardsEnabled &&
+                    <>
+                        <Text style={[styles.headerText3, styles.mt15]}>{t('payment_methods')}</Text>
+                        {
+                            availableCards.map((data, index) => {
+                                return (
+                                    <BankCard type={data.type} number={data.number} key={"card" + index} />
+                                );
+                            })
+                        }
+                        <TouchableOpacity onPress={() => { navigation.navigate('Add Card') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
+                            <MaterialIcons name="add" size={18} color={palette.dark} />
+                            <Text style={walletStyles.paymentMethodButtonText}>{t('add_payment_method')}</Text>
+                        </TouchableOpacity>
+                    </>
                 }
-                <TouchableOpacity onPress={() => { navigation.navigate('Add Card') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
-                    <MaterialIcons name="add" size={18} color={palette.dark} />
-                    <Text style={walletStyles.paymentMethodButtonText}>{t('add_payment_method')}</Text>
-                </TouchableOpacity>
+
 
                 <Text style={[styles.headerText3, styles.mt15]}>{t('withdrawal_options')}</Text>
 

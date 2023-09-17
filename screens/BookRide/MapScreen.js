@@ -75,12 +75,25 @@ const MapScreen = ({ route, navigation }) => {
               latitude: info.coords.latitude,
               longitude: info.coords.longitude
             });
+            setMarkerFrom(
+              {
+                latitude: info.coords.latitude,
+                longitude: info.coords.longitude
+              }
+            );
+            setTextFrom(t("current_location"));
+            fromRef.current.setCompletionText(t("current_location"))
           }
         );
       }
     });
-
   }, []);
+
+  const [markerUpdateCount, setMarkerUpdateCount] = useState(0);
+
+  useEffect(() => {
+    setMarkerUpdateCount(prevCount => prevCount + 1);
+  }, [markerFrom, markerTo]);
 
   const swapDestinations = () => {
     const markerFrom_old = markerFrom;
@@ -118,11 +131,13 @@ const MapScreen = ({ route, navigation }) => {
   const setLocationFrom = (loc, text) => {
     setTextFrom(text);
     setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
+    adjustMarkers();
   }
 
   const setLocationTo = (loc, text) => {
     setTextTo(text);
     setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
+    adjustMarkers();
   }
 
   const goFindRides = (e) => {
@@ -165,13 +180,14 @@ const MapScreen = ({ route, navigation }) => {
           mapPadding={mapPadding}
           showsMyLocationButton
           maxZoomLevel={18}
+          key={"map" + markerUpdateCount}
         >
           {markerFrom &&
-            <Marker identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue">
+            <Marker key={"mrkFrom" + markerUpdateCount} identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue">
             </Marker>
           }
           {markerTo &&
-            <Marker identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />
+            <Marker key={"mrkTo" + markerUpdateCount} identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />
           }
 
           {markerFrom && markerTo && <MapViewDirections
@@ -233,7 +249,7 @@ const MapScreen = ({ route, navigation }) => {
               return formattedDate;
             })()}
             onPressIn={() => {
-              setDatePickerOpen(true)
+              setDatePickerOpen(true);
             }}
             iconRight="date-range"
             editable={false}

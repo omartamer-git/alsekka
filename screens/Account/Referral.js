@@ -39,12 +39,11 @@ const Referral = ({ navigation, route }) => {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
-    const shareMsg = `Hey! Carpool using seaats and save money commuting! Get 50 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
+    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 50 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
     const onShare = async () => {
         try {
             const result = await Share.share({
                 message: shareMsg
-
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {

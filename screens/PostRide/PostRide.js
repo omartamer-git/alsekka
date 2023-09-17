@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
     Platform,
     ScrollView,
+    Share,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -28,6 +29,9 @@ import CustomTextInput from '../../components/CustomTextInput';
 import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
+import SuccessCheck from '../../components/SuccessCheck';
+import useAppManager from '../../context/appManager';
+import Counter from '../../components/Counter';
 
 const PostRide = ({ route, navigation }) => {
     const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -53,9 +57,14 @@ const PostRide = ({ route, navigation }) => {
     const [fromTouched, setFromTouched] = useState(false);
     const [toTouched, setToTouched] = useState(false);
 
+    const [ridePosted, setRidePosted] = useState(false);
+    const [rideId, setRideId] = useState(null);
+    const [pickupEnabled, setPickupEnabled] = useState(false);
+
     const [genderChoice, setGenderChoice] = useState('ANY');
 
     const userStore = useUserStore();
+    const { driverFee } = useAppManager();
 
 
     const mapViewRef = useRef(null);
@@ -133,24 +142,51 @@ const PostRide = ({ route, navigation }) => {
         setCommunitySelectorOpen(false);
     }
 
-    const postRide = (pricePerSeat, date, time, selectedCar, selectedCommunity, seatsAvailable) => {
+    const postRide = (pricePerSeat, pickupPrice, date, time, selectedCar, selectedCommunity, seatsAvailable) => {
         setSubmitDisabled(true);
         if (markerFrom && markerTo) {
-            let newDate = date;
-            newDate.setHours(time.getHours());
-            newDate.setMinutes(time.getMinutes());
+            const newDateUTC = date.toISOString(); // Convert to UTC string
+            const timeInputUTC = time.toISOString(); // Convert to UTC string
+
+            let newDate = new Date(newDateUTC);
+            let newTime = new Date(timeInputUTC);
+
+            newDate.setHours(newTime.getHours());
+            newDate.setMinutes(newTime.getMinutes());
 
             console.log(newDate);
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, newDate, selectedCar.id, selectedCommunity ? selectedCommunity : null, genderChoice, seatsAvailable).then(() => {
-                    navigation.goBack();
+                mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity : null, genderChoice, seatsAvailable).then((res) => {
+                    setRidePosted(true);
+                    setRideId(res.id);
                 }).catch(console.error).finally(() => {
                     setSubmitDisabled(false);
                 });
+        } else {
         }
         setSubmitDisabled(false);
     }
+
+    const onShare = async () => {
+        const shareMsg = "Hey! Join my carpool on Seaats and save money commuting! https://seaats.app/joinride/" + rideId;
+        try {
+            const result = await Share.share({
+                message: shareMsg
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const onChangePricePerSeat = (data) => {
         setPricePerSeat(data);
@@ -177,6 +213,7 @@ const PostRide = ({ route, navigation }) => {
         carInput: Yup.object().required('This field is required'),
         seatsInput: Yup.number().integer().max(7, 'Too many seats available').required('This field is required'),
         priceInput: Yup.number().required('This field is required').min(20, "Price should be at least 20 EGP"),
+        pickupPriceInput: Yup.number().typeError('Pick up price must be a number').positive('Must be a positive number.'),
         communityInput: Yup.object()
     });
 
@@ -198,11 +235,12 @@ const PostRide = ({ route, navigation }) => {
                                             carInput: '',
                                             seatsInput: '',
                                             priceInput: '',
-                                            communityInput: ''
+                                            communityInput: '',
+                                            pickupPriceInput: '0'
                                         }}
                                         validationSchema={postRideSchema}
                                         onSubmit={(values) => {
-                                            postRide(values.priceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput, values.seatsInput);
+                                            postRide(values.priceInput, values.pickupPriceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput, values.seatsInput);
                                         }}
                                     >
                                         {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
@@ -308,7 +346,7 @@ const PostRide = ({ route, navigation }) => {
                                                     {usableCars && usableCars.map((data, index) => {
                                                         return (
                                                             <CarCard
-                                                                approved={data.approved}
+                                                                approved={data.status}
                                                                 brand={data.brand}
                                                                 model={data.model}
                                                                 year={data.year}
@@ -352,8 +390,14 @@ const PostRide = ({ route, navigation }) => {
                                                     iconLeft="attach-money"
                                                 />
 
-                                                <Text style={[styles.dark, styles.bold]}>{t('your_share')} {Math.ceil(0.9 * values.priceInput)} EGP</Text>
-                                                <Text style={[styles.dark, styles.bold]}>{t('service_fees')}{Math.floor(0.1 * values.priceInput)} EGP (10%)</Text>
+                                                {values.priceInput &&
+                                                    <Text style={[styles.dark, styles.bold]}>{t('your_share')} {Math.ceil((1 - driverFee) * values.priceInput)} EGP</Text>
+                                                }
+
+                                                {
+                                                    driverFee !== 0 && values.priceInput &&
+                                                    <Text style={[styles.dark, styles.bold]}>{t('service_fees')}{Math.floor(driverFee * values.priceInput)} EGP ({driverFee * 100}%)</Text>
+                                                }
 
 
                                                 <Text style={styles.inputText}>{t('gender_to_carpool')}</Text>
@@ -376,6 +420,34 @@ const PostRide = ({ route, navigation }) => {
                                                     }
                                                 </View>
 
+                                                <Text style={styles.inputText}>Allow pick up requests from nearby passengers?</Text>
+
+                                                <View style={[styles.flexRow, styles.w100, styles.mv10]}>
+                                                    <TouchableOpacity onPress={() => { setPickupEnabled(true) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: pickupEnabled ? palette.primary : palette.dark }]}>
+                                                        <Text style={postRideStyles.genderText}>Yes</Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity onPress={() => { setPickupEnabled(false) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: !pickupEnabled ? palette.primary : palette.dark }]}>
+                                                        <Text style={postRideStyles.genderText}>No</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                                {
+                                                    pickupEnabled &&
+                                                    <>
+                                                        <Text style={[styles.smallText, styles.dark]}>Pick ups will be enabled for passengers within 5 kilometers from your starting point, please price accordingly.</Text>
+
+                                                        <Text style={styles.inputText}>Price for Pick Up Service</Text>
+                                                        <CustomTextInput
+                                                            value={values.pickupPriceInput}
+                                                            iconLeft="attach-money"
+                                                            placeholder={"Price for Pick Up Service (e.g 10 EGP) "}
+                                                            onChangeText={handleChange('pickupPriceInput')}
+                                                            onBlur={handleBlur('pickupPriceInput')}
+                                                            error={touched.pickupPriceInput && errors.pickupPriceInput}
+                                                        />
+                                                    </>
+                                                }
+
 
                                                 <Text style={styles.inputText}>{t('post_to_community')}</Text>
                                                 <CustomTextInput
@@ -392,7 +464,6 @@ const PostRide = ({ route, navigation }) => {
 
                                                 <BottomModal onHide={() => setCommunitySelectorOpen(false)} modalVisible={communitySelectorOpen}>
                                                     {communities && communities.map((data, index) => {
-                                                        console.log(data);
                                                         return (
                                                             <CommunityCard
                                                                 key={"community" + index}
@@ -407,6 +478,15 @@ const PostRide = ({ route, navigation }) => {
                                                             />
                                                         );
                                                     })}
+                                                </BottomModal>
+
+                                                <BottomModal onHide={() => { setRidePosted(false); navigation.goBack(); }} modalVisible={ridePosted}>
+                                                    <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
+                                                        <SuccessCheck width={100} height={100} />
+                                                        <Text style={[styles.headerText3, styles.primary, styles.freeSans]}>Ride Posted</Text>
+                                                        <Text style={[styles.smallText, styles.accent]}>Thank you for choosing seaats!</Text>
+                                                        <Button onPress={onShare} bgColor={palette.primary} textColor={palette.white} text="Share Ride Link" />
+                                                    </View>
                                                 </BottomModal>
 
 

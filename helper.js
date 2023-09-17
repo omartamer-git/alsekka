@@ -36,19 +36,11 @@ function validateCardNumber(cardNumber) {
 }
 
 export const getDateSQL = (date) => {
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let year = date.getFullYear();
-    let hour = date.getHours();
-    let minute = date.getMinutes();
-
-    if (day < 10) {
-        day = '0' + day;
-    }
-
-    if (month < 10) {
-        month = '0' + month;
-    }
+    const year = date.getUTCFullYear();
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const hour = date.getUTCHours().toString().padStart(2, '0');
+    const minute = date.getUTCMinutes().toString().padStart(2, '0');
 
     return `${year}-${month}-${day} ${hour}:${minute}:00`;
 };
@@ -162,6 +154,8 @@ export const getDateShort = (date) => {
 }
 
 export const getTime = (date) => {
+    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
+
     let hour = date.getHours();
     let minute = date.getMinutes();
 
@@ -259,6 +253,10 @@ export const styles = StyleSheet.create({
 
     primary: {
         color: palette.primary
+    },
+    
+    secondary: {
+        color: palette.secondary
     },
 
     white: {
@@ -818,7 +816,7 @@ export const loggedInStyles = StyleSheet.create({
 
 export const translatedFormat = (str, arrValues) => {
     let newStr = str;
-    for(let val of arrValues) {
+    for (let val of arrValues) {
         newStr = newStr.replace('%%', val);
     }
 
@@ -870,7 +868,7 @@ export const chatStyles = StyleSheet.create({
         ...styles.bgPrimary,
         height: 48 * rem,
         width: 48 * rem,
-        borderRadius: 48 * rem/2,
+        borderRadius: 48 * rem / 2,
         ...styles.ml10
     }
 });

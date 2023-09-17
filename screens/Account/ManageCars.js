@@ -61,7 +61,7 @@ const ManageCars = ({ route, navigation }) => {
                                         cars.map((data, index) => {
                                             return (
                                                 <CarCard
-                                                    approved={data.approved}
+                                                    approved={data.status}
                                                     brand={data.brand}
                                                     model={data.model}
                                                     year={data.year}
