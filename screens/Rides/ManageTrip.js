@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Image,
+    Linking,
     PermissionsAndroid,
     Platform,
     ScrollView,
@@ -23,6 +24,7 @@ import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 import ArrowButton from '../../components/ArrowButton';
 import Button from '../../components/Button';
+import { getOptimalPath } from '../../api/googlemaps';
 
 
 const ManageTrip = ({ route, navigation }) => {
@@ -35,6 +37,10 @@ const ManageTrip = ({ route, navigation }) => {
     const [passengersAtOrigin, setPassengersAtOrigin] = useState([]);
     const [passengersPickup, setPassengersPickup] = useState([]);
     const [location, setLocation] = useState({});
+    // const [arrived, setArrived] = useState(false);
+    const [tripTotals, setTripTotals] = useState(null);
+    const [paidPassengers, setPaidPassengers] = useState([]);
+    const [reviewsOpen, setReviewsOpen] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -42,9 +48,19 @@ const ManageTrip = ({ route, navigation }) => {
             if (data.isDriver === 1) {
                 setTripDetails(data);
                 const passengersAtOrigin = data.passengers.filter(passenger => (passenger.pickupLocationLat === null && passenger.status === 'CONFIRMED'));
-                const passengersPickup = data.passengers.filter(passenger => passenger.pickupLocationLat !== null);
+                const passengersPickup = data.passengers.filter(passenger => passenger.pickupLocationLat !== null && passenger.status === 'CONFIRMED');
                 setPassengersAtOrigin(passengersAtOrigin);
-                setPassengersPickup(passengersPickup);
+
+                if(passengersPickup.length > 0) {
+                    getOptimalPath(tripId).then(orderedList => {
+                        const orderedPassengersPickup = orderedList.map((passengerId) => {
+                            return passengersPickup.find((p) => p.UserId === passengerId);
+                        });
+
+                        setPassengersPickup(orderedPassengersPickup);
+                    });
+
+                }
             }
             setLoading(false);
         });
@@ -85,7 +101,10 @@ const ManageTrip = ({ route, navigation }) => {
     }, [])
 
     const getPhase = () => {
-        return passengersAtOrigin.length > 0 ? 0 : (passengersPickup.length > 0 ? 1 : 2);
+        if (!passengersAtOrigin) {
+            return 0;
+        }
+        return reviewsOpen ? 4 : tripTotals ? 3 : (passengersAtOrigin.length > 0 ? 0 : (passengersPickup.length > 0 ? 1 : 2));
     }
 
     const checkIn = (passengerId) => {
@@ -117,9 +136,28 @@ const ManageTrip = ({ route, navigation }) => {
         });
     }
 
-    const checkOut = (passengerId) => {
-        navigation.navigate("Checkout", { tripId: tripId, passengerId: passengerId });
+    const checkOut = async () => {
+        ridesAPI.checkPassengerOut(tripId).then(() => {
+            generateRatings();
+            setReviewsOpen(true);
+        }).catch((err) => {
+            console.error(err);
+        });
     };
+
+    const setPassengerPaid = (passengerId) => {
+        setPaidPassengers(
+            paidPassengers => {
+                const pp = paidPassengers;
+                pp.push(passengerId);
+                return pp;
+            }
+        )
+    }
+
+    const hasPassengerPaid = (passengerId) => {
+        return paidPassengers.includes(passengerId) || tripDetails.passengers.find(p => p.UserId === passengerId).paymentMethod !== 'CASH';
+    }
 
     const noShow = (passengerId) => {
         Alert.alert('No Show', 'By clicking CONFIRM, you confirm that the passenger has not showed up on time for the ride, and you are going to leave without them.',
@@ -171,6 +209,58 @@ const ManageTrip = ({ route, navigation }) => {
 
     const { t } = useTranslation();
 
+    const getDirections = (lat, lng, label) => {
+        const scheme = Platform.select({ ios: 'maps://0,0?q=', android: 'geo:0,0?q=' });
+        const place = getPickupPassenger();
+        const latLng = `${lat},${lng}`;
+        // const label = `Pick ${place.User.firstName} Up`;
+        const url = Platform.select({
+            ios: `${scheme}${label}@${latLng}`,
+            android: `${scheme}${latLng}(${label})`
+        });
+
+
+        Linking.openURL(url);
+    }
+
+    const enableArrived = () => {
+        ridesAPI.getTripTotals(tripDetails.id).then((totals) => {
+            setTripTotals(totals);
+        });
+    }
+
+    const [ratings, setRatings] = useState([]);
+
+    const generateRatings = () => {
+        const ratingsArray = tripDetails.passengers.map((passenger, index) => {
+            return {
+                id: passenger.UserId,
+                stars: 5
+            }
+        });
+
+        setRatings(ratingsArray);
+
+        return true;
+    }
+
+    const setRating = (UserId, stars) => {
+        const newRatings = ratings.filter((r) => r.id !== UserId);
+        newRatings.push({
+            id: UserId,
+            stars: stars
+        });
+        console.log(newRatings);
+        setRatings(newRatings);
+    }
+
+    const submitRatings = () => {
+        ridesAPI.submitDriverRatings(tripId, ratings).then(() => {
+            // ratings submitted
+            navigation.navigate('Home', { screen: 'User Home' });
+        }).catch((err) => console.log(err))
+    }
+
     return (
         <ScreenWrapper screenName={t('manage_trip')} navType={"back"} navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
@@ -178,13 +268,18 @@ const ManageTrip = ({ route, navigation }) => {
                     !loading &&
                     <>
                         <View style={[styles.w100, styles.fullCenter, styles.mb10]}>
-                            <LiveAnimation width={75} height={75} />
-                            <Text style={[styles.bold, styles.font28]}>
-                                {
-                                    getPhase() === 0 ? 'Wait at Starting Point' :
-                                        getPhase() === 1 ? 'Head to Pick Up Point' : '???'
-                                }
-                            </Text>
+                            {getPhase() !== 4 &&
+                                <>
+                                    <LiveAnimation width={75} height={75} />
+                                    <Text style={[styles.bold, styles.font28, styles.textCenter]}>
+                                        {
+                                            getPhase() === 0 ? 'Wait at Starting Point' :
+                                                getPhase() === 1 ? 'Head to Pick Up Point' :
+                                                    getPhase() === 2 ? 'Go to Destination' : 'Collect Payment'
+                                        }
+                                    </Text>
+                                </>
+                            }
                             {getPhase() === 0 &&
                                 <Text style={[styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
                             }
@@ -198,8 +293,8 @@ const ManageTrip = ({ route, navigation }) => {
                                 }
 
                                 return (
-                                    <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
-                                        <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
+                                    <View key={"passenger" + index} style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
+                                        <Passenger borderTopWidth={borderTopWidth} data={data}>
                                             {
                                                 data.status === 'CONFIRMED' &&
                                                 <TouchableOpacity disabled={submitDisabled} onPress={() => { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
@@ -241,16 +336,17 @@ const ManageTrip = ({ route, navigation }) => {
                                     initialRegion={location}
                                 >
                                     <Marker key={"markerFrom"} identifier='from' coordinate={{ latitude: getPickupPassenger().pickupLocationLat, longitude: getPickupPassenger().pickupLocationLng }}></Marker>
-                                    {getPickupPassenger() && <MapViewDirections
-                                        origin={`${location.latitude},${location.longitude}`}
-                                        destination={`${getPickupPassenger().pickupLocationLat},${getPickupPassenger().pickupLocationLng}`}
-                                        apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
-                                        strokeWidth={3}
-                                        strokeColor={palette.accent}
-                                    />}
+                                    {getPickupPassenger() &&
+                                        <MapViewDirections
+                                            origin={`${location.latitude},${location.longitude}`}
+                                            destination={`${getPickupPassenger().pickupLocationLat},${getPickupPassenger().pickupLocationLng}`}
+                                            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+                                            strokeWidth={3}
+                                            strokeColor={palette.accent}
+                                        />}
                                 </MapView>
 
-                                <ArrowButton bgColor={palette.light} text={t('directions_to_pickup')} />
+                                <ArrowButton bgColor={palette.light} text={t('directions_to_pickup')} onPress={() => getDirections(getPickupPassenger().pickupLocationLat, getPickupPassenger().pickupLocationLng, `Pick ${getPickupPassenger().User.firstName} Up`)} />
 
                                 <View style={[styles.flexRow, styles.fullCenter]}>
                                     <View style={[styles.border2, styles.fullCenter, { height: 75 * rem, width: 75 * rem, borderRadius: 75 * rem / 2 }]}>
@@ -275,11 +371,153 @@ const ManageTrip = ({ route, navigation }) => {
                                 <Button bgColor={palette.red} text={t('no_show')} textColor={palette.white} onPress={() => noShow(getPickupPassenger().UserId)} />
                             </>
                         }
+
+                        {
+                            getPhase() === 2 &&
+                            <>
+                                <MapView
+                                    style={[{ height: 200 * rem }, styles.w100]}
+                                    showsUserLocation={true}
+                                    provider={PROVIDER_GOOGLE}
+                                    customMapStyle={customMapStyle}
+                                    showsMyLocationButton
+                                    maxZoomLevel={18}
+                                    initialRegion={location}
+                                >
+                                    <Marker key={"markerTo"} identifier='to' coordinate={{ latitude: tripDetails.toLatitude, longitude: tripDetails.toLongitude }}></Marker>
+                                    <MapViewDirections
+                                        origin={`${location.latitude},${location.longitude}`}
+                                        destination={`${tripDetails.toLatitude},${tripDetails.toLongitude}`}
+                                        apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+                                        strokeWidth={3}
+                                        strokeColor={palette.accent}
+                                    />
+                                </MapView>
+
+                                <ArrowButton bgColor={palette.light} text={`Directions to ${tripDetails.mainTextTo}`} onPress={() => getDirections(tripDetails.toLatitude, tripDetails.toLongitude, `Arrive at ${tripDetails.mainTextTo}`)} />
+                                <Button bgColor={palette.secondary} textColor={palette.white} text={`Next`} onPress={enableArrived} />
+                            </>
+                        }
+
+                        {
+                            getPhase() === 3 &&
+                            <>
+                                {
+                                    tripTotals.map((data, index) => {
+                                        const passenger = tripDetails.passengers.find((p) => {
+                                            return (p.UserId == data.id);
+                                        });
+
+                                        return (
+                                            <View key={`totals${index}`} style={[styles.flexRow, styles.alignCenter, styles.w100, styles.borderLight, styles.pv8, { borderTopWidth: index === 0 ? 0 : 1 }]}>
+                                                <View style={[styles.border2, styles.fullCenter, { height: 75 * rem, width: 75 * rem, borderRadius: 75 * rem / 2 }]}>
+                                                    <Image source={{ uri: passenger.User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
+                                                </View>
+                                                <View style={[styles.ml10]}>
+                                                    <Text style={[styles.mb5, styles.font14]}>
+                                                        {
+                                                            passenger.paymentMethod === 'CASH' ? 'Collect payment from' : 'Good to go'
+                                                        }
+                                                    </Text>
+                                                    <Text style={[styles.bold, styles.font18]}>
+                                                        {
+                                                            passenger.User.firstName
+                                                        }
+                                                        &nbsp;
+                                                        {
+                                                            passenger.User.lastName
+                                                        }
+                                                    </Text>
+                                                    <Text>
+                                                        {
+                                                            passenger.paymentMethod === 'CASH' ? `${data.grandTotal} ${t('EGP')}` : 'paid using their card'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style={styles.flexOne} />
+                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={() => setPassengerPaid(passenger.UserId)} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgDark : styles.bgSuccess]}>
+                                                    <MaterialIcons name="check" size={22} color={palette.white} />
+                                                </TouchableOpacity>
+                                            </View>
+                                        )
+                                    })
+                                }
+
+                                <Button onPress={checkOut} bgColor={palette.secondary} textColor={palette.white} text={'Confirm Collections'} disabled={paidPassengers.length !== (tripDetails.passengers.filter((p) => p.paymentMethod === 'CASH')).length} />
+                            </>
+                        }
+
+                        {
+                            getPhase() === 4 &&
+                            <>
+                                <Text style={[styles.headerText, styles.primary]}>Ratings</Text>
+                                <Text style={[styles.smallText, styles.dark]}>Please take a moment to rate the passengers you've taken this ride with. This helps us keep up the integrity of our market!</Text>
+                                <View style={[styles.w100, styles.mt10]}>
+                                    {
+                                        tripDetails.passengers.map((passenger, index) => {
+
+                                            return (
+                                                <View key={`reviews${index}`} style={[styles.flexRow, styles.alignCenter, styles.w100, styles.borderLight, styles.pv8, { borderTopWidth: index === 0 ? 0 : 1 }]}>
+                                                    <View style={[styles.border2, styles.fullCenter, { height: 75 * rem, width: 75 * rem, borderRadius: 75 * rem / 2 }]}>
+                                                        <Image source={{ uri: passenger.User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
+                                                    </View>
+                                                    <View style={[styles.ml10]}>
+                                                        <Text style={[styles.bold, styles.font18]}>
+                                                            {
+                                                                passenger.User.firstName
+                                                            }
+                                                            &nbsp;
+                                                            {
+                                                                passenger.User.lastName
+                                                            }
+                                                        </Text>
+
+                                                        <View style={[styles.flexRow]}>
+                                                            {
+                                                                Array.from({ length: ratings.find(r => r.id === passenger.UserId).stars }, (_, index2) => (
+                                                                    <TouchableOpacity onPress={() => setRating(passenger.UserId, index2 + 1)} key={"ratingStarPassenger" + index2 + "_" + passenger.UserId}>
+                                                                        <MaterialIcons name="star" size={30} color={palette.primary} />
+                                                                    </TouchableOpacity>
+                                                                ))
+                                                            }
+
+                                                            {
+                                                                Array.from({ length: (5 - (ratings.find(r => r.id === passenger.UserId).stars)) }, (_, index2) => (
+                                                                    <TouchableOpacity onPress={() => setRating(passenger.UserId, ratings.find(r => r.id === passenger.UserId).stars + index2 + 1)} key={"ratingStarPassenger" + (ratings.find(r => r.id === passenger.UserId).stars + index2) + "_" + passenger.UserId}>
+                                                                        <MaterialIcons name="star" size={30} color={palette.light} />
+                                                                    </TouchableOpacity>
+                                                                ))
+                                                            }
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                </View>
+
+                                <Button bgColor={palette.secondary} textColor={palette.white} text="End Ride" onPress={submitRatings} />
+                            </>
+                        }
+
                         {getPhase() === 0 &&
                             <Text style={[styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 Please press the <Text style={styles.secondary}>Check In</Text> button when the passenger has gotten in the car. If a passenger fails to show up on time (within the waiting period), press the <Text style={styles.error}>Red X button</Text>.
                             </Text>
                         }
+
+                        {getPhase() === 2 &&
+                            <Text style={[styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                                Please press the <Text style={styles.secondary}>Next</Text> button when you have arrived at the destination. After that, please check the passengers out.
+                            </Text>
+                        }
+
+                        {getPhase() === 3 &&
+                            <Text style={[styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                                Please press the <Text style={styles.secondary}>Confirm Collections</Text> button when you receive payments from everyone paying in cash.
+                            </Text>
+                        }
+
 
                     </>
                 }

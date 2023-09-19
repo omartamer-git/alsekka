@@ -36,3 +36,14 @@ export const getLocationFromPlaceId = async (place_id) => {
     const data = result.data;
     return data;
 };
+
+export const getOptimalPath = async (tripId) => {
+    const url = '/getOptimalPath';
+    const params = {
+        tripId: tripId
+    };
+    const axiosManager = useAxiosManager.getState();
+    const result = await axiosManager.authAxios.get(url, { params });
+    const data = result.data;
+    return data;
+}

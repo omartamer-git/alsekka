@@ -149,7 +149,6 @@ export const tripDetails = async (tripId) => {
     const response = await axiosManager.authAxios.get(url, { params });
     const data = response.data;
     return data;
-
 };
 
 export const tryVerifyVoucher = async (code) => {
@@ -204,6 +203,20 @@ export const startRide = async (tripId) => {
     return false;
 };
 
+export const submitDriverRatings = async (tripId, ratings) => {
+    const url = `/submitdriverratings`;
+    const body = {tripId, ratings};
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.post(url, body, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const data = response.data;
+    return data;
+};
+
 export const pastRides = async (limit, afterTime) => {
     let url = `/pastrides`;
     const uid = useUserStore.getState().id;
@@ -240,46 +253,46 @@ export const passengerDetails = async (passengerId, tripId) => {
     }
 };
 
-export const checkPassengerOut = async (passengerId, tripId, amountPaid, rating) => {
+export const checkPassengerOut = async (tripId) => {
     const url = `/checkout`;
     const body = {
-        passenger: passengerId,
         tripId: tripId,
-        amountPaid: amountPaid,
-        rating: rating
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(url, body, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const data = response.data;
-        return data;
-    } catch (err) {
-        throw err;
-    }
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.post(url, body, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const data = response.data;
+    return data;
 };
 
 export const checkPassengerIn = async (passengerId, tripId) => {
-    console.log(tripId);
     const url = `/checkIn`;
     const params = {
         tripId: tripId,
         passenger: passengerId
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
-        return data;
-    } catch (err) {
-        throw err;
-    }
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
 };
+
+export const getTripTotals = async (tripId) => {
+    const url = `/tripTotals`;
+    const params = {
+        tripId: tripId
+    };
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
+}
 
 export const noShow = async (passengerId, tripId) => {
     const url = `/noshow`;
@@ -288,16 +301,12 @@ export const noShow = async (passengerId, tripId) => {
         passenger: passengerId
     };
 
-    try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(url, { params });
-        const data = response.data;
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
 
-        if (data.success === 1) {
-            return true;
-        }
-        return false;
-    } catch (err) {
-        throw err;
+    if (data.success === 1) {
+        return true;
     }
+    return false;
 };

@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Image,
+    Linking,
     ScrollView,
     StyleSheet,
     Text,
@@ -55,10 +56,8 @@ const ViewTrip = ({ route, navigation }) => {
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
-                console.log(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
-                console.log(data.datetime);
                 setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
                 setMarkerTo({ latitude: data.toLatitude, longitude: data.toLongitude });
                 fitMarkers();
@@ -164,9 +163,17 @@ const ViewTrip = ({ route, navigation }) => {
                                     <View style={[styles.flexRow, styles.w100, styles.fullCenter, styles.mv5, styles.justifyStart]}>
                                         <View style={viewTripStyles.profilePictureView}>
                                             <Image source={{ uri: tripDetails.Driver.profilePicture }} style={viewTripStyles.profilePicture} />
+                                            {
+                                                !isDriver &&
+                                                <>
+                                                    <TouchableOpacity activeOpacity={0.9} style={[viewTripStyles.chatBubble, styles.positionAbsolute, {top: '100%', transform: [{translateY: -33 * rem},{translateX: 22*rem}]}]} onPress={() => goToChat(tripDetails.Driver.id)} >
+                                                        <MaterialIcons name="chat-bubble" size={15} color={palette.primary} />
+                                                    </TouchableOpacity>
+                                                </>
+                                            }
                                         </View>
                                         <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
-                                            <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName + " " + t('is_driving')}</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName}</Text>
                                             <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
                                             <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
                                             <View style={styles.flexRow}>
@@ -175,11 +182,14 @@ const ViewTrip = ({ route, navigation }) => {
                                         </View>
 
                                         {!isDriver &&
-                                            <View style={[styles.ml10]}>
-                                                <TouchableOpacity activeOpacity={0.9} style={viewTripStyles.chatBubble}>
-                                                    <MaterialIcons name="chat-bubble" size={30} color={palette.primary} onPress={() => goToChat(tripDetails.Driver.id)} />
-                                                </TouchableOpacity>
-                                            </View>}
+                                            <View style={[styles.ml10, styles.flexRow]}>
+                                                {tripDetails.Driver.phone &&
+                                                    <TouchableOpacity activeOpacity={0.9} style={[viewTripStyles.chatBubble, viewTripStyles.biggerBubble]} onPress={() => Linking.openURL(`tel:${tripDetails.Driver.phone}`)} >
+                                                        <MaterialIcons name="phone" size={22} color={palette.primary} />
+                                                    </TouchableOpacity>
+                                                }
+                                            </View>
+                                        }
                                     </View>
                                 }
 
@@ -209,7 +219,7 @@ const ViewTrip = ({ route, navigation }) => {
                                 }
                                 {
                                     !isDriver &&
-                                    <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart]}>
+                                    <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt10]}>
                                         <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
 
                                         <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
@@ -297,15 +307,21 @@ const viewTripStyles = StyleSheet.create({
     },
 
     chatBubble: {
-        width: 60 * rem,
-        height: 60 * rem,
-        borderRadius: 60 * rem / 2,
+        width: 44 * rem,
+        height: 44 * rem,
+        borderRadius: 44 * rem / 2,
         ...styles.bgWhite,
         ...styles.fullCenter,
         shadowColor: palette.black,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.2,
         shadowRadius: 4
+    },
+
+    biggerBubble: {
+        width: 55 * rem,
+        height: 55 * rem,
+        borderRadius: 55 * rem / 2,
     }
 });
 
