@@ -221,6 +221,10 @@
         "add_referral": "Submit Referral Code",
         "eg": "e.g.",
         "current_location": "Your current location",
-        "no_show": "No Show"
+        "no_show": "No Show",
+        "by_continuing": "By continuing, you agree to seaats's",
+        "terms": "Terms",
+        "and": "and",
+        "privacy_policy": "Privacy Policy"
     }
 }

@@ -371,7 +371,7 @@ PODS:
     - React-Core
   - react-native-maps (1.4.0):
     - React-Core
-  - react-native-notifications (4.3.3):
+  - react-native-notifications (4.3.5):
     - React-Core
   - react-native-restart (0.0.27):
     - React-Core
@@ -786,7 +786,7 @@ SPEC CHECKSUMS:
   react-native-google-maps: f4cf51c3c6360eb4f945adc12dc89575ec3d944a
   react-native-image-picker: ec9b713e248760bfa0f879f0715391de4651a7cb
   react-native-maps: 7135a33610202745d08fdf151ce6b0d01952a99c
-  react-native-notifications: 83b4fd4a127a6c918fc846cae90da60f84819e44
+  react-native-notifications: 504143d59f9628c3b0c22fd0ccf34b65b9182d01
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 9697629f7b2cda43cf52169bb7e0767d330648c2
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457

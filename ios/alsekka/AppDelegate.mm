@@ -1,4 +1,5 @@
 #import <GoogleMaps/GoogleMaps.h>
+#import "RNNotifications.h"
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
@@ -21,11 +22,28 @@
                     restorationHandler:restorationHandler];
 }
 
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [RNNotifications startMonitorNotifications]; // -> Add this line
+
+    return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  [RNNotifications didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  [RNNotifications didFailToRegisterForRemoteNotificationsWithError:error];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+  [RNNotifications didReceiveBackgroundNotification:userInfo withCompletionHandler:completionHandler];
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw"];
+  [GMSServices provideAPIKey:@"AIzaSyARuF4cAG9F8ay2EHiWYdz4Oge7XyDlTQc"];
   self.moduleName = @"alsekka";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.

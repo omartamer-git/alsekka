@@ -23,7 +23,6 @@ import CustomTextInput from './CustomTextInput';
 import HeaderView from './HeaderView';
 import { useTranslation } from 'react-i18next';
 
-const googleKey = "AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw";
 const StatusBarManager = NativeModules;
 
 const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error=false }, ref) => {

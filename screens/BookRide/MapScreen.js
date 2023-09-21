@@ -3,6 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -184,19 +185,28 @@ const MapScreen = ({ route, navigation }) => {
         >
           {markerFrom &&
             <Marker key={"mrkFrom" + markerUpdateCount} identifier="from" onLayout={adjustMarkers} coordinate={markerFrom} pinColor="blue">
+              <Image
+                source={require('../../assets/PickUp.png')}
+                style={{ height: 35, width: 35 }}
+              />
             </Marker>
           }
           {markerTo &&
-            <Marker key={"mrkTo" + markerUpdateCount} identifier="to" onLayout={adjustMarkers} coordinate={markerTo} />
+            <Marker key={"mrkTo" + markerUpdateCount} identifier="to" onLayout={adjustMarkers} coordinate={markerTo}>
+              <Image
+                source={require('../../assets/Destination.png')}
+                style={{ height: 35, width: 35 }}
+              />
+            </Marker>
           }
 
-          {markerFrom && markerTo && <MapViewDirections
+          {/* {markerFrom && markerTo && <MapViewDirections
             origin={`${markerFrom.latitude},${markerFrom.longitude}`}
             destination={`${markerTo.latitude},${markerTo.longitude}`}
             apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
             strokeWidth={3}
             strokeColor={palette.accent}
-          />}
+          />} */}
         </MapView>
 
         <View style={[containerStyle, styles.flexOne]}>
@@ -240,7 +250,7 @@ const MapScreen = ({ route, navigation }) => {
               const month = months[date.getMonth()];
               const hours = date.getHours();
               let minutes = date.getMinutes();
-              minutes = minutes == 0 ? '00' : minutes;
+              minutes = minutes < 10 ? '0' + minutes : minutes;
               const period = hours >= 12 ? 'PM' : 'AM';
               const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
 

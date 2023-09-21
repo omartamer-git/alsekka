@@ -22,6 +22,6 @@
         <data android:scheme="seaats"/>
       </intent-filter>
     </activity>
-    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDgTXbWT1GIH1_USBjE8c8s2Un2bKJrOqg"/>
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAuHJYdXCI43tA4CDKH5VvOVkQdcSD8RkA"/>
   </application>
 </manifest>

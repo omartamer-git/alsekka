@@ -213,7 +213,7 @@ const PostRide = ({ route, navigation }) => {
         carInput: Yup.object().required('This field is required'),
         seatsInput: Yup.number().integer().max(7, 'Too many seats available').required('This field is required'),
         priceInput: Yup.number().required('This field is required').min(20, "Price should be at least 20 EGP"),
-        pickupPriceInput: Yup.number().typeError('Pick up price must be a number').positive('Must be a positive number.'),
+        pickupPriceInput: Yup.number().typeError('Pick up price must be a number').positive('Must be a positive number.').notRequired(),
         communityInput: Yup.object()
     });
 
@@ -236,7 +236,7 @@ const PostRide = ({ route, navigation }) => {
                                             seatsInput: '',
                                             priceInput: '',
                                             communityInput: '',
-                                            pickupPriceInput: '0'
+                                            pickupPriceInput: ''
                                         }}
                                         validationSchema={postRideSchema}
                                         onSubmit={(values) => {

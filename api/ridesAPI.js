@@ -27,8 +27,8 @@ export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLo
         seats: seats || 1,
         cardId: paymentMethod.id || null,
         voucherId: voucherId,
-        pickupLocationLat: pickupLocation.lat,
-        pickupLocationLng: pickupLocation.lng
+        pickupLocationLat: pickupLocation ? pickupLocation.lat : null,
+        pickupLocationLng: pickupLocation ? pickupLocation.lng : null
     };
 
     const axiosManager = useAxiosManager.getState();

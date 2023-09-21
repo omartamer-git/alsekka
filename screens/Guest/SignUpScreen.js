@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Linking,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -145,7 +146,7 @@ const SignUpScreen = ({ route, navigation }) => {
                       value={"+20 " + values.phoneInput}
                       emojiLeft={"🇪🇬"}
                       onChangeText={(text) => {
-                        if(text == '') return;
+                        if (text == '') return;
                         let sanitizedText = text.replace("+20", "").trim();
                         handleChange('phoneInput')(sanitizedText);
                       }}
@@ -185,6 +186,10 @@ const SignUpScreen = ({ route, navigation }) => {
                         <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>{t('female')}</Text>
                       </TouchableOpacity>
                     </View>
+
+                    <Text style={[styles.mt5, styles.smallText, styles.dark]}>
+                      {t('by_continuing')} <Text style={styles.primary} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={styles.primary} onPress={() => { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
+                    </Text>
 
 
                     <Button

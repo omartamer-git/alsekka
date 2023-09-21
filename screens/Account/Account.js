@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
     Image,
+    Linking,
     Platform,
     ScrollView,
     StyleSheet,
@@ -37,6 +38,7 @@ const Account = ({ route, navigation }) => {
     const [phoneError, setPhoneError] = useState(null);
     const authManager = useAuthManager();
     const { authAxios } = useAxiosManager();
+    const [termsModalVisible, setTermsModalVisible] = useState(false);
     const logout = () => {
         authManager.logout();
     };
@@ -57,7 +59,7 @@ const Account = ({ route, navigation }) => {
         setRatings(ratingsItems);
     }, []);
 
-    if(Platform.OS === 'ios') {
+    if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -68,7 +70,7 @@ const Account = ({ route, navigation }) => {
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
@@ -122,7 +124,7 @@ const Account = ({ route, navigation }) => {
         }
     };
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <>
@@ -191,6 +193,7 @@ const Account = ({ route, navigation }) => {
                         <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={() => { navigation.navigate('Add Referral') }} />
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} & ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} />
                     </View>
                 </ScrollView>
             </ScreenWrapper>
@@ -282,6 +285,14 @@ const Account = ({ route, navigation }) => {
                             </>
                         )}
                     </Formik>
+                </View>
+            </BottomModal>
+
+            <BottomModal onHide={() => setTermsModalVisible(false)} modalVisible={termsModalVisible}>
+                <View style={[styles.w100, styles.mt10]}>
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={() => { Linking.openURL('https://seaats.app/policy.pdf') }} />
+                    {/* <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} & ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} /> */}
                 </View>
             </BottomModal>
         </>

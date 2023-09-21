@@ -19,12 +19,43 @@ import Passenger from '../../components/Passenger';
 import { containerStyle, customMapStyle, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import LiveAnimation from '../../components/LiveAnimation';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 import ArrowButton from '../../components/ArrowButton';
 import Button from '../../components/Button';
 import { getOptimalPath } from '../../api/googlemaps';
+import { decodePolyline } from '../../util/maps';
+
+const Timer = () => {
+    const [seconds, setSeconds] = useState(300); // 5 minutes in seconds
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(prevSeconds => prevSeconds - 1);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [seconds]);
+
+    const displayTime = () => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+        return `${formattedMinutes}:${formattedSeconds}`;
+    };
+
+    return (
+        <>
+            <Text style={[styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
+        </>
+    );
+}
 
 
 const ManageTrip = ({ route, navigation }) => {
@@ -51,7 +82,7 @@ const ManageTrip = ({ route, navigation }) => {
                 const passengersPickup = data.passengers.filter(passenger => passenger.pickupLocationLat !== null && passenger.status === 'CONFIRMED');
                 setPassengersAtOrigin(passengersAtOrigin);
 
-                if(passengersPickup.length > 0) {
+                if (passengersPickup.length > 0) {
                     getOptimalPath(tripId).then(orderedList => {
                         const orderedPassengersPickup = orderedList.map((passengerId) => {
                             return passengersPickup.find((p) => p.UserId === passengerId);
@@ -181,27 +212,7 @@ const ManageTrip = ({ route, navigation }) => {
         });
     };
 
-    const [seconds, setSeconds] = useState(300); // 5 minutes in seconds
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (seconds > 0) {
-                setSeconds(prevSeconds => prevSeconds - 1);
-            }
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [seconds]);
-
-    const displayTime = () => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-
-        return `${formattedMinutes}:${formattedSeconds}`;
-    };
 
     const getPickupPassenger = () => {
         return passengersPickup[0];
@@ -281,7 +292,7 @@ const ManageTrip = ({ route, navigation }) => {
                                 </>
                             }
                             {getPhase() === 0 &&
-                                <Text style={[styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
+                                <Timer />
                             }
                         </View>
 
@@ -302,28 +313,17 @@ const ManageTrip = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                             }
                                             {
-                                                data.status === 'CONFIRMED' && seconds === 0 &&
+                                                data.status === 'CONFIRMED' && 
                                                 <TouchableOpacity disabled={submitDisabled} onPress={() => { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
                                                     <MaterialIcons name="close" size={14} color={palette.white} />
                                                 </TouchableOpacity>
                                             }
-                                            {/* {
-                                                data.status === 'ENROUTE' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={() => { checkOut(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSuccess]} activeOpacity={0.9}>
-                                                    <Text style={manageTripStyles.manageBtnText}>{t('check_out')}</Text>
-                                                </TouchableOpacity>
-                                            } */}
                                         </Passenger>
                                     </View>
                                 );
                             })
                         }
 
-                        {
-                            /*
-                                Going to need an algorithm to arrange pickups in the fastest route order
-                            */
-                        }
                         {passengersPickup && passengersPickup.length > 0 && getPhase() === 1 &&
                             <>
                                 <MapView
@@ -340,7 +340,7 @@ const ManageTrip = ({ route, navigation }) => {
                                         <MapViewDirections
                                             origin={`${location.latitude},${location.longitude}`}
                                             destination={`${getPickupPassenger().pickupLocationLat},${getPickupPassenger().pickupLocationLng}`}
-                                            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
+                                            apikey='AIzaSyARuF4cAG9F8ay2EHiWYdz4Oge7XyDlTQc'
                                             strokeWidth={3}
                                             strokeColor={palette.accent}
                                         />}
@@ -373,7 +373,7 @@ const ManageTrip = ({ route, navigation }) => {
                         }
 
                         {
-                            getPhase() === 2 &&
+                            getPhase() === 2 && console.log("rerender") &&
                             <>
                                 <MapView
                                     style={[{ height: 200 * rem }, styles.w100]}
@@ -385,13 +385,8 @@ const ManageTrip = ({ route, navigation }) => {
                                     initialRegion={location}
                                 >
                                     <Marker key={"markerTo"} identifier='to' coordinate={{ latitude: tripDetails.toLatitude, longitude: tripDetails.toLongitude }}></Marker>
-                                    <MapViewDirections
-                                        origin={`${location.latitude},${location.longitude}`}
-                                        destination={`${tripDetails.toLatitude},${tripDetails.toLongitude}`}
-                                        apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
-                                        strokeWidth={3}
-                                        strokeColor={palette.accent}
-                                    />
+                                    <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(tripDetails.polyline)} strokeWidth={3} />
+
                                 </MapView>
 
                                 <ArrowButton bgColor={palette.light} text={`Directions to ${tripDetails.mainTextTo}`} onPress={() => getDirections(tripDetails.toLatitude, tripDetails.toLongitude, `Arrive at ${tripDetails.mainTextTo}`)} />

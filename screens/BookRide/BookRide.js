@@ -11,7 +11,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Circle, Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -28,6 +28,7 @@ import useAppManager from '../../context/appManager';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import * as googleMapsAPI from '../../api/googlemaps';
+import { decodePolyline } from '../../util/maps';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -53,6 +54,7 @@ const BookRide = ({ route, navigation }) => {
     const [ratings, setRatings] = useState([]);
     const [seatsAvailable, setSeatsAvailable] = useState(0);
     const [profilePicture, setProfilePicture] = useState('');
+    const [polyline, setPolyline] = useState(null);
 
     const [voucherText, setVoucherText] = useState("");
     const [voucherErrorMessage, setVoucherErrorMessage] = useState("");
@@ -115,6 +117,7 @@ const BookRide = ({ route, navigation }) => {
             setMarkerTo({ latitude: data.toLatitude, longitude: data.toLongitude });
             setPickupEnabled(data.pickupEnabled);
             setPickupPrice(data.pickupPrice);
+            setPolyline(data.polyline);
             setServiceFee(Math.floor(data.pricePerSeat * passengerFee));
             if (mapViewRef) {
                 mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
@@ -124,7 +127,7 @@ const BookRide = ({ route, navigation }) => {
             setLastName(data.Driver.lastName);
             setProfilePicture(data.Driver.profilePicture);
             setCar(data.Car);
-            console.log(data);
+
             const fullStars = Math.floor(data.Driver.rating);
             const halfStars = Math.ceil(data.Driver.rating) - Math.abs(data.Driver.rating);
 
@@ -269,28 +272,17 @@ const BookRide = ({ route, navigation }) => {
                     >
                         {markerFrom &&
                             <Marker identifier="from" coordinate={markerFrom} pinColor={palette.secondary}>
+                                <Image source={require('../../assets/PickUp.png')} style={{ width: 35, height: 35 }} />
                             </Marker>}
-                        {markerTo && <Marker identifier="to" coordinate={markerTo} />}
-
-                        {markerFrom && (distanceToPickup * 1 / distanceOfTrip) < 1 / 3 &&
-                            <MapViewDirections
-                                origin={`${location.latitude},${location.longitude}`}
-                                destination={`${markerFrom.latitude},${markerFrom.longitude}`}
-                                apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
-                                strokeWidth={3}
-                                strokeColor={palette.accent}
-                                onReady={onReadyDirectionsToPickup}
-                            />
+                        {markerTo &&
+                            <Marker identifier="to" coordinate={markerTo}>
+                                <Image source={require('../../assets/Destination.png')} style={{ width: 35, height: 35 }} />
+                            </Marker>
                         }
 
-                        {markerFrom && markerTo && <MapViewDirections
-                            origin={`${markerFrom.latitude},${markerFrom.longitude}`}
-                            destination={`${markerTo.latitude},${markerTo.longitude}`}
-                            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
-                            strokeWidth={3}
-                            strokeColor={palette.secondary}
-                            onReady={onReadyTripDirections}
-                        />}
+                        {location && markerFrom && <Polyline strokeColor={palette.accent} strokeWidth={3}lineDashPattern={[600,200,300,200]} coordinates={[location, markerFrom]} />}
+                        {polyline && <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(polyline)} strokeWidth={3} />}
+
                     </MapView>
 
                     <View style={[containerStyle, styles.flexOne]}>
