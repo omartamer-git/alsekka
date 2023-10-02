@@ -57,6 +57,10 @@ const SignUpScreen = ({ route, navigation }) => {
       setGender('FEMALE');
     }
   }
+  const allowedEmailDomains = ['student.guc.edu.eg'];
+
+  const emailValidationRegex = new RegExp(`@(${allowedEmailDomains.join('|')})$`);
+
   const signUpSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
       /^1[0-2,5]{1}[0-9]{8}$/,
@@ -64,7 +68,7 @@ const SignUpScreen = ({ route, navigation }) => {
     )
       .required('This field is required'),
     passwordInput: Yup.string().min(8, 'Your password should be at least 8 characters long').required('This field is required'),
-    emailInput: Yup.string().email('Please enter a valid email address').required('This field is required'),
+    emailInput: Yup.string().email('Please enter a valid email address').matches(emailValidationRegex, 'Please use your university email').required('This field is required'),
     firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
     lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
   });
@@ -81,7 +85,7 @@ const SignUpScreen = ({ route, navigation }) => {
       };
     }, []);
 
-    useFocusEffect(onFocusEffect); // register callback to focus events    
+    // useFocusEffect(onFocusEffect); // register callback to focus events    
   }
 
   const { t } = useTranslation();

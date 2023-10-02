@@ -1,6 +1,8 @@
+import { Notifications } from 'react-native-notifications';
 import useAxiosManager from '../context/axiosManager';
 import { getDateTime } from '../helper';
 import useUserStore from './accountAPI';
+import { subtractDates } from './utilAPI';
 
 
 export const rideDetails = async (rideId) => {
@@ -19,7 +21,7 @@ export const rideDetails = async (rideId) => {
     }
 };
 
-export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLocation) => {
+export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLocation, datetime, mainTextTo) => {
     const url = `/bookride`;
     const params = {
         rideId: rideId,
@@ -36,7 +38,29 @@ export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLo
     const data = response.data;
 
     if (data.id) {
-        return true;
+        try {
+            const oneHourBefore = subtractDates(datetime, 1);
+            const oneDayBefore = subtractDates(datetime, 24);
+                
+            let localNotification = Notifications.postLocalNotification({
+                body: `Get ready, your trip to ${mainTextTo} leaves in one hour!`,
+                title: "Your Trip Status",
+                silent: false,
+                fireDate: oneHourBefore.toISOString(),
+            });
+    
+            let localNotification2 = Notifications.postLocalNotification({
+                body: `Your trip to ${mainTextTo} is tomorrow.`,
+                title: "Trip Status",
+                silent: false,
+                fireDate: oneDayBefore.toISOString(),
+            });
+
+            return true;
+        } catch(e) { 
+            console.log(e);
+        }
+
     } else {
         console.log("Failed to insert " + data);
         return false;
@@ -132,6 +156,25 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.post(url, body);
         const data = response.data;
+
+        const oneHourBefore = subtractDates(date, 1);
+        const oneDayBefore = subtractDates(date, 24);
+            
+        let localNotification = Notifications.postLocalNotification({
+            body: `Get ready, you're driving to ${mainTextTo} in one hour!`,
+            title: "Your Trip Status",
+            silent: false,
+            fireDate: oneHourBefore.toISOString(),
+        });
+
+        let localNotification2 = Notifications.postLocalNotification({
+            body: `Your trip to ${mainTextTo} is tomorrow.`,
+            title: "Trip Status",
+            silent: false,
+            fireDate: oneDayBefore.toISOString(),
+        });
+
+
         return data;
     } catch (err) {
         console.log(err);
@@ -205,7 +248,7 @@ export const startRide = async (tripId) => {
 
 export const submitDriverRatings = async (tripId, ratings) => {
     const url = `/submitdriverratings`;
-    const body = {tripId, ratings};
+    const body = { tripId, ratings };
 
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.post(url, body, {

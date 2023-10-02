@@ -154,7 +154,7 @@ const BookRide = ({ route, navigation }) => {
         setSubmitDisabled(true);
         const voucherId = voucher ? voucher.id : null;
 
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null).then(() => {
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then(() => {
             setRideBookedModalVisible(true);
         }).catch((e) => {
             console.error(e);

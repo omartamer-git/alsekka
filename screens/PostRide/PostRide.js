@@ -107,7 +107,7 @@ const PostRide = ({ route, navigation }) => {
             };
         }, []);
 
-        useFocusEffect(onFocusEffect); // register callback to focus events    
+        // useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
 

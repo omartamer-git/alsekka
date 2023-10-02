@@ -9,6 +9,26 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
 const HeaderView = ({ screenName, navType, action, children, borderVisible=true, style={} }) => {
+    const styles2 = StyleSheet.create({
+        viewStyle: {
+            width: '100%',
+            height: 40 * rem,
+            borderBottomColor: palette.light,
+            ...styles.flexRow,
+            alignItems: 'center',
+            paddingStart: 20 * rem,
+            paddingEnd: 20 * rem,
+        },
+        screenName: {
+            alignItems: 'center',
+        },
+        children: {
+            alignItems: 'flex-end',
+            flex:1,
+        }
+    });
+
+    
     let modifierStyles = {};
     if(borderVisible) {
         modifierStyles = { borderBottomWidth: 1 };
@@ -39,23 +59,5 @@ const HeaderView = ({ screenName, navType, action, children, borderVisible=true,
     );
 }
 
-const styles2 = StyleSheet.create({
-    viewStyle: {
-        width: '100%',
-        height: 40 * rem,
-        borderBottomColor: palette.light,
-        ...styles.flexRow,
-        alignItems: 'center',
-        paddingStart: 20 * rem,
-        paddingEnd: 20 * rem,
-    },
-    screenName: {
-        alignItems: 'center',
-    },
-    children: {
-        alignItems: 'flex-end',
-        flex:1,
-    }
-});
 
 export default HeaderView;

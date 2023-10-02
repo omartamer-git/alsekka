@@ -22,11 +22,6 @@
                     restorationHandler:restorationHandler];
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [RNNotifications startMonitorNotifications]; // -> Add this line
-
-    return YES;
-}
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
   [RNNotifications didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
@@ -45,6 +40,7 @@
 {
   [GMSServices provideAPIKey:@"AIzaSyARuF4cAG9F8ay2EHiWYdz4Oge7XyDlTQc"];
   self.moduleName = @"alsekka";
+  [RNNotifications startMonitorNotifications];
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};

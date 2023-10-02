@@ -67,6 +67,9 @@ import { t } from 'i18next';
 import CustomerService from './screens/Chat/CustomerService';
 import SplashScreen from 'react-native-splash-screen';
 import AddReferral from './screens/Account/AddReferral';
+import { Notifications } from 'react-native-notifications';
+import { registerDevice } from './api/utilAPI';
+import useAppManager from './context/appManager';
 
 
 const RootStack = createNativeStackNavigator();
@@ -88,6 +91,7 @@ const App = () => {
 
   const authManager = useAuthManager();
   const userStore = useUserStore();
+  const appManager = useAppManager();
   const [state, setState] = useState('LOADING');
   I18nManager.allowRTL(true);
   // const { t } = useTranslation();
@@ -161,6 +165,38 @@ const App = () => {
 
   }, []);
 
+  useEffect(() => {
+    Notifications.registerRemoteNotifications();
+    Notifications.events().registerRemoteNotificationsRegistered((e) => {
+      console.log("device token generated " + e.deviceToken);
+      registerDevice(e.deviceToken);
+    });
+    Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
+      console.error(e);
+    })
+
+    Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
+      console.log("Notification Received - Foreground", notification.payload);
+
+      // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+      completion({ alert: true, sound: true, badge: false });
+    });
+
+    Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
+      console.log("Notification opened by device user", notification.payload);
+      console.log(`Notification opened with an action identifier: ${action.identifier} and response text: ${action.text}`);
+      completion();
+    });
+
+    Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
+      console.log("Notification Received - Background", notification.payload);
+
+      // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+      completion({ alert: true, sound: true, badge: false });
+    });
+
+  }, []);
+
 
   const loadJWT = useCallback(async () => {
     try {
@@ -214,7 +250,7 @@ const App = () => {
         <NavigationContainer linking={linking}>
           <RootStack.Navigator>
             {
-              authManager.authenticated === false || userStore.verified === false ? (
+              authManager.authenticated === false || (userStore.verified === false && !appManager.verificationsDisabled) ? (
                 <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
               ) : (
                 <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />

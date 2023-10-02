@@ -160,10 +160,9 @@ const MapScreen = ({ route, navigation }) => {
       };
     }, []);
 
-    useFocusEffect(onFocusEffect); // register callback to focus events    
+    // useFocusEffect(onFocusEffect); // register callback to focus events    
   }
 
-  // const []
 
   const { t } = useTranslation();
 
@@ -199,14 +198,6 @@ const MapScreen = ({ route, navigation }) => {
               />
             </Marker>
           }
-
-          {/* {markerFrom && markerTo && <MapViewDirections
-            origin={`${markerFrom.latitude},${markerFrom.longitude}`}
-            destination={`${markerTo.latitude},${markerTo.longitude}`}
-            apikey='AIzaSyDUNz5SYhR1nrdfk9TW4gh3CDpLcDMKwuw'
-            strokeWidth={3}
-            strokeColor={palette.accent}
-          />} */}
         </MapView>
 
         <View style={[containerStyle, styles.flexOne]}>

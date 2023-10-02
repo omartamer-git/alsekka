@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 
 const StatusBarManager = NativeModules;
 
-const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error=false }, ref) => {
+const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error = false }, ref) => {
     const [text, setText] = useState('');
     const [predictions, setPredictions] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -79,7 +79,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
             };
         }, []);
 
-        useFocusEffect(onFocusEffect); // register callback to focus events    
+        // useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
     const handleTextChange = async (data) => {
@@ -237,11 +237,11 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                             provider={PROVIDER_GOOGLE}
                             ref={mapViewRef}
                             customMapStyle={customMapStyle}
-                            mapPadding={{bottom: 96 * rem, top: 0, left: 0 * rem, right: 0}}
+                            mapPadding={{ bottom: 96 * rem, top: 0, left: 0 * rem, right: 0 }}
                             minZoomLevel={6}
                             showsMyLocationButton
                         >
-                            <MaterialIcons name="place" size={48} color={palette.red} />
+                            <MaterialIcons style={{marginBottom: (96 + 48) * rem}} name="place" size={48} color={palette.red} />
                         </MapView>}
 
                 </View>

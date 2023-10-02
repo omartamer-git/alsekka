@@ -44,7 +44,7 @@ const AddCard = ({ navigation, route }) => {
             };
         }, []);
     
-        useFocusEffect(onFocusEffect); // register callback to focus events    
+        // useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
 

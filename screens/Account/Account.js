@@ -57,6 +57,7 @@ const Account = ({ route, navigation }) => {
         }
 
         setRatings(ratingsItems);
+        console.log(userStore);
     }, []);
 
     if (Platform.OS === 'ios') {
@@ -71,7 +72,7 @@ const Account = ({ route, navigation }) => {
             };
         }, []);
 
-        useFocusEffect(onFocusEffect); // register callback to focus events    
+        // useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
     const editNameSchema = Yup.object().shape({

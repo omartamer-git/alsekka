@@ -58,6 +58,7 @@ const useUserStore = create((set) => ({
             appManager.setPassengerFee(data.passengerFee);
             appManager.setDriverFee(data.driverFee);
             appManager.setCardsEnabled(data.cardsEnabled);
+            appManager.setVerificationsDisabled(data.verificationsDisabled);
 
             await Keychain.setGenericPassword(
                 'token',
@@ -85,6 +86,7 @@ const useUserStore = create((set) => ({
             appManager.setPassengerFee(data.passengerFee);
             appManager.setDriverFee(data.driverFee);
             appManager.setCardsEnabled(data.cardsEnabled);
+            appManager.setVerificationsDisabled(data.verificationsDisabled);
 
             return data;
         } catch (err) {
@@ -103,17 +105,13 @@ const useUserStore = create((set) => ({
             gender: gender,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.publicAxios.get(url, { params });
-            const data = response.data;
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.publicAxios.get(url, { params });
+        const data = response.data;
 
-            set((state) => data);
+        set((state) => data);
 
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        return data;
     },
 
     getAvailableCards: async () => {
@@ -362,7 +360,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    addReferral: async(referralCode) => {
+    addReferral: async (referralCode) => {
         const adjustedReferralCode = parseInt(referralCode.replace(config.REFERRAL_PREFIX, "")) - config.REFERRAL_INCREMENT;
         const body = {
             referralCode: adjustedReferralCode

@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     ActionSheetIOS,
@@ -57,6 +57,22 @@ const NewCar = ({ route, navigation }) => {
     const [backPhotoButtonTouched, setBackPhotoButtonTouched] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
+
+    const onFocusEffect = useCallback(() => {
+        if (Platform.OS === 'ios') {
+            // This should be run when screen gains focus - enable the module where it's needed
+            AvoidSoftInput.setShouldMimicIOSBehavior(true);
+            AvoidSoftInput.setEnabled(true);
+            return () => {
+                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+                AvoidSoftInput.setEnabled(false);
+                AvoidSoftInput.setShouldMimicIOSBehavior(false);
+            };
+
+        }
+    }, []);
+
+    // useFocusEffect(onFocusEffect); // register callback to focus events    
 
     const handleKeyPress = (input, nextInputRef, prevInputRef) => {
         if (input.length === 1 && nextInputRef) {
@@ -119,21 +135,6 @@ const NewCar = ({ route, navigation }) => {
         licensePlateLetters3: Yup.string().max(1, ' '),
         licensePlateNumbersInput: Yup.number().positive().integer().max(9999).required('This field is required'),
     });
-
-    if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
-            // This should be run when screen gains focus - enable the module where it's needed
-            AvoidSoftInput.setShouldMimicIOSBehavior(true);
-            AvoidSoftInput.setEnabled(true);
-            return () => {
-                // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-                AvoidSoftInput.setEnabled(false);
-                AvoidSoftInput.setShouldMimicIOSBehavior(false);
-            };
-        }, []);
-
-        useFocusEffect(onFocusEffect); // register callback to focus events    
-    }
 
 
     return (
