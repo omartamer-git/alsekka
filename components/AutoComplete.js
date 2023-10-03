@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import _debounce from 'lodash/debounce';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
@@ -79,7 +79,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
             };
         }, []);
 
-        // useFocusEffect(onFocusEffect); // register callback to focus events    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
     const handleTextChange = async (data) => {
@@ -149,6 +149,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
 
         setFavoritePlaces(currFavorites);
         await AsyncStorage.setItem('favorite_places', JSON.stringify(currFavorites));
+        
     }
 
 

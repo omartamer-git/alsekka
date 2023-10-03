@@ -168,9 +168,10 @@ const App = () => {
   useEffect(() => {
     Notifications.registerRemoteNotifications();
     Notifications.events().registerRemoteNotificationsRegistered((e) => {
-      console.log("device token generated " + e.deviceToken);
       registerDevice(e.deviceToken);
+      appManager.setDeviceToken(e.deviceToken);
     });
+
     Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
       console.error(e);
     })

@@ -72,7 +72,7 @@ const NewCar = ({ route, navigation }) => {
         }
     }, []);
 
-    // useFocusEffect(onFocusEffect); // register callback to focus events    
+    useFocusEffect(onFocusEffect); // register callback to focus events    
 
     const handleKeyPress = (input, nextInputRef, prevInputRef) => {
         if (input.length === 1 && nextInputRef) {

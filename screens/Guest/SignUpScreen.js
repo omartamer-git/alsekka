@@ -6,6 +6,7 @@ import {
   Linking,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   Touchable,
@@ -13,7 +14,6 @@ import {
   View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import { ScrollView } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
@@ -85,7 +85,7 @@ const SignUpScreen = ({ route, navigation }) => {
       };
     }, []);
 
-    // useFocusEffect(onFocusEffect); // register callback to focus events    
+    useFocusEffect(onFocusEffect); // register callback to focus events    
   }
 
   const { t } = useTranslation();

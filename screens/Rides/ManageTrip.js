@@ -373,7 +373,7 @@ const ManageTrip = ({ route, navigation }) => {
                         }
 
                         {
-                            getPhase() === 2 && console.log("rerender") &&
+                            getPhase() === 2 &&
                             <>
                                 <MapView
                                     style={[{ height: 200 * rem }, styles.w100]}

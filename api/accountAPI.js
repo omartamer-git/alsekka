@@ -4,6 +4,7 @@ import useAuthManager from '../context/authManager';
 import useAxiosManager from '../context/axiosManager';
 import { config } from '../config';
 import useAppManager from '../context/appManager';
+import { Platform } from 'react-native';
 
 const useUserStore = create((set) => ({
     id: '',
@@ -39,10 +40,14 @@ const useUserStore = create((set) => ({
     login: async (phoneNum, password) => {
         try {
             const axiosManager = useAxiosManager.getState();
+            const appManager = useAppManager.getState();
+
             const response = await axiosManager.publicAxios.get(`/login`, {
                 params: {
                     phone: phoneNum,
                     password: password,
+                    deviceToken: appManager.deviceToken,
+                    platform: Platform.OS
                 },
             });
 
@@ -54,7 +59,6 @@ const useUserStore = create((set) => ({
             authManager.setRefreshToken(data.refreshToken);
             authManager.setAuthenticated(true);
 
-            const appManager = useAppManager.getState();
             appManager.setPassengerFee(data.passengerFee);
             appManager.setDriverFee(data.driverFee);
             appManager.setCardsEnabled(data.cardsEnabled);
@@ -77,12 +81,17 @@ const useUserStore = create((set) => ({
     userInfo: async (uid) => {
         try {
             const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.get(`/userinfo`);
+            const appManager = useAppManager.getState();
+            console.log(appManager.deviceToken);
+            const response = await axiosManager.authAxios.get(`/userinfo`, {
+                params: {
+                    deviceToken: appManager.deviceToken
+                }
+            });
 
             const data = response.data;
             set(data);
 
-            const appManager = useAppManager.getState();
             appManager.setPassengerFee(data.passengerFee);
             appManager.setDriverFee(data.driverFee);
             appManager.setCardsEnabled(data.cardsEnabled);

@@ -72,7 +72,7 @@ const Account = ({ route, navigation }) => {
             };
         }, []);
 
-        // useFocusEffect(onFocusEffect); // register callback to focus events    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
     const editNameSchema = Yup.object().shape({

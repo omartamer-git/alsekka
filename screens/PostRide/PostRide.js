@@ -107,7 +107,7 @@ const PostRide = ({ route, navigation }) => {
             };
         }, []);
 
-        // useFocusEffect(onFocusEffect); // register callback to focus events    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
 
@@ -157,7 +157,7 @@ const PostRide = ({ route, navigation }) => {
             console.log(newDate);
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity : null, genderChoice, seatsAvailable).then((res) => {
+                mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable).then((res) => {
                     setRidePosted(true);
                     setRideId(res.id);
                 }).catch(console.error).finally(() => {
@@ -239,8 +239,9 @@ const PostRide = ({ route, navigation }) => {
                                             pickupPriceInput: ''
                                         }}
                                         validationSchema={postRideSchema}
-                                        onSubmit={(values) => {
+                                        onSubmit={(values, {resetForm}) => {
                                             postRide(values.priceInput, values.pickupPriceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput, values.seatsInput);
+                                            resetForm();
                                         }}
                                     >
                                         {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (

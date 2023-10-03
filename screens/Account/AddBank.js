@@ -52,7 +52,7 @@ const AddBank = ({ navigation, route }) => {
             };
         }, []);
     
-        // useFocusEffect(onFocusEffect); // register callback to focus events    
+        useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
     const {t} = useTranslation();
