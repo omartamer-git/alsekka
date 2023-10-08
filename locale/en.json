@@ -225,6 +225,11 @@
         "by_continuing": "By continuing, you agree to seaats's",
         "terms": "Terms",
         "and": "and",
-        "privacy_policy": "Privacy Policy"
+        "privacy_policy": "Privacy Policy",
+        "AM": "AM",
+        "PM": "PM",
+        "h": "h",
+        "m": "m",
+        "no_rides_posted": "Sorry, no rides found for this route. Consider offering a ride to help others."
     }
 }

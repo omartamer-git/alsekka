@@ -16,7 +16,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
 import Passenger from '../../components/Passenger';
-import { containerStyle, customMapStyle, mapPadding, palette, rem, styles } from '../../helper';
+import { containerStyle, customMapStyle, getDirections, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import LiveAnimation from '../../components/LiveAnimation';
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
@@ -220,19 +220,7 @@ const ManageTrip = ({ route, navigation }) => {
 
     const { t } = useTranslation();
 
-    const getDirections = (lat, lng, label) => {
-        const scheme = Platform.select({ ios: 'maps://0,0?q=', android: 'geo:0,0?q=' });
-        const place = getPickupPassenger();
-        const latLng = `${lat},${lng}`;
-        // const label = `Pick ${place.User.firstName} Up`;
-        const url = Platform.select({
-            ios: `${scheme}${label}@${latLng}`,
-            android: `${scheme}${latLng}(${label})`
-        });
 
-
-        Linking.openURL(url);
-    }
 
     const enableArrived = () => {
         ridesAPI.getTripTotals(tripDetails.id).then((totals) => {

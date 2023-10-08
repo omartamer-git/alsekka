@@ -8,7 +8,7 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { containerStyle, getDateShort, getTime, rem, styles } from '../../helper';
+import { containerStyle, rem, styles } from '../../helper';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -89,7 +89,7 @@ const ViewCommunities = ({ navigation, route }) => {
                                         const nextRideDate = new Date(data.datetime);
                                         return (
                                             <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                                <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
+                                                <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} duration={data.duration} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={nextRideDate} style={styles.mt10} />
                                                 <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>{t('posted_by')} {data.Driver.firstName} {data.Driver.lastName} {t('in')} {data.Community.community_name}</Text>
                                             </View>
                                         );

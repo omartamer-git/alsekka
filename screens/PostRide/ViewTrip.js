@@ -19,7 +19,7 @@ import AvailableRide from '../../components/AvailableRide';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import Passenger from '../../components/Passenger';
-import { customMapStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
+import { customMapStyle, getDirections, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 
@@ -132,7 +132,6 @@ const ViewTrip = ({ route, navigation }) => {
         navigation.navigate('Chat', { receiver: receiver });
     };
 
-
     const { t } = useTranslation();
     return (
         <>
@@ -156,7 +155,7 @@ const ViewTrip = ({ route, navigation }) => {
                         <>
                             {
                                 tripDetails &&
-                                <AvailableRide style={viewTripStyles.availableRide} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} DriverId={tripDetails.DriverId} seatsAvailable={tripDetails.seatsAvailable} pricePerSeat={tripDetails.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} />
+                                <AvailableRide style={viewTripStyles.availableRide} model={tripDetails.Car.model} brand={tripDetails.Car.brand} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} DriverId={tripDetails.DriverId} seatsAvailable={tripDetails.seatsAvailable} duration={tripDetails.duration} pricePerSeat={tripDetails.pricePerSeat} date={objDate} />
                             }
                             <View style={[styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
                                 {tripDetails &&
@@ -166,7 +165,7 @@ const ViewTrip = ({ route, navigation }) => {
                                             {
                                                 !isDriver &&
                                                 <>
-                                                    <TouchableOpacity activeOpacity={0.9} style={[viewTripStyles.chatBubble, styles.positionAbsolute, {top: '100%', transform: [{translateY: -33 * rem},{translateX: 22*rem}]}]} onPress={() => goToChat(tripDetails.Driver.id)} >
+                                                    <TouchableOpacity activeOpacity={0.9} style={[viewTripStyles.chatBubble, styles.positionAbsolute, { top: '100%', transform: [{ translateY: -33 * rem }, { translateX: 22 * rem }] }]} onPress={() => goToChat(tripDetails.Driver.id)} >
                                                         <MaterialIcons name="chat-bubble" size={15} color={palette.primary} />
                                                     </TouchableOpacity>
                                                 </>
@@ -220,7 +219,7 @@ const ViewTrip = ({ route, navigation }) => {
                                 {
                                     !isDriver &&
                                     <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt10]}>
-                                        <ArrowButton style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+                                        <ArrowButton onPress={() => console.log('hi')} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
 
                                         <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
                                             <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
@@ -283,6 +282,7 @@ const ViewTrip = ({ route, navigation }) => {
 
 const viewTripStyles = StyleSheet.create({
     availableRide: {
+        ...styles.mb10,
         ...styles.br0,
         ...styles.bgWhite,
         height: 140 * rem

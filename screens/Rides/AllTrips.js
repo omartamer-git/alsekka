@@ -112,7 +112,7 @@ const AllTrips = ({ navigation, route }) => {
                             nextRides && nextRides.map((data, index) => {
                                 const nextRideDate = new Date(data.datetime);
                                 return (
-                                    <AvailableRide key={"ride" + index} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} DriverId={data.DriverId} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={allTripsStyle.availableRide} onPress={() => { viewTrip(data.id); }} />
+                                    <AvailableRide key={"ride" + index} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} duration={data.duration} pricePerSeat={data.pricePerSeat} DriverId={data.DriverId} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} date={nextRideDate} style={allTripsStyle.availableRide} onPress={() => { viewTrip(data.id); }} />
                                 );
                             })
                         }

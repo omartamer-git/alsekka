@@ -106,6 +106,19 @@ export const abbreviate = (string) => {
     return string;
 };
 
+export const getDirections = (lat, lng, label) => {
+    const scheme = Platform.select({ ios: 'maps://0,0?q=', android: 'geo:0,0?q=' });
+    const place = getPickupPassenger();
+    const latLng = `${lat},${lng}`;
+    const url = Platform.select({
+        ios: `${scheme}${label}@${latLng}`,
+        android: `${scheme}${latLng}(${label})`
+    });
+
+
+    Linking.openURL(url);
+}
+
 export const getPhoneCarrier = (phone) => {
     const carrierCode = phone.substring(0, 3);
     if (carrierCode === '010') {
@@ -154,20 +167,40 @@ export const getDateShort = (date) => {
 }
 
 export const getTime = (date) => {
-    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone)
-
     let hour = date.getHours();
     let minute = date.getMinutes();
+    let ampm = "PM";
 
-    if (hour < 10) {
-        hour = '0' + hour;
+    if (hour < 12) {
+        ampm = "AM";
+    }
+
+    if (hour > 12) {
+        hour = hour - 12;
+    }
+
+    if (hour === 0) {
+        hour = 12;
     }
 
     if (minute < 10) {
         minute = '0' + minute;
     }
 
-    return `${hour}:${minute}`;
+    return [`${hour}:${minute}`, ampm];
+}
+
+export const addSecondsToDate = (date, secondsToAdd) => {
+    const result = new Date(date);
+    result.setSeconds(result.getSeconds() + secondsToAdd);
+    return result;
+}
+
+export const getDurationValues = (seconds) => {
+    let hours = Math.floor(seconds / (60 * 60));
+    let minutes = Math.floor((seconds - (hours * 60 * 60)) / 60);
+
+    return [hours, minutes];
 }
 
 export const getDateTime = (date, viweing = true) => {
@@ -254,7 +287,7 @@ export const styles = StyleSheet.create({
     primary: {
         color: palette.primary
     },
-    
+
     secondary: {
         color: palette.secondary
     },

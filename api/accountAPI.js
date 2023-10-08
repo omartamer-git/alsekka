@@ -82,7 +82,6 @@ const useUserStore = create((set) => ({
         try {
             const axiosManager = useAxiosManager.getState();
             const appManager = useAppManager.getState();
-            console.log(appManager.deviceToken);
             const response = await axiosManager.authAxios.get(`/userinfo`, {
                 params: {
                     deviceToken: appManager.deviceToken

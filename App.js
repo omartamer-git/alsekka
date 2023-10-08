@@ -202,6 +202,7 @@ const App = () => {
   const loadJWT = useCallback(async () => {
     try {
       const value = await Keychain.getGenericPassword();
+      console.log("KCVAL" + value);
       if (!value) {
         authManager.setAccessToken(null);
         authManager.setRefreshToken(null);
@@ -221,7 +222,7 @@ const App = () => {
 
       setState("LoggedIn");
     } catch (error) {
-      console.log(error);
+      console.log(error.stack);
       console.log(`Keychain Error: ${error.message}`);
       setState("Guest");
       authManager.setAccessToken(null);
@@ -231,8 +232,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    loadJWT()
-  }, [loadJWT]);
+    if (appManager.deviceToken) {
+      loadJWT()
+    }
+  }, [appManager.deviceToken, loadJWT]);
 
   if (state === 'LOADING') {
     return (

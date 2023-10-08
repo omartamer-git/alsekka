@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Image,
     Platform,
@@ -9,17 +10,16 @@ import {
     View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import useUserStore from '../../api/accountAPI';
 import * as communitiesAPI from '../../api/communitiesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
-import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
+import { containerStyle, palette, rem, styles } from '../../helper';
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
-import useUserStore from '../../api/accountAPI';
-import { useTranslation } from 'react-i18next';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
 const ViewCommunity = ({ navigation, route }) => {
@@ -137,7 +137,7 @@ const ViewCommunity = ({ navigation, route }) => {
                                     const nextRideDate = new Date(data.datetime);
                                     return (
                                         <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                            <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} DriverId={data.DriverId} seatsAvailable={data.seatsAvailable} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={styles.mt10} />
+                                            <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} duration={data.duration} DriverId={data.DriverId} seatsAvailable={data.seatsAvailable} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={nextRideDate} style={styles.mt10} />
                                         </View>
                                     );
                                 })}

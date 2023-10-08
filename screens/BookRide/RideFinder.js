@@ -15,12 +15,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
 import AutoComplete from '../../components/AutoComplete';
 import AvailableRide from '../../components/AvailableRide';
-import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
+import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import Button from '../../components/Button';
 
 
 const RideFinder = ({ route, navigation }) => {
-    // const { fromLat, fromLng, toLat, toLng, date, textFrom, textTo, genderChoice } = route.params;
     const [availableRides, setAvailableRides] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -113,8 +113,6 @@ const RideFinder = ({ route, navigation }) => {
         <ScreenWrapper navType="back" navAction={() => navigation.goBack()}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={rideFinderStyles.autoCompletePair}>
-                    {/* <CustomTextInput key="fromText" iconLeft="my-location" value={textFrom} style={[rideFinderStyles.autoCompleteStyles, rideFinderStyles.autoCompleteTop]} />
-                    <CustomTextInput key="toText" iconLeft="place" value={textTo} style={[rideFinderStyles.autoCompleteStyles, rideFinderStyles.autoCompleteBottom]} /> */}
                     <AutoComplete ref={fromRef} key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[{ marginTop: 0, marginBottom: 0, borderBottomWidth: 0.5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }, styles.borderLight, styles.bgWhite]} />
                     <AutoComplete ref={toRef} key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[{ marginTop: 0, marginBottom: 0, borderTopWidth: 0.5, borderTopRightRadius: 0, borderTopLeftRadius: 0 }, styles.borderLight, styles.bgWhite]} />
 
@@ -124,15 +122,23 @@ const RideFinder = ({ route, navigation }) => {
                 </View>
 
                 <Text style={[styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
-                { !loading &&
+                {!loading &&
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
-                        return (<AvailableRide key={"ar" + index} rid={data.id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} pricePerSeat={data.pricePerSeat} date={getDateShort(objDate)} time={getTime(objDate)} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
+                        return (<AvailableRide key={"ar" + index} rid={data.id} model={data.model} brand={data.brand} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} pricePerSeat={data.pricePerSeat} duration={data.duration} date={objDate} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
                     }
                     )
                 }
                 {
-                    loading && 
+                    !loading && availableRides && availableRides.length === 0 &&
+                    <View style={{alignItems: 'center', justifyContent: 'center', width: '100%', flex: 1}}> 
+                        <MaterialIcons name="sentiment-very-dissatisfied" size={125 * rem} color={palette.dark} />
+                        <Text style={[styles.bold, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
+                        <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Post Ride')} />
+                    </View>
+                }
+                {
+                    loading &&
                     <>
                         <View style={styles.w100}>
                             <SkeletonPlaceholder>

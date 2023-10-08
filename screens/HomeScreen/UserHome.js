@@ -10,18 +10,17 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../../helper';
+import { containerStyle, palette, rem, styles } from '../../helper';
 
 import { useTranslation } from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel from 'react-native-reanimated-carousel';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as announcementsAPI from '../../api/announcementsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import SuccessCheck from '../../components/SuccessCheck';
 
 const UserHome = ({ navigation, route }) => {
     const [nextRideData, setNextRideData] = useState(null);
@@ -53,13 +52,13 @@ const UserHome = ({ navigation, route }) => {
                 setNextRideDate(new Date(data1.datetime));
             }
 
-            if(userStore.driver) {
+            if (userStore.driver) {
                 const data2 = await ridesAPI.driverRides(1);
-                if(data2.length !== 0) {
+                if (data2.length !== 0) {
                     setDriverElement(true);
                     setDriverTripId(data2[0].id);
                     setDriverMainTextFrom(data2[0].mainTextFrom);
-                    setDriverMainTextTo(data2[0].mainTextTo);    
+                    setDriverMainTextTo(data2[0].mainTextTo);
                 }
             } else {
                 setDriverElement(true);
@@ -114,18 +113,16 @@ const UserHome = ({ navigation, route }) => {
                         </Text>
 
                         {driverElement && driverMainTextTo &&
-                            <LinearGradient style={userHomeStyles.selfUpcomingRide} colors={[palette.primary, palette.secondary]}>
-                                <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgTransparent]}
-                                    onPress={() => { viewTrip(driverTripId); }}>
-                                    <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
+                            <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgPrimary, styles.mt10]}
+                                onPress={() => { viewTrip(driverTripId); }}>
+                                <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
-                                    <View>
-                                        <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
-                                            <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
-                                        </TouchableOpacity>
-                                    </View>
-                                </TouchableOpacity>
-                            </LinearGradient>
+                                <View>
+                                    <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
+                                        <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
+                                    </TouchableOpacity>
+                                </View>
+                            </TouchableOpacity>
                         }
                         {
                             driverElement && !driverMainTextTo &&
@@ -146,7 +143,7 @@ const UserHome = ({ navigation, route }) => {
                         <Text style={[styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
                         {
                             nextRideData &&
-                            <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} DriverId={nextRideData.DriverId} seatsOccupied={nextRideData.seatsOccupied} seatsAvailable={nextRideData.seatsAvailable} date={getDateShort(nextRideDate)} time={getTime(nextRideDate)} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
+                            <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} duration={nextRideData.duration} DriverId={nextRideData.DriverId} seatsOccupied={nextRideData.seatsOccupied} seatsAvailable={nextRideData.seatsAvailable} duration={nextRideData.duration} date={nextRideDate} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
                         }
                         {
                             !nextRideData &&
