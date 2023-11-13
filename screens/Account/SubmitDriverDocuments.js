@@ -69,6 +69,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         };
 
         licensesAPI.uploadLicense(licenseBody).then(() => {
+            navigation.navigate('New Car');
             setLicenseStatus("PENDING");
         }).catch(err => {
             console.error(err);
@@ -105,7 +106,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                                     <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
 
-                                    <Button bgColor={palette.primary} textColor={palette.white} text={t('submit')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack || submitDisabled} />
+                                    <Button bgColor={palette.primary} textColor={palette.white} text={t('next_new_car')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack || submitDisabled} />
                                 </>
                             }
                             {!userStore.driver && licenseStatus === 'PENDING' &&

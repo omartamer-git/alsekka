@@ -43,85 +43,87 @@ const DigitBox = ({ swap, onFocus, inputRef }) => {
 }
 
 const Otp = ({ route, navigation }) => {
-    const { firstName, lastName, phone, email, password, gender, onVerify } = route.params;
+    const firstName = route.params?.firstName;
+    const lastName = route.params?.lastName;
+    const phone = route.params?.phone;
+    const email = route.params?.email;
+    const password = route.params?.password;
+    const gender = route.params?.gender;
+    const onVerify = route.params?.onVerify;
     const [currentInput, setCurrentInput] = useState(0);
     const numDigits = 4;
     const [error, setError] = useState(null);
     let countdownInterval = null;
     const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login } = useUserStore();
-    // let filledInputs = useRef(Array(numDigits).fill(false));
+    const [uri, setUri] = useState('');
+    const [token, setToken] = useState('');
 
-    // const verifyOtp = () => {
-    //     if (onVerify === 'login') {
-    //         sendOtp(phone, otpInput.current.join('')).then(response => {
-    //             if (response) {
-    //                 navigation.popToTop();
-    //                 navigation.replace("LoggedIn", {
-    //                     screen: 'TabScreen',
-    //                     params: {
-    //                         screen: 'Home',
-    //                     }
-    //                 });
-    //             }
-    //         }).catch(err => {
-    //             setError(err.response.data.error.message)
-    //         });
-    //     } else if (onVerify === 'changePassword') {
-    //         sendOtpSecurity(phone, otpInput.current.join('')).then(token => {
-    //             if (token) {
-    //                 navigation.popToTop();
-    //                 navigation.replace("Change Password", { token });
-    //             }
-    //         }).catch(err => {
-    //             setError(err.response.data.error.message)
-    //         });
-    //     }
-    // }
-
-    const triggerCountdown = () => {
-        countdownInterval = setInterval(
-            () => {
-                isVerified(phone).then(response => {
-                    if (response === true) {
-                        createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
-                            login(phone, password).then(() => {
-                                navigation.popToTop();
-                                navigation.replace("LoggedIn", {
-                                    screen: 'TabScreen',
-                                    params: {
-                                        screen: 'Home',
-                                    }
-                                });
-                                clearInterval(countdownInterval);
-                            })
-                        }).catch(err => {
-                            console.log(err);
-                            setErrorMessage(err.response.data.error.message);
+    const clockTick = () => {
+        isVerified(phone).then(response => {
+            if (response === true) {
+                if (onVerify === 'login') {
+                    createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
+                        login(phone, password).then(() => {
+                            navigation.popToTop();
+                            navigation.replace("LoggedIn", {
+                                screen: 'TabScreen',
+                                params: {
+                                    screen: 'Home',
+                                }
+                            });
+                            clearInterval(countdownInterval);
                         })
-                    }
-                }).catch(err => {
-                    setError(err.response.data.error.message);
-                })
-            }, 5000
-        );
+                    }).catch(err => {
+                        console.log(err);
+                        setErrorMessage(err.response.data.error.message);
+                    })
+                } else {
+                    navigation.popToTop();
+                    console.log('hello token')
+                    console.log(token);
+                    navigation.replace("Change Password", { token });
+                }
+            }
+        }).catch(err => {
+            console.log(err);
+            setError(err.response.data.error.message);
+        })
     };
 
+    const [time, setTime] = useState(0);
+    const [triggerCountdown, setTriggerCountdown] = useState(false);
 
     useEffect(() => {
+        if(!triggerCountdown) return;
+        const timer = setTimeout(() => {
+            clockTick();
+            setTime(time + 1);
+        }, 5000);
         return () => {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-            }
+            clearTimeout(timer);
         };
-    }, []);
+    }, [triggerCountdown, time])
 
 
-    const [uri, setUri] = useState('');
+    // useEffect(() => {
+    //     return () => {
+    //         if (countdownInterval) {
+    //             clearInterval(countdownInterval);
+    //         }
+    //     };
+    // }, []);
+
+
     const resendOtp = () => {
-        getOtp(phone).then((uri) => {
-            setUri(uri);
-            triggerCountdown();
+        console.log('hello ' + phone);
+        getOtp(phone).then((response) => {
+            console.log('resp');
+            console.log(response);
+            setUri(response.uri);
+            setToken(response.token);
+            setTriggerCountdown(true);
         }).catch(err => {
+            console.log(err);
             setError(err.response.data.error.message)
         });
     };

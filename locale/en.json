@@ -252,6 +252,8 @@
         "wed": "Wed",
         "thu": "Thurs",
         "fri": "Fri",
-        "sat": "Sat"
+        "sat": "Sat",
+        "no_car": "In order to post a ride, you must have a car registered with us, click the button below to add a car now!",
+        "next_new_car": "Next: Car Details"
     }
 }

@@ -267,13 +267,17 @@ const useUserStore = create((set) => ({
         const url = `/verify`;
 
         const axiosManager = useAxiosManager.getState();
+        console.log('get otp');
         const otpLink = await axiosManager.publicAxios.get(url, {
             params: {
                 phone: phone
             }
         });
 
-        const waUri = otpLink.data.uri;
+        console.log(otpLink);
+        console.log('waw');
+
+        const waUri = otpLink.data;
         return waUri;
     },
 
@@ -357,6 +361,8 @@ const useUserStore = create((set) => ({
 
     resetPassword: async (token, newPassword) => {
         const url = `/changepassword`;
+
+        console.log(token);
 
         const body = {
             token: token,
