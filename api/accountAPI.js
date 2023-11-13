@@ -5,6 +5,7 @@ import useAxiosManager from '../context/axiosManager';
 import { config } from '../config';
 import useAppManager from '../context/appManager';
 import { Platform } from 'react-native';
+import axios from 'axios';
 
 const useUserStore = create((set) => ({
     id: '',
@@ -255,6 +256,7 @@ const useUserStore = create((set) => ({
             });
 
             const data = response.data;
+            console.log(data);
             return data;
         } catch (err) {
             throw err;
@@ -265,11 +267,33 @@ const useUserStore = create((set) => ({
         const url = `/verify`;
 
         const axiosManager = useAxiosManager.getState();
-        axiosManager.publicAxios.get(url, {
+        const otpLink = await axiosManager.publicAxios.get(url, {
             params: {
                 phone: phone
             }
         });
+
+        const waUri = otpLink.data.uri;
+        return waUri;
+    },
+
+    isVerified: async (phone) => {
+        const url = `/isverified`;
+
+        const axiosManager = useAxiosManager.getState();
+        const isVerified = await axiosManager.publicAxios.get(url, {
+            params: {
+                phone: phone
+            }
+        });
+        console.log(isVerified.data);
+
+        if(isVerified.data.verified == true) {
+            set(isVerified.data);
+            return true;
+        } else {
+            return false;
+        }
     },
 
     sendOtp: async (phone, otp) => {

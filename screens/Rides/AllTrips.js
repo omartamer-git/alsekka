@@ -25,7 +25,8 @@ const AllTrips = ({ navigation, route }) => {
     const [driverMainTextFrom, setDriverMainTextFrom] = useState('');
     const [driverMainTextTo, setDriverMainTextTo] = useState('');
     const [driverTripId, setDriverTripId] = useState(null);
-    const [afterTime, setAfter] = useState(null);
+    const [page, setPage] = useState(1);
+    // const [afterTime, setAfter] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -51,15 +52,14 @@ const AllTrips = ({ navigation, route }) => {
     }, []);
 
     const updateRides = () => {
-        ridesAPI.pastRides(3, afterTime).then(
+        ridesAPI.pastRides(3, page).then(
             data => {
                 let newNextRides = nextRides;
                 newNextRides = newNextRides.concat(data);
 
                 setNextRides(newNextRides);
                 if (data.length != 0) {
-                    const newAfter = (new Date(data[data.length - 1].datetime) * 1);
-                    setAfter(newAfter);
+                    setPage(p => p+1);
                 }
             }
         );

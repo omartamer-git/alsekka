@@ -19,7 +19,7 @@ import AvailableRide from '../../components/AvailableRide';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import Passenger from '../../components/Passenger';
-import { customMapStyle, getDirections, palette, rem, styles } from '../../helper';
+import { addSecondsToDate, customMapStyle, getDateTime, getDirections, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 
@@ -34,6 +34,7 @@ const ViewTrip = ({ route, navigation }) => {
     const [isDriver, setIsDriver] = useState(false);
 
     const [cancelModalVisible, setCancelModalVisible] = useState(false);
+    const [cancelledModalVisible, setCancelledModalVisible] = useState(false);
 
     const [tripReady, setTripReady] = useState(false);
     const [tripCancellable, setTripCancellable] = useState(false);
@@ -113,7 +114,8 @@ const ViewTrip = ({ route, navigation }) => {
     };
 
     const cancelPassenger = () => {
-        ridesAPI.cancelPassenger(tripId);
+        setCancelModalVisible(false);
+        ridesAPI.cancelPassenger(tripId).then(() => setCancelledModalVisible(true));
     };
 
     const startTrip = () => {
@@ -219,7 +221,7 @@ const ViewTrip = ({ route, navigation }) => {
                                 {
                                     !isDriver &&
                                     <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt10]}>
-                                        <ArrowButton onPress={() => console.log('hi')} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+                                        <ArrowButton onPress={() => getDirections(markerFrom.latitude, markerFrom.longitude, "Directions to pick up")} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
 
                                         <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
                                             <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
@@ -272,8 +274,18 @@ const ViewTrip = ({ route, navigation }) => {
             <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
                     <Text style={[styles.headerText3, styles.mv5]}>{t('cancel_confirm')}</Text>
+                    {/* English Only Text */}
+                    <Text style={[styles.textCenter]}>You can cancel for free up until {getDateTime(addSecondsToDate(objDate, -(24 * 60 * 60)))}, after that you will be charged the full price of the ride.</Text>
                     <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
                     <Button bgColor={palette.red} textColor={palette.white} text={t('cancel')} onPress={cancelPassenger} />
+                </View>
+            </BottomModal>
+
+            <BottomModal modalVisible={cancelledModalVisible} onHide={() => { setCancelledModalVisible(false); navigation.goBack() }}>
+                <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
+                    <Text style={[styles.headerText3, styles.mv5]}>Ride Cancelled</Text>
+                    <Text style={[styles.textCenter]}>Your ride has been canceled. If you have any concerns or need assistance, feel free to reach out to us. Safe travels and thank you for using seaats.</Text>
+                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => navigation.goBack()} />
                 </View>
             </BottomModal>
         </>

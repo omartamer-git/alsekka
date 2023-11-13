@@ -37,17 +37,28 @@ const SignUpScreen = ({ route, navigation }) => {
     setSubmitDisabled(true);
     phoneNum = "0" + phoneNum;
 
-    userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
-      userStore.login(phoneNum, password).then(() => {
-        if (!userStore.verified) {
-          navigation.navigate('Otp', { phone: phoneNum, onVerify: 'login' });
-        }
-      })
-    }).catch(err => {
-      setErrorMessage(err.response.data.error.message);
-    }).finally(() => {
-      setSubmitDisabled(false);
+    // userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
+    //   userStore.login(phoneNum, password).then(() => {
+    //     if (!userStore.verified) {
+    //       navigation.navigate('Otp', { phone: phoneNum, onVerify: 'login' });
+    //     }
+    //   })
+    // }).catch(err => {
+    //   setErrorMessage(err.response.data.error.message);
+    // }).finally(() => {
+    //   setSubmitDisabled(false);
+    // });
+
+    navigation.navigate('Otp', {
+      firstName: firstName,
+      lastName: lastName,
+      phone: phoneNum,
+      email: email,
+      password: password,
+      gender: gender,
+      onVerify: 'login'
     });
+
   };
 
   const toggleGender = (e) => {

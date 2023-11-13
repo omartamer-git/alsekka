@@ -129,7 +129,7 @@ const UserHome = ({ navigation, route }) => {
                             <TouchableOpacity
                                 onPress={() => { navigation.navigate('Driver Documents') }}
                                 activeOpacity={0.9}
-                                style={[userHomeStyles.topAlert, styles.bgPrimary]}>
+                                style={[userHomeStyles.topAlert, styles.bgPrimary, styles.mt10]}>
                                 <Text style={[styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
 
                                 <View>

@@ -79,12 +79,12 @@ const styles2 = StyleSheet.create({
         height: 48 * rem,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        borderRadius: 4,
+        borderRadius: 4 * rem,
         ...styles.flexRow,
-        paddingStart: 24,
-        paddingEnd: 24,
-        marginTop: 8,
-        marginBottom: 8,
+        paddingStart: 24 * rem,
+        paddingEnd: 24 * rem,
+        marginTop: 8 * rem,
+        marginBottom: 8 * rem,
         backgroundColor: palette.white
     },
     input: {

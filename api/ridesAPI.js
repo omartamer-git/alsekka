@@ -260,17 +260,14 @@ export const submitDriverRatings = async (tripId, ratings) => {
     return data;
 };
 
-export const pastRides = async (limit, afterTime) => {
+export const pastRides = async (limit, page=1) => {
     let url = `/pastrides`;
     const uid = useUserStore.getState().id;
     const params = {
         uid: uid,
-        limit: limit
+        limit: limit,
+        page: page
     };
-
-    if (afterTime) {
-        params.after = afterTime;
-    }
 
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.get(url, { params });
