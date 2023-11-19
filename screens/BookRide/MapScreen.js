@@ -22,6 +22,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import MapViewDirections from 'react-native-maps-directions';
+import CustomDatePicker from '../../components/DatePicker';
 
 
 const MapScreen = ({ route, navigation }) => {
@@ -143,7 +144,18 @@ const MapScreen = ({ route, navigation }) => {
 
   const goFindRides = (e) => {
     if (markerFrom && markerTo) {
-      navigation.navigate("Choose a Ride", { fromLat: markerFrom.latitude, fromLng: markerFrom.longitude, toLat: markerTo.latitude, toLng: markerTo.longitude, date: getDateSQL(date), textFrom: textFrom, textTo: textTo, genderChoice: genderChoice });
+      const today = new Date();
+      let freshDate;
+      if(date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) {
+        freshDate = today;
+      } else {
+        date.setHours(0, 0, 0, 0);
+        freshDate = date;
+      }
+
+      console.log(freshDate.toLocaleString());
+
+      navigation.navigate("Choose a Ride", { fromLat: markerFrom.latitude, fromLng: markerFrom.longitude, toLat: markerTo.latitude, toLng: markerTo.longitude, date: getDateSQL(freshDate), textFrom: textFrom, textTo: textTo, genderChoice: genderChoice });
     }
   }
 
@@ -210,51 +222,9 @@ const MapScreen = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
 
-          <DatePicker
-            modal
-            mode="datetime"
-            minimumDate={new Date()}
-            minuteInterval={30}
-            open={datePickerOpen}
-            date={date}
-            onConfirm={(date) => {
-              setDatePickerOpen(false)
-              setDate(date)
-            }}
-            onCancel={() => {
-              setDatePickerOpen(false)
-            }}
-          />
+          <Text style={styles.inputText}>{t('date')}</Text>
 
-          <Text style={styles.inputText}>{t('date')} & {t('time')}</Text>
-
-          <CustomTextInput
-            placeholder={t('date')}
-            value={(function () {
-              const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-              const months = [
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-              ];
-
-              const dayOfWeek = daysOfWeek[date.getDay()];
-              const day = date.getDate();
-              const month = months[date.getMonth()];
-              const hours = date.getHours();
-              let minutes = date.getMinutes();
-              minutes = minutes < 10 ? '0' + minutes : minutes;
-              const period = hours >= 12 ? 'PM' : 'AM';
-              const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
-
-              const formattedDate = `${dayOfWeek} ${day} ${month} ${formattedHours}:${minutes}${period}`;
-
-              return formattedDate;
-            })()}
-            onPressIn={() => {
-              setDatePickerOpen(true);
-            }}
-            iconRight="date-range"
-            editable={false}
-          />
+          <CustomDatePicker date={date} setDate={setDate} />
 
           <Text style={styles.inputText}>
             {t('gender_to_carpool')}

@@ -7,6 +7,7 @@ import {
     ScrollView,
     Text,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
@@ -59,7 +60,6 @@ const ViewCommunity = ({ navigation, route }) => {
     }, []);
 
     const joinCommunity = () => {
-        console.log(joinAnswer);
         communitiesAPI.joinCommunity(communityId, joinAnswer).then(
             data => {
                 if (communityPrivacy) {
@@ -73,11 +73,17 @@ const ViewCommunity = ({ navigation, route }) => {
         });
     };
 
-    const loadFeed = () => {
+    const [page, setPage] = useState(1);
+
+    const loadFeed = (page = 1) => {
         setIsJoined(true);
-        communitiesAPI.communitiesFeed(communityId).then(
+        communitiesAPI.communitiesFeed(communityId, page).then(
             data => {
-                setFeed(data);
+                if (page === 1) {
+                    setFeed(data);
+                } else {
+                    setFeed(f => f.concat(data));
+                }
                 setLoading(false);
             }
         ).catch(err => {
@@ -99,6 +105,11 @@ const ViewCommunity = ({ navigation, route }) => {
         }, []);
 
         useFocusEffect(onFocusEffect); // register callback to focus events    
+    }
+
+    const loadMore = () => {
+        loadFeed(page + 1);
+        setPage(p => p + 1);
     }
 
     const { t } = useTranslation();
@@ -136,11 +147,38 @@ const ViewCommunity = ({ navigation, route }) => {
                                 {feed && feed.map((data, index) => {
                                     const nextRideDate = new Date(data.datetime);
                                     return (
-                                        <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                            <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} seatsOccupied={data.seatsOccupied} duration={data.duration} DriverId={data.DriverId} seatsAvailable={data.seatsAvailable} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={nextRideDate} style={styles.mt10} />
+                                        <View style={[styles.w100]} key={"feed" + index}>
+                                            <AvailableRide
+                                                rid={data.ride_id}
+                                                fromAddress={data.mainTextFrom}
+                                                toAddress={data.mainTextTo}
+                                                pricePerSeat={data.pricePerSeat}
+                                                seatsOccupied={data.seatsOccupied}
+                                                duration={data.duration}
+                                                DriverId={data.DriverId}
+                                                seatsAvailable={data.seatsAvailable}
+                                                driverName={data.Driver.firstName + " " + data.Driver.lastName}
+                                                date={nextRideDate}
+                                                style={styles.mt10}
+                                                pickupEnabled={data.pickupEnabled}
+                                                gender={data.gender}
+                                                onPress={() => {
+                                                    if (data.DriverId === id) {
+                                                        navigation.navigate('View Trip', { tripId: data.ride_id })
+                                                    } else {
+                                                        navigation.navigate('Book Ride', { rideId: data.ride_id })
+                                                    }
+                                                }
+                                                }
+                                            />
                                         </View>
                                     );
                                 })}
+                                {feed.length > 0 &&
+                                    <TouchableOpacity activeOpacity={0.7} style={[styles.w100, styles.alignCenter, styles.mt10]} onPress={loadMore}>
+                                        <Text style={[styles.primary, styles.bold, styles.font14]}>{t('see_more')}</Text>
+                                    </TouchableOpacity>
+                                }
                                 {feed.length === 0 && (
                                     <View style={[styles.flexOne, styles.fullCenter, styles.w100]}>
                                         <MaterialIcons name="sentiment-very-dissatisfied" color={palette.dark} size={100} />

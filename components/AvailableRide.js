@@ -1,19 +1,19 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { addSecondsToDate, getDateShort, getDurationValues, getTime, palette, rem, styles, translateEnglishNumbers } from '../helper';
-import FromToIndicator from './FromToIndicator';
-import useUserStore from '../api/accountAPI';
 import { useTranslation } from 'react-i18next';
+import { I18nManager, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import useUserStore from '../api/accountAPI';
+import { addSecondsToDate, getDurationValues, getTime, palette, rem, styles } from '../helper';
 import useLocale from '../locale/localeContext';
-import Separator from './Separator';
 
-const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsAvailable, date, driverName, duration, model, brand, DriverId, onPress = () => { }, style = {} }) => {
+const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsAvailable, date, driverName, duration, model, brand, pickupEnabled, gender, DriverId, onPress = () => { }, style = {} }) => {
     const items = [];
     const rideFull = (seatsAvailable - seatsOccupied) <= 0;
     const { id } = useUserStore();
     const { t } = useTranslation();
     const { language } = useLocale();
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
     if (!rideFull) {
         for (let i = 0; i < seatsOccupied; i++) {
@@ -29,44 +29,9 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
 
 
     return (
-        // <TouchableOpacity activeOpacity={0.65} style={[styles2.rideView, style]} onPress={() => { !rideFull ? onPress(rid, DriverId === id) : () => {return;} }}>
-        //     <View style={{ ...styles.flexRow, flex: 7, padding: 16 }}>
-        //         <View style={{ height: '100%' }}>
-        //             <FromToIndicator circleRadius={5} />
-        //         </View>
-        //         <View style={{ height: '100%', flex: 1, marginStart: 10, justifyContent: 'space-between' }}>
-        //             <Text style={{ alignSelf: 'flex-start', fontWeight: '600' }}>{fromAddress}</Text>
-        //             <View style={styles.flexOne} />
-        //             <Text style={{ alignSelf: 'flex-start', fontWeight: '600' }}>{toAddress}</Text>
-        //         </View>
-        //     </View>
-        //     <View style={{ ...styles.flexRow, flex: 3, width: '100%', paddingStart: 5, paddingEnd: 5, borderTopWidth: 1, borderColor: palette.light }}>
-        //         <View style={[styles2.subViews, { flex: 1, borderRightWidth: 1 }]}>
-        //             <MaterialIcons name="monetization-on" size={16} color={palette.primary} />
-        //             <Text style={styles2.textIcon}>{language === 'ar' ? translateEnglishNumbers(pricePerSeat) : pricePerSeat} {t('EGP')}</Text>
-        //         </View>
-
-        //         <View style={[styles2.subViews, { flex: 1, borderRightWidth: 1 }]}>
-        //             {
-        //                 items
-        //             }
-        //         </View>
-
-        //         <View style={[styles2.subViews, { flex: 1, borderRightWidth: 1 }]}>
-        //             <MaterialIcons name="date-range" size={16} color={palette.primary} />
-        //             <Text style={styles2.textIcon}>{getDateShort(date)}</Text>
-        //         </View>
-
-        //         <View style={[styles2.subViews, styles2.flexOne]}>
-        //             <MaterialIcons name="schedule" size={16} color={palette.primary} />
-        //             <Text style={styles2.textIcon}>{getTime(date)}</Text>
-        //         </View>
-        //     </View>
-        // </TouchableOpacity>
-
         <TouchableOpacity onPress={() => { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={{ width: '100%', paddingVertical: 24, paddingHorizontal: 24, borderRadius: 16, backgroundColor: palette.white, borderWidth: 1, borderColor: palette.light, ...style }}>
             <View style={{ flexDirection: 'row', width: '100%' }}>
-                <View style={{ maxWidth: '60%' }}>
+                <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                     <View style={{ flexDirection: 'row' }}>
                         <View>
                             <Text style={{ fontWeight: '700', fontSize: 16 }}>{getTime(date)[0]}<Text style={{ fontSize: 12 }}> {t(getTime(date)[1])}</Text></Text>
@@ -80,22 +45,42 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                     <Text numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
                 </View>
 
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, alignItems: 'flex-start' }}>
                     <Text style={{ fontWeight: '700', fontSize: 16 }}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={{ fontSize: 12 }}> {t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
                     <Text numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
                 </View>
             </View>
 
             <View style={{ flexDirection: 'row', width: '100%', marginTop: 24 }}>
-                {model && brand && <View style={{ paddingHorizontal: 16, borderRadius: 12, backgroundColor: palette.dark, height: 24, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-end' }}>
-                    <Text style={{ color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }}>{brand} {model}</Text>
-                </View>}
-                <View style={{ flex: 1 }} />
-                <View>
+                <View style={[{ flex: 1, flexWrap: 'wrap' }, styles.flexRow, styles.alignEnd]}>
+                    {gender !== "ANY" &&
+                        <View style={[styles.fullCenter, { width: 32, height: 24, borderRadius: 12, marginVertical: 1 * rem, marginHorizontal: 1 * rem, backgroundColor: gender === "MALE" ? "#1d74c6" : "pink" }]}>
+                            <Text style={[styles.bold, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
+                        </View>
+                    }
+
+                    {pickupEnabled &&
+                        <View style={[styles.ph16, styles.bgRed, styles.fullCenter, { borderRadius: 12 * rem, height: 24 * rem, alignSelf: 'flex-end', marginVertical: 1 * rem, marginHorizontal: 1 * rem }]}>
+                            <Text style={{ color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }}>
+                                PICK UP
+                            </Text>
+                        </View>
+                    }
+                    {model && brand &&
+                        <View style={{ paddingHorizontal: 16 * rem, borderRadius: 12 * rem, backgroundColor: palette.dark, height: 24 * rem, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-end', marginVertical: 1 * rem, marginHorizontal: 1 * rem }}>
+                            <Text style={{ color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }}>{brand} {model}</Text>
+                        </View>
+                    }
+                </View>
+                <View style={[styles.flexCol, styles.alignEnd, styles.justifyEnd]}>
                     <Text style={{ fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }}>{pricePerSeat}<Text style={{ fontSize: 12 }}> {t('EGP')}</Text></Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <MaterialIcons name="person" size={16} color={palette.dark} />
-                        <Text style={{ color: palette.dark }}> {seatsAvailable && seatsOccupied ? seatsOccupied + '/' + seatsAvailable : seatsAvailable} • {(() => { const dateParts = date.toDateString().split(' '); return `${dateParts[0]} ${dateParts[1]} ${dateParts[2]}`; })()}</Text>
+                        <Text style={{ color: palette.dark }}>
+                            {seatsAvailable && seatsOccupied ? seatsOccupied + '/' + seatsAvailable : seatsAvailable}
+                            &nbsp;•&nbsp;
+                            {t( days[date.getDay()] )} {date.getDate()} {t(months[date.getMonth()])}
+                        </Text>
                     </View>
                 </View>
             </View>
@@ -114,7 +99,7 @@ const styles2 = StyleSheet.create(
             borderColor: '#d9d9d9',
             borderWidth: 1,
             backgroundColor: '#F6F5F5',
-            height: 165 * rem
+            minHeight: 165 * rem
         },
 
         subViews: {

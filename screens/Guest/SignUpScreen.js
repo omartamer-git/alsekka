@@ -24,6 +24,7 @@ import HeaderView from '../../components/HeaderView';
 import { palette, rem, styles } from '../../helper';
 
 const SignUpScreen = ({ route, navigation }) => {
+  const { t } = useTranslation();
   const [gender, setGender] = useState('MALE');
 
   const [phoneNumExists, setPhoneNumExists] = useState(false);
@@ -36,18 +37,6 @@ const SignUpScreen = ({ route, navigation }) => {
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
     setSubmitDisabled(true);
     phoneNum = "0" + phoneNum;
-
-    // userStore.createAccount(firstName, lastName, phoneNum, email, password, gender).then((data) => {
-    //   userStore.login(phoneNum, password).then(() => {
-    //     if (!userStore.verified) {
-    //       navigation.navigate('Otp', { phone: phoneNum, onVerify: 'login' });
-    //     }
-    //   })
-    // }).catch(err => {
-    //   setErrorMessage(err.response.data.error.message);
-    // }).finally(() => {
-    //   setSubmitDisabled(false);
-    // });
 
     navigation.navigate('Otp', {
       firstName: firstName,
@@ -75,13 +64,13 @@ const SignUpScreen = ({ route, navigation }) => {
   const signUpSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
       /^1[0-2,5]{1}[0-9]{8}$/,
-      'Please enter a valid phone number in international format'
+      t('error_invalid_phone')
     )
-      .required('This field is required'),
-    passwordInput: Yup.string().min(8, 'Your password should be at least 8 characters long').required('This field is required'),
-    emailInput: Yup.string().email('Please enter a valid email address').matches(emailValidationRegex, 'Please use your university email').required('This field is required'),
-    firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
-    lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
+      .required(t('error_required')),
+    passwordInput: Yup.string().min(8, t('error_invalid_password')).required(t('error_required')),
+    emailInput: Yup.string().email(t('error_invalid_email')).matches(emailValidationRegex, t('error_university_mail')).required(t('error_required')),
+    firstNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required')),
+    lastNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required'))
   });
 
   if (Platform.OS === 'ios') {
@@ -99,7 +88,6 @@ const SignUpScreen = ({ route, navigation }) => {
     useFocusEffect(onFocusEffect); // register callback to focus events    
   }
 
-  const { t } = useTranslation();
 
 
   return (

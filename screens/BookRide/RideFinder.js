@@ -30,16 +30,19 @@ const RideFinder = ({ route, navigation }) => {
     const [toLat, setToLat] = useState(route.params.toLat);
     const [textFrom, setTextFrom] = useState(route.params.textFrom);
     const [textTo, setTextTo] = useState(route.params.textTo);
-    const { date, genderChoice } = route.params;
+    const [date, setDate] = useState(route.params.date);
+    const { genderChoice } = route.params;
 
     const fromRef = useRef(null);
     const toRef = useRef(null);
+    const scrollViewRef = useRef(null);
 
     const loc = route.params?.loc;
 
     const [location, setLocation] = useState(null);
 
     const [loading, setLoading] = useState(true);
+
 
 
     useEffect(() => {
@@ -55,6 +58,18 @@ const RideFinder = ({ route, navigation }) => {
                 }
             );
     }, [fromLng, fromLat, toLng, toLat, date, genderChoice]);
+
+    const scrollToHour = () => {
+        if(scrollViewRef.current && availableRides && availableRides.length > 0) {
+            const hour = new Date(availableRides[0].datetime).getHours();
+
+            scrollViewRef.current.scrollTo({x: hour * 90 * rem, y: 50, animated: true});
+        } else {
+            console.log("Falsch");
+            console.log(scrollViewRef.current);
+            console.log(availableRides.length);
+        }
+    }
 
     const onClickRide = (rid, driver) => {
         if (driver) {
@@ -122,16 +137,76 @@ const RideFinder = ({ route, navigation }) => {
                 </View>
 
                 <Text style={[styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
+                {!loading && availableRides.length > 0 &&
+                    <ScrollView horizontal={true} style={[{ flexGrow: 0 }, styles.mt5]} showsHorizontalScrollIndicator={false} ref={scrollViewRef} onLayout={scrollToHour}>
+                        {
+                            Array.from({ length: 24 }).map((a, i) => {
+                                const hourNumber = (new Date(availableRides[0].datetime)).getHours();
+
+                                const getTimeFromIndex = () => {
+                                    let ampm = "AM";
+                                    let time = i;
+
+                                    if (i >= 12) {
+                                        ampm = "PM";
+                                        time -= 12;
+                                    }
+
+                                    if (time === 0) {
+                                        time = 12;
+                                    }
+
+                                    return `${time} ${t(ampm)}`;
+                                }
+
+                                return (
+                                    <TouchableOpacity
+                                        onPress={
+                                            () => setDate(d => {
+                                                let dateObj = new Date(d);
+                                                dateObj.setHours(i);
+                                                dateObj.setMinutes(0);
+                                                dateObj.setSeconds(0);
+                                                dateObj.setMilliseconds(0);
+                                                return dateObj;
+                                            })
+                                        }
+                                        key={`time${i}`}
+                                        activeOpacity={0.8}
+                                        style={[styles.bgWhite, styles.border1, styles.fullCenter, { width: 85 * rem, height: 30 * rem, borderRadius: 15 * rem, marginHorizontal: 2.5 * rem, borderColor: hourNumber === i ? palette.primary : palette.light }]}>
+                                        <Text style={[styles.textCenter]}>{getTimeFromIndex()}</Text>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                }
                 {!loading &&
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
-                        return (<AvailableRide key={"ar" + index} rid={data.id} model={data.model} brand={data.brand} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} pricePerSeat={data.pricePerSeat} duration={data.duration} date={objDate} onPress={onClickRide} style={rideFinderStyles.availableRide} />);
+                        return (<AvailableRide
+                            key={"ar" + index}
+                            rid={data.id}
+                            model={data.model}
+                            brand={data.brand}
+                            fromAddress={data.mainTextFrom}
+                            toAddress={data.mainTextTo}
+                            seatsOccupied={data.seatsOccupied}
+                            seatsAvailable={data.seatsAvailable}
+                            DriverId={data.DriverId}
+                            pricePerSeat={data.pricePerSeat}
+                            duration={data.duration}
+                            date={objDate}
+                            onPress={onClickRide}
+                            pickupEnabled={data.pickupEnabled}
+                            gender={data.gender}
+                            style={rideFinderStyles.availableRide} />);
                     }
                     )
                 }
                 {
                     !loading && availableRides && availableRides.length === 0 &&
-                    <View style={{alignItems: 'center', justifyContent: 'center', width: '100%', flex: 1}}> 
+                    <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', flex: 1 }}>
                         <MaterialIcons name="sentiment-very-dissatisfied" size={125 * rem} color={palette.dark} />
                         <Text style={[styles.bold, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
                         <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Post Ride')} />
@@ -195,7 +270,7 @@ const rideFinderStyles = StyleSheet.create({
 
     availableRide: {
         ...styles.mt10,
-        height: 140 * rem,
+        minHeight: 140 * rem,
     }
 });
 

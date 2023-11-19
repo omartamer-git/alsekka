@@ -99,11 +99,11 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                             {!userStore.driver && !licenseStatus &&
                                 <>
                                     <Text style={styles.inputText}>{t('front_side_drivers_license')}</Text>
-                                    <ErrorMessage condition={frontSideTouched && !licenseFront} message="This field is required" />
+                                    <ErrorMessage condition={frontSideTouched && !licenseFront} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
 
                                     <Text style={[styles.inputText]}>{t('back_side_drivers_license')}</Text>
-                                    <ErrorMessage condition={backSideTouched && !licenseBack} message="This field is required" />
+                                    <ErrorMessage condition={backSideTouched && !licenseBack} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
 
                                     <Button bgColor={palette.primary} textColor={palette.white} text={t('next_new_car')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack || submitDisabled} />

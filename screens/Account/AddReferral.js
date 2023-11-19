@@ -84,9 +84,9 @@ const AddReferral = ({ navigation, route }) => {
                     <>
                         <View style={[styles.w100, styles.flexOne, styles.fullCenter]}>
                             <SuccessCheck />
-                            <Text style={[styles.freeSans, styles.headerText3, styles.primary, styles.textCenter]}>Referral Code Applied!</Text>
-                            <Text style={[styles.textCenter, styles.mt5]}>We have added 50 EGP to your wallet redeemable on any future ride!</Text>
-                            <Button style={[styles.mt10]} bgColor={palette.accent} textColor={palette.white} text="Go Back" onPress={() => navigation.navigate('Account', { screen: 'Account Home' })} />
+                            <Text style={[styles.freeSans, styles.headerText3, styles.primary, styles.textCenter]}>{t('referral_code_applied')}</Text>
+                            <Text style={[styles.textCenter, styles.mt5]}>{t('referral_description')}</Text>
+                            <Button style={[styles.mt10]} bgColor={palette.accent} textColor={palette.white} text={t('back')} onPress={() => navigation.navigate('Account', { screen: 'Account Home' })} />
                         </View>
                     </>
                 }

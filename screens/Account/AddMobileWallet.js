@@ -18,8 +18,9 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 
 const AddMobileWallet = ({ navigation, route }) => {
+    const { t } = useTranslation();
     const [addWalletError, setAddWalletError] = useState(null);
-    const {addMobileWallet} = useUserStore();
+    const { addMobileWallet } = useUserStore();
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const addAccount = (phoneInput) => {
@@ -34,14 +35,14 @@ const AddMobileWallet = ({ navigation, route }) => {
     }
 
     const walletAccountSchema = Yup.object().shape({
-        phoneInput: Yup.string().matches(
+        phoneInput: Yup.string().required(t('error_required')).matches(
             /^01[0-2,5]{1}[0-9]{8}$/,
-            'Please enter a valid phone number in international format'
-          )
-        }
+            t('error_invalid_phone')
+        )
+    }
     );
 
-    if(Platform.OS === 'ios') {
+    if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -52,11 +53,10 @@ const AddMobileWallet = ({ navigation, route }) => {
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const {t} = useTranslation();
 
     return (
         <ScreenWrapper screenName={t('add_wallet')} navType="back" navAction={() => navigation.goBack()}>

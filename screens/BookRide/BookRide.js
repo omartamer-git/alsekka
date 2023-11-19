@@ -91,7 +91,7 @@ const BookRide = ({ route, navigation }) => {
 
     const [loading, setLoading] = useState(true);
 
-    const { balance, availableCards } = useUserStore();
+    const { id, balance, availableCards } = useUserStore();
     const { cardsEnabled, passengerFee } = useAppManager();
 
     useEffect(() => {
@@ -106,6 +106,9 @@ const BookRide = ({ route, navigation }) => {
 
         setLoading(true);
         const data = ridesAPI.rideDetails(rideId).then((data) => {
+            if (data.Driver.id === id) {
+                return navigation.navigate('View Trip', { tripId: rideId })
+            }
             setMainTextFrom(data.mainTextFrom);
             setMaintextTo(data.mainTextTo);
             setSeatsOccupied(data.seatsOccupied);
@@ -280,7 +283,7 @@ const BookRide = ({ route, navigation }) => {
                             </Marker>
                         }
 
-                        {location && markerFrom && <Polyline strokeColor={palette.accent} strokeWidth={3}lineDashPattern={[600,200,300,200]} coordinates={[location, markerFrom]} />}
+                        {location && markerFrom && <Polyline strokeColor={palette.accent} strokeWidth={3} lineDashPattern={[600, 200, 300, 200]} coordinates={[location, markerFrom]} />}
                         {polyline && <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(polyline)} strokeWidth={3} />}
 
                     </MapView>
@@ -495,9 +498,11 @@ const BookRide = ({ route, navigation }) => {
             </BottomModal>
 
             <BottomModal onHide={() => setVoucherModalVisible(false)} modalVisible={voucherModalVisible}>
-                <Text style={[styles.headerText2, styles.mt10]}>{t('redeem')} {t('voucher')}</Text>
-                <CustomTextInput placeholder={t('voucher')} value={voucherText} onChangeText={(value) => setVoucherText(value)} error={voucherErrorMessage} />
-                <Button text={t('redeem')} bgColor={palette.primary} textColor={palette.white} onPress={verifyVoucher} />
+                <View style={[styles.w100, styles.alignStart]}>
+                    <Text style={[styles.headerText2, styles.mt10]}>{t('redeem')} {t('voucher')}</Text>
+                    <CustomTextInput placeholder={t('voucher')} value={voucherText} onChangeText={(value) => setVoucherText(value)} error={voucherErrorMessage} />
+                    <Button text={t('redeem')} bgColor={palette.primary} textColor={palette.white} onPress={verifyVoucher} />
+                </View>
             </BottomModal>
 
             {modalMapOpen && <View style={[styles.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>

@@ -105,11 +105,11 @@ const UserHome = ({ navigation, route }) => {
                 {
                     !loading &&
                     <>
-                        <Text style={[styles.headerText2, styles.mt20]}>
+                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.headerText2, styles.mt20]}>
                             {
                                 currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
                             }
-                            , {userStore.firstName}!
+                            {t('comma')}&nbsp;{userStore.firstName}!
                         </Text>
 
                         {driverElement && driverMainTextTo &&
@@ -143,7 +143,20 @@ const UserHome = ({ navigation, route }) => {
                         <Text style={[styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
                         {
                             nextRideData &&
-                            <AvailableRide fromAddress={nextRideData.mainTextFrom} toAddress={nextRideData.mainTextTo} pricePerSeat={nextRideData.pricePerSeat} duration={nextRideData.duration} DriverId={nextRideData.DriverId} seatsOccupied={nextRideData.seatsOccupied} seatsAvailable={nextRideData.seatsAvailable} duration={nextRideData.duration} date={nextRideDate} style={{ marginTop: 8 * rem, marginBottom: 8 * rem, height: 140 * rem }} onPress={() => { viewTrip(nextRideData.id); }} />
+                            <AvailableRide
+                                fromAddress={nextRideData.mainTextFrom}
+                                toAddress={nextRideData.mainTextTo}
+                                pricePerSeat={nextRideData.pricePerSeat}
+                                duration={nextRideData.duration}
+                                DriverId={nextRideData.DriverId}
+                                seatsOccupied={nextRideData.seatsOccupied}
+                                seatsAvailable={nextRideData.seatsAvailable}
+                                pickupEnabled={nextRideData.pickupEnabled}
+                                gender={nextRideData.gender}
+                                duration={nextRideData.duration}
+                                date={nextRideDate}
+                                style={{ marginTop: 8 * rem, marginBottom: 8 * rem, minHeight: 140 * rem }}
+                                onPress={() => { viewTrip(nextRideData.id); }} />
                         }
                         {
                             !nextRideData &&

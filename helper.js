@@ -104,6 +104,10 @@ export const abbreviate = (string) => {
 
         return abbreviation.toUpperCase(); // Convert the abbreviation to uppercase
     }
+
+    if(words.length === 1) {
+        return words[0].substring(0, 4).toUpperCase();
+    }
     return string;
 };
 

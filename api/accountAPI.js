@@ -39,68 +39,63 @@ const useUserStore = create((set) => ({
     setGender: (gender) => set((state) => ({ gender: gender })),
 
     login: async (phoneNum, password) => {
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const appManager = useAppManager.getState();
+        const axiosManager = useAxiosManager.getState();
+        const appManager = useAppManager.getState();
 
-            const response = await axiosManager.publicAxios.get(`/login`, {
-                params: {
-                    phone: phoneNum,
-                    password: password,
-                    deviceToken: appManager.deviceToken,
-                    platform: Platform.OS
-                },
-            });
+        const response = await axiosManager.publicAxios.get(`/login`, {
+            params: {
+                phone: phoneNum,
+                password: password,
+                deviceToken: appManager.deviceToken,
+                platform: Platform.OS
+            },
+        });
 
-            const data = response.data;
-            set(data);
+        const data = response.data;
+        set(data);
 
-            const authManager = useAuthManager.getState();
-            authManager.setAccessToken(data.accessToken);
-            authManager.setRefreshToken(data.refreshToken);
-            authManager.setAuthenticated(true);
+        const authManager = useAuthManager.getState();
+        authManager.setAccessToken(data.accessToken);
+        authManager.setRefreshToken(data.refreshToken);
+        authManager.setAuthenticated(true);
 
-            appManager.setPassengerFee(data.passengerFee);
-            appManager.setDriverFee(data.driverFee);
-            appManager.setCardsEnabled(data.cardsEnabled);
-            appManager.setVerificationsDisabled(data.verificationsDisabled);
+        appManager.setPassengerFee(data.passengerFee);
+        appManager.setDriverFee(data.driverFee);
+        appManager.setCardsEnabled(data.cardsEnabled);
+        appManager.setVerificationsDisabled(data.verificationsDisabled);
+        appManager.setReferralsDisabled(data.referralsDisabled);
 
-            await Keychain.setGenericPassword(
-                'token',
-                JSON.stringify({
-                    accessToken: data.accessToken,
-                    refreshToken: data.refreshToken,
-                }),
-            );
+        await Keychain.setGenericPassword(
+            'token',
+            JSON.stringify({
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+            }),
+        );
 
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        console.log(data);
+
+        return data;
     },
 
     userInfo: async (uid) => {
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const appManager = useAppManager.getState();
-            const response = await axiosManager.authAxios.get(`/userinfo`, {
-                params: {
-                    deviceToken: appManager.deviceToken
-                }
-            });
+        const axiosManager = useAxiosManager.getState();
+        const appManager = useAppManager.getState();
+        const response = await axiosManager.authAxios.get(`/userinfo`, {
+            params: {
+                deviceToken: appManager.deviceToken
+            }
+        });
 
-            const data = response.data;
-            set(data);
+        const data = response.data;
+        set(data);
 
-            appManager.setPassengerFee(data.passengerFee);
-            appManager.setDriverFee(data.driverFee);
-            appManager.setCardsEnabled(data.cardsEnabled);
-            appManager.setVerificationsDisabled(data.verificationsDisabled);
+        appManager.setPassengerFee(data.passengerFee);
+        appManager.setDriverFee(data.driverFee);
+        appManager.setCardsEnabled(data.cardsEnabled);
+        appManager.setVerificationsDisabled(data.verificationsDisabled);
 
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        return data;
     },
 
     createAccount: async (firstName, lastName, phoneNum, email, password, gender) => {
@@ -124,16 +119,12 @@ const useUserStore = create((set) => ({
     },
 
     getAvailableCards: async () => {
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.get(`/wallet`);
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get(`/wallet`);
 
-            const data = response.data;
-            set((state) => ({ availableCards: data }));
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        const data = response.data;
+        set((state) => ({ availableCards: data }));
+        return data;
     },
 
     getBankAccounts: async () => {
@@ -160,20 +151,16 @@ const useUserStore = create((set) => ({
             lastName: lastName,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.patch(`/name`, body, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.patch(`/name`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            const data = response.data;
-            set(data);
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        const data = response.data;
+        set(data);
+        return data;
     },
 
     editEmail: async (email) => {
@@ -181,20 +168,16 @@ const useUserStore = create((set) => ({
             email: email,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.patch(`/email`, body, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.patch(`/email`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            const data = response.data;
-            set(data);
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        const data = response.data;
+        set(data);
+        return data;
     },
 
     editPhone: async (phone) => {
@@ -202,20 +185,17 @@ const useUserStore = create((set) => ({
             phone: phone,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.patch(`/phone`, body, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.patch(`/phone`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            const data = response.data;
-            set(data);
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        const data = response.data;
+        set(data);
+        return data;
+
     },
 
     addBankAccount: async (fullName, bankName, accNumber, swiftCode) => {
@@ -227,19 +207,18 @@ const useUserStore = create((set) => ({
             swiftCode: swiftCode,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.post(`/bankaccount`, body, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(`/bankaccount`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            const data = response.data;
-            return data;
-        } catch (err) {
-            throw err;
-        }
+
+        const data = response.data;
+        set(oldState => ({ bankAccounts: oldState.bankAccounts.concat([body]) }));
+
+        return data;
     },
 
     addMobileWallet: async (phone) => {
@@ -247,20 +226,16 @@ const useUserStore = create((set) => ({
             phone: phone,
         };
 
-        try {
-            const axiosManager = useAxiosManager.getState();
-            const response = await axiosManager.authAxios.post(`/mobilewallet`, body, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post(`/mobilewallet`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            const data = response.data;
-            console.log(data);
-            return data;
-        } catch (err) {
-            throw err;
-        }
+        const data = response.data;
+        set(oldState => ({ mobileWallets: oldState.mobileWallets.concat([body]) }));
+        return data;
     },
 
     getOtp: async (phone) => {
@@ -292,7 +267,7 @@ const useUserStore = create((set) => ({
         });
         console.log(isVerified.data);
 
-        if(isVerified.data.verified == true) {
+        if (isVerified.data.verified == true) {
             set(isVerified.data);
             return true;
         } else {

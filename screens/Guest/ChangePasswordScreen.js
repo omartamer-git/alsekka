@@ -20,14 +20,15 @@ import { palette, styles } from '../../helper';
 
 
 const ChangePasswordScreen = ({ route, navigation }) => {
+    const {t} = useTranslation();
     const { token } = route.params;
     const [errorMessage, setErrorMessage] = useState(null);
     const { resetPassword } = useUserStore();
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const changePasswordSchema = Yup.object().shape({
-        passwordInput: Yup.string().min(8, 'Your password should be at least 8 characters long').required('This field is required'),
-        password2Input: Yup.string().min(8, 'Your password should be at least 8 characters long').oneOf([Yup.ref('passwordInput'), null], "Passwords don't match").required('This field is required'),
+        passwordInput: Yup.string().min(8, t('error_password')).required(t('error_required')),
+        password2Input: Yup.string().min(8, t('error_password')).oneOf([Yup.ref('passwordInput'), null], t('error_confirm_password')).required(t('error_required')),
     });
 
 
@@ -56,8 +57,6 @@ const ChangePasswordScreen = ({ route, navigation }) => {
     
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
-
-    const {t} = useTranslation();
 
     return (
         <View style={styles.backgroundStyle}>

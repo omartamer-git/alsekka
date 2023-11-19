@@ -18,6 +18,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 
 const AddBank = ({ navigation, route }) => {
+    const {t} = useTranslation();
     const [addBankError, setAddBankError] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
@@ -34,10 +35,10 @@ const AddBank = ({ navigation, route }) => {
     }
 
     const bankAccountSchema = Yup.object().shape({
-        fullNameInput: Yup.string().required('This field is required').min(5, "Please enter your full name").max(60, "Your full name should be a maximum of 60 characters"),
-        bankNameInput: Yup.string().required('This field is required').max(30, "Bank name is too long, feel free to abbreviate"),
-        accountNumberInput: Yup.string().required('This field is required').max(34, "Account number too long"),
-        swiftCodeInput: Yup.string().max(11, "Swift Code too long")
+        fullNameInput: Yup.string().required(t('error_required')).min(5, t('error_name_short')).max(60, t('error_name_long')),
+        bankNameInput: Yup.string().required(t('error_required')).max(30, t('error_bank_long')),
+        accountNumberInput: Yup.string().required(t('error_required')).max(34, t('error_accountnumber_long')),
+        swiftCodeInput: Yup.string().max(11, t('error_swift_long'))
     });
 
     if(Platform.OS === 'ios') {
@@ -55,7 +56,6 @@ const AddBank = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const {t} = useTranslation();
 
     return (
         <ScreenWrapper screenName={t('add_bank_account')} navType="back" navAction={() => navigation.goBack()}>

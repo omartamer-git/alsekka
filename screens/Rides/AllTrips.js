@@ -59,7 +59,7 @@ const AllTrips = ({ navigation, route }) => {
 
                 setNextRides(newNextRides);
                 if (data.length != 0) {
-                    setPage(p => p+1);
+                    setPage(p => p + 1);
                 }
             }
         );
@@ -72,7 +72,7 @@ const AllTrips = ({ navigation, route }) => {
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName="All Trips" navAction={() => navigation.goBack()} navType="back">
+        <ScreenWrapper screenName={t('all_trips')} navAction={() => navigation.goBack()} navType="back">
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
@@ -112,7 +112,20 @@ const AllTrips = ({ navigation, route }) => {
                             nextRides && nextRides.map((data, index) => {
                                 const nextRideDate = new Date(data.datetime);
                                 return (
-                                    <AvailableRide key={"ride" + index} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} duration={data.duration} pricePerSeat={data.pricePerSeat} DriverId={data.DriverId} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} date={nextRideDate} style={allTripsStyle.availableRide} onPress={() => { viewTrip(data.id); }} />
+                                    <AvailableRide
+                                        key={"ride" + index}
+                                        fromAddress={data.mainTextFrom}
+                                        toAddress={data.mainTextTo}
+                                        duration={data.duration}
+                                        pricePerSeat={data.pricePerSeat}
+                                        DriverId={data.DriverId}
+                                        seatsOccupied={data.seatsOccupied}
+                                        seatsAvailable={data.seatsAvailable}
+                                        pickupEnabled={data.pickupEnabled}
+                                        gender={data.gender}
+                                        date={nextRideDate}
+                                        style={allTripsStyle.availableRide}
+                                        onPress={() => { viewTrip(data.id); }} />
                                 );
                             })
                         }
@@ -145,10 +158,10 @@ const AllTrips = ({ navigation, route }) => {
                             </SkeletonPlaceholder>
                             <SkeletonPlaceholder>
                                 <SkeletonPlaceholder.Item width={'100%'} height={140 * rem} marginVertical={10 * rem} />
-                            </SkeletonPlaceholder>  
+                            </SkeletonPlaceholder>
                             <SkeletonPlaceholder>
                                 <SkeletonPlaceholder.Item width={'100%'} height={40 * rem} marginVertical={10 * rem} />
-                            </SkeletonPlaceholder>                            
+                            </SkeletonPlaceholder>
                         </View>
                     </>
                 }
@@ -167,7 +180,7 @@ const allTripsStyle = StyleSheet.create({
     },
 
     availableRide: {
-        height: 140 * rem,
+        minHeight: 140 * rem,
         ...styles.mv10,
     }
 });

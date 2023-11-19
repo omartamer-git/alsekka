@@ -22,6 +22,7 @@ import { palette, styles } from '../../helper';
 
 
 const LoginScreen = ({ route, navigation }) => {
+  const { t } = useTranslation();
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -62,10 +63,10 @@ const LoginScreen = ({ route, navigation }) => {
   const loginSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
       /^01[0-2,5]{1}[0-9]{8}$/,
-      'Please enter a valid phone number in international format'
+      t('error_invalid_phone')
     )
-      .required('This field is required'),
-    passwordInput: Yup.string().min(0, 'Your password should be at least 8 characters long').required('This field is required'),
+      .required(t('error_required')),
+    passwordInput: Yup.string().min(0, t('error_password')).required(t('error_required')),
   });
 
   if (Platform.OS === 'ios') {
@@ -83,7 +84,6 @@ const LoginScreen = ({ route, navigation }) => {
     useFocusEffect(onFocusEffect); // register callback to focus events    
   }
 
-  const { t } = useTranslation();
 
 
 

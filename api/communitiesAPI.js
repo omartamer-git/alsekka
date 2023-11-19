@@ -15,11 +15,12 @@ export const getCommunities = async () => {
     }
 };
 
-export const communitiesFeed = async (communityId) => {
+export const communitiesFeed = async (communityId, page=1) => {
     const url = `/myfeed`;
     const uid = useUserStore.getState().id;
     const params = {
-        communityId: communityId || ''
+        communityId: communityId || '',
+        page: page
     };
 
     try {

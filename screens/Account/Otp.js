@@ -105,15 +105,6 @@ const Otp = ({ route, navigation }) => {
     }, [triggerCountdown, time])
 
 
-    // useEffect(() => {
-    //     return () => {
-    //         if (countdownInterval) {
-    //             clearInterval(countdownInterval);
-    //         }
-    //     };
-    // }, []);
-
-
     const resendOtp = () => {
         console.log('hello ' + phone);
         getOtp(phone).then((response) => {
@@ -170,19 +161,6 @@ const Otp = ({ route, navigation }) => {
                 <View style={[styles.w100, styles.bgLightGray, styles.h100, { borderTopLeftRadius: 16, borderTopRightRadius: 16 }]} />
             </View>
             <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle]}>
-                {/* <View style={[styles.w100, styles.flexRow]}>
-                    {
-                        otpInput.current.map((_, index) => {
-                            return (<DigitBox key={"digitbox" + index} inputRef={ref => otpRef.current.push(ref)} onFocus={() => setCurrentInput(index)} swap={swap} />);
-                        })
-                    }
-                </View>
-
-                <View style={[styles.w100, styles.justifyCenter, styles.alignCenter, styles.mt10]}>
-                    <ErrorMessage message={error} condition={error} style={styles.mb10} />
-                    {!resendAvailable && <Text style={[styles.font12, styles.dark]}>{t('please_wait')} {countdown} {t('seconds_before_requesting')}</Text>}
-                    {resendAvailable && <Text style={[styles.font12, styles.dark, styles.bold]} onPress={resendOtp}>{t('resend')} {t('verification_code')}</Text>}
-                </View> */}
                 <Button disabled={!uri} onPress={openWhatsapp} bgColor={palette.success} textColor={palette.white} text="Verify Using WhatsApp" />
             </ScrollView>
         </ScreenWrapper>

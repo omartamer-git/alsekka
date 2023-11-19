@@ -11,6 +11,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { createCommunity } from "../../api/communitiesAPI";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import * as Yup from 'yup';
 
 
 export default function NewCommunity({ navigation, route }) {
@@ -49,12 +50,19 @@ export default function NewCommunity({ navigation, route }) {
 
     const { t } = useTranslation();
 
+    const communitySchema = Yup.object().shape({
+        communityNameInput: Yup.string().min(3, t('error_short')).max(20, t('error_long')).required(t('error_required')),
+        communityDescriptionInput: Yup.string().required(t('error_required')),
+    });
+
+
     return (
         <ScreenWrapper screenName={t('new_community')} navType='back' navAction={navigation.goBack}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Formik
                     initialValues={{ communityNameInput: '', communityDescriptionInput: '', communityPrivacyInput: 0, joinQuestionInput: '' }}
                     onSubmit={(values) => { handleSubmit(values.communityNameInput, values.communityDescriptionInput, values.communityPrivacyInput, values.joinQuestionInput) }}
+                    validationSchema={communitySchema}
                 >
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>
@@ -66,12 +74,12 @@ export default function NewCommunity({ navigation, route }) {
                             </TouchableOpacity> */}
 
 
-                            <View style={[styles.mt10, styles.fullCenter, {alignSelf: 'center'}]}>
-                                <TouchableOpacity activeOpacity={0.9} onPress={openImagePicker} style={[styles.borderPrimary, styles.fullCenter, styles.border3, {width: 110 * rem, height: 110 * rem, borderRadius: 110/2 * rem}]}>
-                                    {communityPhoto && <Image source={{ uri: communityPhoto.assets[0].uri }} style={[{height: 100 * rem, width: 100 * rem, borderRadius: 100/2 * rem}, styles.border2, styles.borderWhite]} />}
+                            <View style={[styles.mt10, styles.fullCenter, { alignSelf: 'center' }]}>
+                                <TouchableOpacity activeOpacity={0.9} onPress={openImagePicker} style={[styles.borderPrimary, styles.fullCenter, styles.border3, { width: 110 * rem, height: 110 * rem, borderRadius: 110 / 2 * rem }]}>
+                                    {communityPhoto && <Image source={{ uri: communityPhoto.assets[0].uri }} style={[{ height: 100 * rem, width: 100 * rem, borderRadius: 100 / 2 * rem }, styles.border2, styles.borderWhite]} />}
 
-                                    <View style={[styles.positionAbsolute, styles.fullCenter, {backgroundColor: 'rgba(125,125,125,0.5)', height: 100 * rem, width: 100 * rem, borderRadius: 100/2 * rem}]}>
-                                        <MaterialIcons name="photo-camera" size={50} style={{borderRadius: 50 * rem, ...styles.positionAbsolute}} color={palette.light} />
+                                    <View style={[styles.positionAbsolute, styles.fullCenter, { backgroundColor: 'rgba(125,125,125,0.5)', height: 100 * rem, width: 100 * rem, borderRadius: 100 / 2 * rem }]}>
+                                        <MaterialIcons name="photo-camera" size={50} style={{ borderRadius: 50 * rem, ...styles.positionAbsolute }} color={palette.light} />
                                     </View>
                                 </TouchableOpacity>
                             </View>

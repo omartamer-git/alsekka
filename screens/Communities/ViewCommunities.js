@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+    Image,
     Platform,
     RefreshControl,
     ScrollView,
@@ -18,6 +19,7 @@ import * as communitiesAPI from '../../api/communitiesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import CommunityCard from '../../components/CommunityCard';
 import ScreenWrapper from '../ScreenWrapper';
+import useUserStore from '../../api/accountAPI';
 
 
 
@@ -26,6 +28,7 @@ const ViewCommunities = ({ navigation, route }) => {
     const [feed, setFeed] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
+    const { id } = useUserStore();
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -44,7 +47,7 @@ const ViewCommunities = ({ navigation, route }) => {
             setCommunities(communitiesData);
         }
 
-        const feedData = await communitiesAPI.communitiesFeed();
+        const feedData = await communitiesAPI.myCommunities();
         if (feedData.length !== 0) {
             setFeed(feedData);
         }
@@ -84,18 +87,23 @@ const ViewCommunities = ({ navigation, route }) => {
                         {feed && feed.length > 0 &&
                             <View style={[styles.w100, styles.mt10, styles.borderLight, styles.pb8, { borderTopWidth: 1 }]}>
                                 <Text style={[styles.headerText3, styles.mt10]}>{t('your_feed')}</Text>
-                                {
-                                    feed.map((data, index) => {
-                                        const nextRideDate = new Date(data.datetime);
-                                        return (
-                                            <View style={[styles.flexOne, styles.w100]} key={"feed" + index}>
-                                                <AvailableRide rid={data.ride_id} fromAddress={data.mainTextFrom} toAddress={data.mainTextTo} pricePerSeat={data.pricePerSeat} duration={data.duration} seatsOccupied={data.seatsOccupied} seatsAvailable={data.seatsAvailable} DriverId={data.DriverId} driverName={data.Driver.firstName + " " + data.Driver.lastName} date={nextRideDate} style={styles.mt10} />
-                                                <Text style={[styles.ml5, styles.mt5, styles.dark, styles.font12]}>{t('posted_by')} {data.Driver.firstName} {data.Driver.lastName} {t('in')} {data.Community.community_name}</Text>
-                                            </View>
-                                        );
-                                    })
-                                }
-                                <Text style={[styles.alignSelfCenter, styles.mt10, styles.bold, styles.accent]}>{t('see_more')}</Text>
+                                <View style={[styles.w100, styles.mt5, styles.flexRow, { paddingHorizontal: '5%', justifyContent: 'space-between', flexWrap: 'wrap' }]}>
+                                    {
+                                        feed.map((data, index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    onPress={() => navigation.navigate('View Community', {communityId: data.id, communityName: data.name, communityPicture: data.picture, communityDescription: data.description, communityPrivacy: data.private})}
+                                                    activeOpacity={0.8} key={`communityFeed${index}`}
+                                                    style={[{ width: '47.5%', minHeight: 150 }, styles.p16, styles.mv5, styles.br8, styles.bgLight, styles.justifyCenter, styles.alignCenter]}>
+
+                                                    <Image width={60} height={60} style={{ borderRadius: 60 / 2 }} source={{ uri: data.picture }} />
+                                                    <Text numberOfLines={2} style={[styles.font12, styles.textCenter, styles.mt5, styles.dark]}>{data.name}</Text>
+                                                </TouchableOpacity>
+                                            )
+                                        })
+                                    }
+                                </View>
+
                             </View>}
 
                         <View style={[styles.flexOne, styles.mt10, styles.w100, styles.borderLight, { borderTopWidth: 1 }]}>

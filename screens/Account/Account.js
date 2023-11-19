@@ -25,8 +25,10 @@ import useAuthManager from '../../context/authManager';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useAxiosManager from '../../context/axiosManager';
 import { useTranslation } from 'react-i18next';
+import useAppManager from '../../context/appManager';
 
 const Account = ({ route, navigation }) => {
+    const { t } = useTranslation();
     const [ratings, setRatings] = useState(null);
     const [editNameModalVisible, setEditNameModalVisible] = useState(false);
     const [editPhoneModalVisible, setEditPhoneModalVisible] = useState(false);
@@ -37,6 +39,7 @@ const Account = ({ route, navigation }) => {
     const [emailError, setEmailError] = useState(null);
     const [phoneError, setPhoneError] = useState(null);
     const authManager = useAuthManager();
+    const {referralsDisabled} = useAppManager();
     const { authAxios } = useAxiosManager();
     const [termsModalVisible, setTermsModalVisible] = useState(false);
     const logout = () => {
@@ -76,19 +79,19 @@ const Account = ({ route, navigation }) => {
     }
 
     const editNameSchema = Yup.object().shape({
-        firstNameInput: Yup.string().min(2, 'First name is too short').max(20, 'First name is too long').required('This field is required'),
-        lastNameInput: Yup.string().min(2, 'Last name is too short').max(20, 'Last name is too long').required('This field is required')
+        firstNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required')),
+        lastNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required'))
     });
 
     const editEmailSchema = Yup.object().shape({
-        emailInput: Yup.string().email('Please enter a valid email address').required('This field is required'),
+        emailInput: Yup.string().email(t('error_invalid_email')).required(t('error_required')),
     });
 
     const editPhoneSchema = Yup.object().shape({
         phoneInput: Yup.string().matches(
             /^01[0-2,5]{1}[0-9]{8}$/,
-            'Please enter a valid phone number in international format'
-        ).required('This field is required')
+            t('error_invalid_phone')
+        ).required(t('error_required'))
     });
 
     const saveEditName = (firstNameInput, lastNameInput) => {
@@ -125,14 +128,13 @@ const Account = ({ route, navigation }) => {
         }
     };
 
-    const { t } = useTranslation();
 
     return (
         <>
             <ScreenWrapper screenName={t('account')}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
-                        <TouchableOpacity activeOpacity={0.9} onPress={onClickUpload} style={accountStyles.profilePictureView}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userStore.profilePicture && <Image source={{ uri: userStore.profilePicture }} style={accountStyles.profilePicture} />}
 
                             <View style={accountStyles.profilePictureOverlay}>
@@ -147,15 +149,15 @@ const Account = ({ route, navigation }) => {
                             {ratings}
                         </View>
                         <View style={accountStyles.acctButtonsView}>
-                            <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Chats List') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Chats List') }}>
                                 <MaterialIcons name="message" size={40} color={palette.white} />
                                 <Text style={accountStyles.acctButtonsText}>{t('messages')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Wallet') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Wallet') }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
                                 <Text style={accountStyles.acctButtonsText}>{t('wallet')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={accountStyles.acctButtons} onPress={() => { navigation.navigate('All Trips') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('All Trips') }}>
                                 <MaterialIcons name="history" size={40} color={palette.white} />
                                 <Text style={accountStyles.acctButtonsText}>{t('trips')}</Text>
                             </TouchableOpacity>
@@ -172,14 +174,6 @@ const Account = ({ route, navigation }) => {
                                 onPressIn={() => setEditNameModalVisible(true)}
                             />
                             <CustomTextInput
-                                value={userStore.phone}
-                                iconLeft="phone"
-                                iconRight="edit"
-                                editable={false}
-                                style={accountStyles.editInput}
-                                onPressIn={() => setEditPhoneModalVisible(true)}
-                            />
-                            <CustomTextInput
                                 value={userStore.email}
                                 iconLeft="mail"
                                 iconRight="edit"
@@ -191,8 +185,13 @@ const Account = ({ route, navigation }) => {
                     </View>
 
                     <View style={[styles.w100]}>
-                        <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
-                        <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={() => { navigation.navigate('Add Referral') }} />
+
+                        { !referralsDisabled &&
+                            <>
+                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
+                                <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={() => { navigation.navigate('Add Referral') }} />
+                            </>
+                        }
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
                         <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} & ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} />
                     </View>
@@ -207,7 +206,7 @@ const Account = ({ route, navigation }) => {
                         onSubmit={(values) => { saveEditName(values.firstNameInput, values.lastNameInput) }}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
-                            <>
+                            <View style={[styles.w100, styles.alignStart]}>
                                 <Text style={styles.inputText}>{t('first_name')}</Text>
                                 <CustomTextInput
                                     value={values.firstNameInput}
@@ -229,7 +228,7 @@ const Account = ({ route, navigation }) => {
                                 />
 
                                 <Button text={t("save")} textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
-                            </>
+                            </View>
                         )}
                     </Formik>
                 </View>
@@ -244,7 +243,7 @@ const Account = ({ route, navigation }) => {
                         onSubmit={(values) => { saveEditEmail(values.emailInput) }}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
-                            <>
+                            <View style={[styles.w100, styles.alignStart]}>
                                 <Text style={styles.inputText}>{t('email')}</Text>
                                 <CustomTextInput
                                     value={values.emailInput}
@@ -256,34 +255,7 @@ const Account = ({ route, navigation }) => {
                                 />
 
                                 <Button text={t('save')} textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
-                            </>
-                        )}
-                    </Formik>
-                </View>
-            </BottomModal>
-
-            <BottomModal onHide={() => setEditPhoneModalVisible(false)} modalVisible={editPhoneModalVisible}>
-                <View style={[styles.w100]}>
-                    <ErrorMessage message={phoneError} condition={phoneError} />
-                    <Formik
-                        initialValues={{ phoneInput: userStore.phone }}
-                        validationSchema={editPhoneSchema}
-                        onSubmit={(values) => { saveEditPhone(values.phoneInput) }}
-                    >
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
-                            <>
-                                <Text style={styles.inputText}>{t('phone_number')}</Text>
-                                <CustomTextInput
-                                    value={values.phoneInput}
-                                    iconLeft="badge"
-                                    style={accountStyles.editInput}
-                                    onChangeText={handleChange('phoneInput')}
-                                    onBlur={handleBlur('phoneInput')}
-                                    error={touched.phoneInput && errors.phoneInput}
-                                />
-
-                                <Button text={t('save')} textColor={palette.white} bgColor={palette.primary} onPress={handleSubmit} disabled={!isValid} />
-                            </>
+                            </View>
                         )}
                     </Formik>
                 </View>
@@ -293,7 +265,6 @@ const Account = ({ route, navigation }) => {
                 <View style={[styles.w100, styles.mt10]}>
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }} />
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={() => { Linking.openURL('https://seaats.app/policy.pdf') }} />
-                    {/* <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} & ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} /> */}
                 </View>
             </BottomModal>
         </>

@@ -22,6 +22,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 
 const AddCard = ({ navigation, route }) => {
+    const {t} = useTranslation();
     const [cardholderName, setCardholderName] = useState("");
     const [cardNumber, setCardNumber] = useState("");
     const [cardType, setCardType] = useState("");
@@ -137,12 +138,11 @@ const AddCard = ({ navigation, route }) => {
     }
 
     const cardValidation = Yup.object().shape({
-        cardNumberInput: Yup.string().luhn().required('This field is required').min(19, 'Invalid card number'),
-        cardHolderNameInput: Yup.string().required('This field is required').min(2, 'Cardholder Name is too short').max(60, 'Cardholder name is too long'),
-        expiryDateInput: Yup.string().matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, 'Invalid expiry date. Enter in the form MM/YY').required('This field is required')
+        cardNumberInput: Yup.string().luhn().required(t('error_required')).min(19, t('error_card_number')),
+        cardHolderNameInput: Yup.string().required(t('error_required')).min(2, t('error_name_short')).max(60, t('error_name_long')),
+        expiryDateInput: Yup.string().matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, t('error_invalid_expiry')).required(t('error_required'))
     });
 
-    const {t} = useTranslation();
 
     return (
         <ScreenWrapper screenName={t('add_card')} navType="back" navAction={() => { navigation.goBack() }}>

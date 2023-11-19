@@ -126,14 +126,14 @@ const NewCar = ({ route, navigation }) => {
     };
 
     const newCarSchema = Yup.object().shape({
-        carBrandInput: Yup.string().required('This field is required').min(2, 'Too Short').max(20, 'Too Long'),
-        carYearInput: Yup.number().positive().integer().max(new Date().getFullYear() + 1, "Please enter a valid year"),
-        carModelInput: Yup.string().required('This field is required'),
-        carColorInput: Yup.string().required('This field is required'),
+        carBrandInput: Yup.string().required(t('error_required')).min(2, t('error_short')).max(20, t('error_long')),
+        carYearInput: Yup.number().required(t('error_required')).positive().integer(t('error_number')).min(1980, t('error_year')).max(new Date().getFullYear() + 1, t('error_year')),
+        carModelInput: Yup.string().required(t('error_required')),
+        carColorInput: Yup.string().required(t('error_required')),
         licensePlateLetters1: Yup.string().required(' ').max(1, ' '),
-        licensePlateLetters2: Yup.string().max(1, ' '),
-        licensePlateLetters3: Yup.string().max(1, ' '),
-        licensePlateNumbersInput: Yup.number().positive().integer().max(9999).required('This field is required'),
+        licensePlateLetters2: Yup.string(),
+        licensePlateLetters3: Yup.string(),
+        licensePlateNumbersInput: Yup.number().required(t('error_required')).positive().integer().max(9999).required(t('error_required')),
     });
 
 
@@ -210,37 +210,11 @@ const NewCar = ({ route, navigation }) => {
 
                             <Text style={styles.inputText}>{t('license_letters')}</Text>
 
-                            <View style={[styles.flexRow, styles.w100]}>
-                                <CustomTextInput
-                                    style={styles.flexOne}
-                                    textStyles={styles.textEnd}
-                                    inputRef={input3Ref}
-                                    placeholder="٣"
-                                    value={values.licensePlateLetters3}
-                                    onChangeText={(data) => {
-                                        setFieldValue('licensePlateLetters3', data);
-                                        handleKeyPress(data, null, input2Ref)
-                                    }}
-                                    onBlur={handleBlur('licensePlateLetters3')}
-                                    error={touched.licensePlateLetters3 && errors.licensePlateLetters3}
-                                />
+                            <View style={[{ flexDirection: 'row-reverse' }, styles.w100]}>
 
-                                <CustomTextInput style={[styles.flexOne, styles.ml10]}
-                                    textStyles={styles.textEnd}
-                                    inputRef={input2Ref}
-
-                                    placeholder="٢"
-                                    value={values.licensePlateLetters2}
-                                    onChangeText={(data) => {
-                                        setFieldValue('licensePlateLetters2', data);
-                                        handleKeyPress(data, input3Ref, input1Ref);
-                                    }}
-                                    onBlur={handleBlur('licensePlateLetters2')}
-                                    error={touched.licensePlateLetters2 && errors.licensePlateLetters2}
-                                />
 
                                 <CustomTextInput
-                                    style={[styles.flexOne, styles.ml10]}
+                                    style={[styles.flexOne, styles.mh5]}
                                     textStyles={styles.textEnd}
                                     inputRef={input1Ref}
 
@@ -251,9 +225,39 @@ const NewCar = ({ route, navigation }) => {
                                     }}
                                     onBlur={handleBlur('licensePlateLetters1')}
                                     error={touched.licensePlateLetters1 && errors.licensePlateLetters1}
-
-                                    placeholder="١"
+                                    placeholder="أ"
                                 />
+
+                                <CustomTextInput style={[styles.flexOne, styles.mh5]}
+                                    textStyles={styles.textEnd}
+                                    inputRef={input2Ref}
+
+                                    placeholder="ب"
+                                    value={values.licensePlateLetters2}
+                                    onChangeText={(data) => {
+                                        setFieldValue('licensePlateLetters2', data);
+                                        handleKeyPress(data, input3Ref, input1Ref);
+                                    }}
+                                    onBlur={handleBlur('licensePlateLetters2')}
+                                    error={touched.licensePlateLetters2 && errors.licensePlateLetters2}
+                                />
+
+                                <CustomTextInput
+                                    style={[styles.flexOne, styles.mh5]}
+                                    textStyles={styles.textEnd}
+                                    inputRef={input3Ref}
+                                    placeholder="ت"
+                                    value={values.licensePlateLetters3}
+                                    onChangeText={(data) => {
+                                        setFieldValue('licensePlateLetters3', data);
+                                        handleKeyPress(data, null, input2Ref)
+                                    }}
+                                    onBlur={handleBlur('licensePlateLetters3')}
+                                    error={touched.licensePlateLetters3 && errors.licensePlateLetters3}
+                                />
+
+
+
 
                             </View>
 
@@ -298,7 +302,7 @@ const NewCar = ({ route, navigation }) => {
 
             <Modal visible={modalVisible} animationType="slide">
                 <SafeAreaView style={{ backgroundColor: palette.primary }}>
-                    <HeaderView navType="back" screenName="Manage Cars" borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
+                    <HeaderView navType="back" screenName={t('manage_cars')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
                         <View style={styles.localeWrapper}>
                             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                             <Text style={styles.locale}>EN</Text>

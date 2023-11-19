@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     Image,
+    KeyboardAvoidingView,
     Platform,
+    SafeAreaView,
     ScrollView,
     Text,
     TextInput,
@@ -18,6 +20,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as chatAPI from '../../api/chatAPI';
 import ScreenWrapper from '../ScreenWrapper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const Chat = ({ navigation, route }) => {
@@ -80,8 +83,8 @@ const Chat = ({ navigation, route }) => {
         return () => clearInterval(intervalId);
     }, [chatMessages]);
 
-    if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+    const onFocusEffect = useCallback(() => {
+        if (Platform.OS === 'ios') {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
@@ -90,15 +93,19 @@ const Chat = ({ navigation, route }) => {
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
-        }, []);
+        }
+    }, []);
 
-        useFocusEffect(onFocusEffect); // register callback to focus events    
-    }
+
+    useFocusEffect(onFocusEffect); // register callback to focus events    
+
 
 
 
     const { t } = useTranslation();
 
+    const insets = useSafeAreaInsets();
+    console.log(insets);
     return (
         <ScreenWrapper screenName={t('chat')} navAction={() => navigation.goBack()} navType="back">
             <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
@@ -119,9 +126,7 @@ const Chat = ({ navigation, route }) => {
                                         <Text style={chatStyles.senderBubbleText}>{data.message}</Text>
                                     </View>
                                     <View style={{ width: 50 * rem, height: 50 * rem }}>
-                                        {(oldLastSender === null || !oldLastSender) &&
-                                            <Image source={{ uri: userStore.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
-                                        }
+                                        <Image source={{ uri: userStore.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
                                     </View>
                                 </View>);
                         } else {
@@ -130,7 +135,7 @@ const Chat = ({ navigation, route }) => {
                             return (
                                 <View key={"message" + index} style={[chatStyles.message, styles.alignStart]}>
                                     <View style={{ height: 50 * rem, width: 50 * rem }}>
-                                        {(oldLastSender === null || oldLastSender) && <Image source={{ uri: receiverData.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />}
+                                        <Image source={{ uri: receiverData.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
                                     </View>
                                     <View style={chatStyles.receiverBubble}>
                                         <Text style={chatStyles.receiverBubbleText}>{data.message}</Text>
@@ -174,15 +179,18 @@ const Chat = ({ navigation, route }) => {
                         </View>
                     </>
                 }
-            </ScrollView>
-            <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5]}>
-                <View style={chatStyles.messageView}>
-                    <TextInput style={[styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
+
+                <View style={{ flex: 1 }} />
+
+                <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5, { paddingBottom: insets.bottom, paddingHorizontal: 12 * rem, alignSelf: 'flex-end' }]}>
+                    <View style={chatStyles.messageView}>
+                        <TextInput style={[styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
+                    </View>
+                    <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>
+                        <MaterialIcons name="send" size={22} color={palette.white} />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>
-                    <MaterialIcons name="send" size={22} color={palette.white} />
-                </TouchableOpacity>
-            </View>
+            </ScrollView>
         </ScreenWrapper >
     );
 };

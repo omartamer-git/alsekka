@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 const { ScrollView, Text, Image, TouchableOpacity, View } = require("react-native");
 const { styles, containerStyle, rem, palette } = require("../../helper");
 const { default: ScreenWrapper } = require("../ScreenWrapper");
+import * as Yup from 'yup';
 
 const CommunitySettings = ({ route, navigation }) => {
     const {
@@ -51,7 +52,16 @@ const CommunitySettings = ({ route, navigation }) => {
         });
     };
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+
+    const communitySchema = Yup.object().shape({
+        communityDescriptionInput: Yup.string().required(t('error_required')),
+        communityPrivacyInput: Yup.bool(),
+        joinQuestionInput: Yup.string().when('communityPrivacyInput', {
+            is: true,
+            then: () => Yup.string().required(t('error_required'))
+        })
+    });
 
 
     return (
@@ -65,6 +75,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                 initialValues={{ communityDescriptionInput: communityDescription, communityPrivacyInput: communityPrivacy ? 1 : 0, joinQuestionInput: joinQuestion }}
                                 onSubmit={(values) => { handleSubmit(values.communityDescriptionInput, values.communityPrivacyInput, values.joinQuestionInput) }}
                                 style={[styles.justifyStart, styles.alignStart]}
+                                validationSchema={communitySchema}
                             >
                                 {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                                     <>
@@ -79,7 +90,7 @@ const CommunitySettings = ({ route, navigation }) => {
 
                                         <Text style={styles.inputText}>{t('community_description')}</Text>
                                         <TextArea
-                                            placeholder={t('description')}
+                                            placeholder={t('community_description')}
                                             value={values.communityDescriptionInput}
                                             onBlur={handleBlur('communityDescriptionInput')}
                                             onChangeText={handleChange('communityDescriptionInput')}
@@ -102,7 +113,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                                         value={values.joinQuestionInput}
                                                         onBlur={handleBlur('joinQuestionInput')}
                                                         onChangeText={handleChange('joinQuestionInput')}
-                                                        error={touched.joinQuestionInput && errors.joinQuestionInput}
+                                                        error={touched.joinQuestionInput && !values.joinQuestionInput && errors.joinQuestionInput}
                                                     />
                                                 </>
                                             )

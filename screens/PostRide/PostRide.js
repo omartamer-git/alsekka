@@ -33,24 +33,26 @@ import ScreenWrapper from '../ScreenWrapper';
 import SuccessCheck from '../../components/SuccessCheck';
 import useAppManager from '../../context/appManager';
 import Counter from '../../components/Counter';
+import CustomDatePicker from '../../components/DatePicker';
 
 const PostRide = ({ route, navigation }) => {
+    const { t } = useTranslation();
+
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [loading, setLoading] = useState(true);
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
     const [pricePerSeat, setPricePerSeat] = useState('');
     const [timePickerOpen, setTimePickerOpen] = useState(false);
-    const [datePickerOpen, setDatePickerOpen] = useState(false);
-
+    const [carInput, setCarInput] = useState(null);
     const [mainTextFrom, setMainTextFrom] = useState('');
     const [mainTextTo, setMainTextTo] = useState('');
 
     const [carSelectorOpen, setCarSelectorOpen] = useState(false);
-    const [carSelectorText, setCarSelectorText] = useState('Choose a car..');
+    const [carSelectorText, setCarSelectorText] = useState(t('choose_car'));
 
     const [communitySelectorOpen, setCommunitySelectorOpen] = useState(false);
-    const [communitySelectorText, setCommunitySelectorText] = useState('Choose a community..');
+    const [communitySelectorText, setCommunitySelectorText] = useState(t('choose_community'));
 
     const [usableCars, setUsableCars] = useState(null);
     const [communities, setCommunities] = useState(null);
@@ -65,6 +67,8 @@ const PostRide = ({ route, navigation }) => {
     const [advancedOptions, setAdvancedOptions] = useState(false);
 
     const [genderChoice, setGenderChoice] = useState('ANY');
+
+    const formikRef = useRef(null);
 
     const userStore = useUserStore();
     const { driverFee } = useAppManager();
@@ -92,12 +96,14 @@ const PostRide = ({ route, navigation }) => {
                 setUsableCars(usableCars);
                 if (usableCars && usableCars.length > 0) {
                     selectCar(usableCars[0]);
+                    // console.log(formikRef.current)
                 }
 
                 setCommunities(communityData);
                 setLoading(false);
             })
             .catch(error => {
+                console.log(error);
                 // Handle error here
             });
     }
@@ -129,10 +135,23 @@ const PostRide = ({ route, navigation }) => {
         if (markerFrom && markerTo) {
             // probably need a better algorithm for this
             const dist = geolib.getDistance(markerFrom, markerTo) / 1000;
-            const costPerKilometer = 4;
-            const riders = 3;
+            let costPerKilometer = 4;
+            if (dist < 50) {
+                costPerKilometer = 4.25;
+            } else if (dist < 100) {
+                costPerKilometer = 4;
+            } else if (dist < 200) {
+                costPerKilometer = 3.75;
+            } else {
+                costPerKilometer = 2.85;
+            }
+            const riders = 4;
 
-            setSuggestedPrice(Math.ceil((dist * costPerKilometer) * (1 + driverFee) / 15) * 5);
+            setSuggestedPrice(
+                Math.ceil(
+                    ( ((dist * costPerKilometer) * (1 + driverFee)) / riders ) / 5
+                ) * 5
+            );
         }
     }, [markerFrom, markerTo])
 
@@ -149,10 +168,10 @@ const PostRide = ({ route, navigation }) => {
     }
 
     const selectCar = (data) => {
-        // setSelectedCar(data);
         const carSelectorText = `${data.color} ${data.brand} ${data.model} (${data.licensePlateNumbers})`;
         setCarSelectorText(carSelectorText);
         setCarSelectorOpen(false);
+        setCarInput(data);
     };
 
     const selectCommunity = (data) => {
@@ -164,6 +183,7 @@ const PostRide = ({ route, navigation }) => {
     const postRide = (pricePerSeat, pickupPrice, date, time, selectedCar, selectedCommunity, seatsAvailable) => {
         setSubmitDisabled(true);
         if (markerFrom && markerTo) {
+
             const newDateUTC = date.toISOString(); // Convert to UTC string
             const timeInputUTC = time.toISOString(); // Convert to UTC string
 
@@ -183,6 +203,7 @@ const PostRide = ({ route, navigation }) => {
                     setSubmitDisabled(false);
                 });
         } else {
+            console.log("no markers");
         }
         setSubmitDisabled(false);
     }
@@ -227,17 +248,14 @@ const PostRide = ({ route, navigation }) => {
     }
 
     const postRideSchema = Yup.object().shape({
-        dateInput: Yup.date().required('This field is required'),
-        timeInput: Yup.date().required('This field is required'),
-        carInput: Yup.object().required('This field is required'),
-        seatsInput: Yup.number().integer().max(7, 'Too many seats available').required('This field is required'),
-        priceInput: Yup.number().required('This field is required').min(20, "Price should be at least 20 EGP"),
-        pickupPriceInput: Yup.number().typeError('Pick up price must be a number').positive('Must be a positive number.').notRequired(),
+        dateInput: Yup.date().required(t('error_required')),
+        timeInput: Yup.date().required(t('error_required')),
+        seatsInput: Yup.number().integer().max(7, t('error_seats')).required(t('error_required')),
+        priceInput: Yup.number().required(t('error_required')).min(20, t('error_pickup_price')),
+        pickupPriceInput: Yup.number().typeError(t('error_number')).positive('Must be a positive number.').notRequired(),
         communityInput: Yup.object()
     });
 
-
-    const { t } = useTranslation();
 
     return (
         <ScreenWrapper screenName={t('post_ride')} navType="back" navAction={() => navigation.goBack()}>
@@ -258,7 +276,6 @@ const PostRide = ({ route, navigation }) => {
                                     initialValues={{
                                         dateInput: new Date(),
                                         timeInput: new Date(),
-                                        carInput: usableCars[0].data,
                                         seatsInput: '',
                                         priceInput: '',
                                         communityInput: '',
@@ -266,7 +283,13 @@ const PostRide = ({ route, navigation }) => {
                                     }}
                                     validationSchema={postRideSchema}
                                     onSubmit={(values, { resetForm }) => {
-                                        postRide(values.priceInput, values.pickupPriceInput, values.dateInput, values.timeInput, values.carInput, values.communityInput, values.seatsInput);
+                                        // console.log(values);
+                                        if (!markerFrom || !markerTo) {
+                                            setFromTouched(true);
+                                            setToTouched(true);
+                                            return;
+                                        }
+                                        postRide(values.priceInput, values.pickupPriceInput, values.dateInput, values.timeInput, carInput, values.communityInput, values.seatsInput);
                                         resetForm();
                                     }}
                                 >
@@ -292,65 +315,9 @@ const PostRide = ({ route, navigation }) => {
                                                 error={!markerTo && toTouched && "This field is required"}
                                             />
 
-                                            <DatePicker
-                                                modal
-                                                mode="date"
-                                                open={datePickerOpen}
-                                                date={values.dateInput ? new Date(values.dateInput) : new Date()}
-                                                onConfirm={(date) => {
-                                                    setDatePickerOpen(false);
-                                                    setFieldValue('dateInput', date);
-                                                }}
-                                                onCancel={() => {
-                                                    setDatePickerOpen(false)
-                                                }}
-                                            />
-
                                             <Text style={styles.inputText}>{t('date')}</Text>
 
-                                            {/* <CustomTextInput
-                                                    placeholder={t('date')}
-                                                    value={values.dateInput ? values.dateInput.toDateString() : new Date().toDateString()}
-                                                    onBlur={handleBlur('dateInput')}
-                                                    textColor={palette.black}
-                                                    onPressIn={() => {
-                                                        setFieldTouched('dateInput', true);
-                                                        setDatePickerOpen(true);
-                                                    }}
-                                                    iconRight="date-range"
-                                                    editable={false}
-                                                    error={touched.dateInput && errors.dateInput}
-                                                /> */}
-
-                                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                                {
-                                                    (Array.from({ length: 6 })).map((a, i) => {
-                                                        const dayOffset = i;
-                                                        let date = new Date();
-                                                        date.setDate(date.getDate() + i);
-
-                                                        const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-                                                        const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-
-                                                        const dateString = `${t(days[date.getDay()])} ${date.getDate()} ${t(months[date.getMonth()])}`;
-                                                        const chosen = values.dateInput.getDate() === date.getDate() && values.dateInput.getMonth() === date.getMonth();
-
-                                                        return (
-                                                            <View key={`date${i}`} style={{ width: '33.3%', height: 48 * rem, padding: 1 }}>
-                                                                <TouchableOpacity
-                                                                    activeOpacity={0.9}
-                                                                    onPress={() => {
-                                                                        setFieldValue('dateInput', date);
-                                                                    }}
-                                                                    style={[chosen ? styles.bgPrimary : styles.bgDark, styles.justifyCenter, styles.alignCenter, styles.w100, styles.h100]} key={`day${dayOffset}`}>
-                                                                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.white, styles.bold]}>{dateString}</Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                        )
-                                                    })
-                                                }
-                                            </View>
-
+                                            <CustomDatePicker date={values.dateInput} setDate={(newDate) => { setFieldValue('dateInput', newDate) }} />
 
                                             <Text style={styles.inputText}>{t('time')}</Text>
 
@@ -415,7 +382,7 @@ const PostRide = ({ route, navigation }) => {
                                                 <TouchableOpacity
                                                     onPress={() => setFieldValue('priceInput', suggestedPrice.toString())}
                                                     activeOpacity={0.9}
-                                                    style={[styles.flexOne, styles.bgPrimary, { marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 4 * rem, borderBottomEndRadius: 4 * rem }]}>
+                                                    style={[styles.flexOne, styles.bgPrimary, { height: 48 * rem, marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 4 * rem, borderBottomEndRadius: 4 * rem }]}>
                                                     <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.white, styles.bold, { fontSize: 10 * rem }]}>{t('suggested_price')}</Text>
                                                     <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.white, styles.bold, styles.font18, styles.mt5]}>{suggestedPrice} {t('EGP')}</Text>
                                                 </TouchableOpacity>
@@ -435,27 +402,27 @@ const PostRide = ({ route, navigation }) => {
 
 
 
-                                            <Text style={styles.inputText}>Allow pick up requests from nearby passengers?</Text>
+                                            <Text style={styles.inputText}>{t('allow_pickup')}</Text>
 
                                             <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                                 <TouchableOpacity onPress={() => { setPickupEnabled(true) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: pickupEnabled ? palette.primary : palette.dark }]}>
-                                                    <Text style={postRideStyles.genderText}>Yes</Text>
+                                                    <Text style={postRideStyles.genderText}>{t('yes')}</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity onPress={() => { setPickupEnabled(false) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: !pickupEnabled ? palette.primary : palette.dark }]}>
-                                                    <Text style={postRideStyles.genderText}>No</Text>
+                                                    <Text style={postRideStyles.genderText}>{t('no')}</Text>
                                                 </TouchableOpacity>
                                             </View>
 
                                             {
                                                 pickupEnabled &&
                                                 <>
-                                                    <Text style={[styles.smallText, styles.dark]}>Pick ups will be enabled for passengers within 5 kilometers from your starting point, please price accordingly.</Text>
+                                                    <Text style={[styles.dark, { textAlign: 'left' }]}>{t('pickup_range')}</Text>
 
-                                                    <Text style={styles.inputText}>Price for Pick Up Service</Text>
+                                                    <Text style={styles.inputText}>{t('pickup_price')}</Text>
                                                     <CustomTextInput
                                                         value={values.pickupPriceInput}
                                                         iconLeft="attach-money"
-                                                        placeholder={"Price for Pick Up Service (e.g 10 EGP) "}
+                                                        placeholder={`${t('pickup_price')} ${t('pickup_price_placeholder')}`}
                                                         onChangeText={handleChange('pickupPriceInput')}
                                                         onBlur={handleBlur('pickupPriceInput')}
                                                         error={touched.pickupPriceInput && errors.pickupPriceInput}
@@ -474,7 +441,7 @@ const PostRide = ({ route, navigation }) => {
 
 
                                             {
-                                                advancedOptions &&
+                                                (advancedOptions || !carInput || errors.communityInput) &&
                                                 <>
                                                     <Text style={styles.inputText}>{t('select_car')}</Text>
 
@@ -482,12 +449,11 @@ const PostRide = ({ route, navigation }) => {
                                                         placeholder={t('select_car')}
                                                         value={carSelectorText}
                                                         onPressIn={() => {
-                                                            setFieldTouched('carInput', true)
                                                             setCarSelectorOpen(true);
                                                         }}
                                                         iconLeft="directions-car"
                                                         editable={false}
-                                                        error={touched.carInput && errors.carInput}
+                                                        error={!carInput && "This field is required"}
                                                     />
 
 
@@ -540,6 +506,7 @@ const PostRide = ({ route, navigation }) => {
                                                                 handleBlur('communityInput');
                                                                 selectCommunity(data);
                                                             }}
+                                                            style={[styles.mv5]}
                                                         />
                                                     );
                                                 })}
@@ -567,7 +534,8 @@ const PostRide = ({ route, navigation }) => {
                                                             licensePlateLetters={data.licensePlateLetters}
                                                             licensePlateNumbers={data.licensePlateNumbers}
                                                             onPress={() => {
-                                                                setFieldValue('carInput', data);
+                                                                // setFieldValue('carInput', data);
+                                                                setCarInput(data);
                                                                 handleBlur('carInput');
                                                                 selectCar(data);
                                                             }}

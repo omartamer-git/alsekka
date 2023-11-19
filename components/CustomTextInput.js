@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { I18nManager, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
@@ -90,7 +90,7 @@ const styles2 = StyleSheet.create({
     input: {
         height: 24 * rem,
         lineHeight: 16 * rem,
-        textAlign: 'left',
+        textAlign: I18nManager.isRTL ? 'right' : 'left',
         fontWeight: '500',
         marginHorizontal: 8 * rem,
         color: palette.accent,

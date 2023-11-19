@@ -18,15 +18,16 @@ import { palette, styles } from '../../helper';
 
 
 const ForgotPasswordScreen = ({ route, navigation }) => {
+    const {t} = useTranslation();
     const { phone } = route.params;
     console.log(route.params);
     const [errorMessage, setErrorMessage] = useState(null);
     const loginSchema = Yup.object().shape({
         phoneInput: Yup.string().matches(
             /^01[0-2,5]{1}[0-9]{8}$/,
-            'Please enter a valid phone number in international format'
+            t('error_invalid_phone')
         )
-            .required('This field is required'),
+            .required(t('error_required')),
     });
 
     const handleContinueClick = (phoneInput) => {
@@ -48,7 +49,6 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const {t} = useTranslation();
 
 
 

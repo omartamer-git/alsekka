@@ -157,7 +157,20 @@ const ViewTrip = ({ route, navigation }) => {
                         <>
                             {
                                 tripDetails &&
-                                <AvailableRide style={viewTripStyles.availableRide} model={tripDetails.Car.model} brand={tripDetails.Car.brand} fromAddress={tripDetails.mainTextFrom} toAddress={tripDetails.mainTextTo} seatsOccupied={tripDetails.seatsOccupied} DriverId={tripDetails.DriverId} seatsAvailable={tripDetails.seatsAvailable} duration={tripDetails.duration} pricePerSeat={tripDetails.pricePerSeat} date={objDate} />
+                                <AvailableRide
+                                    style={viewTripStyles.availableRide}
+                                    model={tripDetails.Car.model}
+                                    brand={tripDetails.Car.brand}
+                                    fromAddress={tripDetails.mainTextFrom}
+                                    toAddress={tripDetails.mainTextTo}
+                                    seatsOccupied={tripDetails.seatsOccupied}
+                                    DriverId={tripDetails.DriverId}
+                                    seatsAvailable={tripDetails.seatsAvailable}
+                                    duration={tripDetails.duration}
+                                    pricePerSeat={tripDetails.pricePerSeat}
+                                    pickupEnabled={tripDetails.pickupEnabled}
+                                    gender={tripDetails.gender}
+                                    date={objDate} />
                             }
                             <View style={[styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>
                                 {tripDetails &&
@@ -297,7 +310,7 @@ const viewTripStyles = StyleSheet.create({
         ...styles.mb10,
         ...styles.br0,
         ...styles.bgWhite,
-        height: 140 * rem
+        minHeight: 140 * rem
     },
 
     profilePictureView: {
