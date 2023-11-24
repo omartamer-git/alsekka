@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -9,7 +9,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  Touchable,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -21,6 +20,7 @@ import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
+import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
 
 const SignUpScreen = ({ route, navigation }) => {
@@ -31,8 +31,13 @@ const SignUpScreen = ({ route, navigation }) => {
   const [emailExists, setEmailExists] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
+  const { allowedEmails } = useAppManager();
 
   const userStore = useUserStore();
+
+  useEffect(() => {
+
+  }, []);
 
   const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
     setSubmitDisabled(true);
@@ -57,9 +62,9 @@ const SignUpScreen = ({ route, navigation }) => {
       setGender('FEMALE');
     }
   }
-  const allowedEmailDomains = ['student.guc.edu.eg'];
+  // const allowedEmailDomains = ['student.guc.edu.eg'];
 
-  const emailValidationRegex = new RegExp(`@(${allowedEmailDomains.join('|')})$`);
+  const emailValidationRegex = new RegExp(`@(${allowedEmails})$`);
 
   const signUpSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
@@ -67,7 +72,7 @@ const SignUpScreen = ({ route, navigation }) => {
       t('error_invalid_phone')
     )
       .required(t('error_required')),
-    passwordInput: Yup.string().min(8, t('error_invalid_password')).required(t('error_required')),
+    passwordInput: Yup.string().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, t('error_invalid_password')).required(t('error_required')),
     emailInput: Yup.string().email(t('error_invalid_email')).matches(emailValidationRegex, t('error_university_mail')).required(t('error_required')),
     firstNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required')),
     lastNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required'))
@@ -156,11 +161,15 @@ const SignUpScreen = ({ route, navigation }) => {
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
                       placeholder={t('enter_phone')}
+                      keyboardType="number-pad"
                     />
 
                     <Text style={styles.inputText}>
                       {t('email')}
                     </Text>
+                    <TouchableOpacity onPress={() => Linking.openURL("https://seaats.app/universities")}>
+                      <Text style={[styles.font12, styles.dark, styles.mt5]}>{t('see_uni_list')}</Text>
+                    </TouchableOpacity>
                     <CustomTextInput
                       value={values.emailInput}
                       onChangeText={handleChange('emailInput')}

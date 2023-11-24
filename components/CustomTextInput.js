@@ -6,20 +6,29 @@ import { palette, rem, styles } from '../helper';
 const CustomTextInput = ({ value,
     onChangeText, placeholder, style,
     editable, keyboardType, selectTextOnFocus,
-    secureTextEntry, onFocus, onPressIn,
+    secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
+    returnKeyType, onSubmitEditing,
     onKeyPress, textStyles, onBlur, error }) => {
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
 
-    if(!inputRef) {
+    if (!inputRef) {
         inputRef = useRef(null);
     }
 
     const onPressIn_ = (e) => {
-        if (onPressIn) {
-            onPressIn(e);
+        if (onFocus) {
+            onFocus();
         }
+
+        if (role === "button") {
+            console.log(onPressIn.toString());
+            onPressIn(e);
+            inputRef.current.blur();
+            return;
+        }
+
         inputRef.current.focus();
     }
 
@@ -39,7 +48,7 @@ const CustomTextInput = ({ value,
                     placeholder={placeholder}
                     value={value}
                     keyboardType={keyboardType}
-                    editable={editable}
+                    editable={role==="button" ? true : editable}
                     onChangeText={onChangeText}
                     selectTextOnFocus={selectTextOnFocus}
                     secureTextEntry={secureTextEntry}
@@ -51,8 +60,9 @@ const CustomTextInput = ({ value,
                     placeholderTextColor={palette.light}
                     ref={inputRef}
                     onKeyPress={onKeyPress}
-                    onPressIn={onPressIn}
+                    onFocus={onPressIn_}
                     numberOfLines={1}
+                    returnKeyType={returnKeyType}
                     ellipsizeMode='tail'
                 />
                 {

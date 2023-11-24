@@ -33,17 +33,23 @@ const Account = ({ route, navigation }) => {
     const [editNameModalVisible, setEditNameModalVisible] = useState(false);
     const [editPhoneModalVisible, setEditPhoneModalVisible] = useState(false);
     const [editEmailModalVisible, setEditEmailModalVisible] = useState(false);
+    const [deletePassword, setDeletePassword] = useState('');
+    const [deleteError, setDeleteError] = useState('');
+    const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
+
     const userStore = useUserStore();
 
     const [editPhoneText, setEditPhoneText] = useState(userStore.phone);
     const [emailError, setEmailError] = useState(null);
     const [phoneError, setPhoneError] = useState(null);
     const authManager = useAuthManager();
-    const {referralsDisabled} = useAppManager();
+    const { referralsDisabled } = useAppManager();
     const { authAxios } = useAxiosManager();
     const [termsModalVisible, setTermsModalVisible] = useState(false);
+    const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
     const logout = () => {
         authManager.logout();
+        userStore.reset();
     };
 
     useEffect(() => {
@@ -89,7 +95,7 @@ const Account = ({ route, navigation }) => {
 
     const editPhoneSchema = Yup.object().shape({
         phoneInput: Yup.string().matches(
-            /^01[0-2,5]{1}[0-9]{8}$/,
+            /^1[0-2,5]{1}[0-9]{8}$/,
             t('error_invalid_phone')
         ).required(t('error_required'))
     });
@@ -117,6 +123,22 @@ const Account = ({ route, navigation }) => {
             setPhoneError(err.response.data.error.message);
         });
     };
+
+    const confirmDelete = () => {
+        userStore.deleteAccount(deletePassword).then(() => {
+            setDeleteAccountModalVisible(false);
+            setDeleteConfirmationVisible(true);
+        }).catch(err => {
+            console.log(err);
+            setDeleteError("Incorrect password, please try again")
+        })
+    }
+
+    const hideDeleteConfirmation = () => {
+        setDeleteConfirmationVisible(false);
+        logout();
+    }
+
 
     const imagePickerOptions = { title: 'New Profile Picture', multiple: false, mediaType: 'photo', quality: 0.75, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
 
@@ -172,6 +194,7 @@ const Account = ({ route, navigation }) => {
                                 editable={false}
                                 style={accountStyles.editInput}
                                 onPressIn={() => setEditNameModalVisible(true)}
+                                role="button"
                             />
                             <CustomTextInput
                                 value={userStore.email}
@@ -180,13 +203,14 @@ const Account = ({ route, navigation }) => {
                                 editable={false}
                                 style={accountStyles.editInput}
                                 onPressIn={() => setEditEmailModalVisible(true)}
+                                role="button"
                             />
                         </View>
                     </View>
 
                     <View style={[styles.w100]}>
 
-                        { !referralsDisabled &&
+                        {!referralsDisabled &&
                             <>
                                 <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
                                 <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={() => { navigation.navigate('Add Referral') }} />
@@ -194,6 +218,7 @@ const Account = ({ route, navigation }) => {
                         }
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
                         <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} & ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('delete_account')}`} onPress={() => { setDeleteAccountModalVisible(true) }} />
                     </View>
                 </ScrollView>
             </ScreenWrapper>
@@ -265,6 +290,41 @@ const Account = ({ route, navigation }) => {
                 <View style={[styles.w100, styles.mt10]}>
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }} />
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={() => { Linking.openURL('https://seaats.app/policy.pdf') }} />
+                </View>
+            </BottomModal>
+
+            <BottomModal onHide={() => setDeleteAccountModalVisible(false)} modalVisible={deleteAccountModalVisible}>
+                <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
+                    <Text style={[styles.font18, styles.bold, styles.textCenter]}>Are you sure you want to delete your account?</Text>
+                    {/* <Text style={[styles.font12, styles.textCenter, styles.mt5]}>
+                        Your account will now be marked for deletion. This means that your data will be completely wiped off the system in 14 days. If you change your mind during this time, simply log back in and we will cancel the deletion process.
+                        Thank you for using Seaats.
+                    </Text> */}
+                    <Text style={styles.inputText}>Please Enter Your Password</Text>
+                    <CustomTextInput
+                        value={deletePassword}
+                        onChangeText={setDeletePassword}
+                        placeholder={t('enter_password')}
+                        secureTextEntry={true}
+                        error={deleteError}
+                    />
+
+                    <Button text="Confirm" bgColor={palette.accent} textColor={palette.white} onPress={confirmDelete} />
+                    <Button text={t('cancel')} bgColor={palette.red} textColor={palette.white} onPress={() => setDeleteAccountModalVisible(false)} />
+                </View>
+            </BottomModal>
+
+            <BottomModal onHide={hideDeleteConfirmation} modalVisible={deleteConfirmationVisible}>
+                <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
+
+                    <Text style={[styles.font14, styles.textCenter, styles.mt5]}>
+                        Your account will now be marked for deletion. This means that your data will be completely wiped off the system in 14 days. If you change your mind during this time, simply log back in and we will cancel the deletion process.
+                    </Text>
+                    <Text style={[styles.font14, styles.textCenter, styles.mt5]}>
+                        Thank you for using Seaats.
+                    </Text>
+
+                    <Button text="OK" onPress={hideDeleteConfirmation} bgColor={palette.primary} textColor={palette.white} />
                 </View>
             </BottomModal>
         </>

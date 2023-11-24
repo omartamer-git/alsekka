@@ -44,6 +44,8 @@
 				</dict>
 			</dict>
 		</dict>
+		<key>NSUserTrackingUsageDescription</key>
+		<string>We request access to your phone number, user ID, device ID, email address, and name to enhance your app experience. This information allows us to provide personalized content, improve app functionality.</string>
 		<key>NSUserActivityTypes</key>
 		<array>
 			<string>INSendMessageIntent</string>
@@ -53,12 +55,11 @@
 		<string>This app needs permission to access your camera to take photos of your drivers'
 			license for verification and passenger safety</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Used for location tracking when in a ride to ensure driver and passenger safety.
-			Also used to find current location at a given instant of a user in order to show region
-			in Google Maps object.</string>
+		<string>Used for location tracking when in a ride to ensure driver and passenger safety. Also used to find current location at a given instant of a user in order to show region in Google Maps object.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>This app needs permission to access your photo library to select images used for
-			drivers' license verification</string>
+		<string>This app needs permission to access your photo library to select images used for drivers' license verification</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Granting continuous location access ensures optimal matching with nearby drivers and riders, enabling real-time coordination and enhancing your carpooling experience.</string>
 		<key>UIAppFonts</key>
 		<array>
 			<string>AntDesign.ttf</string>

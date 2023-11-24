@@ -12,6 +12,9 @@ import 'react-native-gesture-handler';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import messaging from '@react-native-firebase/messaging';
+import { PermissionsAndroid } from 'react-native';
+import notifee from '@notifee/react-native';
 
 import Account from './screens/Account/Account';
 import Wallet from './screens/Account/Wallet';
@@ -25,6 +28,7 @@ import UserHome from './screens/HomeScreen/UserHome';
 import PostRide from './screens/PostRide/PostRide';
 import ViewTrip from './screens/PostRide/ViewTrip';
 import ManageTrip from './screens/Rides/ManageTrip';
+import { requestTrackingPermission } from 'react-native-tracking-transparency';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -166,35 +170,68 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    Notifications.registerRemoteNotifications();
-    Notifications.events().registerRemoteNotificationsRegistered((e) => {
-      registerDevice(e.deviceToken);
-      appManager.setDeviceToken(e.deviceToken);
-    });
+    if (Platform.OS === 'ios') {
+      requestTrackingPermission();
+      Notifications.registerRemoteNotifications();
+      Notifications.events().registerRemoteNotificationsRegistered((e) => {
+        console.log(e.deviceToken);
+        registerDevice(e.deviceToken);
+        appManager.setDeviceToken(e.deviceToken);
+      });
 
-    Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
-      console.error(e);
-    })
+      Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
+        console.error(e);
+      })
 
-    Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-      console.log("Notification Received - Foreground", notification.payload);
+      Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
+        console.log("Notification Received - Foreground", notification.payload);
 
-      // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-      completion({ alert: true, sound: true, badge: false });
-    });
+        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+        completion({ alert: true, sound: true, badge: false });
+      });
 
-    Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
-      console.log("Notification opened by device user", notification.payload);
-      console.log(`Notification opened with an action identifier: ${action.identifier} and response text: ${action.text}`);
-      completion();
-    });
+      Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
+        console.log("Notification opened by device user", notification.payload);
+        console.log(`Notification opened with an action identifier: ${action.identifier} and response text: ${action.text}`);
+        completion();
+      });
 
-    Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-      console.log("Notification Received - Background", notification.payload);
+      Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
+        console.log("Notification Received - Background", notification.payload);
 
-      // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-      completion({ alert: true, sound: true, badge: false });
-    });
+        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+        completion({ alert: true, sound: true, badge: false });
+      });
+    } else {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+      messaging().requestPermission().then(() => {
+        // Get the device token
+        messaging()
+          .getToken()
+          .then(token => {
+            registerDevice(token);
+            appManager.setDeviceToken(token);
+            console.log('Device Token:', token);
+          })
+          .catch(error => {
+            console.error('Error getting device token:', error);
+          });
+      });
+
+
+      // messaging().setBackgroundMessageHandler(async remoteMessage => {
+      //   console.log('Message handled in the background!', remoteMessage);
+      // });
+
+      // const unsubscribe = messaging().onMessage(async remoteMessage => {
+      //   console.log(remoteMessage);
+      //   notifee.displayNotification(remoteMessage.data.notifee);
+      //   console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      // });
+
+      // return unsubscribe;
+    }
 
   }, []);
 
@@ -232,10 +269,9 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (appManager.deviceToken) {
-      loadJWT()
-    }
-  }, [appManager.deviceToken, loadJWT]);
+    appManager.getAllowedEmails();
+    loadJWT()
+  }, [loadJWT]);
 
   if (state === 'LOADING') {
     return (

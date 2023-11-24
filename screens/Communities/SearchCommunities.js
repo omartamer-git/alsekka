@@ -61,7 +61,7 @@ const SearchCommunities = ({ navigation, route }) => {
     return (
         <ScreenWrapper screenName={t('search')} navType="back" navAction={() => navigation.goBack()}>
             <View style={[styles.defaultPadding]}>
-                <CustomTextInput placeholder={t('search_for_community')} iconLeft="search" value={searchText} onChangeText={onChangeText} />
+                <CustomTextInput placeholder={t('search_for_community')} iconLeft="search" value={searchText} onChangeText={onChangeText} keyboardType="web-search" />
             </View>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {

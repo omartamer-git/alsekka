@@ -15,9 +15,7 @@ import HeaderView from '../../components/HeaderView';
 
 const HomeScreen = ({ navigation }) => {
   const [phoneNumberText, setPhone] = useState('');
-
-
-
+  
   const handleLoginClick = (e) => {
     navigation.navigate('Login');
   };
@@ -48,15 +46,6 @@ const HomeScreen = ({ navigation }) => {
             </Text>
             <Text style={[{ fontWeight: 'bold', color: 'white' }]}>{t('seaats_slogan')}</Text>
           </View>
-
-          <Button
-            text={t('google_signin')}
-            disabled={true}
-            bgColor={palette.white}
-            textColor={palette.primary}
-            icon="google"
-            iconColor={palette.primary}
-          />
 
           <Button
             style={styles.continueBtn}

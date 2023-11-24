@@ -38,6 +38,29 @@ const useUserStore = create((set) => ({
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
     setGender: (gender) => set((state) => ({ gender: gender })),
 
+    reset: async () => {
+        set(
+            (state) => (
+                {
+                    id: '',
+                    firstName: '',
+                    lastName: '',
+                    profilePicture: '',
+                    phone: '',
+                    email: '',
+                    balance: '',
+                    rating: '',
+                    gender: '',
+                    driver: false,
+                    verified: false,
+                    availableCards: [],
+                    bankAccounts: [],
+                    mobileWallets: [],
+                }
+            )
+        )
+    },
+
     login: async (phoneNum, password) => {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
@@ -116,6 +139,18 @@ const useUserStore = create((set) => ({
         set((state) => data);
 
         return data;
+    },
+
+    deleteAccount: async (password) => {
+        const axiosManager = useAxiosManager.getState();
+        const body = { password: password };
+        const response = await axiosManager.authAxios.post('/deleteuser', body, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
     },
 
     getAvailableCards: async () => {

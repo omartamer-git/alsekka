@@ -149,7 +149,7 @@ const PostRide = ({ route, navigation }) => {
 
             setSuggestedPrice(
                 Math.ceil(
-                    ( ((dist * costPerKilometer) * (1 + driverFee)) / riders ) / 5
+                    (((dist * costPerKilometer) * (1 + driverFee)) / riders) / 5
                 ) * 5
             );
         }
@@ -329,6 +329,7 @@ const PostRide = ({ route, navigation }) => {
                                                     setFieldTouched('timeInput', true);
                                                     setTimePickerOpen(true)
                                                 }}
+                                                role="button"
                                                 onBlur={handleBlur('timeInput')}
                                                 iconRight="schedule"
                                                 editable={false}
@@ -451,6 +452,7 @@ const PostRide = ({ route, navigation }) => {
                                                         onPressIn={() => {
                                                             setCarSelectorOpen(true);
                                                         }}
+                                                        role="button"
                                                         iconLeft="directions-car"
                                                         editable={false}
                                                         error={!carInput && "This field is required"}
@@ -486,6 +488,7 @@ const PostRide = ({ route, navigation }) => {
                                                             setFieldTouched('communityInput', true)
                                                             setCommunitySelectorOpen(true);
                                                         }}
+                                                        role="button"
                                                         iconLeft="chat"
                                                         editable={false}
                                                         error={touched.communityInput && errors.communityInput}

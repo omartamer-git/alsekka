@@ -24,6 +24,7 @@ const AddMobileWallet = ({ navigation, route }) => {
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const addAccount = (phoneInput) => {
+        phoneInput = "0" + phoneInput;
         setSubmitDisabled(true);
         addMobileWallet(phoneInput).then(data => {
             navigation.goBack();
@@ -36,7 +37,7 @@ const AddMobileWallet = ({ navigation, route }) => {
 
     const walletAccountSchema = Yup.object().shape({
         phoneInput: Yup.string().required(t('error_required')).matches(
-            /^01[0-2,5]{1}[0-9]{8}$/,
+            /^1[0-2,5]{1}[0-9]{8}$/,
             t('error_invalid_phone')
         )
     }
@@ -73,9 +74,15 @@ const AddMobileWallet = ({ navigation, route }) => {
 
                             <CustomTextInput
                                 placeholder={t('phone_number') + " (i.e 01234567890)"}
-                                value={values.phoneInput}
+                                value={"+20 " + values.phoneInput}
+                                emojiLeft={"🇪🇬"}
                                 onBlur={handleBlur('phoneInput')}
-                                onChangeText={handleChange('phoneInput')}
+                                keyboardType="number-pad"
+                                onChangeText={(text) => {
+                                    if (text == '') return;
+                                    let sanitizedText = text.replace("+20", "").trim();
+                                    handleChange('phoneInput')(sanitizedText);
+                                }}
                                 error={touched.phoneInput && errors.phoneInput}
                                 iconLeft="badge"
                             />

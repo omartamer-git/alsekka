@@ -36,6 +36,8 @@ const LoginScreen = ({ route, navigation }) => {
       returnAfterValidation = true;
     }
 
+    phoneNum = "0" + phoneNum;
+
     userStore.login(phoneNum, password).then(
       (data) => {
         setSubmitDisabled(true);
@@ -62,7 +64,7 @@ const LoginScreen = ({ route, navigation }) => {
 
   const loginSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(
-      /^01[0-2,5]{1}[0-9]{8}$/,
+      /^1[0-2,5]{1}[0-9]{8}$/,
       t('error_invalid_phone')
     )
       .required(t('error_required')),
@@ -117,11 +119,17 @@ const LoginScreen = ({ route, navigation }) => {
                   <>
                     <Text style={styles.inputText}>{t('phone_number')}</Text>
                     <CustomTextInput
-                      value={values.phoneInput}
-                      onChangeText={handleChange('phoneInput')}
+                      value={"+20 " + values.phoneInput}
+                      emojiLeft={"🇪🇬"}
+                      onChangeText={(text) => {
+                        if (text == '') return;
+                        let sanitizedText = text.replace("+20", "").trim();
+                        handleChange('phoneInput')(sanitizedText);
+                      }}
                       onBlur={handleBlur('phoneInput')}
                       placeholder={t('enter_phone')}
                       error={touched.phoneInput && errors.phoneInput}
+                      keyboardType="number-pad"
                     />
 
                     <Text style={styles.inputText}>{t('password')}</Text>

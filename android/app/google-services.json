@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "1082988204174",
-    "project_id": "seaats-52eeb",
-    "storage_bucket": "seaats-52eeb.appspot.com"
+    "project_number": "907902131178",
+    "project_id": "seaats-app",
+    "storage_bucket": "seaats-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1082988204174:android:475c8d0a7be1f4106739df",
+        "mobilesdk_app_id": "1:907902131178:android:cbeae46019c9230ae8f093",
         "android_client_info": {
           "package_name": "com.alsekka"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1082988204174-76ic8bi0eclvjervbr1oqq6fsoicu4tv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDMS9xaFrL5ctLDCfduFi_kczYXMWGtNZU"
+          "current_key": "AIzaSyAuHJYdXCI43tA4CDKH5VvOVkQdcSD8RkA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1082988204174-76ic8bi0eclvjervbr1oqq6fsoicu4tv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

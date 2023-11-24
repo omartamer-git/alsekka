@@ -1,7 +1,7 @@
 {
     "translation": {
         "seaats": "seaats",
-        "seaats_slogan": "Connecting Egypt - Driving Change",
+        "seaats_slogan": "Ride together, save together",
         "greeting_morning": "Good Morning",
         "greeting_afternoon": "Good Afternoon",
         "greeting_night": "Good Evening",
@@ -282,10 +282,12 @@
         "error_long": "Too Long",
         "error_number": "Please enter a number",
         "error_year": "Please enter a valid year",
-        "error_invalid_password": "Your password should be at least 8 characters long",
+        "error_invalid_password": "Your password must be at least 8 characters, contain at least one special character, one number, one lowercase letter, and one uppercase letter",
         "error_confirm_password": "Passwords don't match",
         "error_university_mail": "Please use your university email",
         "error_seats": "Too many seats available",
-        "error_pickup_price": "Price should be at least 20 EGP"
+        "error_pickup_price": "Price should be at least 20 EGP",
+        "delete_account": "Delete My Account",
+        "see_uni_list": "See list of universities we're currently working with"
     }
 }
