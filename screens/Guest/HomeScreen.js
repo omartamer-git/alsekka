@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
         <HeaderView borderVisible={false}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-            <Text style={styles.locale}>EN</Text>
+            <Text style={[styles.text, styles.locale]}>EN</Text>
           </View>
         </HeaderView>
         <View style={[styles.defaultContainer, styles.defaultPadding]}>
@@ -44,7 +44,7 @@ const HomeScreen = ({ navigation }) => {
             }]}>
               {t('seaats')}
             </Text>
-            <Text style={[{ fontWeight: 'bold', color: 'white' }]}>{t('seaats_slogan')}</Text>
+            <Text style={[styles.text, { fontWeight: 'bold', color: 'white' }]}>{t('seaats_slogan')}</Text>
           </View>
 
           <Button
@@ -57,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
           />
 
           <View style={styles.footer}>
-            <Text style={styles.smallText} onPress={handleLoginClick}>{t('account_exists')} <Text style={[styles.white, styles.bold]}>{t('sign_in')}</Text></Text>
+            <Text style={[styles.text, styles.smallText]} onPress={handleLoginClick}>{t('account_exists')} <Text style={[styles.text, styles.white, styles.bold]}>{t('sign_in')}</Text></Text>
           </View>
         </View>
       </SafeAreaView >

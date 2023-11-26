@@ -41,7 +41,7 @@ const CustomTextInput = ({ value,
                 }
                 {
                     emojiLeft &&
-                    <Text style={styles.font14}>{emojiLeft}</Text>
+                    <Text style={[styles.font14]}>{emojiLeft}</Text>
                 }
                 <TextInput
                     style={[styles2.input, textStyles]}
@@ -70,7 +70,7 @@ const CustomTextInput = ({ value,
                     <MaterialIcons name={iconRight} size={18} color={palette.primary} />
                 }
             </TouchableOpacity>
-            {error && <Text adjustsFontSizeToFit numberOfLines={2} style={{ color: palette.red, fontSize: 12 * rem }}>{error}</Text>}
+            {error && <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, { color: palette.red, fontSize: 12 * rem }]}>{error}</Text>}
         </>
     );
 };

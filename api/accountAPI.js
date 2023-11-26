@@ -65,7 +65,7 @@ const useUserStore = create((set) => ({
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
 
-        const response = await axiosManager.publicAxios.get(`/login`, {
+        const response = await axiosManager.publicAxios.get(`/v1/user/login`, {
             params: {
                 phone: phoneNum,
                 password: password,
@@ -104,7 +104,7 @@ const useUserStore = create((set) => ({
     userInfo: async (uid) => {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
-        const response = await axiosManager.authAxios.get(`/userinfo`, {
+        const response = await axiosManager.authAxios.get(`/v1/user/userinfo`, {
             params: {
                 deviceToken: appManager.deviceToken
             }
@@ -122,7 +122,7 @@ const useUserStore = create((set) => ({
     },
 
     createAccount: async (firstName, lastName, phoneNum, email, password, gender) => {
-        const url = `/createaccount`;
+        const url = `/v1/user/createaccount`;
         const params = {
             fname: firstName,
             lname: lastName,
@@ -144,7 +144,7 @@ const useUserStore = create((set) => ({
     deleteAccount: async (password) => {
         const axiosManager = useAxiosManager.getState();
         const body = { password: password };
-        const response = await axiosManager.authAxios.post('/deleteuser', body, {
+        const response = await axiosManager.authAxios.post('/v1/user/deleteuser', body, {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -155,7 +155,7 @@ const useUserStore = create((set) => ({
 
     getAvailableCards: async () => {
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(`/wallet`);
+        const response = await axiosManager.authAxios.get(`/v1/user/wallet`);
 
         const data = response.data;
         set((state) => ({ availableCards: data }));
@@ -164,7 +164,7 @@ const useUserStore = create((set) => ({
 
     getBankAccounts: async () => {
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(`/banks`);
+        const response = await axiosManager.authAxios.get(`/v1/user/banks`);
 
         const data = response.data;
         set((state) => ({ bankAccounts: data }));
@@ -173,7 +173,7 @@ const useUserStore = create((set) => ({
 
     getMobileWallets: async () => {
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.get(`/mobilewallets`);
+        const response = await axiosManager.authAxios.get(`/v1/user/mobilewallets`);
 
         const data = response.data;
         set((state) => ({ mobileWallets: data }));
@@ -187,7 +187,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.patch(`/name`, body, {
+        const response = await axiosManager.authAxios.patch(`/v1/user/name`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -204,7 +204,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.patch(`/email`, body, {
+        const response = await axiosManager.authAxios.patch(`/v1/user/email`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -221,7 +221,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.patch(`/phone`, body, {
+        const response = await axiosManager.authAxios.patch(`/v1/user/phone`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -243,7 +243,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(`/bankaccount`, body, {
+        const response = await axiosManager.authAxios.post(`/v1/user/bankaccount`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -262,7 +262,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(`/mobilewallet`, body, {
+        const response = await axiosManager.authAxios.post(`/v1/user/mobilewallet`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -274,7 +274,7 @@ const useUserStore = create((set) => ({
     },
 
     getOtp: async (phone) => {
-        const url = `/verify`;
+        const url = `/v1/user/verify`;
 
         const axiosManager = useAxiosManager.getState();
         console.log('get otp');
@@ -292,7 +292,7 @@ const useUserStore = create((set) => ({
     },
 
     isVerified: async (phone) => {
-        const url = `/isverified`;
+        const url = `/v1/user/isverified`;
 
         const axiosManager = useAxiosManager.getState();
         const isVerified = await axiosManager.publicAxios.get(url, {
@@ -311,7 +311,7 @@ const useUserStore = create((set) => ({
     },
 
     sendOtp: async (phone, otp) => {
-        const url = `/verify`;
+        const url = `/v1/user/verify`;
 
         const axiosManager = useAxiosManager.getState();
 
@@ -339,7 +339,7 @@ const useUserStore = create((set) => ({
         });
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post("/uploadprofilepicture", formData, {
+        const response = await axiosManager.authAxios.post("/v1/user/uploadprofilepicture", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Accept: "application/json",
@@ -351,7 +351,7 @@ const useUserStore = create((set) => ({
     },
 
     sendOtpSecurity: async (phone, otp) => {
-        const url = `/verifysecurity`;
+        const url = `/v1/user/verifysecurity`;
 
         const axiosManager = useAxiosManager.getState();
 
@@ -370,7 +370,7 @@ const useUserStore = create((set) => ({
     },
 
     resetPassword: async (token, newPassword) => {
-        const url = `/changepassword`;
+        const url = `/v1/user/changepassword`;
 
         console.log(token);
 
@@ -398,7 +398,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(`/card`, body, {
+        const response = await axiosManager.authAxios.post(`/v1/user/card`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -415,7 +415,7 @@ const useUserStore = create((set) => ({
         }
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post('/referral', body, {
+        const response = await axiosManager.authAxios.post('/v1/user/referral', body, {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -431,7 +431,7 @@ const useUserStore = create((set) => ({
         };
 
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post('/withdrawalrequest', body, {
+        const response = await axiosManager.authAxios.post('/v1/user/withdrawalrequest', body, {
             headers: {
                 'Content-Type': 'application/json',
             },

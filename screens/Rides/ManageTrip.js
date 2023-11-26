@@ -52,7 +52,7 @@ const Timer = () => {
 
     return (
         <>
-            <Text style={[styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
+            <Text style={[styles.text, styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
         </>
     );
 }
@@ -270,7 +270,7 @@ const ManageTrip = ({ route, navigation }) => {
                             {getPhase() !== 4 &&
                                 <>
                                     <LiveAnimation width={75} height={75} />
-                                    <Text style={[styles.bold, styles.font28, styles.textCenter]}>
+                                    <Text style={[styles.text, styles.bold, styles.font28, styles.textCenter]}>
                                         {
                                             getPhase() === 0 ? 'Wait at Starting Point' :
                                                 getPhase() === 1 ? 'Head to Pick Up Point' :
@@ -297,7 +297,7 @@ const ManageTrip = ({ route, navigation }) => {
                                             {
                                                 data.status === 'CONFIRMED' &&
                                                 <TouchableOpacity disabled={submitDisabled} onPress={() => { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
-                                                    <Text style={manageTripStyles.manageBtnText}>{t('check_in')}</Text>
+                                                    <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('check_in')}</Text>
                                                 </TouchableOpacity>
                                             }
                                             {
@@ -341,8 +341,8 @@ const ManageTrip = ({ route, navigation }) => {
                                         <Image source={{ uri: getPickupPassenger().User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                     </View>
                                     <View style={[styles.ml10]}>
-                                        <Text style={[styles.mb5, styles.font14]}>You're picking up</Text>
-                                        <Text style={[styles.bold, styles.font18]}>
+                                        <Text style={[styles.text, styles.mb5, styles.font14]}>You're picking up</Text>
+                                        <Text style={[styles.text, styles.bold, styles.font18]}>
                                             {
                                                 getPickupPassenger().User.firstName
                                             }
@@ -397,12 +397,12 @@ const ManageTrip = ({ route, navigation }) => {
                                                     <Image source={{ uri: passenger.User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                                 </View>
                                                 <View style={[styles.ml10]}>
-                                                    <Text style={[styles.mb5, styles.font14]}>
+                                                    <Text style={[styles.text, styles.mb5, styles.font14]}>
                                                         {
                                                             passenger.paymentMethod === 'CASH' ? 'Collect payment from' : 'Good to go'
                                                         }
                                                     </Text>
-                                                    <Text style={[styles.bold, styles.font18]}>
+                                                    <Text style={[styles.text, styles.bold, styles.font18]}>
                                                         {
                                                             passenger.User.firstName
                                                         }
@@ -411,7 +411,7 @@ const ManageTrip = ({ route, navigation }) => {
                                                             passenger.User.lastName
                                                         }
                                                     </Text>
-                                                    <Text>
+                                                    <Text style={[styles.text]}>
                                                         {
                                                             passenger.paymentMethod === 'CASH' ? `${data.grandTotal} ${t('EGP')}` : 'paid using their card'
                                                         }
@@ -433,8 +433,8 @@ const ManageTrip = ({ route, navigation }) => {
                         {
                             getPhase() === 4 &&
                             <>
-                                <Text style={[styles.headerText, styles.primary]}>Ratings</Text>
-                                <Text style={[styles.smallText, styles.dark]}>Please take a moment to rate the passengers you've taken this ride with. This helps us keep up the integrity of our market!</Text>
+                                <Text style={[styles.text, styles.headerText, styles.primary]}>Ratings</Text>
+                                <Text style={[styles.text, styles.smallText, styles.dark]}>Please take a moment to rate the passengers you've taken this ride with. This helps us keep up the integrity of our market!</Text>
                                 <View style={[styles.w100, styles.mt10]}>
                                     {
                                         tripDetails.passengers.map((passenger, index) => {
@@ -445,7 +445,7 @@ const ManageTrip = ({ route, navigation }) => {
                                                         <Image source={{ uri: passenger.User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                                     </View>
                                                     <View style={[styles.ml10]}>
-                                                        <Text style={[styles.bold, styles.font18]}>
+                                                        <Text style={[styles.text, styles.bold, styles.font18]}>
                                                             {
                                                                 passenger.User.firstName
                                                             }
@@ -484,19 +484,19 @@ const ManageTrip = ({ route, navigation }) => {
                         }
 
                         {getPhase() === 0 &&
-                            <Text style={[styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                            <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 Please press the <Text style={styles.secondary}>Check In</Text> button when the passenger has gotten in the car. If a passenger fails to show up on time (within the waiting period), press the <Text style={styles.error}>Red X button</Text>.
                             </Text>
                         }
 
                         {getPhase() === 2 &&
-                            <Text style={[styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                            <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 Please press the <Text style={styles.secondary}>Next</Text> button when you have arrived at the destination. After that, please check the passengers out.
                             </Text>
                         }
 
                         {getPhase() === 3 &&
-                            <Text style={[styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                            <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 Please press the <Text style={styles.secondary}>Confirm Collections</Text> button when you receive payments from everyone paying in cash.
                             </Text>
                         }

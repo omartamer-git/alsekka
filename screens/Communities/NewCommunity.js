@@ -84,7 +84,7 @@ export default function NewCommunity({ navigation, route }) {
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.inputText}>{t('community_name')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('community_name')}</Text>
                             <CustomTextInput
                                 placeholder={t('community_name')}
                                 value={values.communityNameInput}
@@ -93,7 +93,7 @@ export default function NewCommunity({ navigation, route }) {
                                 error={touched.communityNameInput && errors.communityNameInput}
                             />
 
-                            <Text style={styles.inputText}>{t('community_description')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('community_description')}</Text>
                             <TextArea
                                 placeholder={t('community_description')}
                                 value={values.communityDescriptionInput}
@@ -102,7 +102,7 @@ export default function NewCommunity({ navigation, route }) {
                                 error={touched.communityDescriptionInput && errors.communityDescriptionInput}
                             />
 
-                            <Text style={styles.inputText}>{t('community_privacy')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('community_privacy')}</Text>
                             <Selector
                                 options={[{ value: 0, text: t('public') }, { value: 1, text: t('private') }]}
                                 value={values.communityPrivacyInput}
@@ -112,7 +112,7 @@ export default function NewCommunity({ navigation, route }) {
                             {
                                 values.communityPrivacyInput === 1 && (
                                     <>
-                                        <Text style={styles.inputText}>{t('privacy_question')}</Text>
+                                        <Text style={[styles.text, styles.inputText]}>{t('privacy_question')}</Text>
                                         <CustomTextInput
                                             placeholder={t('privacy_question_example')}
                                             value={values.joinQuestionInput}

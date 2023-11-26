@@ -53,7 +53,7 @@ const HeaderView = ({ screenName, navType, action, children, borderVisible=true,
             </View>
             
             <View style={{ flex: 1, alignItems: 'center', paddingEnd: navType ? 44 * rem : 0 }}>
-                {screenName && <View style={styles2.screenName}><Text style={{ textAlign: 'center', color: palette.white, fontWeight: '600', fontSize: 16 }}>{screenName}</Text></View>}
+                {screenName && <View style={styles2.screenName}><Text style={[styles.text, { textAlign: 'center', color: palette.white, fontWeight: '600', fontSize: 16 }]}>{screenName}</Text></View>}
             </View>
         </View>
     );

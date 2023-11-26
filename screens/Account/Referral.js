@@ -28,8 +28,8 @@ const List = ({ icon, headline, text }) => {
                 <FontsAwesome5 style={styles.icon} name={icon} size={20} color={palette.accent} light />
             </View>
             <View style={[styles.flexOne, styles.justifyCenter, styles.ml5]}>
-                <Text style={[styles.font12, styles.bold]}>{headline}</Text>
-                <Text style={[styles.font12, styles.mt5]}>{text}</Text>
+                <Text style={[styles.text, styles.font12, styles.bold]}>{headline}</Text>
+                <Text style={[styles.text, styles.font12, styles.mt5]}>{text}</Text>
             </View>
         </View>
     )
@@ -66,7 +66,7 @@ const Referral = ({ navigation, route }) => {
             <ScrollView style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100, styles.alignCenter]}>
                 <Treasure width={250} height={250} />
                 <View style={[styles.w100, styles.mt5]}>
-                    <Text style={[styles.font18, styles.bold, styles.mt20]}>{t('share_earn_repeat')}</Text>
+                    <Text style={[styles.text, styles.font18, styles.bold, styles.mt20]}>{t('share_earn_repeat')}</Text>
                     <List icon="share" headline={t('share_your_code')} text={t('share_your_code2')} />
                     <List icon="coins" headline={t('earn_vouchers')} text={t('earn_vouchers2')} />
                     <List icon="redo" headline={t('repeat')} text={t('repeat2')} />
@@ -83,9 +83,9 @@ const Referral = ({ navigation, route }) => {
                         }}
                         style={[styles.w100, styles.br8, styles.mt10]}>
                         <View style={[styles.bgAccent, styles.alignCenter, styles.justifyCenter, styles.border1, styles.p8, styles.br8]}>
-                            <Text style={styles.white}>{t('your_code')}</Text>
-                            {!copied && <Text style={[styles.white, styles.bold]}>{config.REFERRAL_PREFIX}{config.REFERRAL_INCREMENT + id}</Text>}
-                            {copied && <Text style={[styles.white, styles.bold]}>{t('copied')}</Text>}
+                            <Text style={[styles.text, styles.white]}>{t('your_code')}</Text>
+                            {!copied && <Text style={[styles.text, styles.white, styles.bold]}>{config.REFERRAL_PREFIX}{config.REFERRAL_INCREMENT + id}</Text>}
+                            {copied && <Text style={[styles.text, styles.white, styles.bold]}>{t('copied')}</Text>}
                         </View>
                     </TouchableWithoutFeedback>
                     <Button onPress={onShare} text={t('share')} bgColor={palette.primary} textColor={palette.white} />

@@ -52,6 +52,7 @@ const ViewCommunity = ({ navigation, route }) => {
                 } else {
                     setLoading(false);
                 }
+                console.log(data);
                 setJoinQuestion(data.joinQuestion);
             }
         ).catch(err => {
@@ -125,10 +126,10 @@ const ViewCommunity = ({ navigation, route }) => {
                                 <View style={[styles.flexRow, styles.justifyCenter, styles.alignCenter]}>
                                     <Image width={44} height={44} style={{ borderRadius: 44 / 2 }} source={{ uri: communityPicture }} />
                                     <View style={[styles.ml10]}>
-                                        <Text style={[styles.font14, styles.dark, styles.bold]}>{communityName}</Text>
+                                        <Text style={[styles.text, styles.font14, styles.dark, styles.bold]}>{communityName}</Text>
                                         <View style={[styles.flexRow, styles.alignCenter]}>
                                             {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
-                                            <Text style={[styles.font12, styles.dark, styles.ml5]}>
+                                            <Text style={[styles.text, styles.font12, styles.dark, styles.ml5]}>
                                                 {communityPrivacy === true ? t('private') : t('public')}
                                             </Text>
                                         </View>
@@ -176,13 +177,13 @@ const ViewCommunity = ({ navigation, route }) => {
                                 })}
                                 {feed.length > 0 &&
                                     <TouchableOpacity activeOpacity={0.7} style={[styles.w100, styles.alignCenter, styles.mt10]} onPress={loadMore}>
-                                        <Text style={[styles.primary, styles.bold, styles.font14]}>{t('see_more')}</Text>
+                                        <Text style={[styles.text, styles.primary, styles.bold, styles.font14]}>{t('see_more')}</Text>
                                     </TouchableOpacity>
                                 }
                                 {feed.length === 0 && (
                                     <View style={[styles.flexOne, styles.fullCenter, styles.w100]}>
                                         <MaterialIcons name="sentiment-very-dissatisfied" color={palette.dark} size={100} />
-                                        <Text style={[styles.font18, styles.dark, styles.mt10]}>{t('no_rides')}</Text>
+                                        <Text style={[styles.text, styles.font18, styles.dark, styles.mt10]}>{t('no_rides')}</Text>
                                     </View>
                                 )
                                 }
@@ -193,18 +194,18 @@ const ViewCommunity = ({ navigation, route }) => {
                             <>
                                 <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
                                     <Image width={100} height={100} style={{ borderRadius: 100 / 2 }} source={{ uri: communityPicture }} />
-                                    <Text style={[styles.font18, styles.bold, styles.mt10]}>{communityName}</Text>
+                                    <Text style={[styles.text, styles.font18, styles.bold, styles.mt10]}>{communityName}</Text>
                                     <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
-                                        <Text style={[styles.font12, styles.dark, styles.mr5]}>
+                                        <Text style={[styles.text, styles.font12, styles.dark, styles.mr5]}>
                                             {communityPrivacy === true ? t('private') : t('public')}
                                         </Text>
                                         {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                                     </View>
-                                    <Text style={[styles.font14, styles.mt10]}>{communityDescription}</Text>
+                                    <Text style={[styles.text, styles.font14, styles.mt10]}>{communityDescription}</Text>
 
                                     {communityPrivacy && joinQuestion && (
                                         <View style={[styles.w100, styles.mt10]}>
-                                            <Text style={[styles.font14, styles.mt10, styles.textCenter, styles.w100]}>{joinQuestion}</Text>
+                                            <Text style={[styles.text, styles.font14, styles.mt10, styles.textCenter, styles.w100]}>{joinQuestion}</Text>
                                             <CustomTextInput placeholder={t('answer')} style={[styles.mt10]} value={joinAnswer} onChangeText={(data) => setJoinAnswer(data)} />
                                         </View>
                                     )}
@@ -217,9 +218,9 @@ const ViewCommunity = ({ navigation, route }) => {
                         {sentJoinRequest && (
                             <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
                                 <CoffeeIcon width={200} height={200} />
-                                <Text style={[styles.font28, styles.primary, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
+                                <Text style={[styles.text, styles.font28, styles.primary, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
                                 <Text
-                                    style={[styles.font14, styles.mt10, styles.textCenter, styles.ph8]}>
+                                    style={[styles.text, styles.font14, styles.mt10, styles.textCenter, styles.ph8]}>
                                     {t('community_request_sent')}
                                 </Text>
                                 <Button text={t('back')} bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={() => navigation.goBack()} />

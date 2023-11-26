@@ -74,6 +74,12 @@ import AddReferral from './screens/Account/AddReferral';
 import { Notifications } from 'react-native-notifications';
 import { registerDevice } from './api/utilAPI';
 import useAppManager from './context/appManager';
+import SpInAppUpdates, {
+  NeedsUpdateResponse,
+  IAUUpdateKind,
+  StartUpdateOptions,
+} from 'sp-react-native-in-app-updates';
+import DeviceInfo from 'react-native-device-info';
 
 
 const RootStack = createNativeStackNavigator();
@@ -233,6 +239,33 @@ const App = () => {
       // return unsubscribe;
     }
 
+  }, []);
+
+  useEffect(() => {
+    const inAppUpdates = new SpInAppUpdates(
+      true // isDebug
+    );
+    // curVersion is optional if you don't provide it will automatically take from the app using react-native-device-info
+    inAppUpdates.checkNeedsUpdate().then(async (result) => {      
+      if (result.shouldUpdate) {
+        
+        const versionData = await appManager.getVersionData();
+        let forceUpgrade = false;
+        if(versionData.minVersion > DeviceInfo.getVersion()) {
+          forceUpgrade = true;
+        }
+        let updateOptions = {
+          forceUpgrade: forceUpgrade
+        };
+        if (Platform.OS === 'android') {
+          // android only, on iOS the user will be promped to go to your app store page
+          updateOptions = {
+            updateType: IAUUpdateKind.FLEXIBLE,
+          };
+        }
+        inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
+      }
+    });
   }, []);
 
 

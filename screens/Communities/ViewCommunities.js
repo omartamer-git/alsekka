@@ -78,7 +78,7 @@ const ViewCommunities = ({ navigation, route }) => {
                     !loading &&
                     <>
                         <View style={[styles.w100, styles.flexRow, styles.alignCenter, styles.mt20]}>
-                            <Text style={[styles.headerText2]}>{t('communities')}</Text>
+                            <Text style={[styles.text, styles.headerText2]}>{t('communities')}</Text>
                             <View style={[styles.flexOne]} />
                             <TouchableOpacity style={[styles.mr5]} onPress={() => navigation.navigate('Search Communities')}><MaterialIcons name="search" size={24} /></TouchableOpacity>
                             <TouchableOpacity style={[styles.ml5]} onPress={() => navigation.navigate('New Community')}><MaterialIcons name="add" size={24} /></TouchableOpacity>
@@ -86,7 +86,7 @@ const ViewCommunities = ({ navigation, route }) => {
 
                         {feed && feed.length > 0 &&
                             <View style={[styles.w100, styles.mt10, styles.borderLight, styles.pb8, { borderTopWidth: 1 }]}>
-                                <Text style={[styles.headerText3, styles.mt10]}>{t('your_feed')}</Text>
+                                <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('your_feed')}</Text>
                                 <View style={[styles.w100, styles.mt5, styles.flexRow, { paddingHorizontal: '5%', justifyContent: 'space-between', flexWrap: 'wrap' }]}>
                                     {
                                         feed.map((data, index) => {
@@ -97,7 +97,7 @@ const ViewCommunities = ({ navigation, route }) => {
                                                     style={[{ width: '47.5%', minHeight: 150 }, styles.p16, styles.mv5, styles.br8, styles.bgLight, styles.justifyCenter, styles.alignCenter]}>
 
                                                     <Image width={60} height={60} style={{ borderRadius: 60 / 2 }} source={{ uri: data.picture }} />
-                                                    <Text numberOfLines={2} style={[styles.font12, styles.textCenter, styles.mt5, styles.dark]}>{data.name}</Text>
+                                                    <Text numberOfLines={2} style={[styles.text, styles.font12, styles.textCenter, styles.mt5, styles.dark]}>{data.name}</Text>
                                                 </TouchableOpacity>
                                             )
                                         })
@@ -107,7 +107,7 @@ const ViewCommunities = ({ navigation, route }) => {
                             </View>}
 
                         <View style={[styles.flexOne, styles.mt10, styles.w100, styles.borderLight, { borderTopWidth: 1 }]}>
-                            <Text style={[styles.headerText3, styles.mt10]}>{t('rec_communities')}</Text>
+                            <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('rec_communities')}</Text>
                             {
                                 communities && communities.map((data, index) => {
                                     return (
@@ -121,7 +121,7 @@ const ViewCommunities = ({ navigation, route }) => {
                                                     communityName: data.name,
                                                     communityPicture: data.picture,
                                                     communityDescription: data.description,
-                                                    communityPrivacy: data.private
+                                                    communityPrivacy: data.private,
                                                 })
                                             }
                                         />);

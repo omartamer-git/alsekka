@@ -105,7 +105,7 @@ export const abbreviate = (string) => {
         return abbreviation.toUpperCase(); // Convert the abbreviation to uppercase
     }
 
-    if(words.length === 1) {
+    if (words.length === 1) {
         return words[0].substring(0, 4).toUpperCase();
     }
     return string;
@@ -228,11 +228,24 @@ export const getDateTime = (date, viweing = true) => {
     return dateString;
 }
 
+export function dateDiffInDays(a, b) {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
+
 export const rem = Dimensions.get('window').width / 380;
 
 export const styles = StyleSheet.create({
     freeSans: {
         fontFamily: I18nManager.isRTL ? 'TheSansArabic-Bold' : 'FreeSansBold',
+    },
+    text: {
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : 'General Sans Variable',
     },
     logoSpacing: {
         letterSpacing: I18nManager.isRTL ? 0 : -3 * rem
@@ -756,21 +769,22 @@ export const styles = StyleSheet.create({
 
     font12: {
         fontSize: 12 * rem,
+        lineHeight: 14 * rem
     },
 
     font14: {
         fontSize: 14 * rem,
-        lineHeight: 14 * rem,
+        lineHeight: 16 * rem,
     },
 
     font18: {
         fontSize: 18 * rem,
-        lineHeight: 18 * rem,
+        lineHeight: 20 * rem,
     },
 
     font28: {
         fontSize: 28 * rem,
-        lineHeight: 28 * rem,
+        lineHeight: 30 * rem,
     },
 
     inputText: {

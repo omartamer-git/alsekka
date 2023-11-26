@@ -68,7 +68,7 @@ const AddBank = ({ navigation, route }) => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                         <>
-                            <Text style={styles.inputText}>{t('account_holder_name')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('account_holder_name')}</Text>
 
                             <CustomTextInput
                                 placeholder={t('account_holder_name')}
@@ -80,7 +80,7 @@ const AddBank = ({ navigation, route }) => {
                             />
 
 
-                            <Text style={styles.inputText}>{t('bank_name')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('bank_name')}</Text>
 
                             <CustomTextInput
                                 placeholder={t('bank_name')}
@@ -91,7 +91,7 @@ const AddBank = ({ navigation, route }) => {
                                 iconLeft="account-balance"
                             />
 
-                            <Text style={styles.inputText}>{t('account_number')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('account_number')}</Text>
 
                             <CustomTextInput
                                 placeholder={t('account_number')}
@@ -103,7 +103,7 @@ const AddBank = ({ navigation, route }) => {
                             />
 
 
-                            <Text style={styles.inputText}>{t('swift_code')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('swift_code')}</Text>
 
                             <CustomTextInput
                                 placeholder={t('swift_code')}

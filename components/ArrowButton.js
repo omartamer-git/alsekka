@@ -18,7 +18,7 @@ const ArrowButton = ({ text, onPress, bgColor, disabled, textColor, style, icon,
         >
             {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={13 * rem} color={iconColor} />}
             <View style={[styles2.viewStyle, icon ? {} : { marginEnd: 20 }]}>
-                { text && <Text style={[styles2.continueBtnText, { color: textColor }]}>{text}</Text> }
+                { text && <Text style={[styles2.continueBtnText, styles2.text, { color: textColor }]}>{text}</Text> }
             </View>
             <View style={{alignItems: 'flex-end'}}>
                 <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={13 * rem} color={iconColor || palette.black} />

@@ -32,10 +32,10 @@ const Wallet = ({ navigation, route }) => {
     return (
         <ScreenWrapper screenName={t('wallet')} navType="back" navAction={() => { navigation.goBack() }}>
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
-                <Text style={styles.headerText}>{t('wallet')}</Text>
+                <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.primary, palette.secondary]} style={walletStyles.card}>
-                    <Text style={[styles.white, styles.bold]}>{t('balance')}</Text>
-                    <Text style={[styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(balance) : balance}</Text>
+                    <Text style={[styles.text, styles.white, styles.bold]}>{t('balance')}</Text>
+                    <Text style={[styles.text, styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(balance) : balance}</Text>
                     <View style={[styles.justifyEnd, styles.mb5, styles.flexOne]}>
                         <Button text={t('withdraw')} bgColor={palette.white} style={{ width: '50%' }} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
                     </View>
@@ -43,7 +43,7 @@ const Wallet = ({ navigation, route }) => {
 
                 { cardsEnabled &&
                     <>
-                        <Text style={[styles.headerText3, styles.mt15]}>{t('payment_methods')}</Text>
+                        <Text style={[styles.text, styles.headerText3, styles.mt15]}>{t('payment_methods')}</Text>
                         {
                             availableCards.map((data, index) => {
                                 return (
@@ -53,13 +53,13 @@ const Wallet = ({ navigation, route }) => {
                         }
                         <TouchableOpacity onPress={() => { navigation.navigate('Add Card') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                             <MaterialIcons name="add" size={18} color={palette.dark} />
-                            <Text style={walletStyles.paymentMethodButtonText}>{t('add_payment_method')}</Text>
+                            <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_payment_method')}</Text>
                         </TouchableOpacity>
                     </>
                 }
 
 
-                <Text style={[styles.headerText3, styles.mt15]}>{t('withdrawal_options')}</Text>
+                <Text style={[styles.text, styles.headerText3, styles.mt15]}>{t('withdrawal_options')}</Text>
 
                 {
                     bankAccounts.map((data, index) => {
@@ -71,7 +71,7 @@ const Wallet = ({ navigation, route }) => {
 
                 <TouchableOpacity onPress={() => { navigation.navigate('Add Bank') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="account-balance" size={18} color={palette.dark} />
-                    <Text style={walletStyles.paymentMethodButtonText}>{t('add_bank_account')}</Text>
+                    <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_bank_account')}</Text>
                 </TouchableOpacity>
 
                 {
@@ -84,7 +84,7 @@ const Wallet = ({ navigation, route }) => {
 
                 <TouchableOpacity activeOpacity={0.9} onPress={() => { navigation.navigate('Add Mobile Wallet') }} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="wallet-travel" size={18} color={palette.dark} />
-                    <Text style={walletStyles.paymentMethodButtonText}>{t('add_mobile_wallet')}</Text>
+                    <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_mobile_wallet')}</Text>
                 </TouchableOpacity>
             </ScrollView>
         </ScreenWrapper>

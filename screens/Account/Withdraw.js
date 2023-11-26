@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import ArrowButton from "../../components/ArrowButton";
 import Button from "../../components/Button";
 import { useTranslation } from "react-i18next";
+import * as StoreReview from 'react-native-store-review';
 
 const Withdraw = ({ route, navigation }) => {
     const { bankAccounts, mobileWallets, balance, sendWithdrawalRequest } = useUserStore();
@@ -35,6 +36,7 @@ const Withdraw = ({ route, navigation }) => {
         setSubmitDisabled(true);
         if(withdrawalId.current !== null) {
             sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack()).catch(console.error).finally(() => { setSubmitDisabled(false); });
+            StoreReview.requestReview();
         }
         setSubmitDisabled(false);
     };
@@ -45,9 +47,9 @@ const Withdraw = ({ route, navigation }) => {
         <>
             <ScreenWrapper screenName={t('withdraw') + " " + t('balance')} navType="back" navAction={navigation.goBack}>
                 <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
-                    <Text style={[styles.headerText3]}>{t('you_have')}</Text>
-                    <Text style={[styles.headerText]}>{balance} {t('EGP')}</Text>
-                    <Text style={[styles.headerText3]}>{t('available_to_withdraw')}</Text>
+                    <Text style={[styles.text, styles.headerText3]}>{t('you_have')}</Text>
+                    <Text style={[styles.text, styles.headerText]}>{balance} {t('EGP')}</Text>
+                    <Text style={[styles.text, styles.headerText3]}>{t('available_to_withdraw')}</Text>
 
                     <ArrowButton
                         text={withdrawalMethodChosen}
@@ -60,12 +62,12 @@ const Withdraw = ({ route, navigation }) => {
 
 
                     <Button text={t('send_withdrawal_request')} bgColor={palette.primary} textColor={palette.white} onPress={sendRequest} />
-                    <Text style={[styles.smallText, styles.dark]}>{t('withdraw_disclaimer')}</Text>
+                    <Text style={[styles.text, styles.smallText, styles.dark]}>{t('withdraw_disclaimer')}</Text>
                 </ScrollView>
             </ScreenWrapper>
 
             <BottomModal onHide={() => setModalVisible(false)} modalVisible={modalVisible}>
-                {bankAccounts.length > 0 && <Text style={[styles.headerText3, styles.mt10]}>{t('bank_accounts')}</Text>}
+                {bankAccounts.length > 0 && <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('bank_accounts')}</Text>}
                 {
                     bankAccounts.map((data, index) => {
                         return (
@@ -74,7 +76,7 @@ const Withdraw = ({ route, navigation }) => {
                     })
                 }
 
-                {mobileWallets.length > 0 && <Text style={[styles.headerText3, styles.mt10]}>{t('mobile_wallets')}</Text>}
+                {mobileWallets.length > 0 && <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('mobile_wallets')}</Text>}
 
                 {
                     mobileWallets.map((data, index) => {

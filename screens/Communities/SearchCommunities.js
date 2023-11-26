@@ -19,7 +19,7 @@ const SearchCommunities = ({ navigation, route }) => {
     const [searchText, setSearchText] = useState('');
     const [communities, setCommunities] = useState([]);
     const handleTextChange = (text) => {
-        if(text === '') {
+        if (text === '') {
             setCommunities([]);
             return;
         }
@@ -40,7 +40,7 @@ const SearchCommunities = ({ navigation, route }) => {
     };
 
 
-    if(Platform.OS === 'ios') {
+    if (Platform.OS === 'ios') {
         const onFocusEffect = useCallback(() => {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -51,11 +51,11 @@ const SearchCommunities = ({ navigation, route }) => {
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
 
     return (
@@ -66,7 +66,23 @@ const SearchCommunities = ({ navigation, route }) => {
             <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     communities && communities.map((data, index) => {
-                        return (<CommunityCard key={"communitycard" + index} name={data.name} picture={data.picture} description={data.description} style={styles.mt10} />);
+                        return (
+                            <CommunityCard
+                                key={"communitycard" + index}
+                                name={data.name} picture={data.picture}
+                                description={data.description}
+                                style={styles.mt10}
+                                onPress={
+                                    () => navigation.navigate('View Community', {
+                                        communityId: data.id,
+                                        communityName: data.name,
+                                        communityPicture: data.picture,
+                                        communityDescription: data.description,
+                                        communityPrivacy: data.private
+                                    })
+                                }
+                            />
+                        );
                     })
                 }
             </ScrollView>

@@ -18,7 +18,7 @@ const Button = ({ text, onPress, bgColor, disabled, textColor, style, icon, icon
         >
             {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={20} color={iconColor} />}
             <View style={[styles2.viewStyle, icon === undefined ? {} : { marginEnd: 20 }]}>
-                { text && <Text style={[styles2.continueBtnText, { color: textColor }]}>{text}</Text> }
+                { text && <Text style={[styles2.continueBtnText, styles.text, { color: textColor }]}>{text}</Text> }
                 { children }
             </View>
         </TouchableOpacity>

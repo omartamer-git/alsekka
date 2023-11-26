@@ -168,7 +168,7 @@ const NewCar = ({ route, navigation }) => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>
-                            <Text style={styles.inputText}>{t('car_brand')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('car_brand')}</Text>
                             <CustomTextInput
                                 placeholder={t('car_brand2')}
                                 iconRight="directions-car"
@@ -178,7 +178,7 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carBrandInput && errors.carBrandInput}
                             />
 
-                            <Text style={styles.inputText}>{t('yom')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('yom')}</Text>
                             <CustomTextInput
                                 placeholder={t('yom2')}
                                 iconRight="date-range"
@@ -188,7 +188,7 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carYearInput && errors.carYearInput}
                             />
 
-                            <Text style={styles.inputText}>{t('car_model')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('car_model')}</Text>
                             <CustomTextInput
                                 placeholder={t('car_model2')}
                                 iconRight="badge"
@@ -198,7 +198,7 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carModelInput && errors.carModelInput}
                             />
 
-                            <Text style={styles.inputText}>{t('color')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('color')}</Text>
                             <CustomTextInput
                                 placeholder={t('color2')}
                                 iconRight="palette"
@@ -208,7 +208,7 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.carColorInput && errors.carColorInput}
                             />
 
-                            <Text style={styles.inputText}>{t('license_letters')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('license_letters')}</Text>
 
                             <View style={[{ flexDirection: 'row-reverse' }, styles.w100]}>
 
@@ -261,7 +261,7 @@ const NewCar = ({ route, navigation }) => {
 
                             </View>
 
-                            <Text style={styles.inputText}>{t('license_numbers')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('license_numbers')}</Text>
                             <CustomTextInput
                                 placeholder={t('license_numbers2')}
                                 value={values.licensePlateNumbersInput}
@@ -270,7 +270,7 @@ const NewCar = ({ route, navigation }) => {
                                 error={touched.licensePlateNumbersInput && errors.licensePlateNumbersInput}
                             />
 
-                            <Text style={styles.inputText}>{t('car_license_front')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('car_license_front')}</Text>
                             <ErrorMessage condition={frontPhotoButtonTouched && !licenseFront} message="This field is required." />
                             <Button
                                 text={frontPhotoButtonText}
@@ -279,7 +279,7 @@ const NewCar = ({ route, navigation }) => {
                                 onPress={chooseLicenseFront}
                             />
 
-                            <Text style={styles.inputText}>{t('car_license_back')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('car_license_back')}</Text>
                             <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message="This field is required." />
                             <Button
                                 text={backPhotoButtonText}
@@ -305,14 +305,14 @@ const NewCar = ({ route, navigation }) => {
                     <HeaderView navType="back" screenName={t('manage_cars')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
                         <View style={styles.localeWrapper}>
                             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                            <Text style={styles.locale}>EN</Text>
+                            <Text style={[styles.text, styles.locale]}>EN</Text>
                         </View>
                     </HeaderView>
                 </SafeAreaView>
                 <View style={[styles.defaultContainer, styles.defaultPadding, styles.justifyCenter, styles.alignCenter]}>
                     <CoffeeIcon width={250} height={250} />
-                    <Text style={[styles.font28, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
-                    <Text style={[styles.font18, styles.mt5, styles.textCenter]}>{t('wait_processing2')}</Text>
+                    <Text style={[styles.text, styles.font28, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
+                    <Text style={[styles.text, styles.font18, styles.mt5, styles.textCenter]}>{t('wait_processing2')}</Text>
                     <Button bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => { navigation.goBack(); }}></Button>
                 </View>
             </Modal>

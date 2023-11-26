@@ -6,6 +6,18 @@
       "sha1": "e795021c188f8e616a624ee5d6b77039b1d522ed"
     },
     {
+      "path": "assets/fonts/General Sans Variable.ttf",
+      "sha1": "e62ab33e17846da87b46ac2a3b155a7307f35fb8"
+    },
+    {
+      "path": "assets/fonts/Noto Kufi Arabic.ttf",
+      "sha1": "71e6f4210e5c6dc5fed6107b196d8961e45fd121"
+    },
+    {
+      "path": "assets/fonts/Noto Sans Arabic.ttf",
+      "sha1": "3be96332f481a99c4e706edf2884cd9edfacb9fa"
+    },
+    {
       "path": "assets/fonts/TheSansArabic-Bold.ttf",
       "sha1": "b630de954396ae4ad70713f531c10e8aa18a0d74"
     }

@@ -12,9 +12,9 @@ const Passenger = ({ borderTopWidth, data, children }) => {
             </View>
             <View style={[styles.ml10, styles.flexRow, styles.flexOne, { paddingEnd: 5 }]}>
                 <View style={[styles.justifyCenter, styles.flexOne ]}>
-                    <Text style={styles.semiBold}>{data.User.firstName} {data.User.lastName}</Text>
-                    <Text style={[styles.font12, styles.semiBold, styles.dark]}>{data.paymentMethod == "CASH" ? t('cash') : t('card')}</Text>
-                    <Text>
+                    <Text style={[styles.text, styles.semiBold]}>{data.User.firstName} {data.User.lastName}</Text>
+                    <Text style={[styles.text, styles.font12, styles.semiBold, styles.dark]}>{data.paymentMethod == "CASH" ? t('cash') : t('card')}</Text>
+                    <Text style={[styles.text]}>
                         {
                             Array.from({ length: Math.floor(data.User.rating) }, (_, i) => { return (<MaterialIcons key={"fullStarPassenger" + i} name="star" color={palette.secondary} />); })
                         }

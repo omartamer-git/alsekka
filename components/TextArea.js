@@ -29,11 +29,11 @@ export default function TextArea(props) {
                     {...props}
                     multiline={true}
                     numberOfLines={4}
-                    style={[styles.accent, styles.flexOne, styles.semiBold, styles.textStart, {lineHeight: 16 * rem}]}
+                    style={[styles.text, styles.accent, styles.flexOne, styles.semiBold, styles.textStart, {lineHeight: 16 * rem}]}
                     ref={inputRef}
                 />
             </TouchableOpacity>
-            {props.error && <Text adjustsFontSizeToFit numberOfLines={2} style={{ color: palette.red, fontSize: 12 * rem }}>{props.error}</Text>}
+            {props.error && <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, { color: palette.red, fontSize: 12 * rem }]}>{props.error}</Text>}
         </>
     )
 }

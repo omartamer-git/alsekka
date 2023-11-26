@@ -6,7 +6,7 @@ import { subtractDates } from './utilAPI';
 
 
 export const rideDetails = async (rideId) => {
-    const url = `/ridedetails`;
+    const url = `/v1/ride/ridedetails`;
     const params = {
         rideId: rideId
     };
@@ -22,7 +22,7 @@ export const rideDetails = async (rideId) => {
 };
 
 export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLocation, datetime, mainTextTo) => {
-    const url = `/bookride`;
+    const url = `/v1/ride/bookride`;
     const params = {
         rideId: rideId,
         paymentMethod: paymentMethod.type === 'cash' ? 'CASH' : 'CARD',
@@ -68,7 +68,7 @@ export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLo
 };
 
 export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderChoice) => {
-    const url = `/nearbyrides`;
+    const url = `/v1/ride/nearbyrides`;
     const params = {
         startLng: fromLng,
         startLat: fromLat,
@@ -85,7 +85,7 @@ export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderCh
 };
 
 export const upcomingRides = async () => {
-    const url = `/upcomingrides`;
+    const url = `/v1/ride/upcomingrides`;
     const uid = useUserStore.getState().id;
     const params = {
         uid: uid,
@@ -109,7 +109,7 @@ export const upcomingRides = async () => {
 
 
 export const driverRides = async (limit) => {
-    const url = `/driverrides`;
+    const url = `/v1/ride/driverrides`;
     const uid = useUserStore.getState().id;
     const params = {
         uid: uid,
@@ -127,11 +127,8 @@ export const driverRides = async (limit) => {
 };
 
 export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, date, car, community, gender, seatsAvailable) => {
-    const url = `/postride`;
+    const url = `/v1/ride/postride`;
     const uid = useUserStore.getState().id;
-    console.log("in api");
-    console.log(pickupEnabled);
-    console.log(pickupPrice);
     const body = {
         fromLatitude: fromLatitude,
         fromLongitude: fromLongitude,
@@ -183,7 +180,7 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
 };
 
 export const tripDetails = async (tripId) => {
-    const url = `/tripdetails`;
+    const url = `/v1/ride/tripdetails`;
     const params = {
         tripId: tripId
     };
@@ -195,7 +192,7 @@ export const tripDetails = async (tripId) => {
 };
 
 export const tryVerifyVoucher = async (code) => {
-    const url = `/verifyvoucher`;
+    const url = `/v1/ride/verifyvoucher`;
     const params = {
         code
     };
@@ -208,7 +205,7 @@ export const tryVerifyVoucher = async (code) => {
 
 
 export const cancelRide = async (tripId) => {
-    const url = `/cancelride`;
+    const url = `/v1/ride/cancelride`;
     const params = {
         tripId: tripId
     };
@@ -220,7 +217,7 @@ export const cancelRide = async (tripId) => {
 };
 
 export const cancelPassenger = async (tripId) => {
-    const url = `/cancelpassenger`;
+    const url = `/v1/ride/cancelpassenger`;
     const params = {
         tripId: tripId
     };
@@ -231,7 +228,7 @@ export const cancelPassenger = async (tripId) => {
 }
 
 export const startRide = async (tripId) => {
-    const url = `/startride`;
+    const url = `/v1/ride/startride`;
     const params = {
         tripId: tripId
     };
@@ -247,7 +244,7 @@ export const startRide = async (tripId) => {
 };
 
 export const submitDriverRatings = async (tripId, ratings) => {
-    const url = `/submitdriverratings`;
+    const url = `/v1/ride/submitdriverratings`;
     const body = { tripId, ratings };
 
     const axiosManager = useAxiosManager.getState();
@@ -261,7 +258,7 @@ export const submitDriverRatings = async (tripId, ratings) => {
 };
 
 export const pastRides = async (limit, page=1) => {
-    let url = `/pastrides`;
+    let url = `/v1/ride/pastrides`;
     const uid = useUserStore.getState().id;
     const params = {
         uid: uid,
@@ -277,7 +274,7 @@ export const pastRides = async (limit, page=1) => {
 
 
 export const passengerDetails = async (passengerId, tripId) => {
-    const url = `/passengerdetails`;
+    const url = `/v1/ride/passengerdetails`;
     const params = {
         passenger: passengerId,
         tripId: tripId
@@ -294,7 +291,7 @@ export const passengerDetails = async (passengerId, tripId) => {
 };
 
 export const checkPassengerOut = async (tripId) => {
-    const url = `/checkout`;
+    const url = `/v1/ride/checkout`;
     const body = {
         tripId: tripId,
     };
@@ -310,7 +307,7 @@ export const checkPassengerOut = async (tripId) => {
 };
 
 export const checkPassengerIn = async (passengerId, tripId) => {
-    const url = `/checkIn`;
+    const url = `/v1/ride/checkIn`;
     const params = {
         tripId: tripId,
         passenger: passengerId
@@ -323,7 +320,7 @@ export const checkPassengerIn = async (passengerId, tripId) => {
 };
 
 export const getTripTotals = async (tripId) => {
-    const url = `/tripTotals`;
+    const url = `/v1/ride/tripTotals`;
     const params = {
         tripId: tripId
     };
@@ -335,7 +332,7 @@ export const getTripTotals = async (tripId) => {
 }
 
 export const noShow = async (passengerId, tripId) => {
-    const url = `/noshow`;
+    const url = `/v1/ride/noshow`;
     const params = {
         tripId: tripId,
         passenger: passengerId

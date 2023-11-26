@@ -27,7 +27,7 @@ export default function CustomDatePicker({ date, setDate }) {
                                     setDate(newDate);
                                 }}
                                 style={[chosen ? styles.bgPrimary : styles.bgDark, styles.justifyCenter, styles.alignCenter, styles.w100, styles.h100]} key={`day${dayOffset}`}>
-                                <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.white, styles.bold]}>{dateString}</Text>
+                                <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.white, styles.bold, styles.text]}>{dateString}</Text>
                             </TouchableOpacity>
                         </View>
                     )

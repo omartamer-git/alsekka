@@ -3,7 +3,7 @@ import useUserStore from './accountAPI';
 
 
 export const getCommunities = async () => {
-    const url = `/communities`;
+    const url = `/v1/community/communities`;
 
     try {
         const axiosManager = useAxiosManager.getState();
@@ -16,7 +16,7 @@ export const getCommunities = async () => {
 };
 
 export const communitiesFeed = async (communityId, page=1) => {
-    const url = `/myfeed`;
+    const url = `/v1/community/myfeed`;
     const uid = useUserStore.getState().id;
     const params = {
         communityId: communityId || '',
@@ -34,7 +34,7 @@ export const communitiesFeed = async (communityId, page=1) => {
 };
 
 export const myCommunities = async () => {
-    const url = `/mycommunities`;
+    const url = `/v1/community/mycommunities`;
     const uid = useUserStore.getState().id;
 
     const axiosManager = useAxiosManager.getState();
@@ -44,7 +44,7 @@ export const myCommunities = async () => {
 }
 
 export const searchCommunities = async (name) => {
-    const url = `/searchcommunities`;
+    const url = `/v1/community/searchcommunities`;
     const params = {
         name: name
     };
@@ -60,7 +60,7 @@ export const searchCommunities = async (name) => {
 };
 
 export const getCommunityDetails = async (communityId) => {
-    const url = `/communitydetails`;
+    const url = `/v1/community/communitydetails`;
     const uid = useUserStore.getState().id;
     const params = {
         communityId: communityId,
@@ -79,7 +79,7 @@ export const getCommunityDetails = async (communityId) => {
 
 export const joinCommunity = async (communityId, answer) => {
     const uid = useUserStore.getState().id;
-    const url = `/joincommunity`;
+    const url = `/v1/community/joincommunity`;
     const body = {
         uid: uid,
         communityId: communityId,
@@ -97,7 +97,7 @@ export const joinCommunity = async (communityId, answer) => {
 };
 
 export const updateCommunity = async (communityId, description, privacy, pictureFile, joinQuestion) => {
-    const url = `/updatecommunity`;
+    const url = `/v1/community/updatecommunity`;
     const picture = pictureFile ? pictureFile.assets[0] : null;
 
     const formData = new FormData();
@@ -117,7 +117,7 @@ export const updateCommunity = async (communityId, description, privacy, picture
 
     const axiosManager = useAxiosManager.getState();
     try {
-        const response = await axiosManager.authAxios.patch("/updatecommunity", formData, {
+        const response = await axiosManager.authAxios.patch(url, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Accept: "application/json",
@@ -129,7 +129,7 @@ export const updateCommunity = async (communityId, description, privacy, picture
 };
 
 export const createCommunity = async (name, description, privacy, pictureFile, joinQuestion = null) => {
-    const url = `/createcommunity`;
+    const url = `/v1/community/createcommunity`;
     const picture = pictureFile.assets[0];
 
     const formData = new FormData();
@@ -145,7 +145,7 @@ export const createCommunity = async (name, description, privacy, pictureFile, j
 
     const axiosManager = useAxiosManager.getState();
     try {
-        const response = await axiosManager.authAxios.post("/createcommunity", formData, {
+        const response = await axiosManager.authAxios.post(url, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Accept: "application/json",
@@ -160,7 +160,7 @@ export const leaveCommunity = async (communityId) => {
     const axiosManager = useAxiosManager.getState();
     const body = { communityId };
     try {
-        const response = await axiosManager.authAxios.patch("/leavecommunity", body, {
+        const response = await axiosManager.authAxios.patch("/v1/community/leavecommunity", body, {
             headers: {
                 "Content-Type": "application/json",
             }
@@ -174,7 +174,7 @@ export const acceptCommunityMember = async (memberId) => {
     const axiosManager = useAxiosManager.getState();
     const body = { memberId };
 
-    const response = await axiosManager.authAxios.patch("/acceptmember", body, {
+    const response = await axiosManager.authAxios.patch("/v1/community/acceptmember", body, {
         headers: {
             "Content-Type": "application/json",
         }
@@ -185,7 +185,7 @@ export const rejectCommunityMember = async (memberId) => {
     const axiosManager = useAxiosManager.getState();
     const body = { memberId };
 
-    const response = await axiosManager.authAxios.patch("/rejectmember", body, {
+    const response = await axiosManager.authAxios.patch("/v1/community/rejectmember", body, {
         headers: {
             "Content-Type": "application/json",
         }
@@ -195,7 +195,7 @@ export const rejectCommunityMember = async (memberId) => {
 export const getCommunityMemberRequests = async (communityId) => {
     const axiosManager = useAxiosManager.getState();
 
-    const response = await axiosManager.authAxios.get("/communitymembers", {
+    const response = await axiosManager.authAxios.get("/v1/community/communitymembers", {
         params: {
             communityId: communityId
         }

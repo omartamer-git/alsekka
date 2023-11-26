@@ -123,7 +123,7 @@ const Chat = ({ navigation, route }) => {
                             return (
                                 <View key={"message" + index} style={[chatStyles.message, styles.alignEnd]}>
                                     <View style={chatStyles.senderBubble}>
-                                        <Text style={chatStyles.senderBubbleText}>{data.message}</Text>
+                                        <Text style={[styles.text, chatStyles.senderBubbleText]}>{data.message}</Text>
                                     </View>
                                     <View style={{ width: 50 * rem, height: 50 * rem }}>
                                         <Image source={{ uri: userStore.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
@@ -138,7 +138,7 @@ const Chat = ({ navigation, route }) => {
                                         <Image source={{ uri: receiverData.profilePicture }} width={50} height={50} style={chatStyles.profilePicture} />
                                     </View>
                                     <View style={chatStyles.receiverBubble}>
-                                        <Text style={chatStyles.receiverBubbleText}>{data.message}</Text>
+                                        <Text style={[styles.text, chatStyles.receiverBubbleText]}>{data.message}</Text>
                                     </View>
                                 </View>
                             );
@@ -184,7 +184,7 @@ const Chat = ({ navigation, route }) => {
 
                 <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5, { paddingBottom: insets.bottom, paddingHorizontal: 12 * rem, alignSelf: 'flex-end' }]}>
                     <View style={chatStyles.messageView}>
-                        <TextInput style={[styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
+                        <TextInput style={[styles.text, styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onChangeText={(text) => { setMessageText(text) }} />
                     </View>
                     <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>
                         <MaterialIcons name="send" size={22} color={palette.white} />

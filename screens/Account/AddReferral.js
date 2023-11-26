@@ -22,8 +22,8 @@ const List = ({ icon, headline, text }) => {
                 <FontsAwesome5 style={styles.icon} name={icon} size={20} color={palette.accent} light />
             </View>
             <View style={[styles.flexOne, styles.justifyCenter, styles.ml5]}>
-                <Text style={[styles.font12, styles.bold]}>{headline}</Text>
-                <Text style={[styles.font12, styles.mt5]}>{text}</Text>
+                <Text style={[styles.text, styles.font12, styles.bold]}>{headline}</Text>
+                <Text style={[styles.text, styles.font12, styles.mt5]}>{text}</Text>
             </View>
         </View>
     )
@@ -71,7 +71,7 @@ const AddReferral = ({ navigation, route }) => {
                         >
                             {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                                 <>
-                                    <Text style={styles.inputText}>{t('referral_code')}</Text>
+                                    <Text style={[styles.text, styles.inputText]}>{t('referral_code')}</Text>
                                     <CustomTextInput value={values.referralCodeInput} onChangeText={handleChange('referralCodeInput')} placeholder={`${t('referral_code')} (${t('eg')}. SEAATS00000)`} />
                                     <Button onPress={handleSubmit} bgColor={palette.primary} textColor={palette.white} text={t('submit')} disabled={submitDisabled} />
                                 </>
@@ -84,8 +84,8 @@ const AddReferral = ({ navigation, route }) => {
                     <>
                         <View style={[styles.w100, styles.flexOne, styles.fullCenter]}>
                             <SuccessCheck />
-                            <Text style={[styles.freeSans, styles.headerText3, styles.primary, styles.textCenter]}>{t('referral_code_applied')}</Text>
-                            <Text style={[styles.textCenter, styles.mt5]}>{t('referral_description')}</Text>
+                            <Text style={[styles.text, styles.headerText3, styles.primary, styles.textCenter]}>{t('referral_code_applied')}</Text>
+                            <Text style={[styles.text, styles.textCenter, styles.mt5]}>{t('referral_description')}</Text>
                             <Button style={[styles.mt10]} bgColor={palette.accent} textColor={palette.white} text={t('back')} onPress={() => navigation.navigate('Account', { screen: 'Account Home' })} />
                         </View>
                     </>

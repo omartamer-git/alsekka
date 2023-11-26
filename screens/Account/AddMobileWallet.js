@@ -70,7 +70,7 @@ const AddMobileWallet = ({ navigation, route }) => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                         <>
-                            <Text style={styles.inputText}>{t('phone_number')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
 
                             <CustomTextInput
                                 placeholder={t('phone_number') + " (i.e 01234567890)"}

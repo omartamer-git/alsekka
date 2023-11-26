@@ -6,7 +6,7 @@ const Separator = ({ text }) => {
   return (
     <View style={styles2.container}>
       <View style={styles2.line} />
-      <Text style={styles2.text}>{text}</Text>
+      <Text style={[styles.text, styles2.text]}>{text}</Text>
       <View style={styles2.line} />
     </View>
   );

@@ -3,7 +3,7 @@ import useUserStore from './accountAPI';
 
 
 export const sendMessage = async (receiver, messageText) => {
-    const url = `/sendmessage`;
+    const url = `/v1/chat/sendmessage`;
     const params = {
         receiver: receiver,
         message: messageText
@@ -23,7 +23,7 @@ export const sendMessage = async (receiver, messageText) => {
 };
 
 export const sendCSMessage = async (messageText) => {
-    const url = `/sendcsmessage`;
+    const url = `/v1/chat/sendcsmessage`;
     const params = {
         message: messageText
     };
@@ -37,7 +37,7 @@ export const sendCSMessage = async (messageText) => {
 
 
 export const loadChat = async (receiver) => {
-    const url = `/loadchat`;
+    const url = `/v1/chat/loadchat`;
     const params = {
         receiver: receiver
     };
@@ -54,7 +54,7 @@ export const loadChat = async (receiver) => {
 
 
 export const chatHistory = async (receiver) => {
-    const url = `/chathistory`;
+    const url = `/v1/chat/chathistory`;
     const params = {
         receiver: receiver
     };
@@ -66,7 +66,7 @@ export const chatHistory = async (receiver) => {
 };
 
 export const csChatHistory = async () => {
-    const url = `/cschathistory`;
+    const url = `/v1/chat/cschathistory`;
 
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.get(url);
@@ -75,7 +75,7 @@ export const csChatHistory = async () => {
 }
 
 export const findNewMessages = async (receiver) => {
-    const newMessagesUrl = `/newmessages`;
+    const newMessagesUrl = `/v1/chat/newmessages`;
     const params = {
         receiver: receiver
     };
@@ -87,7 +87,7 @@ export const findNewMessages = async (receiver) => {
 };
 
 export const findNewCSMessages = async () => {
-    const newMessagesUrl = `/newcsmessages`;
+    const newMessagesUrl = `/v1/chat/newcsmessages`;
 
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.get(newMessagesUrl);
@@ -97,7 +97,7 @@ export const findNewCSMessages = async () => {
 
 export const getChats = async () => {
     const uid = useUserStore.getState().id;
-    const url = `/chats`;
+    const url = `/v1/chat/chats`;
     const params = {
         uid: uid
     };

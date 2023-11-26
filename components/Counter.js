@@ -19,8 +19,8 @@ export default function Counter({ counter, setCounter, text, textPlural, min=0, 
 
 
                 <View style={[styles.flexOne, styles.justifyCenter, styles.alignCenter]}>
-                    <Text>{language === 'ar' ? translateEnglishNumbers(counter) : counter}</Text>
-                    <Text>{counter <= 1 ? text : textPlural}</Text>
+                    <Text style={[styles.text]}>{language === 'ar' ? translateEnglishNumbers(counter) : counter}</Text>
+                    <Text style={[styles.text]}>{counter <= 1 ? text : textPlural}</Text>
                 </View>
 
                 <TouchableOpacity style={[styles.flexOne, styles.bgLight, styles.alignCenter, styles.justifyCenter, styles.br8]} onPress={() => setCounter(c => c<max ? c + 1 : max)}>

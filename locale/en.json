@@ -16,7 +16,7 @@
         "trips": "Trips",
         "first_name": "First Name",
         "last_name": "Last Name",
-        "email": "Unversity Email",
+        "email": "University Email",
         "phone_number": "Phone Number",
         "account_holder_name": "Account Holder Full Name",
         "bank_name": "Bank Name",
@@ -157,6 +157,7 @@
         "front_chosen": "Front Side Chosen",
         "back_chosen": "Back Side Chosen",
         "confirm": "Confirm",
+        "ok": "OK",
         "back": "Go Back",
         "share_your_code": "Share your referral code",
         "share_your_code2": "Invite an unlimited amount of friends with your referral code and reap the benefits together!",
@@ -288,6 +289,14 @@
         "error_seats": "Too many seats available",
         "error_pickup_price": "Price should be at least 20 EGP",
         "delete_account": "Delete My Account",
-        "see_uni_list": "See list of universities we're currently working with"
+        "sure_delete": "Are you sure you want to delete your account?",
+        "deletion_confirmation": "Your account will now be marked for deletion. This means that your data will be completely wiped off the system in 14 days. If you change your mind during this time, simply log back in and we will cancel the deletion process.",
+        "deletion_confirmation_thanks": "Thank you for using Seaats.",
+        "see_uni_list": "See list of universities we're currently working with",
+        "driver_popup_title": "Do you own a car?",
+        "driver_popup_text": "Start saving money with Seaats today. All you have to do is sign up as a car owner, and save money on your daily commute. It will only take you a few seconds!",
+        "driver_popup_cta": "Start Saving Now",
+        "driver_popup_d1": "You will probably need this someday.",
+        "driver_popup_d2": "Do it now instead!"
     }
 }

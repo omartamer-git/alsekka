@@ -34,7 +34,7 @@ const useAxiosManager = create((set) => {
 
         console.log("REFRESHED TOKEN");
 
-        return publicAxios.post(`/refreshToken`, data, {
+        return publicAxios.post(`/v1/user/refreshToken`, data, {
             headers: {
                 'Content-Type': 'application/json',
             },

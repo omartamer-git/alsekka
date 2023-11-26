@@ -77,7 +77,7 @@ const AllTrips = ({ navigation, route }) => {
                 {
                     !loading &&
                     <>
-                        <Text style={[styles.headerText2, { marginTop: 20 }]}>
+                        <Text style={[styles.text, styles.headerText2, { marginTop: 20 }]}>
                             {t('trips')}
                         </Text>
 
@@ -85,7 +85,7 @@ const AllTrips = ({ navigation, route }) => {
                             <LinearGradient style={[styles.mt20, styles.w100, styles.br8]} colors={[palette.primary, palette.secondary]}>
                                 <TouchableOpacity style={[styles.rideView, styles.pv8, styles.ph16, styles.flexOne, styles.alignCenter, styles.justifyStart, styles.flexRow, styles.bgTransparent]}
                                     onPress={() => { viewTrip(driverTripId); }}>
-                                    <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
+                                    <Text style={[styles.text, styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
                                     <View>
                                         <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
@@ -98,7 +98,7 @@ const AllTrips = ({ navigation, route }) => {
                         {
                             driverElement && !driverMainTextTo &&
                             <View style={[styles.rideView, styles.pv8, styles.ph16, styles.mt20, styles.bgSecondary, styles.alignCenter, styles.justifyStart, styles.flexRow]}>
-                                <Text style={[styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
+                                <Text style={[styles.text, styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
 
                                 <View>
                                     <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
@@ -133,11 +133,11 @@ const AllTrips = ({ navigation, route }) => {
                             !nextRides &&
                             <View style={allTripsStyle.noRides} >
                                 <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                                <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
+                                <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
                         <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
-                            <Text style={[styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
+                            <Text style={[styles.text, styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
                         </TouchableOpacity>
 
                     </>

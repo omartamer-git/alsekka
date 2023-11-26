@@ -16,32 +16,6 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
 
-const DigitBox = ({ swap, onFocus, inputRef }) => {
-    const [digit, setDigit] = useState('');
-
-    const onKeyPress = (e) => {
-        const key = e.nativeEvent.key;
-        if (key === 'Backspace') {
-            setDigit('');
-            swap('', -1);
-            return;
-        }
-        if (!isNaN(parseInt(key))) {
-            setDigit(key);
-            swap(key, 1);
-        }
-    }
-
-    return (
-        <TextInput
-            value={digit}
-            onKeyPress={onKeyPress}
-            onFocus={onFocus}
-            ref={inputRef}
-            style={[styles.border1, styles.font28, styles.br8, styles.borderDark, styles.flexOne, styles.mh10, styles.p8, styles.alignCenter, styles.justifyCenter, { textAlign: 'center', textAlignVertical: 'center', lineHeight: 32 }]} />
-    );
-}
-
 const Otp = ({ route, navigation }) => {
     const firstName = route.params?.firstName;
     const lastName = route.params?.lastName;
@@ -75,7 +49,7 @@ const Otp = ({ route, navigation }) => {
                         })
                     }).catch(err => {
                         console.log(err);
-                        setErrorMessage(err.response.data.error.message);
+                        setError(err.response.data.error.message);
                     })
                 } else {
                     navigation.popToTop();
@@ -147,13 +121,13 @@ const Otp = ({ route, navigation }) => {
     return (
         <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={() => { navigation.goBack() }} lip={false}>
             <View style={[styles.bgPrimary, styles.w100, styles.p24]}>
-                <Text style={[styles.white, styles.bold, styles.font28]}>
+                <Text style={[styles.text, styles.white, styles.bold, styles.font28]}>
                     {t('verification_code')}
                 </Text>
-                <Text style={[styles.white, styles.bold, styles.font12, styles.mt5]}>
+                <Text style={[styles.text, styles.white, styles.bold, styles.font12, styles.mt5]}>
                     +2{phone}
                 </Text>
-                <Text style={[styles.white, styles.font12, styles.mt5]}>
+                <Text style={[styles.text, styles.white, styles.font12, styles.mt5]}>
                     {t('code_sent')}
                 </Text>
             </View>

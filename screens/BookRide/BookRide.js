@@ -27,6 +27,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import useAppManager from '../../context/appManager';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import * as StoreReview from 'react-native-store-review';
 import * as googleMapsAPI from '../../api/googlemaps';
 import { decodePolyline } from '../../util/maps';
 
@@ -162,6 +163,7 @@ const BookRide = ({ route, navigation }) => {
         }).catch((e) => {
             console.error(e);
         }).finally(() => {
+            StoreReview.requestReview();
             setSubmitDisabled(false);
         });
     }
@@ -297,8 +299,8 @@ const BookRide = ({ route, navigation }) => {
                                         {profilePicture && <Image source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
                                     </View>
                                     <View style={[styles.flexOne, styles.ml20]}>
-                                        <Text style={styles.headerText2}>{firstName} {lastName}</Text>
-                                        <Text>{car.year} {car.brand} {car.model}</Text>
+                                        <Text style={[styles.text, styles.headerText2]}>{firstName} {lastName}</Text>
+                                        <Text style={[styles.text]}>{car.year} {car.brand} {car.model}</Text>
                                         <View style={styles.flexRow}>
                                             {ratings}
                                         </View>
@@ -324,20 +326,20 @@ const BookRide = ({ route, navigation }) => {
                                 {pickupEnabled &&
                                     <>
 
-                                        <Text style={styles.inputText}>Do you want to be picked up? (+{pickupPrice} EGP)</Text>
+                                        <Text style={[styles.text, styles.inputText]}>Do you want to be picked up? (+{pickupPrice} EGP)</Text>
 
                                         <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                             <TouchableOpacity onPress={() => { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
-                                                <Text style={[styles.white, styles.bold]}>Yes</Text>
+                                                <Text style={[styles.text, styles.white, styles.bold]}>Yes</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
-                                                <Text style={[styles.white, styles.bold]}>No</Text>
+                                                <Text style={[styles.text, styles.white, styles.bold]}>No</Text>
                                             </TouchableOpacity>
                                         </View>
                                         {
                                             wantPickup &&
                                             <View style={styles.w100}>
-                                                <Text style={styles.inputText}>Pick Up From</Text>
+                                                <Text style={[styles.text, styles.inputText]}>Pick Up From</Text>
                                                 <Button onPress={() => setModalMapOpen(true)} bgColor={palette.white} textColor={palette.primary} borderColor={palette.primary} text={pickupText} />
                                             </View>
                                         }
@@ -346,45 +348,45 @@ const BookRide = ({ route, navigation }) => {
 
                                 <View>
                                     <View style={[styles.flexRow, styles.w100]}>
-                                        <Text style={[styles.bold, styles.dark]}>{t('fare')}</Text>
+                                        <Text style={[styles.text, styles.bold, styles.dark]}>{t('fare')}</Text>
                                         <View style={styles.flexOne} />
-                                        <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
+                                        <Text style={[styles.text]}>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
                                     </View>
                                     {balance != 0 &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
+                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
                                             <View style={styles.flexOne} />
-                                            <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
+                                            <Text style={[styles.text]}>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
                                         </View>
                                     }
                                     {
                                         voucher &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.bold, styles.dark]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
                                             <View style={styles.flexOne} />
-                                            <Text>-{voucherDiscount.current} {t('EGP')}</Text>
+                                            <Text style={[styles.text]}>-{voucherDiscount.current} {t('EGP')}</Text>
                                         </View>
                                     }
                                     {
                                         wantPickup &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.bold, styles.dark]}>Pick Up Fee</Text>
+                                            <Text style={[styles.text, styles.bold, styles.dark]}>Pick Up Fee</Text>
                                             <View style={styles.flexOne} />
-                                            <Text>+ {pickupPrice} {t('EGP')}</Text>
+                                            <Text style={[styles.text]}>+ {pickupPrice} {t('EGP')}</Text>
                                         </View>
                                     }
                                     {
                                         passengerFee !== 0 &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.bold, styles.dark]}>{t('service_fees')}</Text>
+                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('service_fees')}</Text>
                                             <View style={styles.flexOne} />
-                                            <Text>+ {serviceFee * numSeats} {t('EGP')}</Text>
+                                            <Text style={[styles.text]}>+ {serviceFee * numSeats} {t('EGP')}</Text>
                                         </View>
                                     }
                                     <View style={[styles.flexRow, styles.w100]}>
-                                        <Text style={[styles.bold, styles.dark]}>{t('you_pay')}</Text>
+                                        <Text style={[styles.text, styles.bold, styles.dark]}>{t('you_pay')}</Text>
                                         <View style={styles.flexOne} />
-                                        <Text>
+                                        <Text style={[styles.text]}>
                                             {
                                                 Math.max(0,
                                                     Math.abs(
@@ -445,7 +447,7 @@ const BookRide = ({ route, navigation }) => {
             <BottomModal onHide={() => setPaymentMethodModalVisible(false)} modalVisible={paymentMethodModalVisible}>
                 <TouchableOpacity activeOpacity={0.75} style={{ ...styles.flexRow, width: '100%', height: 48 * rem, alignItems: 'center', borderBottomWidth: 1, borderColor: palette.light }} onPress={() => choosePayment({ type: 'cash' })}>
                     <FontsAwesome5 name="money-bill" size={24 * rem} color={palette.success} />
-                    <Text style={[styles.ml15, styles.semiBold]}>{t('pay_using_cash')}</Text>
+                    <Text style={[styles.text, styles.ml15, styles.semiBold]}>{t('pay_using_cash')}</Text>
                     <View style={[styles.flexOne, styles.alignEnd]}>
                         <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
                     </View>
@@ -460,37 +462,37 @@ const BookRide = ({ route, navigation }) => {
             <BottomModal onHide={hideRideBooked} modalVisible={rideBookedModalVisible}>
                 <View style={[styles.alignCenter, styles.justifyCenter]}>
                     <FontsAwesome5 name="check-circle" size={55} color={palette.success} />
-                    <Text style={[styles.mt10, styles.font18, styles.success]}>{t('booked_successfully')}</Text>
+                    <Text style={[styles.text, styles.mt10, styles.font18, styles.success]}>{t('booked_successfully')}</Text>
 
-                    <Text style={[styles.bold, styles.font18, styles.mt10]}>{t('bill_summary')}</Text>
+                    <Text style={[styles.text, styles.bold, styles.font18, styles.mt10]}>{t('bill_summary')}</Text>
 
-                    <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('fare')}</Text>
-                    <Text>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
+                    <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('fare')}</Text>
+                    <Text style={[styles.text]}>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {pricePerSeat} {t('EGP')} = {numSeats * pricePerSeat} {t('EGP')}</Text>
                     {balance != 0 &&
                         <>
-                            <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
-                            <Text>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
+                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
+                            <Text style={[styles.text]}>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
                         </>
                     }
 
                     {
                         passengerFee !== 0 &&
                         <>
-                            <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('service_fees')}{balance < 0 ? t('owed') : ""}</Text>
-                            <Text>+ {serviceFee * numSeats} {t('EGP')}</Text>
+                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('service_fees')}{balance < 0 ? t('owed') : ""}</Text>
+                            <Text style={[styles.text]}>+ {serviceFee * numSeats} {t('EGP')}</Text>
                         </>
                     }
 
                     {voucher &&
                         <>
-                            <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('voucher')} (-{parseInt(voucher.value)}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
                             <View style={styles.flexOne} />
-                            <Text>-{voucherDiscount.current} {t('EGP')}</Text>
+                            <Text style={[styles.text]}>-{voucherDiscount.current} {t('EGP')}</Text>
                         </>
                     }
 
-                    <Text style={[styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
-                    <Text>{
+                    <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
+                    <Text style={[styles.text]}>{
                         Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current + (serviceFee * numSeats)
                     } {t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
@@ -499,7 +501,7 @@ const BookRide = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setVoucherModalVisible(false)} modalVisible={voucherModalVisible}>
                 <View style={[styles.w100, styles.alignStart]}>
-                    <Text style={[styles.headerText2, styles.mt10]}>{t('redeem')} {t('voucher')}</Text>
+                    <Text style={[styles.text, styles.headerText2, styles.mt10]}>{t('redeem')} {t('voucher')}</Text>
                     <CustomTextInput placeholder={t('voucher')} value={voucherText} onChangeText={(value) => setVoucherText(value)} error={voucherErrorMessage} />
                     <Button text={t('redeem')} bgColor={palette.primary} textColor={palette.white} onPress={verifyVoucher} />
                 </View>

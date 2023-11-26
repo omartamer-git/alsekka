@@ -10,7 +10,7 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { containerStyle, palette, rem, styles } from '../../helper';
+import { containerStyle, dateDiffInDays, palette, rem, styles } from '../../helper';
 
 import { useTranslation } from 'react-i18next';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,11 +21,14 @@ import * as announcementsAPI from '../../api/announcementsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
+import { DriverPopUp } from '../../components/DriverPopUp';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserHome = ({ navigation, route }) => {
     const [nextRideData, setNextRideData] = useState(null);
     const [nextRideDate, setNextRideDate] = useState(new Date());
     const [refreshing, setRefreshing] = useState(false);
+    const [driverPopUpVisible, setDriverPopUpVisible] = useState(false);
     const currentTime = new Date();
 
     const [driverElement, setDriverElement] = useState(false);
@@ -82,6 +85,24 @@ const UserHome = ({ navigation, route }) => {
         loadData().then(() => setLoading(false));
     }, []);
 
+    useEffect(() => {
+        if (!loading && driverElement) {
+            AsyncStorage.getItem('driverPopUp').then(driverPopUp => {
+                if (!driverPopUp) {
+                    setDriverPopUpVisible(true);
+                    AsyncStorage.setItem('driverPopUp', (new Date()).toISOString());
+                } else {
+                    const date = new Date(driverPopUp);
+                    const diffDates = dateDiffInDays(new Date(), date);
+                    if (diffDates >= 45) {
+                        setDriverPopUpVisible(true);
+                        AsyncStorage.setItem('driverPopUp', (new Date()).toISOString());
+                    }
+                }
+            });
+        }
+    }, [loading])
+
 
     const viewTrip = (id) => {
         navigation.navigate('View Trip', { tripId: id });
@@ -105,7 +126,17 @@ const UserHome = ({ navigation, route }) => {
                 {
                     !loading &&
                     <>
-                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.headerText2, styles.mt20]}>
+                        {
+                            <DriverPopUp
+                                modalVisible={driverPopUpVisible}
+                                onHide={() => setDriverPopUpVisible(false)}
+                                navigateToDriver={() =>
+                                    navigation.navigate('Post Ride', { screen: 'Driver Documents' })
+                                }
+                            />
+
+                        }
+                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.headerText2, styles.mt20]}>
                             {
                                 currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
                             }
@@ -115,9 +146,9 @@ const UserHome = ({ navigation, route }) => {
                         {driverElement && driverMainTextTo &&
                             <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgPrimary, styles.mt10]}
                                 onPress={() => { viewTrip(driverTripId); }}>
-                                <Text style={[styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
+                                <Text style={[styles.text, styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
-                                <View>
+                                <View style={[styles.mh10]}>
                                     <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
                                         <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} color="white" />
                                     </TouchableOpacity>
@@ -130,7 +161,7 @@ const UserHome = ({ navigation, route }) => {
                                 onPress={() => { navigation.navigate('Driver Documents') }}
                                 activeOpacity={0.9}
                                 style={[userHomeStyles.topAlert, styles.bgPrimary, styles.mt10]}>
-                                <Text style={[styles.white, styles.flexOne]}>{t('apply_vehicle_owner')}</Text>
+                                <Text style={[styles.text, styles.white, styles.flexOne, styles.textStart]}>{t('apply_vehicle_owner')}</Text>
 
                                 <View>
                                     <TouchableOpacity style={[styles.white, styles.justifyCenter, styles.alignEnd]}>
@@ -140,7 +171,7 @@ const UserHome = ({ navigation, route }) => {
                             </TouchableOpacity>
                         }
 
-                        <Text style={[styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
+                        <Text style={[styles.text, styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
                         {
                             nextRideData &&
                             <AvailableRide
@@ -162,11 +193,11 @@ const UserHome = ({ navigation, route }) => {
                             !nextRideData &&
                             <View style={userHomeStyles.noRides} >
                                 <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                                <Text style={[styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
+                                <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
                         <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={() => { navigation.navigate('All Trips') }}>
-                            <Text style={[styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
+                            <Text style={[styles.text, styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
                         </TouchableOpacity>
 
                         <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
@@ -177,10 +208,10 @@ const UserHome = ({ navigation, route }) => {
                                         const announcementTitle = I18nManager.isRTL ? carouselData[index].title_ar : carouselData[index].title_en;
                                         return (
                                             <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>
-                                                <Text style={[styles.white, styles.bold, styles.font18]}>
+                                                <Text style={[styles.text, styles.white, styles.bold, styles.font18]}>
                                                     {announcementTitle}
                                                 </Text>
-                                                <Text style={[styles.light, styles.semiBold, styles.mt10, styles.font14]}>
+                                                <Text style={[styles.text, styles.light, styles.semiBold, styles.mt10, styles.font14]}>
                                                     {
                                                         announcementText.substring(0, MAX_CAROUSEL_TEXT_LENGTH) +
                                                         (announcementText.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")
@@ -194,7 +225,7 @@ const UserHome = ({ navigation, route }) => {
                                                             }
                                                         }
                                                     >
-                                                        <Text style={[styles.mt5, styles.dark, styles.font14]}>{t('read_more')}</Text></TouchableOpacity>
+                                                        <Text style={[styles.text, styles.mt5, styles.dark, styles.font14]}>{t('read_more')}</Text></TouchableOpacity>
                                                 }
                                             </View>
                                         )

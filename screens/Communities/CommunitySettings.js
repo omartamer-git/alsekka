@@ -86,9 +86,9 @@ const CommunitySettings = ({ route, navigation }) => {
                                             </View>
                                         </TouchableOpacity>
 
-                                        <Text style={[styles.headerText3, styles.mt5]}>{communityName}</Text>
+                                        <Text style={[styles.text, styles.headerText3, styles.mt5]}>{communityName}</Text>
 
-                                        <Text style={styles.inputText}>{t('community_description')}</Text>
+                                        <Text style={[styles.text, styles.inputText]}>{t('community_description')}</Text>
                                         <TextArea
                                             placeholder={t('community_description')}
                                             value={values.communityDescriptionInput}
@@ -97,7 +97,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                             error={touched.communityDescriptionInput && errors.communityDescriptionInput}
                                         />
 
-                                        <Text style={styles.inputText}>{t('community_privacy')}</Text>
+                                        <Text style={[styles.text, styles.inputText]}>{t('community_privacy')}</Text>
                                         <Selector
                                             options={[{ value: 0, text: t('public') }, { value: 1, text: t('private') }]}
                                             value={values.communityPrivacyInput}
@@ -107,7 +107,7 @@ const CommunitySettings = ({ route, navigation }) => {
                                         {
                                             values.communityPrivacyInput === 1 && (
                                                 <>
-                                                    <Text style={styles.inputText}>{t('privacy_question')}</Text>
+                                                    <Text style={[styles.text, styles.inputText]}>{t('privacy_question')}</Text>
                                                     <CustomTextInput
                                                         placeholder={t('privacy_question_example')}
                                                         value={values.joinQuestionInput}
@@ -139,7 +139,7 @@ const CommunitySettings = ({ route, navigation }) => {
                         <View style={[styles.flexOne, styles.fullCenter]}>
                             <Image source={{ uri: communityPicture }} width={100 * rem} height={100 * rem} style={{ borderRadius: 50 * rem }} />
 
-                            <Text style={[styles.headerText3, styles.mt5]}>{communityName}</Text>
+                            <Text style={[styles.text, styles.headerText3, styles.mt5]}>{communityName}</Text>
 
                             <Button bgColor={palette.red} textColor={palette.white} text={t('leave_community')} onPress={() => leaveCommunity(communityId)} />
                         </View>

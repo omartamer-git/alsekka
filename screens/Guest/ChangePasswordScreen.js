@@ -64,13 +64,13 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                 <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
                     <View style={styles.localeWrapper}>
                         <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                        <Text style={styles.locale}>EN</Text>
+                        <Text style={[styles.text, styles.locale]}>EN</Text>
                     </View>
                 </HeaderView>
             </SafeAreaView>
             <View style={styles.wrapper}>
                 <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-                    <Text style={[styles.headerText, styles.white]}>{t('reset_password')}</Text>
+                    <Text style={[styles.text, styles.headerText, styles.white]}>{t('reset_password')}</Text>
                 </View>
                 <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
                     <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
@@ -83,7 +83,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                             >
                                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                                     <>
-                                        <Text style={styles.inputText}>{t('password')}</Text>
+                                        <Text style={[styles.text, styles.inputText]}>{t('password')}</Text>
                                         <CustomTextInput
                                             value={values.passwordInput}
                                             onChangeText={handleChange('passwordInput')}
@@ -93,7 +93,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                                             secureTextEntry={true}
                                         />
 
-                                        <Text style={styles.inputText}>{t('confirm_password')}</Text>
+                                        <Text style={[styles.text, styles.inputText]}>{t('confirm_password')}</Text>
                                         <CustomTextInput
                                             value={values.password2Input}
                                             onChangeText={handleChange('password2Input')}

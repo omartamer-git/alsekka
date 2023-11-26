@@ -95,19 +95,19 @@ const LoginScreen = ({ route, navigation }) => {
         <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-            <Text style={styles.locale}>EN</Text>
+            <Text style={[styles.text, styles.locale]}>EN</Text>
           </View>
         </HeaderView>
       </SafeAreaView>
       <View style={styles.wrapper}>
         <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-          <Text style={[styles.headerText, styles.white]}>{t('sign_in')}</Text>
+          <Text style={[styles.text, styles.headerText, styles.white]}>{t('sign_in')}</Text>
         </View>
         <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
           <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
             <View style={[styles.w100, styles.flexOne, styles.defaultPaddingVertical]}>
-              <Text style={[styles.headerText, styles.black]}>{t('welcome_back')}</Text>
-              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('welcome_message')}</Text>
+              <Text style={[styles.text, styles.headerText, styles.black]}>{t('welcome_back')}</Text>
+              <Text style={[styles.text, styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('welcome_message')}</Text>
               <ErrorMessage message={errorMessage} condition={errorMessage} />
               <Formik
                 initialValues={{ phoneInput: '', passwordInput: '' }}
@@ -117,7 +117,7 @@ const LoginScreen = ({ route, navigation }) => {
               >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                   <>
-                    <Text style={styles.inputText}>{t('phone_number')}</Text>
+                    <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
                     <CustomTextInput
                       value={"+20 " + values.phoneInput}
                       emojiLeft={"🇪🇬"}
@@ -132,7 +132,7 @@ const LoginScreen = ({ route, navigation }) => {
                       keyboardType="number-pad"
                     />
 
-                    <Text style={styles.inputText}>{t('password')}</Text>
+                    <Text style={[styles.text, styles.inputText]}>{t('password')}</Text>
 
                     <CustomTextInput
                       value={values.passwordInput}
@@ -161,16 +161,16 @@ const LoginScreen = ({ route, navigation }) => {
                   navigation.navigate('Forgot Password', { phone: formRef.current.values.phoneInput });
                 }}
                 style={[styles.justifyCenter, styles.alignCenter, styles.w100]}>
-                <Text style={[styles.textStart, styles.dark]}>{t('forgot_password')}</Text>
+                <Text style={[styles.text, styles.textStart, styles.dark]}>{t('forgot_password')}</Text>
               </TouchableWithoutFeedback>
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
                 <TouchableWithoutFeedback onPress={() => {
                   navigation.navigate('Sign Up');
                 }} style={[styles.justifyEnd, styles.alignCenter]}>
-                  <Text style={[styles.dark, styles.textCenter]}>
+                  <Text style={[styles.text, styles.dark, styles.textCenter]}>
                     {t('no_account')}
-                    <Text style={[styles.primary, styles.bold, styles.ml10]}> {t('sign_up')}</Text>
+                    <Text style={[styles.text, styles.primary, styles.bold, styles.ml10]}> {t('sign_up')}</Text>
                   </Text>
                 </TouchableWithoutFeedback>
 

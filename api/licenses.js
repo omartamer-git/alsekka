@@ -3,7 +3,7 @@ import useUserStore from './accountAPI';
 
 
 export const uploadLicense = async (licenseBody) => {
-    const url = `/submitlicense`;
+    const url = `/v1/user/submitlicense`;
     const imageFront = licenseBody.frontSide.assets[0];
     const imageBack = licenseBody.backSide.assets[0];
 
@@ -37,7 +37,7 @@ export const uploadLicense = async (licenseBody) => {
 };
 
 export const getLicense = async () => {
-    const url = `/license`;
+    const url = `/v1/user/license`;
     const uid = useUserStore.getState().id;
     const params = {
         uid: uid

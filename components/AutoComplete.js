@@ -161,7 +161,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                     <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setText(''); setPredictions(null); setModalVisible(false); }} >
                         <View style={styles2.localeWrapper}>
                             <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                            <Text style={styles2.locale}>EN</Text>
+                            <Text style={[styles2.locale, styles2.text]}>EN</Text>
                         </View>
                     </HeaderView>
                 </SafeAreaView>
@@ -185,7 +185,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                                         }
                                         return (
                                             <TouchableOpacity key={index} style={styles.predictionBox} onPress={() => moveInput(prediction)}>
-                                                <Text style={{ flex: 10 }}>{prediction[0]}</Text>
+                                                <Text style={[styles2.text, { flex: 10 }]}>{prediction[0]}</Text>
                                                 <TouchableOpacity onPress={() => addToFavorites(prediction)} style={styles.flexOne}>
                                                     <MaterialIcons name="favorite" size={20} color={color} />
                                                 </TouchableOpacity>
@@ -196,7 +196,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                             }
                             {!modalMap && !predictions &&
                                 <View style={[styles2.flexOne, styles2.w100]}>
-                                    <Text style={[styles2.headerText3, { marginTop: 30 }]}>Favorites</Text>
+                                    <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>Favorites</Text>
                                     <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
                                         {
                                             favoritePlaces &&
@@ -205,7 +205,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                                                     let color = palette.red;
                                                     return (
                                                         <TouchableOpacity key={index} style={styles.predictionBox} onPress={() => moveInput(prediction)}>
-                                                            <Text style={{ flex: 17 }}>{prediction[0]}</Text>
+                                                            <Text style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
                                                             <TouchableOpacity onPress={() => addToFavorites(prediction)} style={{ flex: 2 }}>
                                                                 <MaterialIcons name="favorite" size={20} color={color} />
                                                             </TouchableOpacity>
@@ -216,7 +216,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                                         }
                                         <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={() => { setModalMap(true) }}>
                                             <MaterialIcons name="place" size={16} color={palette.black} />
-                                            <Text style={styles2.ml10}>{t('choose_location')}</Text>
+                                            <Text style={[styles2.text, styles2.ml10]}>{t('choose_location')}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>

@@ -98,11 +98,11 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                         <>
                             {!userStore.driver && !licenseStatus &&
                                 <>
-                                    <Text style={styles.inputText}>{t('front_side_drivers_license')}</Text>
+                                    <Text style={[styles.text, styles.inputText]}>{t('front_side_drivers_license')}</Text>
                                     <ErrorMessage condition={frontSideTouched && !licenseFront} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
 
-                                    <Text style={[styles.inputText]}>{t('back_side_drivers_license')}</Text>
+                                    <Text style={[[styles.text, styles.inputText]]}>{t('back_side_drivers_license')}</Text>
                                     <ErrorMessage condition={backSideTouched && !licenseBack} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
 
@@ -112,8 +112,8 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
                             {!userStore.driver && licenseStatus === 'PENDING' &&
                                 <>
                                     <Pending width="300" height="300" />
-                                    <Text style={[styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>{t('wait_processing')}</Text>
-                                    <Text style={[styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
+                                    <Text style={[styles.text, styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>{t('wait_processing')}</Text>
+                                    <Text style={[styles.text, styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
                                 </>
                             }
                         </>

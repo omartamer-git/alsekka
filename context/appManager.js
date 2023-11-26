@@ -9,6 +9,26 @@ const useAppManager = create((set) => ({
     referralsDisabled: true,
     deviceToken: null,
     allowedEmails: "",
+    minVersion: "1.0.0",
+    latestVersion: "1.0.0",
+
+    getVersionData: async() => {
+        try {
+            const axiosManager = useAxiosManager.getState();
+
+            const response = await axiosManager.publicAxios.get("/version");
+            const data = response.data;
+            const versionData = {
+                minVersion: data.min,
+                latestVersion: data.current
+            }
+            set((state) => (versionData));
+
+            return 
+        } catch(e) {
+
+        }
+    },
 
     getAllowedEmails: async () => {
         try {

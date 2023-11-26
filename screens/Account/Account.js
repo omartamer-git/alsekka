@@ -166,22 +166,22 @@ const Account = ({ route, navigation }) => {
                     </View>
 
                     <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
-                        <Text style={styles.headerText2}>{userStore.firstName} {userStore.lastName}</Text>
+                        <Text style={[styles.text, styles.headerText2]}>{userStore.firstName} {userStore.lastName}</Text>
                         <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
                             {ratings}
                         </View>
                         <View style={accountStyles.acctButtonsView}>
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Chats List') }}>
                                 <MaterialIcons name="message" size={40} color={palette.white} />
-                                <Text style={accountStyles.acctButtonsText}>{t('messages')}</Text>
+                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Wallet') }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
-                                <Text style={accountStyles.acctButtonsText}>{t('wallet')}</Text>
+                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('wallet')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('All Trips') }}>
                                 <MaterialIcons name="history" size={40} color={palette.white} />
-                                <Text style={accountStyles.acctButtonsText}>{t('trips')}</Text>
+                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('trips')}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -217,7 +217,7 @@ const Account = ({ route, navigation }) => {
                             </>
                         }
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
-                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} & ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} />
                         <Button bgColor={palette.accent} textColor={palette.white} text={`${t('delete_account')}`} onPress={() => { setDeleteAccountModalVisible(true) }} />
                     </View>
                 </ScrollView>
@@ -232,7 +232,7 @@ const Account = ({ route, navigation }) => {
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                             <View style={[styles.w100, styles.alignStart]}>
-                                <Text style={styles.inputText}>{t('first_name')}</Text>
+                                <Text style={[styles.text, styles.inputText]}>{t('first_name')}</Text>
                                 <CustomTextInput
                                     value={values.firstNameInput}
                                     iconLeft="badge"
@@ -242,7 +242,7 @@ const Account = ({ route, navigation }) => {
                                     error={touched.firstNameInput && errors.firstNameInput}
                                 />
 
-                                <Text style={styles.inputText}>{t('last_name')}</Text>
+                                <Text style={[styles.text, styles.inputText]}>{t('last_name')}</Text>
                                 <CustomTextInput
                                     value={values.lastNameInput}
                                     iconLeft="badge"
@@ -269,7 +269,7 @@ const Account = ({ route, navigation }) => {
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, touched }) => (
                             <View style={[styles.w100, styles.alignStart]}>
-                                <Text style={styles.inputText}>{t('email')}</Text>
+                                <Text style={[styles.text, styles.inputText]}>{t('email')}</Text>
                                 <CustomTextInput
                                     value={values.emailInput}
                                     iconLeft="badge"
@@ -295,12 +295,8 @@ const Account = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setDeleteAccountModalVisible(false)} modalVisible={deleteAccountModalVisible}>
                 <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
-                    <Text style={[styles.font18, styles.bold, styles.textCenter]}>Are you sure you want to delete your account?</Text>
-                    {/* <Text style={[styles.font12, styles.textCenter, styles.mt5]}>
-                        Your account will now be marked for deletion. This means that your data will be completely wiped off the system in 14 days. If you change your mind during this time, simply log back in and we will cancel the deletion process.
-                        Thank you for using Seaats.
-                    </Text> */}
-                    <Text style={styles.inputText}>Please Enter Your Password</Text>
+                    <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter]}>{t('sure_delete')}</Text>
+                    <Text style={[styles.text, styles.inputText]}>{t('enter_password')}</Text>
                     <CustomTextInput
                         value={deletePassword}
                         onChangeText={setDeletePassword}
@@ -309,7 +305,7 @@ const Account = ({ route, navigation }) => {
                         error={deleteError}
                     />
 
-                    <Button text="Confirm" bgColor={palette.accent} textColor={palette.white} onPress={confirmDelete} />
+                    <Button text={t('confirm')} bgColor={palette.accent} textColor={palette.white} onPress={confirmDelete} />
                     <Button text={t('cancel')} bgColor={palette.red} textColor={palette.white} onPress={() => setDeleteAccountModalVisible(false)} />
                 </View>
             </BottomModal>
@@ -317,14 +313,14 @@ const Account = ({ route, navigation }) => {
             <BottomModal onHide={hideDeleteConfirmation} modalVisible={deleteConfirmationVisible}>
                 <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
 
-                    <Text style={[styles.font14, styles.textCenter, styles.mt5]}>
-                        Your account will now be marked for deletion. This means that your data will be completely wiped off the system in 14 days. If you change your mind during this time, simply log back in and we will cancel the deletion process.
+                    <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5]}>
+                        {t('deletion_confirmation')}
                     </Text>
-                    <Text style={[styles.font14, styles.textCenter, styles.mt5]}>
-                        Thank you for using Seaats.
+                    <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5]}>
+                        {t('deletion_confirmation_thanks')}
                     </Text>
 
-                    <Button text="OK" onPress={hideDeleteConfirmation} bgColor={palette.primary} textColor={palette.white} />
+                    <Button text={t('ok')} onPress={hideDeleteConfirmation} bgColor={palette.primary} textColor={palette.white} />
                 </View>
             </BottomModal>
         </>

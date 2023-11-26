@@ -136,7 +136,7 @@ const RideFinder = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-                <Text style={[styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
+                <Text style={[styles.text, styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
                 {!loading && availableRides.length > 0 &&
                     <ScrollView horizontal={true} style={[{ flexGrow: 0 }, styles.mt5]} showsHorizontalScrollIndicator={false} ref={scrollViewRef} onLayout={scrollToHour}>
                         {
@@ -174,7 +174,7 @@ const RideFinder = ({ route, navigation }) => {
                                         key={`time${i}`}
                                         activeOpacity={0.8}
                                         style={[styles.bgWhite, styles.border1, styles.fullCenter, { width: 85 * rem, height: 30 * rem, borderRadius: 15 * rem, marginHorizontal: 2.5 * rem, borderColor: hourNumber === i ? palette.primary : palette.light }]}>
-                                        <Text style={[styles.textCenter]}>{getTimeFromIndex()}</Text>
+                                        <Text style={[styles.text, styles.textCenter]}>{getTimeFromIndex()}</Text>
                                     </TouchableOpacity>
                                 )
                             })
@@ -208,7 +208,7 @@ const RideFinder = ({ route, navigation }) => {
                     !loading && availableRides && availableRides.length === 0 &&
                     <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', flex: 1 }}>
                         <MaterialIcons name="sentiment-very-dissatisfied" size={125 * rem} color={palette.dark} />
-                        <Text style={[styles.bold, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
+                        <Text style={[styles.text, styles.bold, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
                         <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Post Ride')} />
                     </View>
                 }

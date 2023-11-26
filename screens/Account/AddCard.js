@@ -150,12 +150,12 @@ const AddCard = ({ navigation, route }) => {
                 <LinearGradient colors={[palette.secondary, palette.accent]} style={addCardStyles.card}>
                     <Text adjustsFontSizeToFit
                         numberOfLines={1}
-                        style={[styles.white, styles.bold, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
+                        style={[styles.text, styles.white, styles.bold, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
                     <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween, styles.alignEnd]}>
                         <>
                             <View style={styles.flexOne}>
-                                <Text style={addCardStyles.cardDetailsText}>{t('EXP')}: {expiryDate}</Text>
-                                <Text style={[addCardStyles.cardDetailsText, styles.mt5]}>{cardholderName.toUpperCase()}</Text>
+                                <Text style={[styles.text, addCardStyles.cardDetailsText]}>{t('EXP')}: {expiryDate}</Text>
+                                <Text style={[styles.text, addCardStyles.cardDetailsText, styles.mt5]}>{cardholderName.toUpperCase()}</Text>
                             </View>
                             {
                                 cardType === "visa" ? <Visa color={palette.white} width={50} height={50} /> : (cardType === "mastercard") ? <Mastercard color={palette.white} width={50} height={50} /> : ""
@@ -172,7 +172,7 @@ const AddCard = ({ navigation, route }) => {
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>
                             <View style={styles.w100}>
-                                <Text style={styles.inputText}>{t('card_number')}</Text>
+                                <Text style={[styles.text, styles.inputText]}>{t('card_number')}</Text>
                                 <CustomTextInput
                                     iconLeft="credit-card"
                                     placeholder="1234 5678 9123 4567"
@@ -192,7 +192,7 @@ const AddCard = ({ navigation, route }) => {
 
                             <View style={[styles.flexRow, styles.w100]}>
                                 <View style={{ flex: 1.5 }}>
-                                    <Text style={styles.inputText}>{t('cardholder_name')}</Text>
+                                    <Text style={[styles.text, styles.inputText]}>{t('cardholder_name')}</Text>
                                     <CustomTextInput
                                         iconLeft="badge"
                                         placeholder={t('cardholder_name')}
@@ -207,7 +207,7 @@ const AddCard = ({ navigation, route }) => {
                                 </View>
 
                                 <View style={[styles.flexOne, styles.ml5]}>
-                                    <Text style={styles.inputText}>{t('expiry_date')}</Text>
+                                    <Text style={[styles.text, styles.inputText]}>{t('expiry_date')}</Text>
                                     <CustomTextInput
                                         placeholder="MM/YY"
                                         value={values.expiryDateInput}

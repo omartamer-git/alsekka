@@ -187,9 +187,9 @@ const ViewTrip = ({ route, navigation }) => {
                                             }
                                         </View>
                                         <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
-                                            <Text numberOfLines={1} adjustsFontSizeToFit style={styles.headerText3}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName}</Text>
-                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
-                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.smallText, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.headerText3]}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName}</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
                                             <View style={styles.flexRow}>
                                                 {ratings}
                                             </View>
@@ -240,7 +240,7 @@ const ViewTrip = ({ route, navigation }) => {
                                             <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
                                                 <MaterialIcons name="close" size={25} />
                                             </TouchableOpacity>
-                                            <Text style={[styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
+                                            <Text style={[styles.text, styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
                                         </View>
                                     </View>
                                 }
@@ -286,18 +286,18 @@ const ViewTrip = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
-                    <Text style={[styles.headerText3, styles.mv5]}>{t('cancel_confirm')}</Text>
+                    <Text style={[styles.text, styles.headerText3, styles.mv5]}>{t('cancel_confirm')}</Text>
                     {/* English Only Text */}
-                    <Text style={[styles.textCenter]}>You can cancel for free up until {getDateTime(addSecondsToDate(objDate, -(24 * 60 * 60)))}, after that you will be charged the full price of the ride.</Text>
+                    <Text style={[styles.text, styles.textCenter]}>You can cancel for free up until {getDateTime(addSecondsToDate(objDate, -(24 * 60 * 60)))}, after that you will be charged the full price of the ride.</Text>
                     <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
-                    <Button bgColor={palette.red} textColor={palette.white} text={t('cancel')} onPress={cancelPassenger} />
+                    <Button bgColor={palette.red} textColor={palette.white} text={t('cancel_seat')} onPress={cancelPassenger} />
                 </View>
             </BottomModal>
 
             <BottomModal modalVisible={cancelledModalVisible} onHide={() => { setCancelledModalVisible(false); navigation.goBack() }}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
-                    <Text style={[styles.headerText3, styles.mv5]}>Ride Cancelled</Text>
-                    <Text style={[styles.textCenter]}>Your ride has been canceled. If you have any concerns or need assistance, feel free to reach out to us. Safe travels and thank you for using seaats.</Text>
+                    <Text style={[styles.text, styles.headerText3, styles.mv5]}>Ride Cancelled</Text>
+                    <Text style={[styles.text, styles.textCenter]}>Your ride has been canceled. If you have any concerns or need assistance, feel free to reach out to us. Safe travels and thank you for using seaats.</Text>
                     <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => navigation.goBack()} />
                 </View>
             </BottomModal>

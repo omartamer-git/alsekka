@@ -2,7 +2,7 @@ import useAxiosManager from '../context/axiosManager';
 
 export const getPredictions = async (text) => {
     let pred = [];
-    const url = '/getPredictions';
+    const url = '/v1/map/getPredictions';
     const params = {
         text: text,
     };
@@ -14,7 +14,7 @@ export const getPredictions = async (text) => {
 };
 
 export const geocode = async (latitude, longitude) => {
-    const url = '/geocode';
+    const url = '/v1/map/geocode';
     const params = {
         latitude: latitude,
         longitude: longitude
@@ -27,7 +27,7 @@ export const geocode = async (latitude, longitude) => {
 };
 
 export const getLocationFromPlaceId = async (place_id) => {
-    const url = '/getLocationFromPlaceId';
+    const url = '/v1/map/getLocationFromPlaceId';
     const params = {
         place_id: place_id,
     };
@@ -38,7 +38,7 @@ export const getLocationFromPlaceId = async (place_id) => {
 };
 
 export const getOptimalPath = async (tripId) => {
-    const url = '/getOptimalPath';
+    const url = '/v1/map/getOptimalPath';
     const params = {
         tripId: tripId
     };

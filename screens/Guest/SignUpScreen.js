@@ -101,20 +101,20 @@ const SignUpScreen = ({ route, navigation }) => {
         <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-            <Text style={styles.locale}>EN</Text>
+            <Text style={[styles.text, styles.locale]}>EN</Text>
           </View>
         </HeaderView>
       </SafeAreaView>
 
       <ScrollView style={styles.wrapper} contentContainerStyle={[styles.flexGrow, { paddingBottom: 40 }]}>
         <View style={[styles.defaultPadding, styles.headerTextMargins]}>
-          <Text style={[styles.headerText, styles.white]}>{t('sign_up')}</Text>
+          <Text style={[styles.text, styles.headerText, styles.white]}>{t('sign_up')}</Text>
         </View>
         <SafeAreaView style={[styles.bgLightGray, styles.w100, styles.flexOne, styles.br16]}>
           <View style={[styles.defaultContainer, styles.defaultPadding, styles.bgLightGray, styles.br16, styles.w100]}>
             <View style={[styles.flexOne, styles.w100, styles.defaultPaddingVertical]}>
-              <Text style={[styles.headerText, styles.black]}>{t('get_started')}</Text>
-              <Text style={[styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('account_needed')}</Text>
+              <Text style={[styles.text, styles.headerText, styles.black]}>{t('get_started')}</Text>
+              <Text style={[styles.text, styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('account_needed')}</Text>
               <ErrorMessage condition={errorMessage} message={errorMessage} />
               <Formik
                 initialValues={{ phoneInput: '', passwordInput: '', emailInput: '', firstNameInput: '', lastNameInput: '' }}
@@ -125,7 +125,7 @@ const SignUpScreen = ({ route, navigation }) => {
                   <>
                     <View style={styles.flexRow}>
                       <View style={[styles.flexOne, styles.pr8]}>
-                        <Text style={styles.inputText}>{t('first_name')}</Text>
+                        <Text style={[styles.text, styles.inputText]}>{t('first_name')}</Text>
                         <CustomTextInput
                           value={values.firstNameInput}
                           onChangeText={handleChange('firstNameInput')}
@@ -136,7 +136,7 @@ const SignUpScreen = ({ route, navigation }) => {
                       </View>
 
                       <View style={[styles.flexOne, styles.pl8]}>
-                        <Text style={styles.inputText}>{t('last_name')}</Text>
+                        <Text style={[styles.text, styles.inputText]}>{t('last_name')}</Text>
                         <CustomTextInput
                           value={values.lastNameInput}
                           onChangeText={handleChange('lastNameInput')}
@@ -149,7 +149,7 @@ const SignUpScreen = ({ route, navigation }) => {
                     </View>
 
 
-                    <Text style={styles.inputText}>{t('phone_number')}</Text>
+                    <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
                     <CustomTextInput
                       value={"+20 " + values.phoneInput}
                       emojiLeft={"🇪🇬"}
@@ -164,11 +164,11 @@ const SignUpScreen = ({ route, navigation }) => {
                       keyboardType="number-pad"
                     />
 
-                    <Text style={styles.inputText}>
+                    <Text style={[styles.text, styles.inputText]}>
                       {t('email')}
                     </Text>
                     <TouchableOpacity onPress={() => Linking.openURL("https://seaats.app/universities")}>
-                      <Text style={[styles.font12, styles.dark, styles.mt5]}>{t('see_uni_list')}</Text>
+                      <Text style={[styles.text, styles.font12, styles.dark, styles.mt5]}>{t('see_uni_list')}</Text>
                     </TouchableOpacity>
                     <CustomTextInput
                       value={values.emailInput}
@@ -178,7 +178,7 @@ const SignUpScreen = ({ route, navigation }) => {
                       error={touched.emailInput && errors.emailInput}
                     />
 
-                    <Text style={styles.inputText}>{t('password')}</Text>
+                    <Text style={[styles.text, styles.inputText]}>{t('password')}</Text>
                     <CustomTextInput
                       value={values.passwordInput}
                       onChangeText={handleChange('passwordInput')}
@@ -191,16 +191,16 @@ const SignUpScreen = ({ route, navigation }) => {
                     <View style={[styles.flexRow, styles.w100, styles.mt20]}>
                       <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.primary : palette.white }]}
                         onPress={toggleGender}>
-                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>{t('male')}</Text>
+                        <Text style={[styles.text, signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>{t('male')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.primary : palette.white }]}
                         onPress={toggleGender}>
-                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>{t('female')}</Text>
+                        <Text style={[styles.text, signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>{t('female')}</Text>
                       </TouchableOpacity>
                     </View>
 
-                    <Text style={[styles.mt5, styles.smallText, styles.dark]}>
-                      {t('by_continuing')} <Text style={styles.primary} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={styles.primary} onPress={() => { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
+                    <Text style={[styles.text, styles.mt5, styles.smallText, styles.dark]}>
+                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={() => { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
                     </Text>
 
 
@@ -218,7 +218,7 @@ const SignUpScreen = ({ route, navigation }) => {
 
 
               <TouchableOpacity style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]} onPress={() => navigation.navigate('Login')} activeOpacity={0.7}>
-                <Text style={styles.dark}>{t('account_exists')} <Text style={[styles.primary, styles.bold]}>{t('sign_in')}</Text></Text>
+                <Text style={[styles.text, styles.dark]}>{t('account_exists')} <Text style={[styles.primary, styles.bold]}>{t('sign_in')}</Text></Text>
               </TouchableOpacity>
             </View>
           </View>

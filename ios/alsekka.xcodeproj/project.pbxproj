@@ -19,6 +19,9 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		87D4DB448B764A1CAC42476A /* TheSansArabic-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 41ED0D83DE744355B8F7FF86 /* TheSansArabic-Bold.ttf */; };
 		F6A4BE7562FE4A7D8B453BEE /* Free Sans Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2CF98D3DEF1D4E6FBC30F695 /* Free Sans Bold.otf */; };
+		E69180E9648F4FCFAF030380 /* General Sans Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7ABF13AC598343D99365CDF9 /* General Sans Variable.ttf */; };
+		14DAAF9EBC254BEDA8BAFAB2 /* Noto Sans Arabic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43A202D76CBA445AAE80BB5E /* Noto Sans Arabic.ttf */; };
+		08E1255DD139430E9485C08D /* Noto Kufi Arabic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B53B82C26C54D5CA543FF5C /* Noto Kufi Arabic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +58,9 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = alsekka/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-alsekka-alsekkaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-alsekka-alsekkaTests.release.xcconfig"; path = "Target Support Files/Pods-alsekka-alsekkaTests/Pods-alsekka-alsekkaTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		7ABF13AC598343D99365CDF9 /* General Sans Variable.ttf */ = {isa = PBXFileReference; name = "General Sans Variable.ttf"; path = "../assets/fonts/General Sans Variable.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		43A202D76CBA445AAE80BB5E /* Noto Sans Arabic.ttf */ = {isa = PBXFileReference; name = "Noto Sans Arabic.ttf"; path = "../assets/fonts/Noto Sans Arabic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3B53B82C26C54D5CA543FF5C /* Noto Kufi Arabic.ttf */ = {isa = PBXFileReference; name = "Noto Kufi Arabic.ttf"; path = "../assets/fonts/Noto Kufi Arabic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +175,9 @@
 			children = (
 				2CF98D3DEF1D4E6FBC30F695 /* Free Sans Bold.otf */,
 				41ED0D83DE744355B8F7FF86 /* TheSansArabic-Bold.ttf */,
+				7ABF13AC598343D99365CDF9 /* General Sans Variable.ttf */,
+				43A202D76CBA445AAE80BB5E /* Noto Sans Arabic.ttf */,
+				3B53B82C26C54D5CA543FF5C /* Noto Kufi Arabic.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -276,6 +285,9 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				F6A4BE7562FE4A7D8B453BEE /* Free Sans Bold.otf in Resources */,
 				87D4DB448B764A1CAC42476A /* TheSansArabic-Bold.ttf in Resources */,
+				E69180E9648F4FCFAF030380 /* General Sans Variable.ttf in Resources */,
+				14DAAF9EBC254BEDA8BAFAB2 /* Noto Sans Arabic.ttf in Resources */,
+				08E1255DD139430E9485C08D /* Noto Kufi Arabic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

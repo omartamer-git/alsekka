@@ -93,14 +93,14 @@ const Checkout = ({ route, navigation }) => {
                     <>
                         {
                             passengerDetails &&
-                            <Text style={styles.headerText3}>{t('checking_out')} {passengerDetails.firstName}</Text>
+                            <Text style={[styles.text, styles.headerText3]}>{t('checking_out')} {passengerDetails.firstName}</Text>
                         }
-                        <Text>{t('amount_due')} {passengerDetails && passengerDetails.amountDue} {t('EGP')}</Text>
+                        <Text style={[styles.text]}>{t('amount_due')} {passengerDetails && passengerDetails.amountDue} {t('EGP')}</Text>
 
                         {
                             passengerDetails &&
                             passengerDetails.paymentMethod === 0 &&
-                            <Text style={styles.inputText}>{t('amount_paid')}</Text>
+                            <Text style={[styles.text, styles.inputText]}>{t('amount_paid')}</Text>
                         }
 
                         {
@@ -108,7 +108,7 @@ const Checkout = ({ route, navigation }) => {
                             passengerDetails.paymentMethod === 0 &&
                             <CustomTextInput value={amountPaid} placeholder={t('amount_paid')} style={styles.bgWhite} onChangeText={onChangeAmountPaid} />}
 
-                        <Text style={styles.inputText}>{t('rate')} {passengerDetails && passengerDetails.firstName}</Text>
+                        <Text style={[styles.text, styles.inputText]}>{t('rate')} {passengerDetails && passengerDetails.firstName}</Text>
                         <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
                             {Array.from({ length: 5 }, (_, index) => {
                                 return (

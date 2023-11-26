@@ -222,11 +222,11 @@ const MapScreen = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.inputText}>{t('date')}</Text>
+          <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>
 
           <CustomDatePicker date={date} setDate={setDate} />
 
-          <Text style={styles.inputText}>
+          <Text style={[styles.text, styles.inputText]}>
             {t('gender_to_carpool')}
           </Text>
 
@@ -234,16 +234,16 @@ const MapScreen = ({ route, navigation }) => {
             {
               gender === "FEMALE" &&
               <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
-                <Text style={mapScreenStyles.genderText}>{t('female_only')}</Text>
+                <Text style={[styles.text, mapScreenStyles.genderText]}>{t('female_only')}</Text>
               </TouchableOpacity>
             }
             <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
-              <Text style={mapScreenStyles.genderText}>{t('any')}</Text>
+              <Text style={[styles.text, mapScreenStyles.genderText]}>{t('any')}</Text>
             </TouchableOpacity>
             {
               gender === "MALE" &&
               <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
-                <Text style={mapScreenStyles.genderText}>{t('male_only')}</Text>
+                <Text style={[styles.text, mapScreenStyles.genderText]}>{t('male_only')}</Text>
               </TouchableOpacity>
             }
           </View>

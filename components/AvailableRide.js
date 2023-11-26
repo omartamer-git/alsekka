@@ -24,7 +24,7 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
             items.push(<MaterialIcons key={"emptyseat" + j} name="account-circle" size={16} color={palette.light} />);
         }
     } else {
-        items.push(<Text key={"full" + rid}>{t('ride_full')}</Text>)
+        items.push(<Text style={[styles.text]} key={"full" + rid}>{t('ride_full')}</Text>)
     }
 
 
@@ -34,20 +34,22 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                     <View style={{ flexDirection: 'row' }}>
                         <View>
-                            <Text style={{ fontWeight: '700', fontSize: 16 }}>{getTime(date)[0]}<Text style={{ fontSize: 12 }}> {t(getTime(date)[1])}</Text></Text>
+                            <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(date)[0]}
+                                <Text style={{ fontSize: 12 }}> {t(getTime(date)[1])}</Text>
+                            </Text>
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center', justifyContent: 'center' }}>
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
-                            <Text style={{ color: palette.dark, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }}>{getDurationValues(duration)[0]}{t('h')}{getDurationValues(duration)[1]}{t('m')}</Text>
+                            <Text style={[styles.text, { color: palette.dark, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }]}>{getDurationValues(duration)[0]}{t('h')}{getDurationValues(duration)[1]}{t('m')}</Text>
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
                         </View>
                     </View>
-                    <Text numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
+                    <Text style={[styles.text]} numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
                 </View>
 
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                    <Text style={{ fontWeight: '700', fontSize: 16 }}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={{ fontSize: 12 }}> {t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
-                    <Text numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
+                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={{ fontSize: 12 }}> {t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
+                    <Text style={[styles.text]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
                 </View>
             </View>
 
@@ -55,31 +57,31 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 <View style={[{ flex: 1, flexWrap: 'wrap' }, styles.flexRow, styles.alignEnd]}>
                     {gender !== "ANY" &&
                         <View style={[styles.fullCenter, { width: 32, height: 24, borderRadius: 12, marginVertical: 1 * rem, marginHorizontal: 1 * rem, backgroundColor: gender === "MALE" ? "#1d74c6" : "pink" }]}>
-                            <Text style={[styles.bold, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
+                            <Text style={[styles.bold, styles.text, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
                         </View>
                     }
 
                     {pickupEnabled &&
                         <View style={[styles.ph16, styles.bgRed, styles.fullCenter, { borderRadius: 12 * rem, height: 24 * rem, alignSelf: 'flex-end', marginVertical: 1 * rem, marginHorizontal: 1 * rem }]}>
-                            <Text style={{ color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }}>
+                            <Text style={[styles.text, { color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }]}>
                                 PICK UP
                             </Text>
                         </View>
                     }
                     {model && brand &&
                         <View style={{ paddingHorizontal: 16 * rem, borderRadius: 12 * rem, backgroundColor: palette.dark, height: 24 * rem, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-end', marginVertical: 1 * rem, marginHorizontal: 1 * rem }}>
-                            <Text style={{ color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }}>{brand} {model}</Text>
+                            <Text style={[styles.text, { color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }]}>{brand} {model}</Text>
                         </View>
                     }
                 </View>
                 <View style={[styles.flexCol, styles.alignEnd, styles.justifyEnd]}>
-                    <Text style={{ fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }}>{pricePerSeat}<Text style={{ fontSize: 12 }}> {t('EGP')}</Text></Text>
+                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{pricePerSeat}<Text style={{ fontSize: 12 }}> {t('EGP')}</Text></Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <MaterialIcons name="person" size={16} color={palette.dark} />
-                        <Text style={{ color: palette.dark }}>
+                        <Text style={[styles.dark, styles.text]}>
                             {seatsAvailable && seatsOccupied ? seatsOccupied + '/' + seatsAvailable : seatsAvailable}
                             &nbsp;•&nbsp;
-                            {t( days[date.getDay()] )} {date.getDate()} {t(months[date.getMonth()])}
+                            {t(days[date.getDay()])} {date.getDate()} {t(months[date.getMonth()])}
                         </Text>
                     </View>
                 </View>
