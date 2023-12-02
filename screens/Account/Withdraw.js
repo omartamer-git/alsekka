@@ -10,20 +10,19 @@ import Button from "../../components/Button";
 import { useTranslation } from "react-i18next";
 import * as StoreReview from 'react-native-store-review';
 
-const Withdraw = ({ route, navigation }) => {
+function Withdraw({ route, navigation }) {
     const { bankAccounts, mobileWallets, balance, sendWithdrawalRequest } = useUserStore();
     const [modalVisible, setModalVisible] = useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
-    
+
     const withdrawalType = useRef("BANK");
     const withdrawalId = useRef(null);
     const [withdrawalMethodChosen, setWithdrawalMethodChosen] = useState("Choose Withdrawal Method");
 
-    const changeMethod = (data, type) => {
+    function changeMethod(data, type) {
         withdrawalType.current = type;
-        console.log(data.id);
         withdrawalId.current = data.id;
-        if(type === "BANK") {
+        if (type === "BANK") {
             setWithdrawalMethodChosen(`BANK - ${data.accNumber} (${abbreviate(data.bankName)})`);
         } else {
             setWithdrawalMethodChosen(`WALLET - ${data.phone} (${getPhoneCarrier(data.phone)})`);
@@ -32,16 +31,16 @@ const Withdraw = ({ route, navigation }) => {
         setModalVisible(false);
     }
 
-    const sendRequest =  function () {
+    const sendRequest = function () {
         setSubmitDisabled(true);
-        if(withdrawalId.current !== null) {
-            sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack()).catch(console.error).finally( function () { setSubmitDisabled(false); });
+        if (withdrawalId.current !== null) {
+            sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack()).catch(console.error).finally(function () { setSubmitDisabled(false); });
             StoreReview.requestReview();
         }
         setSubmitDisabled(false);
     };
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <>

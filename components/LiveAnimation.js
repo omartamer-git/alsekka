@@ -1,10 +1,10 @@
 import LottieView from "lottie-react-native";
 import { rem } from "../helper";
 
-const LiveAnimation = ({width=125, height=125}) => {
+function LiveAnimation({ width = 125, height = 125 }) {
     return (
         <>
-            <LottieView style={{width: width * rem, height: height * rem, alignSelf: 'center'}} source={require("../assets/live_animation.json")} autoPlay loop={true} />
+            <LottieView style={{ width: width * rem, height: height * rem, alignSelf: 'center' }} source={require("../assets/live_animation.json")} autoPlay loop={true} />
         </>
     );
 }

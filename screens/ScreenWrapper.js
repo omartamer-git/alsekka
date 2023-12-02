@@ -10,7 +10,7 @@ import HeaderView from '../components/HeaderView';
 import { palette, rem, styles } from '../helper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ScreenWrapper = ({ screenName, children, navType, navAction, lip = true }) => {
+function ScreenWrapper({ screenName, children, navType, navAction, lip = true }) {
     const insets = useSafeAreaInsets();
     return (
         <View style={styles.backgroundStyle} activeOpacity={1}>

@@ -2,7 +2,7 @@ import useAxiosManager from '../context/axiosManager';
 import useUserStore from './accountAPI';
 
 
-export const sendMessage = async (receiver, messageText) => {
+export const sendMessage = async function (receiver, messageText) {
     const url = `/v1/chat/sendmessage`;
     const params = {
         receiver: receiver,
@@ -22,7 +22,7 @@ export const sendMessage = async (receiver, messageText) => {
     return [message];
 };
 
-export const sendCSMessage = async (messageText) => {
+export const sendCSMessage = async function (messageText) {
     const url = `/v1/chat/sendcsmessage`;
     const params = {
         message: messageText
@@ -32,11 +32,11 @@ export const sendCSMessage = async (messageText) => {
     const response = await axiosManager.authAxios.get(url, { params });
     const data = response.data;
 
-    return {...data, datetime: new Date().toISOString()};
+    return { ...data, datetime: new Date().toISOString() };
 };
 
 
-export const loadChat = async (receiver) => {
+export const loadChat = async function (receiver) {
     const url = `/v1/chat/loadchat`;
     const params = {
         receiver: receiver
@@ -53,7 +53,7 @@ export const loadChat = async (receiver) => {
 };
 
 
-export const chatHistory = async (receiver) => {
+export const chatHistory = async function (receiver) {
     const url = `/v1/chat/chathistory`;
     const params = {
         receiver: receiver
@@ -65,7 +65,7 @@ export const chatHistory = async (receiver) => {
     return data;
 };
 
-export const csChatHistory = async  function () {
+export const csChatHistory = async function () {
     const url = `/v1/chat/cschathistory`;
 
     const axiosManager = useAxiosManager.getState();
@@ -74,7 +74,7 @@ export const csChatHistory = async  function () {
     return data;
 }
 
-export const findNewMessages = async (receiver) => {
+export const findNewMessages = async function (receiver) {
     const newMessagesUrl = `/v1/chat/newmessages`;
     const params = {
         receiver: receiver
@@ -86,7 +86,7 @@ export const findNewMessages = async (receiver) => {
     return data;
 };
 
-export const findNewCSMessages = async  function () {
+export const findNewCSMessages = async function () {
     const newMessagesUrl = `/v1/chat/newcsmessages`;
 
     const axiosManager = useAxiosManager.getState();
@@ -95,7 +95,7 @@ export const findNewCSMessages = async  function () {
     return data;
 }
 
-export const getChats = async  function () {
+export const getChats = async function () {
     const uid = useUserStore.getState().id;
     const url = `/v1/chat/chats`;
     const params = {

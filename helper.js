@@ -36,7 +36,7 @@ function validateCardNumber(cardNumber) {
     return sum % 10 === 0;
 }
 
-export const getDateSQL = (date) => {
+export const getDateSQL = function (date) {
     const year = date.getUTCFullYear();
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
     const day = date.getUTCDate().toString().padStart(2, '0');
@@ -46,7 +46,7 @@ export const getDateSQL = (date) => {
     return `${year}-${month}-${day} ${hour}:${minute}:00`;
 };
 
-export const translateEnglishNumbers = (text) => {
+export const translateEnglishNumbers = function (text) {
     text = String(text);
     const x = text.length;
     let resultText = "";
@@ -95,7 +95,7 @@ export const translateEnglishNumbers = (text) => {
     return resultText;
 }
 
-export const abbreviate = (string) => {
+export const abbreviate = function (string) {
     const words = string.split(' ');
     if (words.length > 1 && string.length > 6) {
         let abbreviation = words.map(function (word) {
@@ -111,7 +111,7 @@ export const abbreviate = (string) => {
     return string;
 };
 
-export const getDirections = (lat, lng, label) => {
+export const getDirections = function (lat, lng, label) {
     const scheme = Platform.select({ ios: 'maps://0,0?q=', android: 'geo:0,0?q=' });
     const latLng = `${lat},${lng}`;
     const url = Platform.select({
@@ -123,7 +123,7 @@ export const getDirections = (lat, lng, label) => {
     Linking.openURL(url);
 }
 
-export const getPhoneCarrier = (phone) => {
+export const getPhoneCarrier = function (phone) {
     const carrierCode = phone.substring(0, 3);
     if (carrierCode === '010') {
         return "VODA"
@@ -154,7 +154,7 @@ export const palette = {
     black: '#000',
 };
 
-export const getDateShort = (date) => {
+export const getDateShort = function (date) {
     let month = date.getMonth() + 1;
     let day = date.getDate();
     let year = date.getFullYear().toString().substr(-2);
@@ -170,7 +170,7 @@ export const getDateShort = (date) => {
     return `${day}/${month}/${year}`;
 }
 
-export const getTime = (date) => {
+export const getTime = function (date) {
     let hour = date.getHours();
     let minute = date.getMinutes();
     let ampm = "PM";
@@ -194,20 +194,20 @@ export const getTime = (date) => {
     return [`${hour}:${minute}`, ampm];
 }
 
-export const addSecondsToDate = (date, secondsToAdd) => {
+export const addSecondsToDate = function (date, secondsToAdd) {
     const result = new Date(date);
     result.setSeconds(result.getSeconds() + secondsToAdd);
     return result;
 }
 
-export const getDurationValues = (seconds) => {
+export const getDurationValues = function (seconds) {
     let hours = Math.floor(seconds / (60 * 60));
     let minutes = Math.floor((seconds - (hours * 60 * 60)) / 60);
 
     return [hours, minutes];
 }
 
-export const getDateTime = (date, viweing = true) => {
+export const getDateTime = function (date, viweing = true) {
     let dateString = getDateSQL(date);
     let hour = date.getHours();
     let minute = date.getMinutes();
@@ -878,7 +878,7 @@ export const loggedInStyles = StyleSheet.create({
     }
 });
 
-export const translatedFormat = (str, arrValues) => {
+export const translatedFormat = function (str, arrValues) {
     let newStr = str;
     for (let val of arrValues) {
         newStr = newStr.replace('%%', val);

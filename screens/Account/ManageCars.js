@@ -16,12 +16,12 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const ManageCars = ({ route, navigation }) => {
+function ManageCars({ route, navigation }) {
     const [cars, setCars] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const loadData = async  function () {
+    const loadData = async function () {
         setLoading(true);
         carsAPI.getUsableCars(0).then((newCars) => {
             setCars(newCars);
@@ -29,20 +29,20 @@ const ManageCars = ({ route, navigation }) => {
         }).catch((error) => console.log(error));
     };
 
-    const onRefresh = async  function () {
+    const onRefresh = async function () {
         setRefreshing(true);
         await loadData();
         setRefreshing(false);
     }
 
-    useEffect( function () {
+    useEffect(function () {
         loadData();
     }, []);
 
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('manage_cars')} navType="back" navAction={ function () { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('manage_cars')} navType="back" navAction={function () { navigation.goBack() }}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 {
                     !loading &&

@@ -138,7 +138,7 @@ function App() {
   TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
 
 
-  useEffect( function () {
+  useEffect(function () {
     if (Platform.OS === 'android') {
       SplashScreen.hide();
     }
@@ -171,12 +171,11 @@ function App() {
 
   }, []);
 
-  useEffect( function () {
+  useEffect(function () {
     if (Platform.OS === 'ios') {
       requestTrackingPermission();
       Notifications.registerRemoteNotifications();
       Notifications.events().registerRemoteNotificationsRegistered((e) => {
-        console.log(e.deviceToken);
         registerDevice(e.deviceToken);
         appManager.setDeviceToken(e.deviceToken);
       });
@@ -186,35 +185,29 @@ function App() {
       })
 
       Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-        console.log("Notification Received - Foreground", notification.payload);
 
         // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
         completion({ alert: true, sound: true, badge: false });
       });
 
       Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
-        console.log("Notification opened by device user", notification.payload);
-        console.log(`Notification opened with an action identifier: ${action.identifier} and response text: ${action.text}`);
         completion();
       });
 
       Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-        console.log("Notification Received - Background", notification.payload);
-
         // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
         completion({ alert: true, sound: true, badge: false });
       });
     } else {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
-      messaging().requestPermission().then( function () {
+      messaging().requestPermission().then(function () {
         // Get the device token
         messaging()
           .getToken()
           .then(token => {
             registerDevice(token);
             appManager.setDeviceToken(token);
-            console.log('Device Token:', token);
           })
           .catch(error => {
             console.error('Error getting device token:', error);
@@ -224,7 +217,7 @@ function App() {
 
   }, []);
 
-  useEffect( function () {
+  useEffect(function () {
     const inAppUpdates = new SpInAppUpdates(
       true // isDebug
     );
@@ -252,10 +245,9 @@ function App() {
   }, []);
 
 
-  const loadJWT = useCallback(async  function () {
+  const loadJWT = useCallback(async function () {
     try {
       const value = await Keychain.getGenericPassword();
-      console.log("KCVAL" + value);
       if (!value) {
         authManager.setAccessToken(null);
         authManager.setRefreshToken(null);
@@ -275,8 +267,6 @@ function App() {
 
       setState("LoggedIn");
     } catch (error) {
-      console.log(error.stack);
-      console.log(`Keychain Error: ${error.message}`);
       setState("Guest");
       authManager.setAccessToken(null);
       authManager.setRefreshToken(null);
@@ -284,17 +274,17 @@ function App() {
     }
   }, []);
 
-  useEffect( function () {
+  useEffect(function () {
     appManager.getAllowedEmails();
   }, [])
 
-  useEffect( function () {
+  useEffect(function () {
     // if (appManager.deviceToken) {
     loadJWT()
     // }
   }, [loadJWT]);
 
-  useEffect( function () {
+  useEffect(function () {
     if (appManager.deviceToken && userStore.id) {
       userStore.linkDevice(appManager.deviceToken);
     }

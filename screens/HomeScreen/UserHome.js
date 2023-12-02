@@ -24,7 +24,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { DriverPopUp } from '../../components/DriverPopUp';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const UserHome = ({ navigation, route }) => {
+function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
     const [nextRideDate, setNextRideDate] = useState(new Date());
     const [refreshing, setRefreshing] = useState(false);
@@ -45,7 +45,7 @@ const UserHome = ({ navigation, route }) => {
 
     const MAX_CAROUSEL_TEXT_LENGTH = 250;
 
-    const loadData = async  function () {
+    const loadData = async function () {
         try {
             setRefreshing(true);
 
@@ -80,12 +80,12 @@ const UserHome = ({ navigation, route }) => {
         }
     };
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         loadData().then(() => setLoading(false));
     }, []);
 
-    useEffect( function () {
+    useEffect(function () {
         if (!loading && !userStore.driver) {
             AsyncStorage.getItem('driverPopUp').then(driverPopUp => {
                 if (!driverPopUp) {
@@ -104,16 +104,16 @@ const UserHome = ({ navigation, route }) => {
     }, [loading])
 
 
-    const viewTrip = (id) => {
+    function viewTrip(id) {
         navigation.navigate('View Trip', { tripId: id });
     };
 
-    const findCarouselWidth = (layout) => {
+    function findCarouselWidth(layout) {
         const { x, y, width, height } = layout.nativeEvent.layout;
         setCarouselWidth(width);
     };
 
-    const onRefresh =  function () {
+    function onRefresh() {
         loadData();
     };
 
@@ -145,7 +145,7 @@ const UserHome = ({ navigation, route }) => {
 
                         {driverElement && driverMainTextTo &&
                             <TouchableOpacity style={[userHomeStyles.topAlert, styles.bgPrimary, styles.mt10]}
-                                onPress={ function () { viewTrip(driverTripId); }}>
+                                onPress={function () { viewTrip(driverTripId); }}>
                                 <Text style={[styles.text, styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
                                 <View style={[styles.mh10]}>
@@ -158,7 +158,7 @@ const UserHome = ({ navigation, route }) => {
                         {
                             driverElement && !driverMainTextTo &&
                             <TouchableOpacity
-                                onPress={ function () { navigation.navigate('Driver Documents') }}
+                                onPress={function () { navigation.navigate('Driver Documents') }}
                                 activeOpacity={0.9}
                                 style={[userHomeStyles.topAlert, styles.bgPrimary, styles.mt10]}>
                                 <Text style={[styles.text, styles.white, styles.flexOne, styles.textStart]}>{t('apply_vehicle_owner')}</Text>
@@ -187,7 +187,7 @@ const UserHome = ({ navigation, route }) => {
                                 duration={nextRideData.duration}
                                 date={nextRideDate}
                                 style={{ marginTop: 8 * rem, marginBottom: 8 * rem, minHeight: 140 * rem }}
-                                onPress={ function () { viewTrip(nextRideData.id); }} />
+                                onPress={function () { viewTrip(nextRideData.id); }} />
                         }
                         {
                             !nextRideData &&
@@ -196,7 +196,7 @@ const UserHome = ({ navigation, route }) => {
                                 <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
-                        <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={ function () { navigation.navigate('All Trips') }}>
+                        <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={function () { navigation.navigate('All Trips') }}>
                             <Text style={[styles.text, styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
                         </TouchableOpacity>
 
@@ -220,7 +220,7 @@ const UserHome = ({ navigation, route }) => {
                                                 {announcementText.length > MAX_CAROUSEL_TEXT_LENGTH &&
                                                     <TouchableOpacity
                                                         onPress={
-                                                             function () {
+                                                            function () {
                                                                 navigation.navigate('Announcement', { id: carouselData[index].id });
                                                             }
                                                         }

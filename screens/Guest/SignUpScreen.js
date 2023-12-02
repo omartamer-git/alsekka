@@ -23,7 +23,7 @@ import HeaderView from '../../components/HeaderView';
 import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
 
-const SignUpScreen = ({ route, navigation }) => {
+function SignUpScreen({ route, navigation }) {
   const { t } = useTranslation();
   const [gender, setGender] = useState('MALE');
 
@@ -35,11 +35,11 @@ const SignUpScreen = ({ route, navigation }) => {
 
   const userStore = useUserStore();
 
-  useEffect( function () {
+  useEffect(function () {
 
   }, []);
 
-  const handleContinueClick = (firstName, lastName, phoneNum, email, password) => {
+  function handleContinueClick(firstName, lastName, phoneNum, email, password) {
     setSubmitDisabled(true);
     phoneNum = "0" + phoneNum;
 
@@ -55,7 +55,7 @@ const SignUpScreen = ({ route, navigation }) => {
 
   };
 
-  const toggleGender = (e) => {
+  function toggleGender(e) {
     if (gender == 'FEMALE') {
       setGender('MALE');
     } else {
@@ -79,11 +79,11 @@ const SignUpScreen = ({ route, navigation }) => {
   });
 
   if (Platform.OS === 'ios') {
-    const onFocusEffect = useCallback( function () {
+    const onFocusEffect = useCallback(function () {
       // This should be run when screen gains focus - enable the module where it's needed
       AvoidSoftInput.setShouldMimicIOSBehavior(true);
       AvoidSoftInput.setEnabled(true);
-      return  function () {
+      return function () {
         // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
         AvoidSoftInput.setEnabled(false);
         AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -98,7 +98,7 @@ const SignUpScreen = ({ route, navigation }) => {
   return (
     <View style={styles.backgroundStyle} >
       <SafeAreaView>
-        <HeaderView navType="back" borderVisible={false} action={ function () { navigation.goBack() }}>
+        <HeaderView navType="back" borderVisible={false} action={function () { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
             <Text style={[styles.text, styles.locale]}>EN</Text>
@@ -200,7 +200,7 @@ const SignUpScreen = ({ route, navigation }) => {
                     </View>
 
                     <Text style={[styles.text, styles.mt5, styles.smallText, styles.dark]}>
-                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={ function () { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={ function () { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
+                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={function () { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={function () { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
                     </Text>
 
 

@@ -3,7 +3,7 @@ import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { palette, styles } from "../helper";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const BottomModal = ({onHide, modalVisible, children}) => {
+function BottomModal ({onHide, modalVisible, children}) {
     return (
         <Modal
             transparent={true}

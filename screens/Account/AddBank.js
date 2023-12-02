@@ -17,13 +17,13 @@ import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 
-const AddBank = ({ navigation, route }) => {
+function AddBank({ navigation, route }) {
     const {t} = useTranslation();
     const [addBankError, setAddBankError] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const { addBankAccount } = useUserStore();
-    const addAccount = (fullName, bankName, accNumber, swiftCode) => {
+    function addAccount(fullName, bankName, accNumber, swiftCode) {
         setSubmitDisabled(true);
         addBankAccount(fullName, bankName, accNumber, swiftCode).then(data => {
             navigation.goBack();

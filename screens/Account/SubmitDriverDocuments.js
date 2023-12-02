@@ -18,8 +18,8 @@ import ScreenWrapper from '../ScreenWrapper';
 
 const carsAPI = require('../../api/carsAPI');
 
-const SubmitDriverDocuments = ({ route, navigation }) => {
-    useEffect( function () {
+function SubmitDriverDocuments({ route, navigation }) {
+    useEffect(function () {
     }, []);
     const { t } = useTranslation();
 
@@ -35,52 +35,52 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
     const userStore = useUserStore();
 
-    const setImageBack = (response) => {
+    function setImageBack(response) {
         if (!response.didCancel && !response.error) {
             setLicenseBack(response);
             setBackPhotoButtonText(t('back_chosen'));
         }
     };
 
-    const setImageFront = (response) => {
+    function setImageFront(response) {
         if (!response.didCancel && !response.error) {
             setLicenseFront(response);
             setFrontPhotoButtonText(t('front_chosen'));
         }
     };
 
-    const onClickUploadFront = async (e) => {
+    async function onClickUploadFront(e) {
         setFrontSideTouched(true);
         const response = await launchCamera(imagePickerOptions);
         setImageFront(response);
     };
 
-    const onClickUploadBack = async (e) => {
+    async function onClickUploadBack(e) {
         setBackSideTouched(true);
         const response = await launchCamera(imagePickerOptions);
         setImageBack(response);
     };
 
-    const uploadLicense = async  function () {
+    const uploadLicense = async function () {
         setSubmitDisabled(true);
         const licenseBody = {
             frontSide: licenseFront,
             backSide: licenseBack,
         };
 
-        licensesAPI.uploadLicense(licenseBody).then( function () {
+        licensesAPI.uploadLicense(licenseBody).then(function () {
             navigation.navigate('New Car');
             setLicenseStatus("PENDING");
         }).catch(err => {
             console.error(err);
-        }).finally( function () {
+        }).finally(function () {
             setSubmitDisabled(false);
         });
     };
 
     const [loading, setLoading] = useState(true);
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         licensesAPI.getLicense().then((data) => {
             setLicenseStatus(data === null ? 0 : data.status);
@@ -90,7 +90,7 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
 
     return (
-        <ScreenWrapper screenName={t('submit_documents')} navType="back" navAction={ function () { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('submit_documents')} navType="back" navAction={function () { navigation.goBack() }}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.fullCenter]}>
                     <HeaderLip />

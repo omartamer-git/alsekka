@@ -15,10 +15,10 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 
 
-const SearchCommunities = ({ navigation, route }) => {
+function SearchCommunities({ navigation, route }) {
     const [searchText, setSearchText] = useState('');
     const [communities, setCommunities] = useState([]);
-    const handleTextChange = (text) => {
+    function handleTextChange(text) {
         if (text === '') {
             setCommunities([]);
             return;
@@ -34,18 +34,18 @@ const SearchCommunities = ({ navigation, route }) => {
     };
     const debounceFn = useCallback(_debounce(handleTextChange, 300), []);
 
-    const onChangeText = (data) => {
+    function onChangeText(data) {
         setSearchText(data);
         debounceFn(data);
     };
 
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);

@@ -13,13 +13,13 @@ import { palette, rem, styles } from '../../helper';
 import { useTranslation } from 'react-i18next';
 import HeaderView from '../../components/HeaderView';
 
-const HomeScreen = ({ navigation }) => {
+function HomeScreen({ navigation }) {
   const [phoneNumberText, setPhone] = useState('');
-  
-  const handleLoginClick = (e) => {
+
+  function handleLoginClick(e) {
     navigation.navigate('Login');
   };
-  const handleSignUpClick = (e) => {
+  function handleSignUpClick(e) {
     navigation.navigate('Sign Up');
   };
 

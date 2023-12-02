@@ -15,7 +15,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { Formik } from 'formik';
 import SuccessCheck from '../../components/SuccessCheck';
 
-const List = ({ icon, headline, text }) => {
+function List({ icon, headline, text }) {
     return (
         <View style={[styles.flexRow, styles.w100, styles.mt15]}>
             <View>
@@ -29,14 +29,14 @@ const List = ({ icon, headline, text }) => {
     )
 };
 
-const AddReferral = ({ navigation, route }) => {
+function AddReferral({ navigation, route }) {
     const referralCode = route.params?.referralCode;
     const { id, addReferral } = useUserStore();
     const { t } = useTranslation();
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const onSubmitReferralCode = (referralCode) => {
+    function onSubmitReferralCode(referralCode) {
         setSubmitDisabled(true);
         addReferral(referralCode).then(res => {
             setSuccess(true);
@@ -45,7 +45,7 @@ const AddReferral = ({ navigation, route }) => {
         });
     }
 
-    useEffect( function () {
+    useEffect(function () {
         if (referralCode) {
             onSubmitReferralCode(referralCode);
         }
@@ -56,7 +56,7 @@ const AddReferral = ({ navigation, route }) => {
     return (
         <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100]}>
-                { !success &&
+                {!success &&
                     <>
                         <View style={[styles.w100, styles.fullCenter]}>
                             <Treasure width={250} height={250} />

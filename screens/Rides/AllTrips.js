@@ -17,7 +17,7 @@ import { containerStyle, getDateShort, getTime, palette, rem, styles } from '../
 import ScreenWrapper from '../ScreenWrapper';
 
 
-const AllTrips = ({ navigation, route }) => {
+function AllTrips({ navigation, route }) {
     const [nextRides, setNextRides] = useState([]);
     const currentTime = new Date();
 
@@ -30,7 +30,7 @@ const AllTrips = ({ navigation, route }) => {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
 
         updateRides();
@@ -51,7 +51,7 @@ const AllTrips = ({ navigation, route }) => {
         });
     }, []);
 
-    const updateRides =  function () {
+    const updateRides = function () {
         ridesAPI.pastRides(3, page).then(
             data => {
                 let newNextRides = nextRides;
@@ -65,9 +65,9 @@ const AllTrips = ({ navigation, route }) => {
         );
     };
 
-    const viewTrip = (id) => {
+    function viewTrip(id) {
         navigation.navigate('View Trip', { tripId: id });
-    };
+    }
 
     const { t } = useTranslation();
 
@@ -84,7 +84,7 @@ const AllTrips = ({ navigation, route }) => {
                         {driverElement && driverMainTextTo &&
                             <LinearGradient style={[styles.mt20, styles.w100, styles.br8]} colors={[palette.primary, palette.secondary]}>
                                 <TouchableOpacity style={[styles.rideView, styles.pv8, styles.ph16, styles.flexOne, styles.alignCenter, styles.justifyStart, styles.flexRow, styles.bgTransparent]}
-                                    onPress={ function () { viewTrip(driverTripId); }}>
+                                    onPress={function () { viewTrip(driverTripId); }}>
                                     <Text style={[styles.text, styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
                                     <View>
@@ -125,7 +125,7 @@ const AllTrips = ({ navigation, route }) => {
                                         gender={data.gender}
                                         date={nextRideDate}
                                         style={allTripsStyle.availableRide}
-                                        onPress={ function () { viewTrip(data.id); }} />
+                                        onPress={function () { viewTrip(data.id); }} />
                                 );
                             })
                         }

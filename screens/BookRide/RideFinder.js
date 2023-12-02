@@ -20,7 +20,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import Button from '../../components/Button';
 
 
-const RideFinder = ({ route, navigation }) => {
+function RideFinder({ route, navigation }) {
     const [availableRides, setAvailableRides] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -45,7 +45,7 @@ const RideFinder = ({ route, navigation }) => {
 
 
 
-    useEffect( function () {
+    useEffect(function () {
         fromRef.current.setCompletionText(textFrom);
         toRef.current.setCompletionText(textTo);
 
@@ -59,19 +59,15 @@ const RideFinder = ({ route, navigation }) => {
             );
     }, [fromLng, fromLat, toLng, toLat, date, genderChoice]);
 
-    const scrollToHour =  function () {
-        if(scrollViewRef.current && availableRides && availableRides.length > 0) {
+    const scrollToHour = function () {
+        if (scrollViewRef.current && availableRides && availableRides.length > 0) {
             const hour = new Date(availableRides[0].datetime).getHours();
 
-            scrollViewRef.current.scrollTo({x: hour * 90 * rem, y: 50, animated: true});
-        } else {
-            console.log("Falsch");
-            console.log(scrollViewRef.current);
-            console.log(availableRides.length);
+            scrollViewRef.current.scrollTo({ x: hour * 90 * rem, y: 50, animated: true });
         }
     }
 
-    const onClickRide = (rid, driver) => {
+    function onClickRide(rid, driver) {
         if (driver) {
             navigation.navigate('View Trip', { tripId: rid });
         } else {
@@ -81,11 +77,11 @@ const RideFinder = ({ route, navigation }) => {
 
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -95,7 +91,7 @@ const RideFinder = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const swapDestinations =  function () {
+    const swapDestinations = function () {
         const oldFromLng = fromLng;
         const oldFromLat = fromLat;
         const oldTextFrom = textFrom;
@@ -110,13 +106,13 @@ const RideFinder = ({ route, navigation }) => {
         setTextTo(oldTextFrom);
     }
 
-    const setLocationFrom = (loc, text) => {
+    function setLocationFrom(loc, text) {
         setTextFrom(text);
         setFromLng(loc.lng);
         setFromLat(loc.lat);
     }
 
-    const setLocationTo = (loc, text) => {
+    function setLocationTo(loc, text) {
         setTextTo(text);
         setToLng(loc.lng);
         setToLat(loc.lat);
@@ -143,7 +139,7 @@ const RideFinder = ({ route, navigation }) => {
                             Array.from({ length: 24 }).map((a, i) => {
                                 const hourNumber = (new Date(availableRides[0].datetime)).getHours();
 
-                                const getTimeFromIndex =  function () {
+                                const getTimeFromIndex = function () {
                                     let ampm = "AM";
                                     let time = i;
 

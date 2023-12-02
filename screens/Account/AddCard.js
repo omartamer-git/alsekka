@@ -21,8 +21,8 @@ import Visa from '../../svgs/visa';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 
-const AddCard = ({ navigation, route }) => {
-    const {t} = useTranslation();
+function AddCard({ navigation, route }) {
+    const { t } = useTranslation();
     const [cardholderName, setCardholderName] = useState("");
     const [cardNumber, setCardNumber] = useState("");
     const [cardType, setCardType] = useState("");
@@ -31,20 +31,20 @@ const AddCard = ({ navigation, route }) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
-    const {addCard} = useUserStore();
+    const { addCard } = useUserStore();
 
-    if(Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+    if (Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
@@ -84,7 +84,7 @@ const AddCard = ({ navigation, route }) => {
         });
     });
 
-    const changeCardNumber = (data) => {
+    function changeCardNumber(data) {
         let newCardNumber = "";
         if (data.length < 20) {
             const textInput = data.replace(/\D/g, '').replace(/(.{4})(?!$)/g, '$1 ');
@@ -108,13 +108,13 @@ const AddCard = ({ navigation, route }) => {
         return newCardNumber;
     }
 
-    const addNewCard =  function () {
+    function addNewCard() {
         setSubmitDisabled(true);
         addCard(cardNumber.replace(/\s+/g, ''), expiryDate, cardholderName).then(data => {
             navigation.goBack();
         }).catch(err => {
             setErrorMessage(err.response.data.error.message);
-        }).finally( function () {
+        }).finally(function () {
             setSubmitDisabled(false);
         });
     };
@@ -145,7 +145,7 @@ const AddCard = ({ navigation, route }) => {
 
 
     return (
-        <ScreenWrapper screenName={t('add_card')} navType="back" navAction={ function () { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('add_card')} navType="back" navAction={function () { navigation.goBack() }}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <LinearGradient colors={[palette.secondary, palette.accent]} style={addCardStyles.card}>
                     <Text adjustsFontSizeToFit
@@ -167,7 +167,7 @@ const AddCard = ({ navigation, route }) => {
                 <Formik
                     initialValues={{ cardNumberInput: '', cardHolderNameInput: '', expiryDateInput: '' }}
                     validationSchema={cardValidation}
-                    onSubmit={ function () { addNewCard() }}
+                    onSubmit={function () { addNewCard() }}
                 >
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>

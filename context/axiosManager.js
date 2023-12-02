@@ -32,14 +32,12 @@ const useAxiosManager = create((set) => {
             refreshToken: useAuthManager.getState().refreshToken,
         };
 
-        console.log("REFRESHED TOKEN");
 
         return publicAxios.post(`/v1/user/refreshToken`, data, {
             headers: {
                 'Content-Type': 'application/json',
             },
         }).then(async tokenRefreshResponse => {
-            console.log(tokenRefreshResponse);
             failedRequest.response.config.headers.Authorization =
                 'Bearer ' + tokenRefreshResponse.data.accessToken;
 

@@ -27,7 +27,7 @@ import { requestLocationPermission } from '../util/maps';
 
 const StatusBarManager = NativeModules;
 
-const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error = false }, ref) => {
+const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error = false }, ref) {
     const [text, setText] = useState('');
     const [predictions, setPredictions] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -53,7 +53,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
     }));
 
 
-    useEffect( function () {
+    useEffect(function () {
         setModalMap(false);
 
         Geolocation.getCurrentPosition(
@@ -75,24 +75,24 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
 
     }, [modalVisible]);
 
-    useEffect( function () {
+    useEffect(function () {
         if (inputLocRef.current && modalVisible) {
             inputLocRef.current.focus();
         }
     }, [modalVisible, inputLocRef.current]);
 
-    useEffect( function () {
+    useEffect(function () {
         if (modalVisible) {
             setText("");
         }
     }, [modalVisible]);
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -102,7 +102,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const handleTextChange = async (data) => {
+    async function handleTextChange(data) {
         if (data !== "") {
             placeIds = [];
             const pred = await googleMapsAPI.getPredictions(data);
@@ -113,7 +113,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
         }
     }
 
-    const handleRegionChange = async (region) => {
+    async function handleRegionChange(region) {
         const results = await googleMapsAPI.geocode(region.latitude, region.longitude);
 
         const description = results.formatted_address;
@@ -126,32 +126,30 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
 
     const debounceFn = useCallback(_debounce(handleTextChange, 300), []);
     const debounceRegion = useCallback(_debounce(handleRegionChange, 300), [])
-    const onChangeText = (data) => {
+    function onChangeText(data) {
         setText(data);
         debounceFn(data);
     }
 
-    const onChangeRegion = (region) => {
+    function onChangeRegion(region) {
         debounceRegion(region);
     };
 
-    const getLocationFromPlaceId = async (place_id) => {
+    async function getLocationFromPlaceId(place_id) {
         const loc = await googleMapsAPI.getLocationFromPlaceId(place_id);
         return loc;
     }
 
-    const moveInput = async (pred, exit = true) => {
+    async function moveInput(pred, exit = true) {
         try {
             setText(pred[0]);
             const loc = (await getLocationFromPlaceId(pred[1]));
-            console.log('1');
 
             const value = await AsyncStorage.getItem('recent_places');
             let currRecents = [];
             if (value != null) {
                 currRecents = JSON.parse(value);
             }
-            console.log('2');
             const index = currRecents.filter((subArr) => subArr[1] === pred[1]);
             if (index.length === 0) {
                 currRecents.unshift(pred);
@@ -164,7 +162,6 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
             }
 
             if (exit) {
-                console.log('5');
                 setModalVisible(false);
                 handleLocationSelect(
                     loc, pred[0]
@@ -304,7 +301,7 @@ const AutoComplete = forwardRef(({ style = {}, type, placeholder, handleLocation
                                     </View>
 
 
-                                    <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={function() { setModalMap(true) }}>
+                                    <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={function () { setModalMap(true) }}>
                                         <MaterialIcons name="place" size={16} color={palette.black} />
                                         <Text style={[styles2.text, styles2.ml10]}>{t('choose_location')}</Text>
                                     </TouchableOpacity>

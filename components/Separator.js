@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { rem, styles } from '../helper';
 
-const Separator = ({ text }) => {
+function Separator ({ text }) {
   return (
     <View style={styles2.container}>
       <View style={styles2.line} />

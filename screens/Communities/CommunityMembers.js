@@ -7,13 +7,13 @@ import Button from "../../components/Button";
 import { useTranslation } from "react-i18next";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
-const CommunityMembers = ({ route, navigation }) => {
+function CommunityMembers({ route, navigation }) {
     const { communityId } = route.params;
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         getCommunityMemberRequests(communityId).then(members => {
             setMembers(members);
@@ -21,16 +21,16 @@ const CommunityMembers = ({ route, navigation }) => {
         });
     }, []);
 
-    const acceptMember = (id) => {
+    function acceptMember(id) {
         setSubmitDisabled(true);
-        acceptCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally( function () {
+        acceptCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally(function () {
             setSubmitDisabled(false);
         });
     };
 
-    const rejectMember = (id) => {
+    function rejectMember(id) {
         setSubmitDisabled(true);
-        rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally( function () {
+        rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally(function () {
             setSubmitDisabled(false);
         });
     };

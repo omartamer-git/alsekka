@@ -21,7 +21,7 @@ import { config } from '../../config';
 import { palette, styles } from '../../helper';
 
 
-const LoginScreen = ({ route, navigation }) => {
+function LoginScreen({ route, navigation }) {
   const { t } = useTranslation();
 
   const [errorMessage, setErrorMessage] = useState(null);
@@ -30,7 +30,7 @@ const LoginScreen = ({ route, navigation }) => {
   const formRef = useRef(null);
   // const objForm = new Form();
 
-  const handleContinueClick = (phoneNum, password) => {
+  function handleContinueClick(phoneNum, password) {
     if (password.length < config.PASSWORD_MIN_LENGTH) {
       setPasswordError(true);
       returnAfterValidation = true;
@@ -46,7 +46,6 @@ const LoginScreen = ({ route, navigation }) => {
         userStore.getMobileWallets();
 
         if (!data.verified) {
-          console.log("navigating to otp");
           navigation.navigate('Otp',
             {
               uid: data.id,
@@ -57,7 +56,7 @@ const LoginScreen = ({ route, navigation }) => {
       }).catch(err => {
         console.log(err);
         setErrorMessage(err.response.data.error.message);
-      }).finally( function () {
+      }).finally(function () {
         setSubmitDisabled(false);
       });
   };
@@ -86,12 +85,12 @@ const LoginScreen = ({ route, navigation }) => {
 
   // }, []);
 
-  const onFocusEffect = React.useCallback( function () {
+  const onFocusEffect = React.useCallback(function () {
     if (Platform.OS === 'android') return;
     // This should be run when screen gains focus - enable the module where it's needed
     AvoidSoftInput.setEnabled(true);
     AvoidSoftInput.setShouldMimicIOSBehavior(true);
-    return  function () {
+    return function () {
       // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
       AvoidSoftInput.setEnabled(false);
       AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -103,7 +102,7 @@ const LoginScreen = ({ route, navigation }) => {
   return (
     <View style={styles.backgroundStyle}>
       <SafeAreaView>
-        <HeaderView navType="back" borderVisible={false} action={ function () { navigation.goBack() }}>
+        <HeaderView navType="back" borderVisible={false} action={function () { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
             <Text style={[styles.text, styles.locale]}>EN</Text>
@@ -169,7 +168,7 @@ const LoginScreen = ({ route, navigation }) => {
 
 
               <TouchableWithoutFeedback
-                onPress={ function () {
+                onPress={function () {
                   navigation.navigate('Forgot Password', { phone: formRef.current.values.phoneInput });
                 }}
                 style={[styles.justifyCenter, styles.alignCenter, styles.w100]}>
@@ -177,7 +176,7 @@ const LoginScreen = ({ route, navigation }) => {
               </TouchableWithoutFeedback>
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
-                <TouchableWithoutFeedback onPress={ function () {
+                <TouchableWithoutFeedback onPress={function () {
                   navigation.navigate('Sign Up');
                 }} style={[styles.justifyEnd, styles.alignCenter]}>
                   <Text style={[styles.text, styles.dark, styles.textCenter]}>

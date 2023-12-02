@@ -8,7 +8,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
-const HeaderView = ({ screenName, navType, action, children, borderVisible=true, style={} }) => {
+function HeaderView({ screenName, navType, action, children, borderVisible = true, style = {} }) {
     const styles2 = StyleSheet.create({
         viewStyle: {
             width: '100%',
@@ -24,13 +24,13 @@ const HeaderView = ({ screenName, navType, action, children, borderVisible=true,
         },
         children: {
             alignItems: 'flex-end',
-            flex:1,
+            flex: 1,
         }
     });
 
-    
+
     let modifierStyles = {};
-    if(borderVisible) {
+    if (borderVisible) {
         modifierStyles = { borderBottomWidth: 1 };
     } else {
         modifierStyles = { borderBottomWidth: 0 };
@@ -41,7 +41,7 @@ const HeaderView = ({ screenName, navType, action, children, borderVisible=true,
                 {
                     navType &&
                     (
-                        <TouchableOpacity style={{width: 44 * rem, height: '100%', justifyContent: 'center' }} onPress={action}>
+                        <TouchableOpacity style={{ width: 44 * rem, height: '100%', justifyContent: 'center' }} onPress={action}>
                             {
                                 (navType == "close" && <MaterialIcons name="close" size={22} color={palette.white} />) ||
                                 (navType == "back" && <MaterialIcons name={I18nManager.isRTL ? "arrow-forward" : "arrow-back"} size={22} color={palette.white} />) ||
@@ -51,7 +51,7 @@ const HeaderView = ({ screenName, navType, action, children, borderVisible=true,
                     )
                 }
             </View>
-            
+
             <View style={{ flex: 1, alignItems: 'center', paddingEnd: navType ? 44 * rem : 0 }}>
                 {screenName && <View style={styles2.screenName}><Text style={[styles.text, { textAlign: 'center', color: palette.white, fontWeight: '600', fontSize: 16 }]}>{screenName}</Text></View>}
             </View>

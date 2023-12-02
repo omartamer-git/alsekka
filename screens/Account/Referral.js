@@ -21,7 +21,7 @@ import { config } from '../../config';
 import Clipboard from '@react-native-community/clipboard';
 import { useTranslation } from 'react-i18next';
 
-const List = ({ icon, headline, text }) => {
+function List({ icon, headline, text }) {
     return (
         <View style={[styles.flexRow, styles.w100, styles.mt15]}>
             <View>
@@ -35,12 +35,12 @@ const List = ({ icon, headline, text }) => {
     )
 };
 
-const Referral = ({ navigation, route }) => {
+function Referral({ navigation, route }) {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
     const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 50 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
-    const onShare = async  function () {
+    const onShare = async function () {
         try {
             const result = await Share.share({
                 message: shareMsg
@@ -59,7 +59,7 @@ const Referral = ({ navigation, route }) => {
         }
     };
 
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={() => navigation.goBack()}>
@@ -74,10 +74,10 @@ const Referral = ({ navigation, route }) => {
 
                 <View style={[styles.flexOne, styles.justifyEnd, styles.w100]}>
                     <TouchableWithoutFeedback
-                        onPress={ function () {
+                        onPress={function () {
                             Clipboard.setString(shareMsg)
                             setCopied(true);
-                            setTimeout( function () {
+                            setTimeout(function () {
                                 setCopied(false);
                             }, 3000)
                         }}

@@ -27,7 +27,7 @@ import useAxiosManager from '../../context/axiosManager';
 import { useTranslation } from 'react-i18next';
 import useAppManager from '../../context/appManager';
 
-const Account = ({ route, navigation }) => {
+function Account({ route, navigation }) {
     const { t } = useTranslation();
     const [ratings, setRatings] = useState(null);
     const [editNameModalVisible, setEditNameModalVisible] = useState(false);
@@ -47,12 +47,12 @@ const Account = ({ route, navigation }) => {
     const { authAxios } = useAxiosManager();
     const [termsModalVisible, setTermsModalVisible] = useState(false);
     const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
-    const logout =  function () {
+    const logout = function () {
         authManager.logout();
         userStore.reset();
     };
 
-    useEffect( function () {
+    useEffect(function () {
         const fullStars = Math.floor(userStore.rating);
         const halfStars = Math.ceil(userStore.rating) - Math.abs(userStore.rating);
 
@@ -66,15 +66,14 @@ const Account = ({ route, navigation }) => {
         }
 
         setRatings(ratingsItems);
-        console.log(userStore);
     }, []);
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -100,8 +99,8 @@ const Account = ({ route, navigation }) => {
         ).required(t('error_required'))
     });
 
-    const saveEditName = (firstNameInput, lastNameInput) => {
-        userStore.editName(firstNameInput, lastNameInput).then( function () {
+    function saveEditName(firstNameInput, lastNameInput) {
+        userStore.editName(firstNameInput, lastNameInput).then(function () {
             setEditNameModalVisible(false);
         }).catch(err => {
             console.log(err);
@@ -109,23 +108,23 @@ const Account = ({ route, navigation }) => {
         })
     };
 
-    const saveEditEmail = (emailInput) => {
+    function saveEditEmail(emailInput) {
         userStore.editEmail(emailInput).then(data => {
             setEditEmailModalVisible(false);
         }).catch(err => {
             setEmailError(err.response.data.error.message);
         });
     };
-    const saveEditPhone = (phoneInput) => {
-        userStore.editPhone(phoneInput).then( function () {
+    function saveEditPhone(phoneInput) {
+        userStore.editPhone(phoneInput).then(function () {
             setEditPhoneModalVisible(false);
         }).catch(err => {
             setPhoneError(err.response.data.error.message);
         });
     };
 
-    const confirmDelete =  function () {
-        userStore.deleteAccount(deletePassword).then( function () {
+    function confirmDelete() {
+        userStore.deleteAccount(deletePassword).then(function () {
             setDeleteAccountModalVisible(false);
             setDeleteConfirmationVisible(true);
         }).catch(err => {
@@ -134,7 +133,7 @@ const Account = ({ route, navigation }) => {
         })
     }
 
-    const hideDeleteConfirmation =  function () {
+    function hideDeleteConfirmation() {
         setDeleteConfirmationVisible(false);
         logout();
     }
@@ -143,7 +142,7 @@ const Account = ({ route, navigation }) => {
     const imagePickerOptions = { title: 'New Profile Picture', multiple: false, mediaType: 'photo', quality: 0.75, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
 
 
-    const onClickUpload = async (e) => {
+    async function onClickUpload(e) {
         const response = await launchImageLibrary(imagePickerOptions);
         if (!response.didCancel && !response.error) {
             userStore.uploadProfilePicture(response);
@@ -171,22 +170,22 @@ const Account = ({ route, navigation }) => {
                             {ratings}
                         </View>
                         <View style={accountStyles.acctButtonsView}>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={ function () { navigation.navigate('Chats List') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Chats List') }}>
                                 <MaterialIcons name="message" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={ function () { navigation.navigate('Wallet') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet') }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('wallet')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={ function () { navigation.navigate('All Trips') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('All Trips') }}>
                                 <MaterialIcons name="history" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('trips')}</Text>
                             </TouchableOpacity>
                         </View>
 
                         <View style={{ width: '100%' }}>
-                            <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={ function () { navigation.navigate('Manage Cars') }} />
+                            <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={function () { navigation.navigate('Manage Cars') }} />
                             <CustomTextInput
                                 value={userStore.firstName + " " + userStore.lastName}
                                 iconLeft="badge"
@@ -212,13 +211,13 @@ const Account = ({ route, navigation }) => {
 
                         {!referralsDisabled &&
                             <>
-                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={ function () { navigation.navigate('Referral') }} />
-                                <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={ function () { navigation.navigate('Add Referral') }} />
+                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={function () { navigation.navigate('Referral') }} />
+                                <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={function () { navigation.navigate('Add Referral') }} />
                             </>
                         }
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
-                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={ function () { setTermsModalVisible(true) }} />
-                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('delete_account')}`} onPress={ function () { setDeleteAccountModalVisible(true) }} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={function () { setTermsModalVisible(true) }} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
                     </View>
                 </ScrollView>
             </ScreenWrapper>
@@ -288,8 +287,8 @@ const Account = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setTermsModalVisible(false)} modalVisible={termsModalVisible}>
                 <View style={[styles.w100, styles.mt10]}>
-                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={ function () { Linking.openURL('https://seaats.app/terms.pdf') }} />
-                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={ function () { Linking.openURL('https://seaats.app/policy.pdf') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={function () { Linking.openURL('https://seaats.app/terms.pdf') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={function () { Linking.openURL('https://seaats.app/policy.pdf') }} />
                 </View>
             </BottomModal>
 

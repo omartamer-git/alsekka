@@ -23,7 +23,7 @@ import { addSecondsToDate, customMapStyle, getDateTime, getDirections, palette, 
 import ScreenWrapper from '../ScreenWrapper';
 
 
-const ViewTrip = ({ route, navigation }) => {
+function ViewTrip({ route, navigation }) {
     const { tripId } = route.params;
     const [tripDetails, setTripDetails] = useState(null);
     const [markerFrom, setMarkerFrom] = useState(null);
@@ -46,7 +46,7 @@ const ViewTrip = ({ route, navigation }) => {
 
     const mapViewRef = useRef(null);
 
-    useEffect( function () {
+    useEffect(function () {
         Geolocation.getCurrentPosition(
             info => {
                 setLocation({
@@ -60,7 +60,6 @@ const ViewTrip = ({ route, navigation }) => {
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
-                console.log(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
                 setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
@@ -87,7 +86,7 @@ const ViewTrip = ({ route, navigation }) => {
 
     }, []);
 
-    useEffect( function () {
+    useEffect(function () {
         const currDate = new Date();
         const objDateTime = objDate.getTime();
         const currTime = currDate.getTime();
@@ -105,25 +104,25 @@ const ViewTrip = ({ route, navigation }) => {
         }
     }, [objDate]);
 
-    const fitMarkers =  function () {
+    const fitMarkers = function () {
         if (mapViewRef) {
             mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
         }
     };
 
-    const cancelRide =  function () {
+    const cancelRide = function () {
         ridesAPI.cancelRide(tripId).then(data => {
             setCancelRideModalVisible(false);
             setTripStatus('CANCELLED');
         });
     };
 
-    const cancelPassenger =  function () {
+    const cancelPassenger = function () {
         setCancelModalVisible(false);
         ridesAPI.cancelPassenger(tripId).then(() => setCancelledModalVisible(true));
     };
 
-    const startTrip =  function () {
+    const startTrip = function () {
         ridesAPI.startRide(tripId).then(data => {
             if (data) {
                 setTripStatus('ONGOING');
@@ -131,11 +130,11 @@ const ViewTrip = ({ route, navigation }) => {
         });
     };
 
-    const manageTrip =  function () {
+    const manageTrip = function () {
         navigation.navigate('Manage Trip', { tripId: tripId });
     };
 
-    const goToChat = (receiver) => {
+    function goToChat(receiver) {
         navigation.navigate('Chat', { receiver: receiver });
     };
 
@@ -271,7 +270,7 @@ const ViewTrip = ({ route, navigation }) => {
 
                                         {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={t('manage_trip')} textColor={palette.white} onPress={manageTrip} />}
 
-                                        {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={ function () { }} />}
+                                        {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={function () { }} />}
 
                                     </View>
                                 }
@@ -323,7 +322,7 @@ const ViewTrip = ({ route, navigation }) => {
                 </View>
             </BottomModal>
 
-            <BottomModal modalVisible={cancelledModalVisible} onHide={ function () { setCancelledModalVisible(false); navigation.goBack() }}>
+            <BottomModal modalVisible={cancelledModalVisible} onHide={function () { setCancelledModalVisible(false); navigation.goBack() }}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
                     <Text style={[styles.text, styles.headerText3, styles.mv5]}>Ride Cancelled</Text>
                     <Text style={[styles.text, styles.textCenter]}>Your ride has been canceled. If you have any concerns or need assistance, feel free to reach out to us. Safe travels and thank you for using seaats.</Text>

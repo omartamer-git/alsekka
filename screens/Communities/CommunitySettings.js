@@ -13,7 +13,7 @@ const { styles, containerStyle, rem, palette } = require("../../helper");
 const { default: ScreenWrapper } = require("../ScreenWrapper");
 import * as Yup from 'yup';
 
-const CommunitySettings = ({ route, navigation }) => {
+function CommunitySettings({ route, navigation }) {
     const {
         communityId,
         communityName,
@@ -37,17 +37,16 @@ const CommunitySettings = ({ route, navigation }) => {
         storageOptions: { skipBackup: true, path: 'images' },
     };
 
-    const openImagePicker = async (e) => {
+    async function openImagePicker(e) {
         const response = await launchImageLibrary(imagePickerOptions);
         if (!response.didCancel && !response.error) {
             setCommunityPhoto(response);
-            console.log(response);
         }
     }
 
-    const handleSubmit = (description, privacy, joinQuestion) => {
+    function handleSubmit(description, privacy, joinQuestion) {
         setSubmitDisabled(true);
-        updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack()).catch(console.error).finally( function () {
+        updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack()).catch(console.error).finally(function () {
             setSubmitDisabled(false);
         });
     };

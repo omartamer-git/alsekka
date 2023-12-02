@@ -38,7 +38,7 @@ const useUserStore = create((set) => ({
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
     setGender: (gender) => set((state) => ({ gender: gender })),
 
-    reset: async  function () {
+    reset: async function () {
         set(
             (state) => (
                 {
@@ -61,7 +61,7 @@ const useUserStore = create((set) => ({
         )
     },
 
-    login: async (phoneNum, password) => {
+    login: async function (phoneNum, password) {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
 
@@ -96,12 +96,11 @@ const useUserStore = create((set) => ({
             }),
         );
 
-        console.log(data);
 
         return data;
     },
 
-    userInfo: async  function () {
+    userInfo: async function () {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/userinfo`, {
@@ -121,9 +120,8 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    linkDevice: async (deviceToken) => {
+    linkDevice: async function (deviceToken) {
         try {
-            console.log(deviceToken);
             const body = {
                 deviceToken: deviceToken
             };
@@ -134,12 +132,12 @@ const useUserStore = create((set) => ({
                     'Content-Type': 'application/json',
                 },
             });
-        } catch(e) {
-            console.log(deviceToken);
+        } catch (e) {
+            console.log(e);
         }
     },
 
-    createAccount: async (firstName, lastName, phoneNum, email, password, gender) => {
+    createAccount: async function (firstName, lastName, phoneNum, email, password, gender) {
         const url = `/v1/user/createaccount`;
         const params = {
             fname: firstName,
@@ -159,7 +157,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    deleteAccount: async (password) => {
+    deleteAccount: async function (password) {
         const axiosManager = useAxiosManager.getState();
         const body = { password: password };
         const response = await axiosManager.authAxios.post('/v1/user/deleteuser', body, {
@@ -171,7 +169,7 @@ const useUserStore = create((set) => ({
         return response;
     },
 
-    getAvailableCards: async  function () {
+    getAvailableCards: async function () {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/wallet`);
 
@@ -180,7 +178,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    getBankAccounts: async  function () {
+    getBankAccounts: async function () {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/banks`);
 
@@ -189,7 +187,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    getMobileWallets: async  function () {
+    getMobileWallets: async function () {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/mobilewallets`);
 
@@ -198,7 +196,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    editName: async (firstName, lastName) => {
+    editName: async function (firstName, lastName) {
         const body = {
             firstName: firstName,
             lastName: lastName,
@@ -216,7 +214,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    editEmail: async (email) => {
+    editEmail: async function (email) {
         const body = {
             email: email,
         };
@@ -233,7 +231,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    editPhone: async (phone) => {
+    editPhone: async function (phone) {
         const body = {
             phone: phone,
         };
@@ -251,7 +249,7 @@ const useUserStore = create((set) => ({
 
     },
 
-    addBankAccount: async (fullName, bankName, accNumber, swiftCode) => {
+    addBankAccount: async function (fullName, bankName, accNumber, swiftCode) {
 
         const body = {
             fullName: fullName,
@@ -274,7 +272,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    addMobileWallet: async (phone) => {
+    addMobileWallet: async function (phone) {
         const body = {
             phone: phone,
         };
@@ -291,25 +289,21 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    getOtp: async (phone) => {
+    getOtp: async function (phone) {
         const url = `/v1/user/verify`;
 
         const axiosManager = useAxiosManager.getState();
-        console.log('get otp');
         const otpLink = await axiosManager.publicAxios.get(url, {
             params: {
                 phone: phone
             }
         });
 
-        console.log(otpLink);
-        console.log('waw');
-
         const waUri = otpLink.data;
         return waUri;
     },
 
-    isVerified: async (phone) => {
+    isVerified: async function (phone) {
         const url = `/v1/user/isverified`;
 
         const axiosManager = useAxiosManager.getState();
@@ -318,7 +312,6 @@ const useUserStore = create((set) => ({
                 phone: phone
             }
         });
-        console.log(isVerified.data);
 
         if (isVerified.data.verified == true) {
             set(isVerified.data);
@@ -328,7 +321,7 @@ const useUserStore = create((set) => ({
         }
     },
 
-    sendOtp: async (phone, otp) => {
+    sendOtp: async function (phone, otp) {
         const url = `/v1/user/verify`;
 
         const axiosManager = useAxiosManager.getState();
@@ -347,7 +340,7 @@ const useUserStore = create((set) => ({
         return true;
     },
 
-    uploadProfilePicture: async (imageFile) => {
+    uploadProfilePicture: async function (imageFile) {
         const image = imageFile.assets[0];
         const formData = new FormData();
         formData.append('file', {
@@ -368,7 +361,7 @@ const useUserStore = create((set) => ({
         set(data);
     },
 
-    sendOtpSecurity: async (phone, otp) => {
+    sendOtpSecurity: async function (phone, otp) {
         const url = `/v1/user/verifysecurity`;
 
         const axiosManager = useAxiosManager.getState();
@@ -387,10 +380,8 @@ const useUserStore = create((set) => ({
         return data.token;
     },
 
-    resetPassword: async (token, newPassword) => {
+    resetPassword: async function (token, newPassword) {
         const url = `/v1/user/changepassword`;
-
-        console.log(token);
 
         const body = {
             token: token,
@@ -408,7 +399,7 @@ const useUserStore = create((set) => ({
         return response;
     },
 
-    addCard: async (cardNumber, cardExpiry, cardholderName) => {
+    addCard: async function (cardNumber, cardExpiry, cardholderName) {
         const body = {
             cardholderName: cardholderName,
             cardNumber: cardNumber,
@@ -426,7 +417,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    addReferral: async (referralCode) => {
+    addReferral: async function (referralCode) {
         const adjustedReferralCode = parseInt(referralCode.replace(config.REFERRAL_PREFIX, "")) - config.REFERRAL_INCREMENT;
         const body = {
             referralCode: adjustedReferralCode
@@ -442,7 +433,7 @@ const useUserStore = create((set) => ({
         return response;
     },
 
-    sendWithdrawalRequest: async (paymentMethodType, paymentMethodId) => {
+    sendWithdrawalRequest: async function (paymentMethodType, paymentMethodId) {
         const body = {
             paymentMethodType,
             paymentMethodId

@@ -3,13 +3,13 @@ import { I18nManager, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWi
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
-const CustomTextInput = ({ value,
+function CustomTextInput({ value,
     onChangeText, placeholder, style,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing,
-    onKeyPress, textStyles, onBlur, error }) => {
+    onKeyPress, textStyles, onBlur, error }) {
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
 
@@ -17,13 +17,12 @@ const CustomTextInput = ({ value,
         inputRef = useRef(null);
     }
 
-    const onPressIn_ = (e) => {
+    function onPressIn_(e) {
         if (onFocus) {
             onFocus();
         }
 
         if (role === "button") {
-            console.log(onPressIn.toString());
             onPressIn(e);
             inputRef.current.blur();
             return;
@@ -48,7 +47,7 @@ const CustomTextInput = ({ value,
                     placeholder={placeholder}
                     value={value}
                     keyboardType={keyboardType}
-                    editable={role==="button" ? true : editable}
+                    editable={role === "button" ? true : editable}
                     onChangeText={onChangeText}
                     selectTextOnFocus={selectTextOnFocus}
                     secureTextEntry={secureTextEntry}
@@ -82,7 +81,7 @@ CustomTextInput.defaultProps = {
     editable: true,
     selectTextOnFocus: false,
     secureTextEntry: false,
-    onPressIn:  function () { },
+    onPressIn: function () { },
 };
 
 const styles2 = StyleSheet.create({

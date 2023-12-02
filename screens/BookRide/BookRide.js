@@ -33,7 +33,7 @@ import * as googleMapsAPI from '../../api/googlemaps';
 import { decodePolyline } from '../../util/maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const BookRide = ({ route, navigation }) => {
+function BookRide({ route, navigation }) {
     const { rideId } = route.params;
     const { t } = useTranslation();
 
@@ -98,7 +98,7 @@ const BookRide = ({ route, navigation }) => {
     const { id, balance, availableCards } = useUserStore();
     const { cardsEnabled, passengerFee } = useAppManager();
 
-    useEffect( function () {
+    useEffect(function () {
         Geolocation.getCurrentPosition(
             info => {
                 setLocation({
@@ -157,37 +157,36 @@ const BookRide = ({ route, navigation }) => {
         });
     }, []);
 
-    const hideRideBooked =  function () {
+    const hideRideBooked = function () {
         setRideBookedModalVisible(false);
         navigation.navigate('Find a Ride');
     };
 
-    const bookRide = (e) => {
+    function bookRide(e) {
         setSubmitDisabled(true);
         const voucherId = voucher ? voucher.id : null;
 
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then( function () {
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then(function () {
             setRideBookedModalVisible(true);
         }).catch((e) => {
             console.log(e.stack);
-        }).finally( function () {
+        }).finally(function () {
             StoreReview.requestReview();
             setSubmitDisabled(false);
         });
     }
 
-    const choosePayment = (paymentMethod) => {
+    function choosePayment(paymentMethod) {
         setPaymentMethodModalVisible(false);
         setPaymentMethod(paymentMethod);
     };
 
-    const verifyVoucher =  function () {
+    const verifyVoucher = function () {
         ridesAPI.tryVerifyVoucher(voucherText).then((data) => {
             voucherDiscount.current = Math.min(data.maxValue, (data.type === "PERCENTAGE" ? ((data.value / 100) * pricePerSeat) : data.value));
             setVoucherModalVisible(false);
             setVoucherErrorMessage("");
             setVoucher(data);
-            console.log(data);
             setUseVoucherText(t('voucher_applied') + " - " + voucherText)
         }).catch((err) => {
             console.error(err);
@@ -195,18 +194,18 @@ const BookRide = ({ route, navigation }) => {
         });
     };
 
-    const onReadyDirectionsToPickup = ({ distance, duration }) => {
+    function onReadyDirectionsToPickup({ distance, duration }) {
         setDistanceToPickup(distance);
         setDurationToPickup(duration);
     };
 
-    const onReadyTripDirections = ({ distance, duration }) => {
+    function onReadyTripDirections({ distance, duration }) {
         setDistanceOfTrip(distance);
         setDurationToPickup(duration);
     };
 
 
-    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    function calculateDistance(lat1, lon1, lat2, lon2) {
         // This function should calculate the distance between two coordinates.
         // You can use Haversine formula or any suitable method for your use case.
         // There are libraries available to calculate distance based on coordinates.
@@ -230,19 +229,18 @@ const BookRide = ({ route, navigation }) => {
         return distance;
     };
 
-    const isPointInsideCircle = (point, circleCenter, radius) => {
+    function isPointInsideCircle(point, circleCenter, radius) {
         const distance = calculateDistance(point.lat, point.lng, circleCenter.latitude, circleCenter.longitude);
 
         return distance <= radius;
     };
 
-    const handleRegionChange = async (region) => {
+    async function handleRegionChange(region) {
         const results = await googleMapsAPI.geocode(region.latitude, region.longitude);
 
         const description = results.formatted_address;
         const placeId = results.place_id;
 
-        // console.log(results);
 
         setPickupText(description);
         setPlaceId(placeId);
@@ -250,16 +248,14 @@ const BookRide = ({ route, navigation }) => {
 
     const debounceRegion = useCallback(_debounce(handleRegionChange, 300), [])
 
-    const onChangeRegion = (region) => {
+    function onChangeRegion(region) {
         debounceRegion(region);
     };
 
 
 
-    const choosePickupLocation = async  function () {
+    const choosePickupLocation = async function () {
         const loc = await googleMapsAPI.getLocationFromPlaceId(placeId);
-        // console.log(loc);
-        // console.log(markerFrom);
         if (isPointInsideCircle(loc, markerFrom, 5000)) {
             setPickupLocation(loc);
             setModalMapOpen(false);
@@ -269,8 +265,7 @@ const BookRide = ({ route, navigation }) => {
 
     const pickupMapRef = useRef(null);
 
-    const showPickupMapMarker =  function () {
-        console.log(pickupMapRef.current);
+    const showPickupMapMarker = function () {
         pickupMapRef.current.fitToCoordinates([markerFrom])
     }
 
@@ -281,7 +276,7 @@ const BookRide = ({ route, navigation }) => {
 
     return (
         <>
-            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={ function () { navigation.goBack() }}>
+            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={function () { navigation.goBack() }}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
                     <MapView
                         style={[styles.mapStyle]}
@@ -323,7 +318,7 @@ const BookRide = ({ route, navigation }) => {
                                         </View>
                                     </View>
                                     <View style={styles.alignEnd}>
-                                        <TouchableOpacity onPress={ function () { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
+                                        <TouchableOpacity onPress={function () { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
                                             <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
                                         </TouchableOpacity>
                                     </View>
@@ -349,10 +344,10 @@ const BookRide = ({ route, navigation }) => {
                                         <Text style={[styles.text, styles.inputText]}>Do you want to be picked up? (+{pickupPrice} EGP)</Text>
 
                                         <View style={[styles.flexRow, styles.w100, styles.mv10]}>
-                                            <TouchableOpacity onPress={ function () { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
+                                            <TouchableOpacity onPress={function () { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
                                                 <Text style={[styles.text, styles.white, styles.bold]}>Yes</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity onPress={ function () { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
+                                            <TouchableOpacity onPress={function () { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
                                                 <Text style={[styles.text, styles.white, styles.bold]}>No</Text>
                                             </TouchableOpacity>
                                         </View>
@@ -537,7 +532,7 @@ const BookRide = ({ route, navigation }) => {
 
             {modalMapOpen &&
                 <View style={[styles.defaultPadding, { position: 'absolute', top: safeAreaInsets.top + 50, left: 0, width: '100%', zIndex: 8 }]}>
-                    <TouchableOpacity style={[styles.bgWhite, styles.shadow, styles.fullCenter, {width: 55 * rem, height: 55 * rem, borderRadius: 55/2 * rem}]} onPress={() => setModalMapOpen(false)}>
+                    <TouchableOpacity style={[styles.bgWhite, styles.shadow, styles.fullCenter, { width: 55 * rem, height: 55 * rem, borderRadius: 55 / 2 * rem }]} onPress={() => setModalMapOpen(false)}>
                         <MaterialIcons name="arrow-back-ios" size={16} />
                     </TouchableOpacity>
                 </View>

@@ -16,7 +16,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
 
-const Otp = ({ route, navigation }) => {
+function Otp({ route, navigation }) {
     const firstName = route.params?.firstName;
     const lastName = route.params?.lastName;
     const phone = route.params?.phone;
@@ -32,12 +32,12 @@ const Otp = ({ route, navigation }) => {
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
 
-    const clockTick =  function () {
+    const clockTick = function () {
         isVerified(phone).then(response => {
             if (response === true) {
                 if (onVerify === 'login') {
                     createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
-                        login(phone, password).then( function () {
+                        login(phone, password).then(function () {
                             navigation.popToTop();
                             navigation.replace("LoggedIn", {
                                 screen: 'TabScreen',
@@ -53,8 +53,6 @@ const Otp = ({ route, navigation }) => {
                     })
                 } else {
                     navigation.popToTop();
-                    console.log('hello token')
-                    console.log(token);
                     navigation.replace("Change Password", { token });
                 }
             }
@@ -67,23 +65,20 @@ const Otp = ({ route, navigation }) => {
     const [time, setTime] = useState(0);
     const [triggerCountdown, setTriggerCountdown] = useState(false);
 
-    useEffect( function () {
-        if(!triggerCountdown) return;
-        const timer = setTimeout( function () {
+    useEffect(function () {
+        if (!triggerCountdown) return;
+        const timer = setTimeout(function () {
             clockTick();
             setTime(time + 1);
         }, 5000);
-        return  function () {
+        return function () {
             clearTimeout(timer);
         };
     }, [triggerCountdown, time])
 
 
-    const resendOtp =  function () {
-        console.log('hello ' + phone);
+    const resendOtp = function () {
         getOtp(phone).then((response) => {
-            console.log('resp');
-            console.log(response);
             setUri(response.uri);
             setToken(response.token);
             setTriggerCountdown(true);
@@ -93,20 +88,20 @@ const Otp = ({ route, navigation }) => {
         });
     };
 
-    const openWhatsapp =  function () {
+    const openWhatsapp = function () {
         Linking.openURL(uri);
     };
 
-    useEffect( function () {
+    useEffect(function () {
         resendOtp();
     }, [])
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -119,7 +114,7 @@ const Otp = ({ route, navigation }) => {
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={ function () { navigation.goBack() }} lip={false}>
+        <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={function () { navigation.goBack() }} lip={false}>
             <View style={[styles.bgPrimary, styles.w100, styles.p24]}>
                 <Text style={[styles.text, styles.white, styles.bold, styles.font28]}>
                     {t('verification_code')}

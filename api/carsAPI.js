@@ -3,7 +3,7 @@ import { SERVER_URL } from '../helper';
 import useUserStore from './accountAPI';
 
 
-export const getUsableCars = async (approved = 1) => {
+export const getUsableCars = async function (approved = 1) {
     const uid = useUserStore.getState().id;
     const axiosManager = useAxiosManager.getState();
     const response = await axiosManager.authAxios.get(`/v1/car/cars?uid=${uid}` + (approved === 1 ? '&approved=1' : ''));
@@ -11,7 +11,7 @@ export const getUsableCars = async (approved = 1) => {
     return data;
 };
 
-export const newCar = async (newCarBody) => {
+export const newCar = async function (newCarBody) {
     try {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.post(`/v1/car/newcar`, newCarBody, {

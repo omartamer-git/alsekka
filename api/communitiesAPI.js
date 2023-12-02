@@ -2,7 +2,7 @@ import useAxiosManager from '../context/axiosManager';
 import useUserStore from './accountAPI';
 
 
-export const getCommunities = async  function () {
+export const getCommunities = async function () {
     const url = `/v1/community/communities`;
 
     try {
@@ -15,7 +15,7 @@ export const getCommunities = async  function () {
     }
 };
 
-export const communitiesFeed = async (communityId, page=1) => {
+export const communitiesFeed = async function (communityId, page = 1) {
     const url = `/v1/community/myfeed`;
     const uid = useUserStore.getState().id;
     const params = {
@@ -33,7 +33,7 @@ export const communitiesFeed = async (communityId, page=1) => {
     }
 };
 
-export const myCommunities = async  function () {
+export const myCommunities = async function () {
     const url = `/v1/community/mycommunities`;
     const uid = useUserStore.getState().id;
 
@@ -43,7 +43,7 @@ export const myCommunities = async  function () {
     return data;
 }
 
-export const searchCommunities = async (name) => {
+export const searchCommunities = async function (name) {
     const url = `/v1/community/searchcommunities`;
     const params = {
         name: name
@@ -59,7 +59,7 @@ export const searchCommunities = async (name) => {
     }
 };
 
-export const getCommunityDetails = async (communityId) => {
+export const getCommunityDetails = async function (communityId) {
     const url = `/v1/community/communitydetails`;
     const uid = useUserStore.getState().id;
     const params = {
@@ -77,7 +77,7 @@ export const getCommunityDetails = async (communityId) => {
     }
 };
 
-export const joinCommunity = async (communityId, answer) => {
+export const joinCommunity = async function (communityId, answer) {
     const uid = useUserStore.getState().id;
     const url = `/v1/community/joincommunity`;
     const body = {
@@ -96,7 +96,7 @@ export const joinCommunity = async (communityId, answer) => {
     return data;
 };
 
-export const updateCommunity = async (communityId, description, privacy, pictureFile, joinQuestion) => {
+export const updateCommunity = async function(communityId, description, privacy, pictureFile, joinQuestion) {
     const url = `/v1/community/updatecommunity`;
     const picture = pictureFile ? pictureFile.assets[0] : null;
 
@@ -128,7 +128,7 @@ export const updateCommunity = async (communityId, description, privacy, picture
     }
 };
 
-export const createCommunity = async (name, description, privacy, pictureFile, joinQuestion = null) => {
+export const createCommunity = async function(name, description, privacy, pictureFile, joinQuestion = null) {
     const url = `/v1/community/createcommunity`;
     const picture = pictureFile.assets[0];
 
@@ -156,7 +156,7 @@ export const createCommunity = async (name, description, privacy, pictureFile, j
     }
 };
 
-export const leaveCommunity = async (communityId) => {
+export const leaveCommunity = async function(communityId) {
     const axiosManager = useAxiosManager.getState();
     const body = { communityId };
     try {
@@ -170,7 +170,7 @@ export const leaveCommunity = async (communityId) => {
     }
 };
 
-export const acceptCommunityMember = async (memberId) => {
+export const acceptCommunityMember = async function(memberId) {
     const axiosManager = useAxiosManager.getState();
     const body = { memberId };
 
@@ -181,7 +181,7 @@ export const acceptCommunityMember = async (memberId) => {
     });
 }
 
-export const rejectCommunityMember = async (memberId) => {
+export const rejectCommunityMember = async function(memberId) {
     const axiosManager = useAxiosManager.getState();
     const body = { memberId };
 
@@ -192,7 +192,7 @@ export const rejectCommunityMember = async (memberId) => {
     });
 }
 
-export const getCommunityMemberRequests = async (communityId) => {
+export const getCommunityMemberRequests = async function(communityId) {
     const axiosManager = useAxiosManager.getState();
 
     const response = await axiosManager.authAxios.get("/v1/community/communitymembers", {

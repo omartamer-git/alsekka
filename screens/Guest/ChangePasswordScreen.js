@@ -19,8 +19,8 @@ import HeaderView from '../../components/HeaderView';
 import { palette, styles } from '../../helper';
 
 
-const ChangePasswordScreen = ({ route, navigation }) => {
-    const {t} = useTranslation();
+function ChangePasswordScreen({ route, navigation }) {
+    const { t } = useTranslation();
     const { token } = route.params;
     const [errorMessage, setErrorMessage] = useState(null);
     const { resetPassword } = useUserStore();
@@ -34,34 +34,34 @@ const ChangePasswordScreen = ({ route, navigation }) => {
 
     const handleContinueClick = (newPassword) => {
         setSubmitDisabled(true);
-        resetPassword(token, newPassword).then( function () {
+        resetPassword(token, newPassword).then(function () {
             navigation.replace("Guest");
         }).catch(err => {
             setErrorMessage(err.response.data.error.message);
-        }).finally( function () {
+        }).finally(function () {
             setSubmitDisabled(false);
         });
     };
 
-    if(Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+    if (Platform.OS === 'ios') {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
             };
         }, []);
-    
+
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
     return (
         <View style={styles.backgroundStyle}>
             <SafeAreaView>
-                <HeaderView navType="back" borderVisible={false} action={ function () { navigation.goBack() }}>
+                <HeaderView navType="back" borderVisible={false} action={function () { navigation.goBack() }}>
                     <View style={styles.localeWrapper}>
                         <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                         <Text style={[styles.text, styles.locale]}>EN</Text>

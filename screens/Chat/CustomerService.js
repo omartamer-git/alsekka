@@ -21,7 +21,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 
-const CustomerService = ({ navigation, route }) => {
+function CustomerService({ navigation, route }) {
     const { t } = useTranslation();
     const ref = useRef(null);
     const userStore = useUserStore();
@@ -33,7 +33,7 @@ const CustomerService = ({ navigation, route }) => {
     const lastSender = useRef(false);
     const [loading, setLoading] = useState(true);
 
-    const sendMessage =  function () {
+    const sendMessage = function () {
         if (!(messageText.trim())) return;
         setMessageText('');
         chatAPI.sendCSMessage(messageText).then(data => {
@@ -41,30 +41,27 @@ const CustomerService = ({ navigation, route }) => {
         }).catch(err => console.log(err.stack))
     };
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         chatAPI.csChatHistory().then((data) => {
             if (data.length !== 0) {
                 setChatActive(true);
             }
-            console.log(data);
             setChatMessages(data);
             setLoading(false);
         });
     }, []);
 
-    const addMessage = (msg) => {
-        // console.log(chatMessages);
-        console.log("new message rcvd");
+    function addMessage(msg) {
         setChatMessages(msg.concat(chatMessages));
     }
 
-    useEffect( function () {
+    useEffect(function () {
         if (!chatActive) {
             return;
         }
 
-        const fetchNewMessages = async  function () {
+        const fetchNewMessages = async function () {
             chatAPI.findNewCSMessages().then(data => {
                 if (data.length >= 1) {
                     addMessage(data);
@@ -72,7 +69,7 @@ const CustomerService = ({ navigation, route }) => {
             }).catch(err => console.log(err));
         }
 
-        const intervalId = setInterval( function () {
+        const intervalId = setInterval(function () {
             fetchNewMessages();
         }, 10000);
 
@@ -81,11 +78,11 @@ const CustomerService = ({ navigation, route }) => {
     }, [chatMessages, chatActive]);
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);

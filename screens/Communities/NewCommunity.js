@@ -28,7 +28,7 @@ export default function NewCommunity({ navigation, route }) {
     const [communityPhoto, setCommunityPhoto] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
-    const openImagePicker = async (e) => {
+    async function openImagePicker(e) {
         const response = await launchImageLibrary(imagePickerOptions);
         if (!response.didCancel && !response.error) {
             setCommunityPhoto(response);
@@ -36,7 +36,7 @@ export default function NewCommunity({ navigation, route }) {
         }
     }
 
-    const handleSubmit = async (name, description, privacy, joinQuestion) => {
+    async function handleSubmit(name, description, privacy, joinQuestion) {
         setSubmitDisabled(true);
         try {
             await createCommunity(name, description, privacy, communityPhoto, joinQuestion);

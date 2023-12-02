@@ -19,7 +19,7 @@ import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 
-const Checkout = ({ route, navigation }) => {
+function Checkout({ route, navigation }) {
     const { tripId, passengerId } = route.params;
 
     const [passengerDetails, setPassengerDetails] = useState(null);
@@ -28,7 +28,7 @@ const Checkout = ({ route, navigation }) => {
     const [loading, setLoading] = useState(true);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         ridesAPI.passengerDetails(passengerId, tripId).then(
             data => {
@@ -38,7 +38,7 @@ const Checkout = ({ route, navigation }) => {
             });
     }, []);
 
-    const checkout =  function () {
+    const checkout = function () {
         Alert.alert('Checkout', 'By clicking CONFIRM, you confirm that the passenger has paid the amount you specified and has left the car.',
             [
                 {
@@ -52,27 +52,27 @@ const Checkout = ({ route, navigation }) => {
             ]);
     };
 
-    const onChangeAmountPaid = (text) => {
+    function onChangeAmountPaid(text) {
         const numericValue = text.replace(/[^0-9]/g, '');
         setAmountPaid(numericValue);
     };
 
-    const checkoutConfirmed =  function () {
+    const checkoutConfirmed = function () {
         setSubmitDisabled(true);
         ridesAPI.checkPassengerOut(passengerId, tripId, amountPaid, rating).then(
             data => {
-            }).catch(console.error).finally( function () {
+            }).catch(console.error).finally(function () {
                 setSubmitDisabled(false);
             });
     }
 
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -112,7 +112,7 @@ const Checkout = ({ route, navigation }) => {
                         <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
                             {Array.from({ length: 5 }, (_, index) => {
                                 return (
-                                    <TouchableOpacity key={"ratingStar" + index} onPress={ function () { setRating(index + 1) }}>
+                                    <TouchableOpacity key={"ratingStar" + index} onPress={function () { setRating(index + 1) }}>
                                         <MaterialIcons name="star" size={30} color={(rating <= index) ? palette.light : palette.primary} />
                                     </TouchableOpacity>
                                 );

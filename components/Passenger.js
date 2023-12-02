@@ -3,7 +3,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 import { useTranslation } from "react-i18next";
 
-const Passenger = ({ borderTopWidth, data, children }) => {
+function Passenger ({ borderTopWidth, data, children }) {
     const {t} = useTranslation();
     return (
         <View style={[styles.w100, styles.borderLight, styles.flexRow, styles.alignCenter, styles.ph16, styles.pv8, { borderTopWidth: borderTopWidth }]}>

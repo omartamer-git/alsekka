@@ -23,7 +23,7 @@ import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
 
 
-const ViewCommunity = ({ navigation, route }) => {
+function ViewCommunity({ navigation, route }) {
     const { communityId, communityName, communityPicture, communityDescription, communityPrivacy } = route.params;
 
     const [feed, setFeed] = useState([]);
@@ -36,7 +36,7 @@ const ViewCommunity = ({ navigation, route }) => {
 
     const { id } = useUserStore();
 
-    useEffect( function () {
+    useEffect(function () {
         communitiesAPI.getCommunityDetails(communityId).then(
             data => {
                 if (data.Member.length !== 0) {
@@ -52,7 +52,6 @@ const ViewCommunity = ({ navigation, route }) => {
                 } else {
                     setLoading(false);
                 }
-                console.log(data);
                 setJoinQuestion(data.joinQuestion);
             }
         ).catch(err => {
@@ -60,7 +59,7 @@ const ViewCommunity = ({ navigation, route }) => {
         });
     }, []);
 
-    const joinCommunity =  function () {
+    const joinCommunity = function () {
         communitiesAPI.joinCommunity(communityId, joinAnswer).then(
             data => {
                 if (communityPrivacy) {
@@ -76,7 +75,7 @@ const ViewCommunity = ({ navigation, route }) => {
 
     const [page, setPage] = useState(1);
 
-    const loadFeed = (page = 1) => {
+    function loadFeed(page = 1) {
         setIsJoined(true);
         communitiesAPI.communitiesFeed(communityId, page).then(
             data => {
@@ -94,11 +93,11 @@ const ViewCommunity = ({ navigation, route }) => {
     }
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -108,7 +107,7 @@ const ViewCommunity = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const loadMore =  function () {
+    const loadMore = function () {
         loadFeed(page + 1);
         setPage(p => p + 1);
     }
@@ -163,7 +162,7 @@ const ViewCommunity = ({ navigation, route }) => {
                                                 style={styles.mt10}
                                                 pickupEnabled={data.pickupEnabled}
                                                 gender={data.gender}
-                                                onPress={ function () {
+                                                onPress={function () {
                                                     if (data.DriverId === id) {
                                                         navigation.navigate('View Trip', { tripId: data.ride_id })
                                                     } else {

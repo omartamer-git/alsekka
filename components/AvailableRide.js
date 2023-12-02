@@ -6,7 +6,7 @@ import useUserStore from '../api/accountAPI';
 import { addSecondsToDate, getDurationValues, getTime, palette, rem, styles } from '../helper';
 import useLocale from '../locale/localeContext';
 
-const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsAvailable, date, driverName, duration, model, brand, pickupEnabled, gender, DriverId, onPress =  function () { }, style = {} }) => {
+function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsAvailable, date, driverName, duration, model, brand, pickupEnabled, gender, DriverId, onPress = function () { }, style = {} }) {
     const items = [];
     const rideFull = (seatsAvailable - seatsOccupied) <= 0;
     const { id } = useUserStore();
@@ -29,7 +29,7 @@ const AvailableRide = ({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
 
 
     return (
-        <TouchableOpacity onPress={ function () { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={{ width: '100%', paddingVertical: 24, paddingHorizontal: 24, borderRadius: 16, backgroundColor: palette.white, borderWidth: 1, borderColor: palette.light, ...style }}>
+        <TouchableOpacity onPress={function () { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={{ width: '100%', paddingVertical: 24, paddingHorizontal: 24, borderRadius: 16, backgroundColor: palette.white, borderWidth: 1, borderColor: palette.light, ...style }}>
             <View style={{ flexDirection: 'row', width: '100%' }}>
                 <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                     <View style={{ flexDirection: 'row' }}>

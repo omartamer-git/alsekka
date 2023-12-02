@@ -27,11 +27,11 @@ import Button from '../../components/Button';
 import { getOptimalPath } from '../../api/googlemaps';
 import { decodePolyline } from '../../util/maps';
 
-const Timer =  function () {
+const Timer = function () {
     const [seconds, setSeconds] = useState(300); // 5 minutes in seconds
 
-    useEffect( function () {
-        const interval = setInterval( function () {
+    useEffect(function () {
+        const interval = setInterval(function () {
             if (seconds > 0) {
                 setSeconds(prevSeconds => prevSeconds - 1);
             }
@@ -40,7 +40,7 @@ const Timer =  function () {
         return () => clearInterval(interval);
     }, [seconds]);
 
-    const displayTime =  function () {
+    const displayTime = function () {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
 
@@ -58,7 +58,7 @@ const Timer =  function () {
 }
 
 
-const ManageTrip = ({ route, navigation }) => {
+function ManageTrip({ route, navigation }) {
     const { tripId } = route.params;
 
     const [tripDetails, setTripDetails] = useState(null);
@@ -74,7 +74,7 @@ const ManageTrip = ({ route, navigation }) => {
     const [reviewsOpen, setReviewsOpen] = useState(false);
     const currentMapRef = useRef(null);
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         ridesAPI.tripDetails(tripId).then(data => {
             if (data.isDriver === 1) {
@@ -98,12 +98,12 @@ const ManageTrip = ({ route, navigation }) => {
         });
     }, []);
 
-    const fitToSuppliedMarkers =  function () {
+    const fitToSuppliedMarkers = function () {
         if (!currentMapRef.current) return;
         currentMapRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
     };
 
-    const requestLocationPermission = async  function () {
+    const requestLocationPermission = async function () {
         if (Platform.OS === 'ios') {
             const auth = Geolocation.requestAuthorization();
             return true;
@@ -121,7 +121,7 @@ const ManageTrip = ({ route, navigation }) => {
         return false;
     };
 
-    useEffect( function () {
+    useEffect(function () {
         const result = requestLocationPermission();
         result.then((res) => {
             if (res) {
@@ -137,14 +137,14 @@ const ManageTrip = ({ route, navigation }) => {
         });
     }, [])
 
-    const getPhase =  function () {
+    const getPhase = function () {
         if (!passengersAtOrigin) {
             return 0;
         }
         return reviewsOpen ? 4 : tripTotals ? 3 : (passengersAtOrigin.length > 0 ? 0 : (passengersPickup.length > 0 ? 1 : 2));
     }
 
-    const checkIn = (passengerId) => {
+    function checkIn(passengerId) {
         Alert.alert('Check In', 'By clicking CONFIRM, you confirm that the passenger has gotten in the car and is ready for the trip.',
             [
                 {
@@ -158,7 +158,7 @@ const ManageTrip = ({ route, navigation }) => {
             ]);
     };
 
-    const checkInConfirmed = (passengerId) => {
+    function checkInConfirmed(passengerId) {
         setSubmitDisabled(true);
         ridesAPI.checkPassengerIn(passengerId, tripId).then(data => {
             if (getPhase() === 0) {
@@ -168,13 +168,13 @@ const ManageTrip = ({ route, navigation }) => {
                 const newPassengers = passengersPickup.filter(passenger => passenger.UserId !== passengerId);
                 setPassengersPickup(newPassengers);
             }
-        }).catch(console.error).finally( function () {
+        }).catch(console.error).finally(function () {
             setSubmitDisabled(false);
         });
     }
 
-    const checkOut = async  function () {
-        ridesAPI.checkPassengerOut(tripId).then( function () {
+    const checkOut = async function () {
+        ridesAPI.checkPassengerOut(tripId).then(function () {
             generateRatings();
             setReviewsOpen(true);
         }).catch((err) => {
@@ -182,7 +182,7 @@ const ManageTrip = ({ route, navigation }) => {
         });
     };
 
-    const setPassengerPaid = (passengerId) => {
+    function setPassengerPaid(passengerId) {
         setPaidPassengers(
             (prevPaidPassengers) => {
                 // Create a new array using the spread operator
@@ -193,11 +193,11 @@ const ManageTrip = ({ route, navigation }) => {
     }
 
 
-    const hasPassengerPaid = (passengerId) => {
+    function hasPassengerPaid(passengerId) {
         return paidPassengers.includes(passengerId) || tripDetails.passengers.find(p => p.UserId === passengerId).paymentMethod !== 'CASH';
     }
 
-    const noShow = (passengerId) => {
+    function noShow(passengerId) {
         Alert.alert('No Show', 'By clicking CONFIRM, you confirm that the passenger has not showed up on time for the ride, and you are going to leave without them.',
             [
                 {
@@ -211,7 +211,7 @@ const ManageTrip = ({ route, navigation }) => {
             ]);
     };
 
-    const noShowConfirmed = (passengerId) => {
+    function noShowConfirmed(passengerId) {
         ridesAPI.noShow(passengerId, tripId).then(data => {
             if (data) {
                 // set no show
@@ -221,7 +221,7 @@ const ManageTrip = ({ route, navigation }) => {
 
 
 
-    const getPickupPassenger =  function () {
+    const getPickupPassenger = function () {
         return passengersPickup[0];
     }
 
@@ -229,7 +229,7 @@ const ManageTrip = ({ route, navigation }) => {
 
 
 
-    const enableArrived =  function () {
+    const enableArrived = function () {
         ridesAPI.getTripTotals(tripDetails.id).then((totals) => {
             setTripTotals(totals);
         });
@@ -237,7 +237,7 @@ const ManageTrip = ({ route, navigation }) => {
 
     const [ratings, setRatings] = useState([]);
 
-    const generateRatings =  function () {
+    const generateRatings = function () {
         const ratingsArray = tripDetails.passengers.map((passenger, index) => {
             return {
                 id: passenger.UserId,
@@ -250,18 +250,17 @@ const ManageTrip = ({ route, navigation }) => {
         return true;
     }
 
-    const setRating = (UserId, stars) => {
+    function setRating(UserId, stars) {
         const newRatings = ratings.filter((r) => r.id !== UserId);
         newRatings.push({
             id: UserId,
             stars: stars
         });
-        console.log(newRatings);
         setRatings(newRatings);
     }
 
-    const submitRatings =  function () {
-        ridesAPI.submitDriverRatings(tripId, ratings).then( function () {
+    const submitRatings = function () {
+        ridesAPI.submitDriverRatings(tripId, ratings).then(function () {
             // ratings submitted
             navigation.navigate('Home', { screen: 'User Home' });
         }).catch((err) => console.log(err))
@@ -303,13 +302,13 @@ const ManageTrip = ({ route, navigation }) => {
                                         <Passenger borderTopWidth={borderTopWidth} data={data}>
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={ function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
                                                     <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('check_in')}</Text>
                                                 </TouchableOpacity>
                                             }
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={ function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
                                                     <MaterialIcons name="close" size={14} color={palette.white} />
                                                 </TouchableOpacity>
                                             }
@@ -427,7 +426,7 @@ const ManageTrip = ({ route, navigation }) => {
                                                     </Text>
                                                 </View>
                                                 <View style={styles.flexOne} />
-                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={ function () { console.log(passenger.UserId); setPassengerPaid(passenger.UserId) }} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgDark : styles.bgSuccess]}>
+                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={function () { setPassengerPaid(passenger.UserId) }} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgDark : styles.bgSuccess]}>
                                                     <MaterialIcons name="check" size={22} color={palette.white} />
                                                 </TouchableOpacity>
                                             </View>

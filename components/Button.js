@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { palette, rem, styles } from '../helper';
 
-const Button = ({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) => {
+function Button({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) {
     let borderColor_ = borderColor;
     if(borderColor_ === undefined) {
         borderColor_ = bgColor;

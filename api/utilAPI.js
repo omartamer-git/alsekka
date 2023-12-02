@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import useAxiosManager from '../context/axiosManager';
-export const registerDevice = async (deviceToken) => {
+export const registerDevice = async function (deviceToken) {
     const url = `/registerdevice`;
     const params = {
         token: deviceToken,
@@ -13,7 +13,7 @@ export const registerDevice = async (deviceToken) => {
     return data;
 };
 
-export const subtractDates = (date, hoursBefore) => {
+export const subtractDates = function (date, hoursBefore) {
     const inputDate = new Date(date);
 
     const dateTime1HourBefore = new Date(inputDate.getTime() - hoursBefore * 60 * 60 * 1000);

@@ -26,7 +26,6 @@ if (Platform.OS === 'android') {
         channelId: 'default'
       }
     }
-    console.log(notification);
     await notifee.displayNotification(notification);
   };
 

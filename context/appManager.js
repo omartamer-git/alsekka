@@ -35,7 +35,6 @@ const useAppManager = create((set) => ({
             const axiosManager = useAxiosManager.getState();
 
             const response = await axiosManager.publicAxios.get("/allowedemails");
-            console.log(response.data);
             set((state) => ({ allowedEmails: response.data }));
         } catch(e) {
             set((state) => ({ allowedEmails: '.*' }));

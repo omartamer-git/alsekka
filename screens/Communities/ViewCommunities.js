@@ -23,24 +23,24 @@ import useUserStore from '../../api/accountAPI';
 
 
 
-const ViewCommunities = ({ navigation, route }) => {
+function ViewCommunities({ navigation, route }) {
     const [communities, setCommunities] = useState(null);
     const [feed, setFeed] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
     const { id } = useUserStore();
 
-    const onRefresh = async  function () {
+    const onRefresh = async function () {
         setRefreshing(true);
         await loadFeed();
         setRefreshing(false);
     };
 
-    useEffect( function () {
+    useEffect(function () {
         loadFeed();
     }, []);
 
-    const loadFeed = async  function () {
+    const loadFeed = async function () {
         setLoading(true);
         const communitiesData = await communitiesAPI.getCommunities();
         if (communitiesData.length !== 0) {
@@ -55,11 +55,11 @@ const ViewCommunities = ({ navigation, route }) => {
     };
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback( function () {
+        const onFocusEffect = useCallback(function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return  function () {
+            return function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -92,7 +92,7 @@ const ViewCommunities = ({ navigation, route }) => {
                                         feed.map((data, index) => {
                                             return (
                                                 <TouchableOpacity
-                                                    onPress={() => navigation.navigate('View Community', {communityId: data.id, communityName: data.name, communityPicture: data.picture, communityDescription: data.description, communityPrivacy: data.private})}
+                                                    onPress={() => navigation.navigate('View Community', { communityId: data.id, communityName: data.name, communityPicture: data.picture, communityDescription: data.description, communityPrivacy: data.private })}
                                                     activeOpacity={0.8} key={`communityFeed${index}`}
                                                     style={[{ width: '47.5%', minHeight: 150 }, styles.p16, styles.mv5, styles.br8, styles.bgLight, styles.justifyCenter, styles.alignCenter]}>
 

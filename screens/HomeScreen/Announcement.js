@@ -11,12 +11,12 @@ import { containerStyle, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 
 
-const Announcement = ({ navigation, route }) => {
+function Announcement({ navigation, route }) {
     const [announcement, setAnnouncement] = useState(null);
     const [loading, setLoading] = useState(true);
     const { id } = route.params;
 
-    useEffect( function () {
+    useEffect(function () {
         setLoading(true);
         announcementsAPI.getAnnouncement(id).then(
             data => {
@@ -44,17 +44,17 @@ const Announcement = ({ navigation, route }) => {
                 }
 
                 {
-                    loading && 
+                    loading &&
                     <>
-                     <View style={styles.w100}>
-                        <SkeletonPlaceholder>
-                            <SkeletonPlaceholder.Item width={'100%'} height={40 * rem} marginVertical={5 * rem} />
-                        </SkeletonPlaceholder>
+                        <View style={styles.w100}>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item width={'100%'} height={40 * rem} marginVertical={5 * rem} />
+                            </SkeletonPlaceholder>
 
-                        <SkeletonPlaceholder>
-                            <SkeletonPlaceholder.Item width={'100%'} height={280 * rem} marginVertical={5 * rem} />
-                        </SkeletonPlaceholder>
-                     </View>
+                            <SkeletonPlaceholder>
+                                <SkeletonPlaceholder.Item width={'100%'} height={280 * rem} marginVertical={5 * rem} />
+                            </SkeletonPlaceholder>
+                        </View>
                     </>
                 }
             </ScrollView>

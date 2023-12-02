@@ -2,7 +2,7 @@ import useAxiosManager from '../context/axiosManager';
 import useUserStore from './accountAPI';
 
 
-export const uploadLicense = async (licenseBody) => {
+export const uploadLicense = async function(licenseBody) {
     const url = `/v1/user/submitlicense`;
     const imageFront = licenseBody.frontSide.assets[0];
     const imageBack = licenseBody.backSide.assets[0];

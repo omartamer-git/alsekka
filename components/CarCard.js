@@ -4,7 +4,7 @@ import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles, translateEnglishNumbers } from '../helper';
 
-const CarCard = ({approved, brand, model, year, color, licensePlateLetters, licensePlateNumbers, onPress=()=>{} }) => {
+function CarCard({ approved, brand, model, year, color, licensePlateLetters, licensePlateNumbers, onPress = () => { } }) {
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.75} style={{ width: '100%', padding: 16, borderBottomWidth: 1, borderColor: palette.light, ...styles.flexRow, justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={[styles.flexRow, { width: '60%' }]}>
@@ -14,7 +14,7 @@ const CarCard = ({approved, brand, model, year, color, licensePlateLetters, lice
                 </View>
                 <View style={{ justifyContent: 'center', marginStart: 10 }}>
                     <Text style={[styles.font14, styles.text, styles.bold, { flexWrap: 'wrap', color: (approved === 'APPROVED' ? palette.black : palette.dark) }]}>{brand} {model} ({year})</Text>
-                    <Text style={[styles.font14, styles.text, styles.bold,  { flexWrap: 'wrap', color: palette.dark }]}>{color}</Text>
+                    <Text style={[styles.font14, styles.text, styles.bold, { flexWrap: 'wrap', color: palette.dark }]}>{color}</Text>
                 </View>
             </View>
             <View style={[styles.mt10, styles.br8, styles.borderDark, styles.border2, { height: 60 * rem, alignSelf: 'flex-end', width: '30%' }]}>

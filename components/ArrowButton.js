@@ -3,7 +3,7 @@ import { I18nManager, StyleSheet, Text, TouchableOpacity, View } from 'react-nat
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { palette, rem, styles } from '../helper';
 
-const ArrowButton = ({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) => {
+function ArrowButton({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) {
     let borderColor_ = borderColor;
     if(borderColor_ === undefined) {
         borderColor_ = bgColor;
