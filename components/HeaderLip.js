@@ -2,7 +2,7 @@ import { View } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { rem, styles } from '../helper';
 
-const HeaderLip = () => {
+const HeaderLip =  function () {
     return (
         <View style={[styles.w100, LipStyles.style]}>
         </View>

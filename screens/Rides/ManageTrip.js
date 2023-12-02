@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Alert,
@@ -27,11 +27,11 @@ import Button from '../../components/Button';
 import { getOptimalPath } from '../../api/googlemaps';
 import { decodePolyline } from '../../util/maps';
 
-const Timer = () => {
+const Timer =  function () {
     const [seconds, setSeconds] = useState(300); // 5 minutes in seconds
 
-    useEffect(() => {
-        const interval = setInterval(() => {
+    useEffect( function () {
+        const interval = setInterval( function () {
             if (seconds > 0) {
                 setSeconds(prevSeconds => prevSeconds - 1);
             }
@@ -40,7 +40,7 @@ const Timer = () => {
         return () => clearInterval(interval);
     }, [seconds]);
 
-    const displayTime = () => {
+    const displayTime =  function () {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
 
@@ -72,8 +72,9 @@ const ManageTrip = ({ route, navigation }) => {
     const [tripTotals, setTripTotals] = useState(null);
     const [paidPassengers, setPaidPassengers] = useState([]);
     const [reviewsOpen, setReviewsOpen] = useState(false);
+    const currentMapRef = useRef(null);
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         ridesAPI.tripDetails(tripId).then(data => {
             if (data.isDriver === 1) {
@@ -97,7 +98,12 @@ const ManageTrip = ({ route, navigation }) => {
         });
     }, []);
 
-    const requestLocationPermission = async () => {
+    const fitToSuppliedMarkers =  function () {
+        if (!currentMapRef.current) return;
+        currentMapRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+    };
+
+    const requestLocationPermission = async  function () {
         if (Platform.OS === 'ios') {
             const auth = Geolocation.requestAuthorization();
             return true;
@@ -115,7 +121,7 @@ const ManageTrip = ({ route, navigation }) => {
         return false;
     };
 
-    useEffect(() => {
+    useEffect( function () {
         const result = requestLocationPermission();
         result.then((res) => {
             if (res) {
@@ -131,7 +137,7 @@ const ManageTrip = ({ route, navigation }) => {
         });
     }, [])
 
-    const getPhase = () => {
+    const getPhase =  function () {
         if (!passengersAtOrigin) {
             return 0;
         }
@@ -162,13 +168,13 @@ const ManageTrip = ({ route, navigation }) => {
                 const newPassengers = passengersPickup.filter(passenger => passenger.UserId !== passengerId);
                 setPassengersPickup(newPassengers);
             }
-        }).catch(console.error).finally(() => {
+        }).catch(console.error).finally( function () {
             setSubmitDisabled(false);
         });
     }
 
-    const checkOut = async () => {
-        ridesAPI.checkPassengerOut(tripId).then(() => {
+    const checkOut = async  function () {
+        ridesAPI.checkPassengerOut(tripId).then( function () {
             generateRatings();
             setReviewsOpen(true);
         }).catch((err) => {
@@ -178,13 +184,14 @@ const ManageTrip = ({ route, navigation }) => {
 
     const setPassengerPaid = (passengerId) => {
         setPaidPassengers(
-            paidPassengers => {
-                const pp = paidPassengers;
-                pp.push(passengerId);
-                return pp;
+            (prevPaidPassengers) => {
+                // Create a new array using the spread operator
+                const newPaidPassengers = [...prevPaidPassengers, passengerId];
+                return newPaidPassengers;
             }
-        )
+        );
     }
+
 
     const hasPassengerPaid = (passengerId) => {
         return paidPassengers.includes(passengerId) || tripDetails.passengers.find(p => p.UserId === passengerId).paymentMethod !== 'CASH';
@@ -214,7 +221,7 @@ const ManageTrip = ({ route, navigation }) => {
 
 
 
-    const getPickupPassenger = () => {
+    const getPickupPassenger =  function () {
         return passengersPickup[0];
     }
 
@@ -222,7 +229,7 @@ const ManageTrip = ({ route, navigation }) => {
 
 
 
-    const enableArrived = () => {
+    const enableArrived =  function () {
         ridesAPI.getTripTotals(tripDetails.id).then((totals) => {
             setTripTotals(totals);
         });
@@ -230,7 +237,7 @@ const ManageTrip = ({ route, navigation }) => {
 
     const [ratings, setRatings] = useState([]);
 
-    const generateRatings = () => {
+    const generateRatings =  function () {
         const ratingsArray = tripDetails.passengers.map((passenger, index) => {
             return {
                 id: passenger.UserId,
@@ -253,8 +260,8 @@ const ManageTrip = ({ route, navigation }) => {
         setRatings(newRatings);
     }
 
-    const submitRatings = () => {
-        ridesAPI.submitDriverRatings(tripId, ratings).then(() => {
+    const submitRatings =  function () {
+        ridesAPI.submitDriverRatings(tripId, ratings).then( function () {
             // ratings submitted
             navigation.navigate('Home', { screen: 'User Home' });
         }).catch((err) => console.log(err))
@@ -262,7 +269,7 @@ const ManageTrip = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName={t('manage_trip')} navType={"back"} navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
                     <>
@@ -296,13 +303,13 @@ const ManageTrip = ({ route, navigation }) => {
                                         <Passenger borderTopWidth={borderTopWidth} data={data}>
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={() => { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={ function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
                                                     <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('check_in')}</Text>
                                                 </TouchableOpacity>
                                             }
                                             {
-                                                data.status === 'CONFIRMED' && 
-                                                <TouchableOpacity disabled={submitDisabled} onPress={() => { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
+                                                data.status === 'CONFIRMED' &&
+                                                <TouchableOpacity disabled={submitDisabled} onPress={ function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
                                                     <MaterialIcons name="close" size={14} color={palette.white} />
                                                 </TouchableOpacity>
                                             }
@@ -371,8 +378,10 @@ const ManageTrip = ({ route, navigation }) => {
                                     showsMyLocationButton
                                     maxZoomLevel={18}
                                     initialRegion={location}
+                                    ref={currentMapRef}
                                 >
-                                    <Marker key={"markerTo"} identifier='to' coordinate={{ latitude: tripDetails.toLatitude, longitude: tripDetails.toLongitude }}></Marker>
+                                    <Marker onLayout={fitToSuppliedMarkers} key={"markerFrom"} pinColor={palette.primary} identifier='from' coordinate={{ latitude: tripDetails.fromLatitude, longitude: tripDetails.fromLongitude }}></Marker>
+                                    <Marker onLayout={fitToSuppliedMarkers} key={"markerTo"} identifier='to' coordinate={{ latitude: tripDetails.toLatitude, longitude: tripDetails.toLongitude }}></Marker>
                                     <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(tripDetails.polyline)} strokeWidth={3} />
 
                                 </MapView>
@@ -418,7 +427,7 @@ const ManageTrip = ({ route, navigation }) => {
                                                     </Text>
                                                 </View>
                                                 <View style={styles.flexOne} />
-                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={() => setPassengerPaid(passenger.UserId)} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgDark : styles.bgSuccess]}>
+                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={ function () { console.log(passenger.UserId); setPassengerPaid(passenger.UserId) }} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgDark : styles.bgSuccess]}>
                                                     <MaterialIcons name="check" size={22} color={palette.white} />
                                                 </TouchableOpacity>
                                             </View>

@@ -434,6 +434,14 @@ export const styles = StyleSheet.create({
         padding: 16 * rem
     },
 
+    shadow: {
+        shadowColor: palette.dark,
+        elevation: 5,
+        shadowOpacity: 1,
+        shadowRadius: 5 * rem,
+        shadowOffset: { width: 0, height: 0 },
+    },
+
     flexOne: {
         flex: 1,
     },
@@ -765,6 +773,11 @@ export const styles = StyleSheet.create({
 
     positionAbsolute: {
         position: 'absolute',
+    },
+
+    font10: {
+        fontSize: 10 * rem,
+        lineHeight: 12 * rem
     },
 
     font12: {

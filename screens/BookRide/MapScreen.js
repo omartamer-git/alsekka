@@ -23,6 +23,7 @@ import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPaddi
 import ScreenWrapper from '../ScreenWrapper';
 import MapViewDirections from 'react-native-maps-directions';
 import CustomDatePicker from '../../components/DatePicker';
+import { requestLocationPermission } from '../../util/maps';
 
 
 const MapScreen = ({ route, navigation }) => {
@@ -47,29 +48,11 @@ const MapScreen = ({ route, navigation }) => {
   const fromRef = useRef(null);
   const toRef = useRef(null);
 
-  const requestLocationPermission = async () => {
-    if (Platform.OS === 'ios') {
-      const auth = Geolocation.requestAuthorization();
-      return true;
-    }
-
-    if (Platform.OS === 'android') {
-      await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        return true;
-      }
-    }
-
-    return false;
-  };
 
 
-  useEffect(() => {
+  useEffect( function () {
     const result = requestLocationPermission();
     result.then((res) => {
-      console.log(res);
       if (res) {
         Geolocation.getCurrentPosition(
           info => {
@@ -93,11 +76,11 @@ const MapScreen = ({ route, navigation }) => {
 
   const [markerUpdateCount, setMarkerUpdateCount] = useState(0);
 
-  useEffect(() => {
+  useEffect( function () {
     setMarkerUpdateCount(prevCount => prevCount + 1);
   }, [markerFrom, markerTo]);
 
-  const swapDestinations = () => {
+  const swapDestinations =  function () {
     const markerFrom_old = markerFrom;
     const textFrom_old = textFrom;
 
@@ -111,7 +94,7 @@ const MapScreen = ({ route, navigation }) => {
 
   }
 
-  const adjustMarkers = () => {
+  const adjustMarkers =  function () {
     if (markerFrom && markerTo) {
       mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
     } else if (markerFrom) {
@@ -152,20 +135,18 @@ const MapScreen = ({ route, navigation }) => {
         date.setHours(0, 0, 0, 0);
         freshDate = date;
       }
-
-      console.log(freshDate.toLocaleString());
-
+      
       navigation.navigate("Choose a Ride", { fromLat: markerFrom.latitude, fromLng: markerFrom.longitude, toLat: markerTo.latitude, toLng: markerTo.longitude, date: getDateSQL(freshDate), textFrom: textFrom, textTo: textTo, genderChoice: genderChoice });
     }
   }
 
 
   if (Platform.OS === 'ios') {
-    const onFocusEffect = useCallback(() => {
+    const onFocusEffect = useCallback( function () {
       // This should be run when screen gains focus - enable the module where it's needed
       AvoidSoftInput.setShouldMimicIOSBehavior(true);
       AvoidSoftInput.setEnabled(true);
-      return () => {
+      return  function () {
         // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
         AvoidSoftInput.setEnabled(false);
         AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -181,7 +162,7 @@ const MapScreen = ({ route, navigation }) => {
 
   return (
     <ScreenWrapper screenName={t('search_rides')}>
-      <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
+      <ScrollView keyboardShouldPersistTaps={'handled'} style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
         <MapView
           style={[styles.mapStyle]}
           showsUserLocation={true}
@@ -233,16 +214,16 @@ const MapScreen = ({ route, navigation }) => {
           <View style={[styles.flexRow, styles.w100, styles.mv10]}>
             {
               gender === "FEMALE" &&
-              <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
+              <TouchableOpacity onPress={ function () { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
                 <Text style={[styles.text, mapScreenStyles.genderText]}>{t('female_only')}</Text>
               </TouchableOpacity>
             }
-            <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
+            <TouchableOpacity onPress={ function () { setGenderChoice('ANY') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
               <Text style={[styles.text, mapScreenStyles.genderText]}>{t('any')}</Text>
             </TouchableOpacity>
             {
               gender === "MALE" &&
-              <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
+              <TouchableOpacity onPress={ function () { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
                 <Text style={[styles.text, mapScreenStyles.genderText]}>{t('male_only')}</Text>
               </TouchableOpacity>
             }

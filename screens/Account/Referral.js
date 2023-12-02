@@ -40,7 +40,7 @@ const Referral = ({ navigation, route }) => {
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
     const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 50 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
-    const onShare = async () => {
+    const onShare = async  function () {
         try {
             const result = await Share.share({
                 message: shareMsg
@@ -63,7 +63,7 @@ const Referral = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100, styles.alignCenter]}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100, styles.alignCenter]}>
                 <Treasure width={250} height={250} />
                 <View style={[styles.w100, styles.mt5]}>
                     <Text style={[styles.text, styles.font18, styles.bold, styles.mt20]}>{t('share_earn_repeat')}</Text>
@@ -74,10 +74,10 @@ const Referral = ({ navigation, route }) => {
 
                 <View style={[styles.flexOne, styles.justifyEnd, styles.w100]}>
                     <TouchableWithoutFeedback
-                        onPress={() => {
+                        onPress={ function () {
                             Clipboard.setString(shareMsg)
                             setCopied(true);
-                            setTimeout(() => {
+                            setTimeout( function () {
                                 setCopied(false);
                             }, 3000)
                         }}

@@ -78,15 +78,15 @@ const PostRide = ({ route, navigation }) => {
     const mapViewRef = useRef(null);
     const carPicker = useRef(null);
 
-    const loadCars = () => {
+    const loadCars =  function () {
         return carsAPI.getUsableCars();
     };
 
-    const loadCommunities = () => {
+    const loadCommunities =  function () {
         return communitiesAPI.myCommunities();
     };
 
-    const loadData = () => {
+    const loadData =  function () {
         if (!userStore.driver) {
             setLoading(false);
             return;
@@ -110,11 +110,11 @@ const PostRide = ({ route, navigation }) => {
     }
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -125,14 +125,14 @@ const PostRide = ({ route, navigation }) => {
     }
 
 
-    useEffect(() => {
+    useEffect( function () {
         loadData();
     }, []);
 
     const [suggestedPrice, setSuggestedPrice] = useState(0);
     const geolib = require('geolib');
 
-    useEffect(() => {
+    useEffect( function () {
         if (markerFrom && markerTo) {
             // probably need a better algorithm for this
             const dist = geolib.getDistance(markerFrom, markerTo) / 1000;
@@ -200,7 +200,7 @@ const PostRide = ({ route, navigation }) => {
                 mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable).then((res) => {
                     setRidePosted(true);
                     setRideId(res.id);
-                }).catch(console.error).finally(() => {
+                }).catch(console.error).finally( function () {
                     StoreReview.requestReview();
                     setSubmitDisabled(false);
                 });
@@ -210,7 +210,7 @@ const PostRide = ({ route, navigation }) => {
         setSubmitDisabled(false);
     }
 
-    const onShare = async () => {
+    const onShare = async  function () {
         const shareMsg = "Hey! Join my carpool on Seaats and save money commuting! https://seaats.app/joinride/" + rideId;
         try {
             const result = await Share.share({
@@ -261,7 +261,7 @@ const PostRide = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName={t('post_ride')} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.wrapper} contentContainerStyle={styles.flexGrow}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.wrapper} contentContainerStyle={styles.flexGrow}>
                 <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.defaultPadding]}>
                     {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
@@ -327,7 +327,7 @@ const PostRide = ({ route, navigation }) => {
                                                 placeholder={t('time')}
                                                 value={values.timeInput.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                                 textColor={palette.black}
-                                                onPressIn={() => {
+                                                onPressIn={ function () {
                                                     setFieldTouched('timeInput', true);
                                                     setTimePickerOpen(true)
                                                 }}
@@ -349,7 +349,7 @@ const PostRide = ({ route, navigation }) => {
                                                     time.setMilliseconds(0);
                                                     setFieldValue('timeInput', time);
                                                 }}
-                                                onCancel={() => {
+                                                onCancel={ function () {
                                                     setTimePickerOpen(false)
                                                 }}
                                             />
@@ -408,10 +408,10 @@ const PostRide = ({ route, navigation }) => {
                                             <Text style={[styles.text, styles.inputText]}>{t('allow_pickup')}</Text>
 
                                             <View style={[styles.flexRow, styles.w100, styles.mv10]}>
-                                                <TouchableOpacity onPress={() => { setPickupEnabled(true) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: pickupEnabled ? palette.primary : palette.dark }]}>
+                                                <TouchableOpacity onPress={ function () { setPickupEnabled(true) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: pickupEnabled ? palette.primary : palette.dark }]}>
                                                     <Text style={[styles.text, postRideStyles.genderText]}>{t('yes')}</Text>
                                                 </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => { setPickupEnabled(false) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: !pickupEnabled ? palette.primary : palette.dark }]}>
+                                                <TouchableOpacity onPress={ function () { setPickupEnabled(false) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: !pickupEnabled ? palette.primary : palette.dark }]}>
                                                     <Text style={[styles.text, postRideStyles.genderText]}>{t('no')}</Text>
                                                 </TouchableOpacity>
                                             </View>
@@ -451,7 +451,7 @@ const PostRide = ({ route, navigation }) => {
                                                     <CustomTextInput
                                                         placeholder={t('select_car')}
                                                         value={carSelectorText}
-                                                        onPressIn={() => {
+                                                        onPressIn={ function () {
                                                             setCarSelectorOpen(true);
                                                         }}
                                                         role="button"
@@ -466,16 +466,16 @@ const PostRide = ({ route, navigation }) => {
                                                     <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                                         {
                                                             userStore.gender === "FEMALE" &&
-                                                            <TouchableOpacity onPress={() => { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
+                                                            <TouchableOpacity onPress={ function () { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.dark }]}>
                                                                 <Text style={[styles.text, postRideStyles.genderText]}>{t('female_only')}</Text>
                                                             </TouchableOpacity>
                                                         }
-                                                        <TouchableOpacity onPress={() => { setGenderChoice('ANY') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
+                                                        <TouchableOpacity onPress={ function () { setGenderChoice('ANY') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.dark }]}>
                                                             <Text style={[styles.text, postRideStyles.genderText]}>{t('any')}</Text>
                                                         </TouchableOpacity>
                                                         {
                                                             userStore.gender === "MALE" &&
-                                                            <TouchableOpacity onPress={() => { setGenderChoice('MALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
+                                                            <TouchableOpacity onPress={ function () { setGenderChoice('MALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.dark }]}>
                                                                 <Text style={[styles.text, postRideStyles.genderText]}>{t('male_only')}</Text>
                                                             </TouchableOpacity>
                                                         }
@@ -486,7 +486,7 @@ const PostRide = ({ route, navigation }) => {
                                                     <CustomTextInput
                                                         placeholder={t('select_community')}
                                                         value={communitySelectorText}
-                                                        onPressIn={() => {
+                                                        onPressIn={ function () {
                                                             setFieldTouched('communityInput', true)
                                                             setCommunitySelectorOpen(true);
                                                         }}
@@ -506,7 +506,7 @@ const PostRide = ({ route, navigation }) => {
                                                             name={data.name}
                                                             picture={data.picture}
                                                             minified={true}
-                                                            onPress={() => {
+                                                            onPress={ function () {
                                                                 setFieldValue('communityInput', data);
                                                                 handleBlur('communityInput');
                                                                 selectCommunity(data);
@@ -517,7 +517,7 @@ const PostRide = ({ route, navigation }) => {
                                                 })}
                                             </BottomModal>
 
-                                            <BottomModal onHide={() => { setRidePosted(false); navigation.goBack(); }} modalVisible={ridePosted}>
+                                            <BottomModal onHide={ function () { setRidePosted(false); navigation.goBack(); }} modalVisible={ridePosted}>
                                                 <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
                                                     <SuccessCheck width={100} height={100} />
                                                     <Text style={[styles.text, styles.headerText3, styles.primary, styles.freeSans]}>Ride Posted</Text>
@@ -538,7 +538,7 @@ const PostRide = ({ route, navigation }) => {
                                                             color={data.color}
                                                             licensePlateLetters={data.licensePlateLetters}
                                                             licensePlateNumbers={data.licensePlateNumbers}
-                                                            onPress={() => {
+                                                            onPress={ function () {
                                                                 // setFieldValue('carInput', data);
                                                                 setCarInput(data);
                                                                 handleBlur('carInput');
@@ -548,7 +548,7 @@ const PostRide = ({ route, navigation }) => {
                                                     );
                                                 })}
 
-                                                <TouchableOpacity onPress={() => { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, ...styles.flexRow, alignItems: 'center' }}>
+                                                <TouchableOpacity onPress={ function () { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, ...styles.flexRow, alignItems: 'center' }}>
                                                     <MaterialIcons name="add" size={18} color={palette.black} />
                                                     <Text style={[styles.text, { fontSize: 14, fontWeight: '600' }]}>{t('add_new_car')}</Text>
                                                 </TouchableOpacity>

@@ -47,7 +47,7 @@ const CommunitySettings = ({ route, navigation }) => {
 
     const handleSubmit = (description, privacy, joinQuestion) => {
         setSubmitDisabled(true);
-        updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack()).catch(console.error).finally(() => {
+        updateCommunity(communityId, description, privacy, communityPhoto, joinQuestion).then(() => navigation.goBack()).catch(console.error).finally( function () {
             setSubmitDisabled(false);
         });
     };
@@ -67,7 +67,7 @@ const CommunitySettings = ({ route, navigation }) => {
     return (
         <>
             <ScreenWrapper screenName={t('community_settings')} navType="back" navAction={navigation.goBack}>
-                <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     {
                         owner &&
                         <>

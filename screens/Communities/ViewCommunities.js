@@ -30,17 +30,17 @@ const ViewCommunities = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
     const { id } = useUserStore();
 
-    const onRefresh = async () => {
+    const onRefresh = async  function () {
         setRefreshing(true);
         await loadFeed();
         setRefreshing(false);
     };
 
-    useEffect(() => {
+    useEffect( function () {
         loadFeed();
     }, []);
 
-    const loadFeed = async () => {
+    const loadFeed = async  function () {
         setLoading(true);
         const communitiesData = await communitiesAPI.getCommunities();
         if (communitiesData.length !== 0) {
@@ -55,11 +55,11 @@ const ViewCommunities = ({ navigation, route }) => {
     };
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -73,7 +73,7 @@ const ViewCommunities = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('communities')}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  >
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  >
                 {
                     !loading &&
                     <>

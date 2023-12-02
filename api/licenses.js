@@ -36,7 +36,7 @@ export const uploadLicense = async (licenseBody) => {
     }
 };
 
-export const getLicense = async () => {
+export const getLicense = async  function () {
     const url = `/v1/user/license`;
     const uid = useUserStore.getState().id;
     const params = {

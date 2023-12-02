@@ -30,7 +30,7 @@ const AllTrips = ({ navigation, route }) => {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
 
         updateRides();
@@ -51,7 +51,7 @@ const AllTrips = ({ navigation, route }) => {
         });
     }, []);
 
-    const updateRides = () => {
+    const updateRides =  function () {
         ridesAPI.pastRides(3, page).then(
             data => {
                 let newNextRides = nextRides;
@@ -73,7 +73,7 @@ const AllTrips = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('all_trips')} navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
                     <>
@@ -84,7 +84,7 @@ const AllTrips = ({ navigation, route }) => {
                         {driverElement && driverMainTextTo &&
                             <LinearGradient style={[styles.mt20, styles.w100, styles.br8]} colors={[palette.primary, palette.secondary]}>
                                 <TouchableOpacity style={[styles.rideView, styles.pv8, styles.ph16, styles.flexOne, styles.alignCenter, styles.justifyStart, styles.flexRow, styles.bgTransparent]}
-                                    onPress={() => { viewTrip(driverTripId); }}>
+                                    onPress={ function () { viewTrip(driverTripId); }}>
                                     <Text style={[styles.text, styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
 
                                     <View>
@@ -125,7 +125,7 @@ const AllTrips = ({ navigation, route }) => {
                                         gender={data.gender}
                                         date={nextRideDate}
                                         style={allTripsStyle.availableRide}
-                                        onPress={() => { viewTrip(data.id); }} />
+                                        onPress={ function () { viewTrip(data.id); }} />
                                 );
                             })
                         }

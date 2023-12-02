@@ -2,7 +2,7 @@ import useAxiosManager from '../context/axiosManager';
 import useUserStore from './accountAPI';
 
 
-export const getCommunities = async () => {
+export const getCommunities = async  function () {
     const url = `/v1/community/communities`;
 
     try {
@@ -33,7 +33,7 @@ export const communitiesFeed = async (communityId, page=1) => {
     }
 };
 
-export const myCommunities = async () => {
+export const myCommunities = async  function () {
     const url = `/v1/community/mycommunities`;
     const uid = useUserStore.getState().id;
 

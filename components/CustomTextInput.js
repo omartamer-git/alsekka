@@ -60,6 +60,7 @@ const CustomTextInput = ({ value,
                     placeholderTextColor={palette.light}
                     ref={inputRef}
                     onKeyPress={onKeyPress}
+                    textContentType={secureTextEntry ? 'oneTimeCode' : 'none'}
                     onFocus={onPressIn_}
                     numberOfLines={1}
                     returnKeyType={returnKeyType}
@@ -81,7 +82,7 @@ CustomTextInput.defaultProps = {
     editable: true,
     selectTextOnFocus: false,
     secureTextEntry: false,
-    onPressIn: () => { },
+    onPressIn:  function () { },
 };
 
 const styles2 = StyleSheet.create({

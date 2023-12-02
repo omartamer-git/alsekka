@@ -32,12 +32,12 @@ const Otp = ({ route, navigation }) => {
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
 
-    const clockTick = () => {
+    const clockTick =  function () {
         isVerified(phone).then(response => {
             if (response === true) {
                 if (onVerify === 'login') {
                     createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
-                        login(phone, password).then(() => {
+                        login(phone, password).then( function () {
                             navigation.popToTop();
                             navigation.replace("LoggedIn", {
                                 screen: 'TabScreen',
@@ -67,19 +67,19 @@ const Otp = ({ route, navigation }) => {
     const [time, setTime] = useState(0);
     const [triggerCountdown, setTriggerCountdown] = useState(false);
 
-    useEffect(() => {
+    useEffect( function () {
         if(!triggerCountdown) return;
-        const timer = setTimeout(() => {
+        const timer = setTimeout( function () {
             clockTick();
             setTime(time + 1);
         }, 5000);
-        return () => {
+        return  function () {
             clearTimeout(timer);
         };
     }, [triggerCountdown, time])
 
 
-    const resendOtp = () => {
+    const resendOtp =  function () {
         console.log('hello ' + phone);
         getOtp(phone).then((response) => {
             console.log('resp');
@@ -93,20 +93,20 @@ const Otp = ({ route, navigation }) => {
         });
     };
 
-    const openWhatsapp = () => {
+    const openWhatsapp =  function () {
         Linking.openURL(uri);
     };
 
-    useEffect(() => {
+    useEffect( function () {
         resendOtp();
     }, [])
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -119,7 +119,7 @@ const Otp = ({ route, navigation }) => {
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={() => { navigation.goBack() }} lip={false}>
+        <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={ function () { navigation.goBack() }} lip={false}>
             <View style={[styles.bgPrimary, styles.w100, styles.p24]}>
                 <Text style={[styles.text, styles.white, styles.bold, styles.font28]}>
                     {t('verification_code')}
@@ -134,7 +134,7 @@ const Otp = ({ route, navigation }) => {
             <View style={[styles.w100, styles.bgPrimary, { height: 48 }]}>
                 <View style={[styles.w100, styles.bgLightGray, styles.h100, { borderTopLeftRadius: 16, borderTopRightRadius: 16 }]} />
             </View>
-            <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle]}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle]}>
                 <Button disabled={!uri} onPress={openWhatsapp} bgColor={palette.success} textColor={palette.white} text="Verify Using WhatsApp" />
             </ScrollView>
         </ScreenWrapper>

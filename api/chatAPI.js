@@ -65,7 +65,7 @@ export const chatHistory = async (receiver) => {
     return data;
 };
 
-export const csChatHistory = async () => {
+export const csChatHistory = async  function () {
     const url = `/v1/chat/cschathistory`;
 
     const axiosManager = useAxiosManager.getState();
@@ -86,7 +86,7 @@ export const findNewMessages = async (receiver) => {
     return data;
 };
 
-export const findNewCSMessages = async () => {
+export const findNewCSMessages = async  function () {
     const newMessagesUrl = `/v1/chat/newcsmessages`;
 
     const axiosManager = useAxiosManager.getState();
@@ -95,7 +95,7 @@ export const findNewCSMessages = async () => {
     return data;
 }
 
-export const getChats = async () => {
+export const getChats = async  function () {
     const uid = useUserStore.getState().id;
     const url = `/v1/chat/chats`;
     const params = {

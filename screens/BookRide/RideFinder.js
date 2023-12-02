@@ -45,7 +45,7 @@ const RideFinder = ({ route, navigation }) => {
 
 
 
-    useEffect(() => {
+    useEffect( function () {
         fromRef.current.setCompletionText(textFrom);
         toRef.current.setCompletionText(textTo);
 
@@ -59,7 +59,7 @@ const RideFinder = ({ route, navigation }) => {
             );
     }, [fromLng, fromLat, toLng, toLat, date, genderChoice]);
 
-    const scrollToHour = () => {
+    const scrollToHour =  function () {
         if(scrollViewRef.current && availableRides && availableRides.length > 0) {
             const hour = new Date(availableRides[0].datetime).getHours();
 
@@ -81,11 +81,11 @@ const RideFinder = ({ route, navigation }) => {
 
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -95,7 +95,7 @@ const RideFinder = ({ route, navigation }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const swapDestinations = () => {
+    const swapDestinations =  function () {
         const oldFromLng = fromLng;
         const oldFromLat = fromLat;
         const oldTextFrom = textFrom;
@@ -126,7 +126,7 @@ const RideFinder = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={rideFinderStyles.autoCompletePair}>
                     <AutoComplete ref={fromRef} key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[{ marginTop: 0, marginBottom: 0, borderBottomWidth: 0.5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }, styles.borderLight, styles.bgWhite]} />
                     <AutoComplete ref={toRef} key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[{ marginTop: 0, marginBottom: 0, borderTopWidth: 0.5, borderTopRightRadius: 0, borderTopLeftRadius: 0 }, styles.borderLight, styles.bgWhite]} />
@@ -138,12 +138,12 @@ const RideFinder = ({ route, navigation }) => {
 
                 <Text style={[styles.text, styles.headerText3, styles.black, styles.mt20]}>{t('available_rides')}</Text>
                 {!loading && availableRides.length > 0 &&
-                    <ScrollView horizontal={true} style={[{ flexGrow: 0 }, styles.mt5]} showsHorizontalScrollIndicator={false} ref={scrollViewRef} onLayout={scrollToHour}>
+                    <ScrollView keyboardShouldPersistTaps={'handled'} horizontal={true} style={[{ flexGrow: 0 }, styles.mt5]} showsHorizontalScrollIndicator={false} ref={scrollViewRef} onLayout={scrollToHour}>
                         {
                             Array.from({ length: 24 }).map((a, i) => {
                                 const hourNumber = (new Date(availableRides[0].datetime)).getHours();
 
-                                const getTimeFromIndex = () => {
+                                const getTimeFromIndex =  function () {
                                     let ampm = "AM";
                                     let time = i;
 

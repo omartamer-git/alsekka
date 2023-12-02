@@ -34,11 +34,11 @@ const AddCard = ({ navigation, route }) => {
     const {addCard} = useUserStore();
 
     if(Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -108,13 +108,13 @@ const AddCard = ({ navigation, route }) => {
         return newCardNumber;
     }
 
-    const addNewCard = () => {
+    const addNewCard =  function () {
         setSubmitDisabled(true);
         addCard(cardNumber.replace(/\s+/g, ''), expiryDate, cardholderName).then(data => {
             navigation.goBack();
         }).catch(err => {
             setErrorMessage(err.response.data.error.message);
-        }).finally(() => {
+        }).finally( function () {
             setSubmitDisabled(false);
         });
     };
@@ -145,8 +145,8 @@ const AddCard = ({ navigation, route }) => {
 
 
     return (
-        <ScreenWrapper screenName={t('add_card')} navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+        <ScreenWrapper screenName={t('add_card')} navType="back" navAction={ function () { navigation.goBack() }}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <LinearGradient colors={[palette.secondary, palette.accent]} style={addCardStyles.card}>
                     <Text adjustsFontSizeToFit
                         numberOfLines={1}
@@ -167,7 +167,7 @@ const AddCard = ({ navigation, route }) => {
                 <Formik
                     initialValues={{ cardNumberInput: '', cardHolderNameInput: '', expiryDateInput: '' }}
                     validationSchema={cardValidation}
-                    onSubmit={() => { addNewCard() }}
+                    onSubmit={ function () { addNewCard() }}
                 >
                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, isValid, touched }) => (
                         <>

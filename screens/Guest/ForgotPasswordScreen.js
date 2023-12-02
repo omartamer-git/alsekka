@@ -35,11 +35,11 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
     };
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -55,7 +55,7 @@ const ForgotPasswordScreen = ({ route, navigation }) => {
     return (
         <View style={styles.backgroundStyle}>
             <SafeAreaView>
-                <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
+                <HeaderView navType="back" borderVisible={false} action={ function () { navigation.goBack() }}>
                     <View style={styles.localeWrapper}>
                         <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                         <Text style={[styles.text, styles.locale]}>EN</Text>

@@ -41,11 +41,11 @@ const SearchCommunities = ({ navigation, route }) => {
 
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -63,7 +63,7 @@ const SearchCommunities = ({ navigation, route }) => {
             <View style={[styles.defaultPadding]}>
                 <CustomTextInput placeholder={t('search_for_community')} iconLeft="search" value={searchText} onChangeText={onChangeText} keyboardType="web-search" />
             </View>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     communities && communities.map((data, index) => {
                         return (

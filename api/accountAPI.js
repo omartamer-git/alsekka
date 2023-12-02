@@ -38,7 +38,7 @@ const useUserStore = create((set) => ({
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
     setGender: (gender) => set((state) => ({ gender: gender })),
 
-    reset: async () => {
+    reset: async  function () {
         set(
             (state) => (
                 {
@@ -101,7 +101,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    userInfo: async (uid) => {
+    userInfo: async  function () {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/userinfo`, {
@@ -119,6 +119,24 @@ const useUserStore = create((set) => ({
         appManager.setVerificationsDisabled(data.verificationsDisabled);
 
         return data;
+    },
+
+    linkDevice: async (deviceToken) => {
+        try {
+            console.log(deviceToken);
+            const body = {
+                deviceToken: deviceToken
+            };
+
+            const axiosManager = useAxiosManager.getState();
+            const response = await axiosManager.authAxios.post(`/v1/user/linkdevice`, body, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        } catch(e) {
+            console.log(deviceToken);
+        }
     },
 
     createAccount: async (firstName, lastName, phoneNum, email, password, gender) => {
@@ -153,7 +171,7 @@ const useUserStore = create((set) => ({
         return response;
     },
 
-    getAvailableCards: async () => {
+    getAvailableCards: async  function () {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/wallet`);
 
@@ -162,7 +180,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    getBankAccounts: async () => {
+    getBankAccounts: async  function () {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/banks`);
 
@@ -171,7 +189,7 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    getMobileWallets: async () => {
+    getMobileWallets: async  function () {
         const axiosManager = useAxiosManager.getState();
         const response = await axiosManager.authAxios.get(`/v1/user/mobilewallets`);
 

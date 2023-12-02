@@ -121,6 +121,7 @@
         "view_all_trips": "View All Trips",
         "read_more": "Read More...",
         "pickup_point": "Pickup Point",
+        "is_picking_up": "is picking you up",
         "destination": "Destination",
         "select_car": "Select a Car",
         "add_new_car": "Add New Car",
@@ -297,6 +298,9 @@
         "driver_popup_text": "Start saving money with Seaats today. All you have to do is sign up as a car owner, and save money on your daily commute. It will only take you a few seconds!",
         "driver_popup_cta": "Start Saving Now",
         "driver_popup_d1": "You will probably need this someday.",
-        "driver_popup_d2": "Do it now instead!"
+        "driver_popup_d2": "Do it now instead!",
+        "favorite_destinations": "Favorites",
+        "recent_destinations": "Recent",
+        "update_booking": "Update Booking"
     }
 }

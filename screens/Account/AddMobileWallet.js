@@ -30,7 +30,7 @@ const AddMobileWallet = ({ navigation, route }) => {
             navigation.goBack();
         }).catch(err => {
             setAddWalletError(err.response.data.error.message);
-        }).finally(() => {
+        }).finally( function () {
             setSubmitDisabled(false);
         });
     }
@@ -44,11 +44,11 @@ const AddMobileWallet = ({ navigation, route }) => {
     );
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -61,7 +61,7 @@ const AddMobileWallet = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('add_wallet')} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, { alignItems: 'flex-start' }]}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle, { alignItems: 'flex-start' }]}>
                 <ErrorMessage message={addWalletError} condition={addWalletError} />
                 <Formik
                     initialValues={{ phoneInput: '' }}

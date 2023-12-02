@@ -3,7 +3,7 @@ import { I18nManager, Image, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, styles } from '../helper';
 
-const CommunityCard = ({ name, picture, description, minified = false, privacy = {}, style = {}, onPress = () => { } }) => {
+const CommunityCard = ({ name, picture, description, minified = false, privacy = {}, style = {}, onPress =  function () { } }) => {
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.9} style={[styles.w100, styles.p16, styles.border1, styles.br8, styles.borderLight, styles.flexRow, styles.bgWhite, style]}>
             <View style={[styles.flexRow, styles.flexOne]}>

@@ -16,12 +16,12 @@ const ArrowButton = ({ text, onPress, bgColor, disabled, textColor, style, icon,
             onPress={onPress}
             disabled={disabled}
         >
-            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={13 * rem} color={iconColor} />}
+            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={13 * rem} color={disabled ? palette.light : iconColor} />}
             <View style={[styles2.viewStyle, icon ? {} : { marginEnd: 20 }]}>
-                { text && <Text style={[styles2.continueBtnText, styles2.text, { color: textColor }]}>{text}</Text> }
+                { text && <Text style={[styles2.continueBtnText, styles2.text, { color: disabled ? palette.light : textColor }]}>{text}</Text> }
             </View>
             <View style={{alignItems: 'flex-end'}}>
-                <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={13 * rem} color={iconColor || palette.black} />
+                <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={13 * rem} color={disabled ? palette.light : iconColor || palette.black} />
             </View>
         </TouchableOpacity>
     );

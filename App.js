@@ -9,13 +9,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-gesture-handler';
 
 
+import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import messaging from '@react-native-firebase/messaging';
 import { PermissionsAndroid } from 'react-native';
-import notifee from '@notifee/react-native';
 
+import { requestTrackingPermission } from 'react-native-tracking-transparency';
 import Account from './screens/Account/Account';
 import Wallet from './screens/Account/Wallet';
 import BookRide from './screens/BookRide/BookRide';
@@ -28,12 +28,13 @@ import UserHome from './screens/HomeScreen/UserHome';
 import PostRide from './screens/PostRide/PostRide';
 import ViewTrip from './screens/PostRide/ViewTrip';
 import ManageTrip from './screens/Rides/ManageTrip';
-import { requestTrackingPermission } from 'react-native-tracking-transparency';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { I18nManager, NativeModules, Platform, StatusBar, TextInput, View } from 'react-native';
 import * as Keychain from 'react-native-keychain';
+import RNRestart from 'react-native-restart'; // Import package from node modules
 import useUserStore from './api/accountAPI';
 import useAuthManager from './context/authManager';
 import { palette, rem, styles } from './helper';
@@ -43,9 +44,14 @@ import AddMobileWallet from './screens/Account/AddMobileWallet';
 import ManageCars from './screens/Account/ManageCars';
 import NewCar from './screens/Account/NewCar';
 import Otp from './screens/Account/Otp';
+import Referral from './screens/Account/Referral';
 import SubmitDriverDocuments from './screens/Account/SubmitDriverDocuments';
+import Withdraw from './screens/Account/Withdraw';
 import Chat from './screens/Chat/Chat';
 import ChatsList from './screens/Chat/ChatsList';
+import CommunityMembers from './screens/Communities/CommunityMembers';
+import CommunitySettings from './screens/Communities/CommunitySettings';
+import NewCommunity from './screens/Communities/NewCommunity';
 import SearchCommunities from './screens/Communities/SearchCommunities';
 import ViewCommunities from './screens/Communities/ViewCommunities';
 import ViewCommunity from './screens/Communities/ViewCommunity';
@@ -54,32 +60,22 @@ import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
 import Announcement from './screens/HomeScreen/Announcement';
 import AllTrips from './screens/Rides/AllTrips';
 import Checkout from './screens/Rides/Checkout';
-import Referral from './screens/Account/Referral';
-import NewCommunity from './screens/Communities/NewCommunity';
-import CommunitySettings from './screens/Communities/CommunitySettings';
-import CommunityMembers from './screens/Communities/CommunityMembers';
-import Withdraw from './screens/Account/Withdraw';
-import { I18nManager, NativeModules, Platform, StatusBar, TextInput, View } from 'react-native';
-import RNRestart from 'react-native-restart'; // Import package from node modules
 
-import Button from './components/Button';
-import { Text } from 'react-native';
-import useLocale from './locale/localeContext';
-import './locale/translate';
-import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
-import CustomerService from './screens/Chat/CustomerService';
-import SplashScreen from 'react-native-splash-screen';
-import AddReferral from './screens/Account/AddReferral';
+import { useTranslation } from 'react-i18next';
+import { Text } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { Notifications } from 'react-native-notifications';
+import SplashScreen from 'react-native-splash-screen';
+import SpInAppUpdates, {
+  IAUUpdateKind
+} from 'sp-react-native-in-app-updates';
 import { registerDevice } from './api/utilAPI';
 import useAppManager from './context/appManager';
-import SpInAppUpdates, {
-  NeedsUpdateResponse,
-  IAUUpdateKind,
-  StartUpdateOptions,
-} from 'sp-react-native-in-app-updates';
-import DeviceInfo from 'react-native-device-info';
+import useLocale from './locale/localeContext';
+import './locale/translate';
+import AddReferral from './screens/Account/AddReferral';
+import CustomerService from './screens/Chat/CustomerService';
 
 
 const RootStack = createNativeStackNavigator();
@@ -96,7 +92,7 @@ const CommunityStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const App = () => {
+function App() {
   const { t, i18n } = useTranslation();
 
   const authManager = useAuthManager();
@@ -142,7 +138,7 @@ const App = () => {
   TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
 
 
-  useEffect(() => {
+  useEffect( function () {
     if (Platform.OS === 'android') {
       SplashScreen.hide();
     }
@@ -175,7 +171,7 @@ const App = () => {
 
   }, []);
 
-  useEffect(() => {
+  useEffect( function () {
     if (Platform.OS === 'ios') {
       requestTrackingPermission();
       Notifications.registerRemoteNotifications();
@@ -211,7 +207,7 @@ const App = () => {
     } else {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
-      messaging().requestPermission().then(() => {
+      messaging().requestPermission().then( function () {
         // Get the device token
         messaging()
           .getToken()
@@ -224,34 +220,21 @@ const App = () => {
             console.error('Error getting device token:', error);
           });
       });
-
-
-      // messaging().setBackgroundMessageHandler(async remoteMessage => {
-      //   console.log('Message handled in the background!', remoteMessage);
-      // });
-
-      // const unsubscribe = messaging().onMessage(async remoteMessage => {
-      //   console.log(remoteMessage);
-      //   notifee.displayNotification(remoteMessage.data.notifee);
-      //   console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      // });
-
-      // return unsubscribe;
     }
 
   }, []);
 
-  useEffect(() => {
+  useEffect( function () {
     const inAppUpdates = new SpInAppUpdates(
       true // isDebug
     );
     // curVersion is optional if you don't provide it will automatically take from the app using react-native-device-info
-    inAppUpdates.checkNeedsUpdate().then(async (result) => {      
+    inAppUpdates.checkNeedsUpdate().then(async (result) => {
       if (result.shouldUpdate) {
-        
+
         const versionData = await appManager.getVersionData();
         let forceUpgrade = false;
-        if(versionData.minVersion > DeviceInfo.getVersion()) {
+        if (versionData.minVersion > DeviceInfo.getVersion()) {
           forceUpgrade = true;
         }
         let updateOptions = {
@@ -269,7 +252,7 @@ const App = () => {
   }, []);
 
 
-  const loadJWT = useCallback(async () => {
+  const loadJWT = useCallback(async  function () {
     try {
       const value = await Keychain.getGenericPassword();
       console.log("KCVAL" + value);
@@ -301,10 +284,21 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect( function () {
     appManager.getAllowedEmails();
+  }, [])
+
+  useEffect( function () {
+    // if (appManager.deviceToken) {
     loadJWT()
+    // }
   }, [loadJWT]);
+
+  useEffect( function () {
+    if (appManager.deviceToken && userStore.id) {
+      userStore.linkDevice(appManager.deviceToken);
+    }
+  }, [appManager.deviceToken, userStore.id])
 
   if (state === 'LOADING') {
     return (
@@ -313,7 +307,7 @@ const App = () => {
         <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
         { fontSize: 75 * rem }
         ]
-        }>seaats</Text>
+        }>{t('seaats')}</Text>
       </View>
     );
   } else {
@@ -356,6 +350,9 @@ const LoggedInHome = ({ route, navigation }) => {
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
+          tabBarLabel: () => (
+            <Text style={[styles.text, styles.dark, styles.font10]}>{t('home')}</Text>
+          ),
           title: t('home')
         }} />
       <Tab.Screen name="Find Rides" component={BookRideNavigator}
@@ -363,6 +360,9 @@ const LoggedInHome = ({ route, navigation }) => {
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="search" size={size} color={color} />
+          ),
+          tabBarLabel: () => (
+            <Text style={[styles.text, styles.dark, styles.font10]}>{t('find_rides')}</Text>
           ),
           title: t('find_rides')
         }} />
@@ -372,6 +372,10 @@ const LoggedInHome = ({ route, navigation }) => {
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="directions-car" size={size} color={color} />);
           },
+          tabBarLabel: () => (
+            <Text style={[styles.text, styles.dark, styles.font10]}>{t('post_ride')}</Text>
+          ),
+
           title: t('post_ride')
         }} />
       <Tab.Screen name="Communities" component={CommunityNavigator}
@@ -380,6 +384,9 @@ const LoggedInHome = ({ route, navigation }) => {
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="forum" size={size} color={color} />);
           },
+          tabBarLabel: () => (
+            <Text style={[styles.text, styles.dark, styles.font10]}>{t('communities')}</Text>
+          ),
           title: t('communities')
         }} />
       <Tab.Screen name="Account" component={AccountNavigator}
@@ -388,6 +395,9 @@ const LoggedInHome = ({ route, navigation }) => {
           tabBarIcon: ({ color, size }) => {
             return (<MaterialIcons name="person" size={size} color={color} />);
           },
+          tabBarLabel: () => (
+            <Text style={[styles.text, styles.dark, styles.font10]}>{t('account')}</Text>
+          ),
           title: t('account')
         }} />
 

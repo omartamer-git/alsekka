@@ -58,7 +58,7 @@ export default function NewCommunity({ navigation, route }) {
 
     return (
         <ScreenWrapper screenName={t('new_community')} navType='back' navAction={navigation.goBack}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Formik
                     initialValues={{ communityNameInput: '', communityDescriptionInput: '', communityPrivacyInput: 0, joinQuestionInput: '' }}
                     onSubmit={(values) => { handleSubmit(values.communityNameInput, values.communityDescriptionInput, values.communityPrivacyInput, values.joinQuestionInput) }}

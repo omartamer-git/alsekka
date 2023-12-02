@@ -35,7 +35,7 @@ const SignUpScreen = ({ route, navigation }) => {
 
   const userStore = useUserStore();
 
-  useEffect(() => {
+  useEffect( function () {
 
   }, []);
 
@@ -79,11 +79,11 @@ const SignUpScreen = ({ route, navigation }) => {
   });
 
   if (Platform.OS === 'ios') {
-    const onFocusEffect = useCallback(() => {
+    const onFocusEffect = useCallback( function () {
       // This should be run when screen gains focus - enable the module where it's needed
       AvoidSoftInput.setShouldMimicIOSBehavior(true);
       AvoidSoftInput.setEnabled(true);
-      return () => {
+      return  function () {
         // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
         AvoidSoftInput.setEnabled(false);
         AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -98,7 +98,7 @@ const SignUpScreen = ({ route, navigation }) => {
   return (
     <View style={styles.backgroundStyle} >
       <SafeAreaView>
-        <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
+        <HeaderView navType="back" borderVisible={false} action={ function () { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
             <Text style={[styles.text, styles.locale]}>EN</Text>
@@ -106,7 +106,7 @@ const SignUpScreen = ({ route, navigation }) => {
         </HeaderView>
       </SafeAreaView>
 
-      <ScrollView style={styles.wrapper} contentContainerStyle={[styles.flexGrow, { paddingBottom: 40 }]}>
+      <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.wrapper} contentContainerStyle={[styles.flexGrow, { paddingBottom: 40 }]}>
         <View style={[styles.defaultPadding, styles.headerTextMargins]}>
           <Text style={[styles.text, styles.headerText, styles.white]}>{t('sign_up')}</Text>
         </View>
@@ -200,7 +200,7 @@ const SignUpScreen = ({ route, navigation }) => {
                     </View>
 
                     <Text style={[styles.text, styles.mt5, styles.smallText, styles.dark]}>
-                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={() => { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
+                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={ function () { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={ function () { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
                     </Text>
 
 

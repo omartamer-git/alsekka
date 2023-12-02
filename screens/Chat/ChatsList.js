@@ -21,7 +21,7 @@ const ChatsList = ({ navigation, route }) => {
     const [chats, setChats] = useState(null);
     const [loading, setLoading] = useState(true);
     const userStore = useUserStore();
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         chatAPI.getChats().then((data) => {
             setChats(data);
@@ -34,11 +34,11 @@ const ChatsList = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('messages')} navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
                     <>
-                        <TouchableOpacity onPress={() => { navigation.navigate('Customer Service') }} activeOpacity={0.9} key={"chat_cs"} style={{ ...styles.flexRow, justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
+                        <TouchableOpacity onPress={ function () { navigation.navigate('Customer Service') }} activeOpacity={0.9} key={"chat_cs"} style={{ ...styles.flexRow, justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
                             <Image source={{ uri: 'https://storage.googleapis.com/alsekka_profile_pics/customer_service.png' }} width={60} height={60} style={{ borderRadius: 60 / 2, borderWidth: 1, borderColor: palette.accent }} />
                             <View style={[styles.flexRow, styles.flexOne, styles.spaceBetween, styles.alignCenter]}>
                                 <Text style={[styles.text, styles.ml10, styles.semiBold, styles.font18]}>{t('customer_service')}</Text>
@@ -52,7 +52,7 @@ const ChatsList = ({ navigation, route }) => {
                                 const secondParty = data.Sender === null ? data.Receiver : data.Sender;
                                 console.log(secondParty);
                                 return (
-                                    <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: data.senderId == userStore.id ? data.receiverId : data.senderId }) }} activeOpacity={0.9} key={"chat" + index} style={{ ...styles.flexRow, justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
+                                    <TouchableOpacity onPress={ function () { navigation.navigate('Chat', { receiver: data.senderId == userStore.id ? data.receiverId : data.senderId }) }} activeOpacity={0.9} key={"chat" + index} style={{ ...styles.flexRow, justifyContent: 'flex-start', alignItems: 'center', width: '100%', paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderColor: palette.light }}>
                                         <Image source={{ uri: secondParty.profilePicture }} width={60} height={60} style={{ borderRadius: 60 / 2, borderWidth: 1, borderColor: palette.accent }} />
                                         <View style={[styles.flexRow, styles.flexOne, styles.spaceBetween, styles.alignCenter]}>
                                             <Text style={[styles.text, styles.ml10, styles.semiBold, styles.font18]}>{secondParty.firstName} {secondParty.lastName}</Text>

@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
   View
 } from 'react-native';
-import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { AvoidSoftInput, AvoidSoftInputView } from 'react-native-avoid-softinput';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
@@ -57,7 +57,7 @@ const LoginScreen = ({ route, navigation }) => {
       }).catch(err => {
         console.log(err);
         setErrorMessage(err.response.data.error.message);
-      }).finally(() => {
+      }).finally( function () {
         setSubmitDisabled(false);
       });
   };
@@ -71,28 +71,39 @@ const LoginScreen = ({ route, navigation }) => {
     passwordInput: Yup.string().min(0, t('error_password')).required(t('error_required')),
   });
 
-  if (Platform.OS === 'ios') {
-    const onFocusEffect = useCallback(() => {
-      // This should be run when screen gains focus - enable the module where it's needed
-      AvoidSoftInput.setShouldMimicIOSBehavior(true);
-      AvoidSoftInput.setEnabled(true);
-      return () => {
-        // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
-        AvoidSoftInput.setEnabled(false);
-        AvoidSoftInput.setShouldMimicIOSBehavior(false);
-      };
-    }, []);
+  // const onFocusEffect = useCallback( function () {
+  //   if (Platform.OS === 'ios') {
 
-    useFocusEffect(onFocusEffect); // register callback to focus events    
-  }
+  //     // This should be run when screen gains focus - enable the module where it's needed
+  //     AvoidSoftInput.setShouldMimicIOSBehavior(true);
+  //     AvoidSoftInput.setEnabled(true);
+  //     return  function () {
+  //       // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+  //       AvoidSoftInput.setEnabled(false);
+  //       AvoidSoftInput.setShouldMimicIOSBehavior(false);
+  //     };
+  //   }
 
+  // }, []);
 
+  const onFocusEffect = React.useCallback( function () {
+    if (Platform.OS === 'android') return;
+    // This should be run when screen gains focus - enable the module where it's needed
+    AvoidSoftInput.setEnabled(true);
+    AvoidSoftInput.setShouldMimicIOSBehavior(true);
+    return  function () {
+      // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+      AvoidSoftInput.setEnabled(false);
+      AvoidSoftInput.setShouldMimicIOSBehavior(false);
+    };
+  }, []);
 
+  useFocusEffect(onFocusEffect); // register callback to focus events
 
   return (
     <View style={styles.backgroundStyle}>
       <SafeAreaView>
-        <HeaderView navType="back" borderVisible={false} action={() => { navigation.goBack() }}>
+        <HeaderView navType="back" borderVisible={false} action={ function () { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
             <Text style={[styles.text, styles.locale]}>EN</Text>
@@ -156,8 +167,9 @@ const LoginScreen = ({ route, navigation }) => {
                 )}
               </Formik>
 
+
               <TouchableWithoutFeedback
-                onPress={() => {
+                onPress={ function () {
                   navigation.navigate('Forgot Password', { phone: formRef.current.values.phoneInput });
                 }}
                 style={[styles.justifyCenter, styles.alignCenter, styles.w100]}>
@@ -165,7 +177,7 @@ const LoginScreen = ({ route, navigation }) => {
               </TouchableWithoutFeedback>
 
               <View style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]}>
-                <TouchableWithoutFeedback onPress={() => {
+                <TouchableWithoutFeedback onPress={ function () {
                   navigation.navigate('Sign Up');
                 }} style={[styles.justifyEnd, styles.alignCenter]}>
                   <Text style={[styles.text, styles.dark, styles.textCenter]}>

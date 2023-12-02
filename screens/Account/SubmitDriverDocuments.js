@@ -19,7 +19,7 @@ import ScreenWrapper from '../ScreenWrapper';
 const carsAPI = require('../../api/carsAPI');
 
 const SubmitDriverDocuments = ({ route, navigation }) => {
-    useEffect(() => {
+    useEffect( function () {
     }, []);
     const { t } = useTranslation();
 
@@ -61,26 +61,26 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
         setImageBack(response);
     };
 
-    const uploadLicense = async () => {
+    const uploadLicense = async  function () {
         setSubmitDisabled(true);
         const licenseBody = {
             frontSide: licenseFront,
             backSide: licenseBack,
         };
 
-        licensesAPI.uploadLicense(licenseBody).then(() => {
+        licensesAPI.uploadLicense(licenseBody).then( function () {
             navigation.navigate('New Car');
             setLicenseStatus("PENDING");
         }).catch(err => {
             console.error(err);
-        }).finally(() => {
+        }).finally( function () {
             setSubmitDisabled(false);
         });
     };
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         licensesAPI.getLicense().then((data) => {
             setLicenseStatus(data === null ? 0 : data.status);
@@ -90,8 +90,8 @@ const SubmitDriverDocuments = ({ route, navigation }) => {
 
 
     return (
-        <ScreenWrapper screenName={t('submit_documents')} navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+        <ScreenWrapper screenName={t('submit_documents')} navType="back" navAction={ function () { navigation.goBack() }}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.fullCenter]}>
                     <HeaderLip />
                     {!loading &&

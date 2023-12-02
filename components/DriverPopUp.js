@@ -43,7 +43,7 @@ function DriverPopUp({ modalVisible, onHide, navigateToDriver }) {
                             </Text>
 
 
-                            <Button onPress={() => {
+                            <Button onPress={ function () {
                                 onHide();
                                 navigateToDriver();
                             }} bgColor={palette.primary} textColor={palette.white} text={t('driver_popup_cta')}/>

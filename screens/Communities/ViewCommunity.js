@@ -36,7 +36,7 @@ const ViewCommunity = ({ navigation, route }) => {
 
     const { id } = useUserStore();
 
-    useEffect(() => {
+    useEffect( function () {
         communitiesAPI.getCommunityDetails(communityId).then(
             data => {
                 if (data.Member.length !== 0) {
@@ -60,7 +60,7 @@ const ViewCommunity = ({ navigation, route }) => {
         });
     }, []);
 
-    const joinCommunity = () => {
+    const joinCommunity =  function () {
         communitiesAPI.joinCommunity(communityId, joinAnswer).then(
             data => {
                 if (communityPrivacy) {
@@ -94,11 +94,11 @@ const ViewCommunity = ({ navigation, route }) => {
     }
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -108,7 +108,7 @@ const ViewCommunity = ({ navigation, route }) => {
         useFocusEffect(onFocusEffect); // register callback to focus events    
     }
 
-    const loadMore = () => {
+    const loadMore =  function () {
         loadFeed(page + 1);
         setPage(p => p + 1);
     }
@@ -118,7 +118,7 @@ const ViewCommunity = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('view_community')} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {!loading &&
                     <>
                         {isJoined && (
@@ -163,7 +163,7 @@ const ViewCommunity = ({ navigation, route }) => {
                                                 style={styles.mt10}
                                                 pickupEnabled={data.pickupEnabled}
                                                 gender={data.gender}
-                                                onPress={() => {
+                                                onPress={ function () {
                                                     if (data.DriverId === id) {
                                                         navigation.navigate('View Trip', { tripId: data.ride_id })
                                                     } else {

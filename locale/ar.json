@@ -121,6 +121,7 @@
         "view_all_trips": "عرض جميع الرحلات",
         "read_more": "اقرأ المزيد...",
         "pickup_point": "نقطة الالتقاط",
+        "is_picking_up": "هيعدي عليك(ي) في النقطة المحددة",
         "destination": "الوجهة",
         "select_car": "اختر سيارة",
         "add_new_car": "أضف سيارة جديدة",
@@ -296,7 +297,10 @@
         "driver_popup_text": "وفر فلوسك مع سيتس. كل اللي هتعمله انك هتسجل عربيتك معنا في أقل من دقيقة!",
         "driver_popup_cta": "وفر فلوسك مع سيتس",
         "driver_popup_d1": "متعطلش نفسك قدام",
-        "driver_popup_d2": "سجل دلوقتي!"
+        "driver_popup_d2": "سجل دلوقتي!",
+        "favorite_destinations": "الوجهات المفضلة",
+        "recent_destinations": "تم استخدامها مؤخرًا",
+        "update_booking": "تحديث الحجز"
 
     }
 }

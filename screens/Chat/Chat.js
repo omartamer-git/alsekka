@@ -35,7 +35,7 @@ const Chat = ({ navigation, route }) => {
     const lastSender = useRef(null);
     const [loading, setLoading] = useState(true);
 
-    const sendMessage = () => {
+    const sendMessage =  function () {
         if (!(messageText.trim())) return;
         setMessageText('');
 
@@ -46,7 +46,7 @@ const Chat = ({ navigation, route }) => {
         );
     };
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         Promise.all([
             chatAPI.loadChat(receiver),
@@ -62,8 +62,8 @@ const Chat = ({ navigation, route }) => {
             });
     }, []);
 
-    useEffect(() => {
-        const fetchNewMessages = async () => {
+    useEffect( function () {
+        const fetchNewMessages = async  function () {
             // Make an API call to get the latest messages
             chatAPI.findNewMessages(receiver).then(
                 data => {
@@ -75,7 +75,7 @@ const Chat = ({ navigation, route }) => {
         };
 
         // Schedule polling for new messages every 10 seconds
-        const intervalId = setInterval(() => {
+        const intervalId = setInterval( function () {
             fetchNewMessages();
         }, 10000);
 
@@ -83,12 +83,12 @@ const Chat = ({ navigation, route }) => {
         return () => clearInterval(intervalId);
     }, [chatMessages]);
 
-    const onFocusEffect = useCallback(() => {
+    const onFocusEffect = useCallback( function () {
         if (Platform.OS === 'ios') {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -108,7 +108,7 @@ const Chat = ({ navigation, route }) => {
     console.log(insets);
     return (
         <ScreenWrapper screenName={t('chat')} navAction={() => navigation.goBack()} navType="back">
-            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
                 ref={ref}
                 onContentSizeChange={() => ref.current.scrollToEnd({ animated: true })}>
                 {

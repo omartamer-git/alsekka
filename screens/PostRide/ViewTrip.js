@@ -36,6 +36,9 @@ const ViewTrip = ({ route, navigation }) => {
     const [cancelModalVisible, setCancelModalVisible] = useState(false);
     const [cancelledModalVisible, setCancelledModalVisible] = useState(false);
 
+    const [cancelRideModalVisible, setCancelRideModalVisible] = useState(false);
+    // const [cancelledModalVisible, setCancelledModalVisible] = useState(false);
+
     const [tripReady, setTripReady] = useState(false);
     const [tripCancellable, setTripCancellable] = useState(false);
     const [tripStatus, setTripStatus] = useState('SCHEDULED');
@@ -43,7 +46,7 @@ const ViewTrip = ({ route, navigation }) => {
 
     const mapViewRef = useRef(null);
 
-    useEffect(() => {
+    useEffect( function () {
         Geolocation.getCurrentPosition(
             info => {
                 setLocation({
@@ -57,6 +60,7 @@ const ViewTrip = ({ route, navigation }) => {
         ridesAPI.tripDetails(tripId).then(
             data => {
                 setTripDetails(data);
+                console.log(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
                 setMarkerFrom({ latitude: data.fromLatitude, longitude: data.fromLongitude });
@@ -83,7 +87,7 @@ const ViewTrip = ({ route, navigation }) => {
 
     }, []);
 
-    useEffect(() => {
+    useEffect( function () {
         const currDate = new Date();
         const objDateTime = objDate.getTime();
         const currTime = currDate.getTime();
@@ -94,31 +98,32 @@ const ViewTrip = ({ route, navigation }) => {
             setTripReady(false);
         }
 
-        if (timeToTrip >= 1000 * 60 * 60 * 12) {
+        if (timeToTrip >= 1000 * 60 * 60 * 36) {
             setTripCancellable(true);
         } else {
             setTripCancellable(false);
         }
     }, [objDate]);
 
-    const fitMarkers = () => {
+    const fitMarkers =  function () {
         if (mapViewRef) {
             mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
         }
     };
 
-    const cancelRide = () => {
+    const cancelRide =  function () {
         ridesAPI.cancelRide(tripId).then(data => {
+            setCancelRideModalVisible(false);
             setTripStatus('CANCELLED');
         });
     };
 
-    const cancelPassenger = () => {
+    const cancelPassenger =  function () {
         setCancelModalVisible(false);
         ridesAPI.cancelPassenger(tripId).then(() => setCancelledModalVisible(true));
     };
 
-    const startTrip = () => {
+    const startTrip =  function () {
         ridesAPI.startRide(tripId).then(data => {
             if (data) {
                 setTripStatus('ONGOING');
@@ -126,7 +131,7 @@ const ViewTrip = ({ route, navigation }) => {
         });
     };
 
-    const manageTrip = () => {
+    const manageTrip =  function () {
         navigation.navigate('Manage Trip', { tripId: tripId });
     };
 
@@ -138,7 +143,7 @@ const ViewTrip = ({ route, navigation }) => {
     return (
         <>
             <ScreenWrapper screenName={t('view_trip')} navAction={() => navigation.goBack()} navType="back">
-                <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[styles.flexGrow]}>
 
                     <MapView
                         style={[styles.mapStyle]}
@@ -197,7 +202,7 @@ const ViewTrip = ({ route, navigation }) => {
 
                                         {!isDriver &&
                                             <View style={[styles.ml10, styles.flexRow]}>
-                                                {tripDetails.Driver.phone &&
+                                                {tripDetails.Driver.phone && (tripStatus === "SCHEDULED" || tripStatus === "ONGOING") &&
                                                     <TouchableOpacity activeOpacity={0.9} style={[viewTripStyles.chatBubble, viewTripStyles.biggerBubble]} onPress={() => Linking.openURL(`tel:${tripDetails.Driver.phone}`)} >
                                                         <MaterialIcons name="phone" size={22} color={palette.primary} />
                                                     </TouchableOpacity>
@@ -209,7 +214,7 @@ const ViewTrip = ({ route, navigation }) => {
 
 
                                 {
-                                    isDriver && !tripReady &&
+                                    isDriver && !tripReady && tripDetails.passengers.length > 0 &&
                                     <View style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
                                         {
                                             tripDetails.passengers.map((data, index) => {
@@ -233,31 +238,55 @@ const ViewTrip = ({ route, navigation }) => {
                                 }
                                 {
                                     !isDriver &&
-                                    <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt10]}>
-                                        <ArrowButton onPress={() => getDirections(markerFrom.latitude, markerFrom.longitude, "Directions to pick up")} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+                                    <View style={[styles.w100, styles.mt10]}>
+                                        {tripDetails.passenger.pickupLocationLat &&
+                                            <Text style={[styles.text]}>{tripDetails.Driver.firstName} {t('is_picking_up')}!</Text>}
+                                        <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt5]}>
+                                            {(tripStatus == "SCHEDULED" || tripStatus == "ONGOING") &&
+                                                <ArrowButton onPress={() => getDirections(
+                                                    tripDetails.passenger.pickupLocationLat ? tripDetails.passenger.pickupLocationLat : markerFrom.latitude,
+                                                    tripDetails.passenger.pickupLocationLng ? tripDetails.passenger.pickupLocationLng : markerFrom.longitude,
+                                                    "Directions to pick up")} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+                                            }
+                                            {
+                                                tripStatus === 'SCHEDULED' &&
 
-                                        <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
-                                            <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
-                                                <MaterialIcons name="close" size={25} />
-                                            </TouchableOpacity>
-                                            <Text style={[styles.text, styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
+                                                <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
+                                                    <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={{ backgroundColor: palette.light, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flex: 1, width: 44 * rem, height: 44 * rem }}>
+                                                        <MaterialIcons name="close" size={25} />
+                                                    </TouchableOpacity>
+                                                    <Text style={[styles.text, styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
+                                                </View>
+                                            }
                                         </View>
+
                                     </View>
                                 }
                                 {
                                     isDriver &&
                                     <View style={[styles.w100, styles.fullCenter]}>
-                                        {tripStatus === 'SCHEDULED' && tripCancellable && <Button bgColor={palette.red} text={t('cancel_ride')} textColor={palette.white} onPress={cancelRide} />}
-
                                         {tripStatus === 'SCHEDULED' && tripReady && <Button bgColor={palette.secondary} text={t('start_ride')} textColor={palette.white} onPress={startTrip} />}
+
+                                        {tripStatus === 'SCHEDULED' && !tripReady && <Button bgColor={palette.red} text={t('cancel_ride')} textColor={palette.white} onPress={() => setCancelRideModalVisible(true)} />}
 
                                         {tripStatus === 'ONGOING' && <Button bgColor={palette.secondary} text={t('manage_trip')} textColor={palette.white} onPress={manageTrip} />}
 
-                                        {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={() => { }} />}
+                                        {tripStatus === 'CANCELLED' && <Button bgColor={palette.primary} text={t('trip_cancelled')} textColor={palette.white} onPress={ function () { }} />}
 
                                     </View>
                                 }
                             </View>
+
+                            <BottomModal modalVisible={cancelRideModalVisible} onHide={() => setCancelRideModalVisible(false)}>
+                                <View style={[styles.w100, styles.alignCenter, styles.justifyCenter, styles.pv16]}>
+                                    <Text style={[styles.text, styles.font28, styles.bold, styles.textCenter]}>
+                                        {t('cancel_confirm')}
+                                    </Text>
+
+                                    <Button onPress={cancelRide} text={t('cancel_ride')} bgColor={palette.red} textColor={palette.white} />
+                                    <Button onPress={() => setCancelRideModalVisible(false)} text={t('back')} bgColor={palette.primary} textColor={palette.white} />
+                                </View>
+                            </BottomModal>
                         </>
 
                     }
@@ -286,7 +315,7 @@ const ViewTrip = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
-                    <Text style={[styles.text, styles.headerText3, styles.mv5]}>{t('cancel_confirm')}</Text>
+                    <Text style={[styles.text, styles.headerText3, styles.mv5, styles.textCenter]}>{t('cancel_confirm')}</Text>
                     {/* English Only Text */}
                     <Text style={[styles.text, styles.textCenter]}>You can cancel for free up until {getDateTime(addSecondsToDate(objDate, -(24 * 60 * 60)))}, after that you will be charged the full price of the ride.</Text>
                     <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
@@ -294,7 +323,7 @@ const ViewTrip = ({ route, navigation }) => {
                 </View>
             </BottomModal>
 
-            <BottomModal modalVisible={cancelledModalVisible} onHide={() => { setCancelledModalVisible(false); navigation.goBack() }}>
+            <BottomModal modalVisible={cancelledModalVisible} onHide={ function () { setCancelledModalVisible(false); navigation.goBack() }}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
                     <Text style={[styles.text, styles.headerText3, styles.mv5]}>Ride Cancelled</Text>
                     <Text style={[styles.text, styles.textCenter]}>Your ride has been canceled. If you have any concerns or need assistance, feel free to reach out to us. Safe travels and thank you for using seaats.</Text>

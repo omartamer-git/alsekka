@@ -13,7 +13,7 @@ const CommunityMembers = ({ route, navigation }) => {
     const [loading, setLoading] = useState(true);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         getCommunityMemberRequests(communityId).then(members => {
             setMembers(members);
@@ -23,14 +23,14 @@ const CommunityMembers = ({ route, navigation }) => {
 
     const acceptMember = (id) => {
         setSubmitDisabled(true);
-        acceptCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally(() => {
+        acceptCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally( function () {
             setSubmitDisabled(false);
         });
     };
 
     const rejectMember = (id) => {
         setSubmitDisabled(true);
-        rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally(() => {
+        rejectCommunityMember(id).then(() => setMembers(members.filter(m => m.id !== id))).catch(console.error).finally( function () {
             setSubmitDisabled(false);
         });
     };
@@ -40,7 +40,7 @@ const CommunityMembers = ({ route, navigation }) => {
     return (
         <>
             <ScreenWrapper screenName={t('manage_members')} navType="back" navAction={navigation.goBack}>
-                <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                     {
                         !loading &&
                         <>

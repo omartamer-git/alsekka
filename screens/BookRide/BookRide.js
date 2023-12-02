@@ -6,6 +6,7 @@ import {
     I18nManager,
     Image,
     ScrollView,
+    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -30,6 +31,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import * as StoreReview from 'react-native-store-review';
 import * as googleMapsAPI from '../../api/googlemaps';
 import { decodePolyline } from '../../util/maps';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BookRide = ({ route, navigation }) => {
     const { rideId } = route.params;
@@ -89,13 +91,14 @@ const BookRide = ({ route, navigation }) => {
     const [pickupLocation, setPickupLocation] = useState(null);
     const [pickupText, setPickupText] = useState("Choose Location on Map")
     const [placeId, setPlaceId] = useState(null);
+    const [prevPassenger, setPrevPassenger] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
     const { id, balance, availableCards } = useUserStore();
     const { cardsEnabled, passengerFee } = useAppManager();
 
-    useEffect(() => {
+    useEffect( function () {
         Geolocation.getCurrentPosition(
             info => {
                 setLocation({
@@ -122,6 +125,11 @@ const BookRide = ({ route, navigation }) => {
             setPickupEnabled(data.pickupEnabled);
             setPickupPrice(data.pickupPrice);
             setPolyline(data.polyline);
+            setPrevPassenger(data.Passenger);
+            if (data.Passenger) {
+                setNumSeats(data.Passenger.seats);
+            }
+
             setServiceFee(Math.floor(data.pricePerSeat * passengerFee));
             if (mapViewRef) {
                 mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
@@ -149,7 +157,7 @@ const BookRide = ({ route, navigation }) => {
         });
     }, []);
 
-    const hideRideBooked = () => {
+    const hideRideBooked =  function () {
         setRideBookedModalVisible(false);
         navigation.navigate('Find a Ride');
     };
@@ -158,11 +166,11 @@ const BookRide = ({ route, navigation }) => {
         setSubmitDisabled(true);
         const voucherId = voucher ? voucher.id : null;
 
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then(() => {
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then( function () {
             setRideBookedModalVisible(true);
         }).catch((e) => {
-            console.error(e);
-        }).finally(() => {
+            console.log(e.stack);
+        }).finally( function () {
             StoreReview.requestReview();
             setSubmitDisabled(false);
         });
@@ -173,7 +181,7 @@ const BookRide = ({ route, navigation }) => {
         setPaymentMethod(paymentMethod);
     };
 
-    const verifyVoucher = () => {
+    const verifyVoucher =  function () {
         ridesAPI.tryVerifyVoucher(voucherText).then((data) => {
             voucherDiscount.current = Math.min(data.maxValue, (data.type === "PERCENTAGE" ? ((data.value / 100) * pricePerSeat) : data.value));
             setVoucherModalVisible(false);
@@ -234,7 +242,7 @@ const BookRide = ({ route, navigation }) => {
         const description = results.formatted_address;
         const placeId = results.place_id;
 
-        console.log(results);
+        // console.log(results);
 
         setPickupText(description);
         setPlaceId(placeId);
@@ -248,10 +256,10 @@ const BookRide = ({ route, navigation }) => {
 
 
 
-    const choosePickupLocation = async () => {
+    const choosePickupLocation = async  function () {
         const loc = await googleMapsAPI.getLocationFromPlaceId(placeId);
-        console.log(loc);
-        console.log(markerFrom);
+        // console.log(loc);
+        // console.log(markerFrom);
         if (isPointInsideCircle(loc, markerFrom, 5000)) {
             setPickupLocation(loc);
             setModalMapOpen(false);
@@ -259,13 +267,22 @@ const BookRide = ({ route, navigation }) => {
         }
     }
 
+    const pickupMapRef = useRef(null);
+
+    const showPickupMapMarker =  function () {
+        console.log(pickupMapRef.current);
+        pickupMapRef.current.fitToCoordinates([markerFrom])
+    }
+
+    const safeAreaInsets = useSafeAreaInsets();
+
 
 
 
     return (
         <>
-            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={() => { navigation.goBack() }}>
-                <ScrollView style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
+            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={ function () { navigation.goBack() }}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
                     <MapView
                         style={[styles.mapStyle]}
                         showsUserLocation={true}
@@ -306,33 +323,36 @@ const BookRide = ({ route, navigation }) => {
                                         </View>
                                     </View>
                                     <View style={styles.alignEnd}>
-                                        <TouchableOpacity onPress={() => { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
+                                        <TouchableOpacity onPress={ function () { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
                                             <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
 
                                 <View style={[styles.flexRow]}>
-                                    <ArrowButton style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
-                                    <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={1} max={seatsAvailable - seatsOccupied} />
+                                    <ArrowButton disabled={prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
+                                    <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={prevPassenger ? prevPassenger.seats : 1} max={prevPassenger ? prevPassenger.seats + (seatsAvailable - seatsOccupied) : seatsAvailable - seatsOccupied} />
                                 </View>
-                                <ArrowButton
-                                    bgColor={palette.light}
-                                    text={useVoucherText}
-                                    icon="gift"
-                                    iconColor={palette.primary}
-                                    onPress={() => setVoucherModalVisible(true)}
-                                />
+                                {!prevPassenger &&
+                                    <ArrowButton
+                                        bgColor={palette.light}
+                                        text={useVoucherText}
+                                        icon="gift"
+                                        iconColor={palette.primary}
+                                        onPress={() => setVoucherModalVisible(true)}
+                                    />
+                                }
+
                                 {pickupEnabled &&
                                     <>
 
                                         <Text style={[styles.text, styles.inputText]}>Do you want to be picked up? (+{pickupPrice} EGP)</Text>
 
                                         <View style={[styles.flexRow, styles.w100, styles.mv10]}>
-                                            <TouchableOpacity onPress={() => { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
+                                            <TouchableOpacity onPress={ function () { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
                                                 <Text style={[styles.text, styles.white, styles.bold]}>Yes</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
+                                            <TouchableOpacity onPress={ function () { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
                                                 <Text style={[styles.text, styles.white, styles.bold]}>No</Text>
                                             </TouchableOpacity>
                                         </View>
@@ -401,7 +421,7 @@ const BookRide = ({ route, navigation }) => {
                                             &nbsp;{t('EGP')}</Text>
                                     </View>
                                     <View>
-                                        <Button text={t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} disabled={submitDisabled} />
+                                        <Button text={prevPassenger ? t('update_booking') : t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} disabled={submitDisabled} />
                                     </View>
 
                                 </View>
@@ -495,7 +515,7 @@ const BookRide = ({ route, navigation }) => {
                     <Text style={[styles.text]}>{
                         Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current + (serviceFee * numSeats)
                     } {t('EGP')}</Text>
-                    <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} />
+                    <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Find a Ride')} />
                 </View>
             </BottomModal>
 
@@ -507,26 +527,43 @@ const BookRide = ({ route, navigation }) => {
                 </View>
             </BottomModal>
 
-            {modalMapOpen && <View style={[styles.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>
-                <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={choosePickupLocation} />
-            </View>}
+            {modalMapOpen &&
+                <View style={[styles.defaultPadding, { position: 'absolute', bottom: safeAreaInsets.bottom + 50, left: 0, width: '100%', zIndex: 8 }]}>
+                    <StatusBar barStyle='dark-content' />
+                    <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={choosePickupLocation} />
+                    {/* <Button text={t('back')} bgColor={palette.red} textColor={palette.white} onPress={choosePickupLocation} /> */}
+                </View>
+            }
 
             {modalMapOpen &&
-                <MapView
-                    style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}
-                    showsUserLocation={true}
-                    region={markerFrom}
-                    onRegionChangeComplete={(region) => onChangeRegion(region)}
-                    provider={PROVIDER_GOOGLE}
-                    ref={mapViewRef}
-                    customMapStyle={customMapStyle}
-                    mapPadding={{ bottom: 144 * rem, top: 0, left: 0 * rem, right: 0 }}
-                    minZoomLevel={6}
-                    showsMyLocationButton
-                >
-                    <Circle center={markerFrom} radius={5000} fillColor='rgba(46, 23, 96, 0.3)' />
-                    <MaterialIcons name="place" size={48} color={palette.red} />
-                </MapView>}
+                <View style={[styles.defaultPadding, { position: 'absolute', top: safeAreaInsets.top + 50, left: 0, width: '100%', zIndex: 8 }]}>
+                    <TouchableOpacity style={[styles.bgWhite, styles.shadow, styles.fullCenter, {width: 55 * rem, height: 55 * rem, borderRadius: 55/2 * rem}]} onPress={() => setModalMapOpen(false)}>
+                        <MaterialIcons name="arrow-back-ios" size={16} />
+                    </TouchableOpacity>
+                </View>
+            }
+
+            {modalMapOpen &&
+                <>
+                    <MapView
+                        style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}
+                        showsUserLocation={true}
+                        region={markerFrom}
+                        onRegionChangeComplete={(region) => onChangeRegion(region)}
+                        onLayout={showPickupMapMarker}
+                        provider={PROVIDER_GOOGLE}
+                        ref={pickupMapRef}
+                        customMapStyle={customMapStyle}
+                        // mapPadding={{ bottom: 144 * rem, top: 0, left: 0 * rem, right: 0 }}
+                        minZoomLevel={12}
+                        maxZoomLevel={14}
+                        showsMyLocationButton
+                    >
+                        <Circle center={markerFrom} radius={5000} fillColor='rgba(46, 23, 96, 0.3)' />
+                        <MaterialIcons name="place" size={48} color={palette.red} />
+                    </MapView>
+                </>
+            }
         </>
     );
 }

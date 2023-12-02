@@ -12,7 +12,7 @@ const useAppManager = create((set) => ({
     minVersion: "1.0.0",
     latestVersion: "1.0.0",
 
-    getVersionData: async() => {
+    getVersionData: async function () {
         try {
             const axiosManager = useAxiosManager.getState();
 
@@ -30,7 +30,7 @@ const useAppManager = create((set) => ({
         }
     },
 
-    getAllowedEmails: async () => {
+    getAllowedEmails: async  function () {
         try {
             const axiosManager = useAxiosManager.getState();
 

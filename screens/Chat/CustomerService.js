@@ -33,7 +33,7 @@ const CustomerService = ({ navigation, route }) => {
     const lastSender = useRef(false);
     const [loading, setLoading] = useState(true);
 
-    const sendMessage = () => {
+    const sendMessage =  function () {
         if (!(messageText.trim())) return;
         setMessageText('');
         chatAPI.sendCSMessage(messageText).then(data => {
@@ -41,7 +41,7 @@ const CustomerService = ({ navigation, route }) => {
         }).catch(err => console.log(err.stack))
     };
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         chatAPI.csChatHistory().then((data) => {
             if (data.length !== 0) {
@@ -59,12 +59,12 @@ const CustomerService = ({ navigation, route }) => {
         setChatMessages(msg.concat(chatMessages));
     }
 
-    useEffect(() => {
+    useEffect( function () {
         if (!chatActive) {
             return;
         }
 
-        const fetchNewMessages = async () => {
+        const fetchNewMessages = async  function () {
             chatAPI.findNewCSMessages().then(data => {
                 if (data.length >= 1) {
                     addMessage(data);
@@ -72,7 +72,7 @@ const CustomerService = ({ navigation, route }) => {
             }).catch(err => console.log(err));
         }
 
-        const intervalId = setInterval(() => {
+        const intervalId = setInterval( function () {
             fetchNewMessages();
         }, 10000);
 
@@ -81,11 +81,11 @@ const CustomerService = ({ navigation, route }) => {
     }, [chatMessages, chatActive]);
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -98,7 +98,7 @@ const CustomerService = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('customer_service')} navType='back' navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[styles.flexGrow, styles.pv8, styles.alignCenter]}
                 ref={ref}
                 onContentSizeChange={() => ref.current.scrollToEnd({ animated: true })}>
                 {!loading &&

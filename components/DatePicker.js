@@ -23,7 +23,7 @@ export default function CustomDatePicker({ date, setDate }) {
                         <View key={`date${i}`} style={{ width: '33.3%', height: 48 * rem, padding: 1 }}>
                             <TouchableOpacity
                                 activeOpacity={0.9}
-                                onPress={() => {
+                                onPress={ function () {
                                     setDate(newDate);
                                 }}
                                 style={[chosen ? styles.bgPrimary : styles.bgDark, styles.justifyCenter, styles.alignCenter, styles.w100, styles.h100]} key={`day${dayOffset}`}>

@@ -28,7 +28,7 @@ const Checkout = ({ route, navigation }) => {
     const [loading, setLoading] = useState(true);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         ridesAPI.passengerDetails(passengerId, tripId).then(
             data => {
@@ -38,7 +38,7 @@ const Checkout = ({ route, navigation }) => {
             });
     }, []);
 
-    const checkout = () => {
+    const checkout =  function () {
         Alert.alert('Checkout', 'By clicking CONFIRM, you confirm that the passenger has paid the amount you specified and has left the car.',
             [
                 {
@@ -57,22 +57,22 @@ const Checkout = ({ route, navigation }) => {
         setAmountPaid(numericValue);
     };
 
-    const checkoutConfirmed = () => {
+    const checkoutConfirmed =  function () {
         setSubmitDisabled(true);
         ridesAPI.checkPassengerOut(passengerId, tripId, amountPaid, rating).then(
             data => {
-            }).catch(console.error).finally(() => {
+            }).catch(console.error).finally( function () {
                 setSubmitDisabled(false);
             });
     }
 
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -87,7 +87,7 @@ const Checkout = ({ route, navigation }) => {
 
     return (
         <ScreenWrapper screenName={t('checkout_passenger')} navType={"back"} navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
                     <>
@@ -112,7 +112,7 @@ const Checkout = ({ route, navigation }) => {
                         <View style={[styles.w100, styles.flexOne, styles.flexRow]}>
                             {Array.from({ length: 5 }, (_, index) => {
                                 return (
-                                    <TouchableOpacity key={"ratingStar" + index} onPress={() => { setRating(index + 1) }}>
+                                    <TouchableOpacity key={"ratingStar" + index} onPress={ function () { setRating(index + 1) }}>
                                         <MaterialIcons name="star" size={30} color={(rating <= index) ? palette.light : palette.primary} />
                                     </TouchableOpacity>
                                 );

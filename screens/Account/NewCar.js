@@ -58,12 +58,12 @@ const NewCar = ({ route, navigation }) => {
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const onFocusEffect = useCallback(() => {
+    const onFocusEffect = useCallback( function () {
         if (Platform.OS === 'ios') {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -138,8 +138,8 @@ const NewCar = ({ route, navigation }) => {
 
 
     return (
-        <ScreenWrapper screenName={t('add_car')} navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+        <ScreenWrapper screenName={t('add_car')} navType="back" navAction={ function () { navigation.goBack() }}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Formik
                     initialValues={{
                         carBrandInput: '',
@@ -302,7 +302,7 @@ const NewCar = ({ route, navigation }) => {
 
             <Modal visible={modalVisible} animationType="slide">
                 <SafeAreaView style={{ backgroundColor: palette.primary }}>
-                    <HeaderView navType="back" screenName={t('manage_cars')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={() => { setModalVisible(false) }} >
+                    <HeaderView navType="back" screenName={t('manage_cars')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={ function () { setModalVisible(false) }} >
                         <View style={styles.localeWrapper}>
                             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                             <Text style={[styles.text, styles.locale]}>EN</Text>
@@ -313,7 +313,7 @@ const NewCar = ({ route, navigation }) => {
                     <CoffeeIcon width={250} height={250} />
                     <Text style={[styles.text, styles.font28, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
                     <Text style={[styles.text, styles.font18, styles.mt5, styles.textCenter]}>{t('wait_processing2')}</Text>
-                    <Button bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => { navigation.goBack(); }}></Button>
+                    <Button bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={ function () { navigation.goBack(); }}></Button>
                 </View>
             </Modal>
         </ScreenWrapper>

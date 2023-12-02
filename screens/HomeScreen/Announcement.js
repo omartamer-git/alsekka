@@ -16,7 +16,7 @@ const Announcement = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
     const { id } = route.params;
 
-    useEffect(() => {
+    useEffect( function () {
         setLoading(true);
         announcementsAPI.getAnnouncement(id).then(
             data => {
@@ -29,7 +29,7 @@ const Announcement = ({ navigation, route }) => {
 
     return (
         <ScreenWrapper screenName={t('announcement')} navType="back" navAction={() => navigation.goBack()}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
                     <>

@@ -21,7 +21,7 @@ const ManageCars = ({ route, navigation }) => {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const loadData = async () => {
+    const loadData = async  function () {
         setLoading(true);
         carsAPI.getUsableCars(0).then((newCars) => {
             setCars(newCars);
@@ -29,21 +29,21 @@ const ManageCars = ({ route, navigation }) => {
         }).catch((error) => console.log(error));
     };
 
-    const onRefresh = async () => {
+    const onRefresh = async  function () {
         setRefreshing(true);
         await loadData();
         setRefreshing(false);
     }
 
-    useEffect(() => {
+    useEffect( function () {
         loadData();
     }, []);
 
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('manage_cars')} navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScreenWrapper screenName={t('manage_cars')} navType="back" navAction={ function () { navigation.goBack() }}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 {
                     !loading &&
                     <>

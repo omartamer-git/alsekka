@@ -47,12 +47,12 @@ const Account = ({ route, navigation }) => {
     const { authAxios } = useAxiosManager();
     const [termsModalVisible, setTermsModalVisible] = useState(false);
     const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
-    const logout = () => {
+    const logout =  function () {
         authManager.logout();
         userStore.reset();
     };
 
-    useEffect(() => {
+    useEffect( function () {
         const fullStars = Math.floor(userStore.rating);
         const halfStars = Math.ceil(userStore.rating) - Math.abs(userStore.rating);
 
@@ -70,11 +70,11 @@ const Account = ({ route, navigation }) => {
     }, []);
 
     if (Platform.OS === 'ios') {
-        const onFocusEffect = useCallback(() => {
+        const onFocusEffect = useCallback( function () {
             // This should be run when screen gains focus - enable the module where it's needed
             AvoidSoftInput.setShouldMimicIOSBehavior(true);
             AvoidSoftInput.setEnabled(true);
-            return () => {
+            return  function () {
                 // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
                 AvoidSoftInput.setEnabled(false);
                 AvoidSoftInput.setShouldMimicIOSBehavior(false);
@@ -101,7 +101,7 @@ const Account = ({ route, navigation }) => {
     });
 
     const saveEditName = (firstNameInput, lastNameInput) => {
-        userStore.editName(firstNameInput, lastNameInput).then(() => {
+        userStore.editName(firstNameInput, lastNameInput).then( function () {
             setEditNameModalVisible(false);
         }).catch(err => {
             console.log(err);
@@ -117,15 +117,15 @@ const Account = ({ route, navigation }) => {
         });
     };
     const saveEditPhone = (phoneInput) => {
-        userStore.editPhone(phoneInput).then(() => {
+        userStore.editPhone(phoneInput).then( function () {
             setEditPhoneModalVisible(false);
         }).catch(err => {
             setPhoneError(err.response.data.error.message);
         });
     };
 
-    const confirmDelete = () => {
-        userStore.deleteAccount(deletePassword).then(() => {
+    const confirmDelete =  function () {
+        userStore.deleteAccount(deletePassword).then( function () {
             setDeleteAccountModalVisible(false);
             setDeleteConfirmationVisible(true);
         }).catch(err => {
@@ -134,7 +134,7 @@ const Account = ({ route, navigation }) => {
         })
     }
 
-    const hideDeleteConfirmation = () => {
+    const hideDeleteConfirmation =  function () {
         setDeleteConfirmationVisible(false);
         logout();
     }
@@ -154,7 +154,7 @@ const Account = ({ route, navigation }) => {
     return (
         <>
             <ScreenWrapper screenName={t('account')}>
-                <ScrollView style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
                         <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userStore.profilePicture && <Image source={{ uri: userStore.profilePicture }} style={accountStyles.profilePicture} />}
@@ -171,22 +171,22 @@ const Account = ({ route, navigation }) => {
                             {ratings}
                         </View>
                         <View style={accountStyles.acctButtonsView}>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Chats List') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={ function () { navigation.navigate('Chats List') }}>
                                 <MaterialIcons name="message" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('Wallet') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={ function () { navigation.navigate('Wallet') }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('wallet')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={() => { navigation.navigate('All Trips') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={ function () { navigation.navigate('All Trips') }}>
                                 <MaterialIcons name="history" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('trips')}</Text>
                             </TouchableOpacity>
                         </View>
 
                         <View style={{ width: '100%' }}>
-                            <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={() => { navigation.navigate('Manage Cars') }} />
+                            <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={ function () { navigation.navigate('Manage Cars') }} />
                             <CustomTextInput
                                 value={userStore.firstName + " " + userStore.lastName}
                                 iconLeft="badge"
@@ -212,13 +212,13 @@ const Account = ({ route, navigation }) => {
 
                         {!referralsDisabled &&
                             <>
-                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={() => { navigation.navigate('Referral') }} />
-                                <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={() => { navigation.navigate('Add Referral') }} />
+                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={ function () { navigation.navigate('Referral') }} />
+                                <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={ function () { navigation.navigate('Add Referral') }} />
                             </>
                         }
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
-                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={() => { setTermsModalVisible(true) }} />
-                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('delete_account')}`} onPress={() => { setDeleteAccountModalVisible(true) }} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={ function () { setTermsModalVisible(true) }} />
+                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('delete_account')}`} onPress={ function () { setDeleteAccountModalVisible(true) }} />
                     </View>
                 </ScrollView>
             </ScreenWrapper>
@@ -288,8 +288,8 @@ const Account = ({ route, navigation }) => {
 
             <BottomModal onHide={() => setTermsModalVisible(false)} modalVisible={termsModalVisible}>
                 <View style={[styles.w100, styles.mt10]}>
-                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={() => { Linking.openURL('https://seaats.app/terms.pdf') }} />
-                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={() => { Linking.openURL('https://seaats.app/policy.pdf') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={ function () { Linking.openURL('https://seaats.app/terms.pdf') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={ function () { Linking.openURL('https://seaats.app/policy.pdf') }} />
                 </View>
             </BottomModal>
 

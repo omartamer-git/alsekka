@@ -30,8 +30,8 @@ const Wallet = ({ navigation, route }) => {
     const { cardsEnabled } = useAppManager();
 
     return (
-        <ScreenWrapper screenName={t('wallet')} navType="back" navAction={() => { navigation.goBack() }}>
-            <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+        <ScreenWrapper screenName={t('wallet')} navType="back" navAction={ function () { navigation.goBack() }}>
+            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.primary, palette.secondary]} style={walletStyles.card}>
                     <Text style={[styles.text, styles.white, styles.bold]}>{t('balance')}</Text>
@@ -51,7 +51,7 @@ const Wallet = ({ navigation, route }) => {
                                 );
                             })
                         }
-                        <TouchableOpacity onPress={() => { navigation.navigate('Add Card') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
+                        <TouchableOpacity onPress={ function () { navigation.navigate('Add Card') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                             <MaterialIcons name="add" size={18} color={palette.dark} />
                             <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_payment_method')}</Text>
                         </TouchableOpacity>
@@ -69,7 +69,7 @@ const Wallet = ({ navigation, route }) => {
                     })
                 }
 
-                <TouchableOpacity onPress={() => { navigation.navigate('Add Bank') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
+                <TouchableOpacity onPress={ function () { navigation.navigate('Add Bank') }} activeOpacity={0.9} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="account-balance" size={18} color={palette.dark} />
                     <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_bank_account')}</Text>
                 </TouchableOpacity>
@@ -82,7 +82,7 @@ const Wallet = ({ navigation, route }) => {
                     })
                 }
 
-                <TouchableOpacity activeOpacity={0.9} onPress={() => { navigation.navigate('Add Mobile Wallet') }} style={walletStyles.paymentMethodButton}>
+                <TouchableOpacity activeOpacity={0.9} onPress={ function () { navigation.navigate('Add Mobile Wallet') }} style={walletStyles.paymentMethodButton}>
                     <MaterialIcons name="wallet-travel" size={18} color={palette.dark} />
                     <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_mobile_wallet')}</Text>
                 </TouchableOpacity>

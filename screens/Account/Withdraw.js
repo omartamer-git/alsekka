@@ -32,10 +32,10 @@ const Withdraw = ({ route, navigation }) => {
         setModalVisible(false);
     }
 
-    const sendRequest = () => {
+    const sendRequest =  function () {
         setSubmitDisabled(true);
         if(withdrawalId.current !== null) {
-            sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack()).catch(console.error).finally(() => { setSubmitDisabled(false); });
+            sendWithdrawalRequest(withdrawalType.current, withdrawalId.current).then(() => navigation.goBack()).catch(console.error).finally( function () { setSubmitDisabled(false); });
             StoreReview.requestReview();
         }
         setSubmitDisabled(false);
@@ -46,7 +46,7 @@ const Withdraw = ({ route, navigation }) => {
     return (
         <>
             <ScreenWrapper screenName={t('withdraw') + " " + t('balance')} navType="back" navAction={navigation.goBack}>
-                <ScrollView style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                     <Text style={[styles.text, styles.headerText3]}>{t('you_have')}</Text>
                     <Text style={[styles.text, styles.headerText]}>{balance} {t('EGP')}</Text>
                     <Text style={[styles.text, styles.headerText3]}>{t('available_to_withdraw')}</Text>

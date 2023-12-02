@@ -40,7 +40,9 @@ export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLo
     if (data.id) {
         try {
             const oneHourBefore = subtractDates(datetime, 1);
+            const sixHoursBefore = subtractDates(datetime, 6);
             const oneDayBefore = subtractDates(datetime, 24);
+            const twoDaysBefore = subtractDates(datetime, 48);
                 
             let localNotification = Notifications.postLocalNotification({
                 body: `Get ready, your trip to ${mainTextTo} leaves in one hour!`,
@@ -48,13 +50,29 @@ export const bookRide = async (rideId, seats, paymentMethod, voucherId, pickupLo
                 silent: false,
                 fireDate: oneHourBefore.toISOString(),
             });
-    
+
             let localNotification2 = Notifications.postLocalNotification({
                 body: `Your trip to ${mainTextTo} is tomorrow.`,
                 title: "Trip Status",
                 silent: false,
                 fireDate: oneDayBefore.toISOString(),
             });
+
+            let localNotification3 = Notifications.postLocalNotification({
+                body: `Get ready, your trip to ${mainTextTo} leaves in 6 hours!`,
+                title: "Your Trip Status",
+                silent: false,
+                fireDate: sixHoursBefore.toISOString(),
+            });
+
+            let localNotification4 = Notifications.postLocalNotification({
+                body: `Get ready, your trip to ${mainTextTo} leaves in less than 2 days!`,
+                title: "Your Trip Status",
+                silent: false,
+                fireDate: twoDaysBefore.toISOString(),
+            });
+    
+
 
             return true;
         } catch(e) { 
@@ -84,7 +102,7 @@ export const nearbyRides = async (fromLng, fromLat, toLng, toLat, date, genderCh
     return data;
 };
 
-export const upcomingRides = async () => {
+export const upcomingRides = async  function () {
     const url = `/v1/ride/upcomingrides`;
     const uid = useUserStore.getState().id;
     const params = {
@@ -155,7 +173,9 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
         const data = response.data;
 
         const oneHourBefore = subtractDates(date, 1);
+        const sixHoursBefore = subtractDates(date, 6);
         const oneDayBefore = subtractDates(date, 24);
+        const twoDaysBefore = subtractDates(date, 48);
             
         let localNotification = Notifications.postLocalNotification({
             body: `Get ready, you're driving to ${mainTextTo} in one hour!`,
@@ -169,6 +189,20 @@ export const postRide = async (fromLatitude, fromLongitude, toLatitude, toLongit
             title: "Trip Status",
             silent: false,
             fireDate: oneDayBefore.toISOString(),
+        });
+
+        let localNotification3 = Notifications.postLocalNotification({
+            body: `Get ready, you're driving to ${mainTextTo} in 6 hours!`,
+            title: "Your Trip Status",
+            silent: false,
+            fireDate: sixHoursBefore.toISOString(),
+        });
+
+        let localNotification4 = Notifications.postLocalNotification({
+            body: `Get ready, you're driving to ${mainTextTo} in less than 2 days!`,
+            title: "Your Trip Status",
+            silent: false,
+            fireDate: twoDaysBefore.toISOString(),
         });
 
 
