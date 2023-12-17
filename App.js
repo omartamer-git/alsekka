@@ -279,9 +279,7 @@ function App() {
   }, [])
 
   useEffect(function () {
-    // if (appManager.deviceToken) {
     loadJWT()
-    // }
   }, [loadJWT]);
 
   useEffect(function () {

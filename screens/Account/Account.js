@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, memo } from 'react';
 import {
     Image,
     Linking,
@@ -129,7 +129,7 @@ function Account({ route, navigation }) {
             setDeleteConfirmationVisible(true);
         }).catch(err => {
             console.log(err);
-            setDeleteError("Incorrect password, please try again")
+            setDeleteError(t('error_incorrect_password'))
         })
     }
 
@@ -184,7 +184,7 @@ function Account({ route, navigation }) {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{ width: '100%' }}>
+                        <View style={styles.w100}>
                             <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={function () { navigation.navigate('Manage Cars') }} />
                             <CustomTextInput
                                 value={userStore.firstName + " " + userStore.lastName}
@@ -192,8 +192,9 @@ function Account({ route, navigation }) {
                                 iconRight="edit"
                                 editable={false}
                                 style={accountStyles.editInput}
-                                onPressIn={() => setEditNameModalVisible(true)}
+                                onPressIn={() => !userStore.driver ? setEditNameModalVisible(true) : ""}
                                 role="button"
+                                disabled={userStore.driver}
                             />
                             <CustomTextInput
                                 value={userStore.email}
@@ -382,10 +383,6 @@ const accountStyles = StyleSheet.create({
         borderRadius: 50 * rem,
         ...styles.positionAbsolute,
     },
-
-    editInput: {
-        ...styles.bgWhite,
-    }
 });
 
-export default Account;
+export default memo(Account);

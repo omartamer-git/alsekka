@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { I18nManager, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -29,16 +29,16 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
 
 
     return (
-        <TouchableOpacity onPress={function () { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={{ width: '100%', paddingVertical: 24, paddingHorizontal: 24, borderRadius: 16, backgroundColor: palette.white, borderWidth: 1, borderColor: palette.light, ...style }}>
-            <View style={{ flexDirection: 'row', width: '100%' }}>
+        <TouchableOpacity onPress={function () { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={[styles.w100, styles.p24, styles.br16, styles.bgWhite, styles.border1, styles.borderLight, style]}>
+            <View style={[styles.flexRow, styles.w100]}>
                 <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.flexRow}>
                         <View>
                             <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(date)[0]}
-                                <Text style={{ fontSize: 12 }}> {t(getTime(date)[1])}</Text>
+                                <Text style={styles.font12}>&nbsp;{t(getTime(date)[1])}</Text>
                             </Text>
                         </View>
-                        <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={[styles.flexRow, styles.fullCenter, styles.mt5]}>
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
                             <Text style={[styles.text, { color: palette.dark, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }]}>{getDurationValues(duration)[0]}{t('h')}{getDurationValues(duration)[1]}{t('m')}</Text>
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
@@ -47,36 +47,36 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                     <Text style={[styles.text]} numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
                 </View>
 
-                <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={{ fontSize: 12 }}> {t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
+                <View style={[styles.flexOne, styles.alignStart]}>
+                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
                     <Text style={[styles.text]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
                 </View>
             </View>
 
-            <View style={{ flexDirection: 'row', width: '100%', marginTop: 24 }}>
-                <View style={[{ flex: 1, flexWrap: 'wrap' }, styles.flexRow, styles.alignEnd]}>
+            <View style={[styles.flexRow, styles.w100, { marginTop: 24 }]}>
+                <View style={[{ flexWrap: 'wrap' }, styles.flexOne, styles.flexRow, styles.alignEnd]}>
                     {gender !== "ANY" &&
-                        <View style={[styles.fullCenter, { width: 32, height: 24, borderRadius: 12, marginVertical: 1 * rem, marginHorizontal: 1 * rem, backgroundColor: gender === "MALE" ? "#1d74c6" : "pink" }]}>
+                        <View style={[styles.fullCenter, { width: 32, height: 24, borderRadius: 12, margin: 1 * rem, backgroundColor: gender === "MALE" ? "#1d74c6" : "pink" }]}>
                             <Text style={[styles.bold, styles.text, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
                         </View>
                     }
 
                     {pickupEnabled &&
-                        <View style={[styles.ph16, styles.bgRed, styles.fullCenter, { borderRadius: 12 * rem, height: 24 * rem, alignSelf: 'flex-end', marginVertical: 1 * rem, marginHorizontal: 1 * rem }]}>
+                        <View style={[styles.ph16, styles.bgRed, styles.fullCenter, { borderRadius: 12 * rem, height: 24 * rem, alignSelf: 'flex-end', margin: 1 * rem }]}>
                             <Text style={[styles.text, { color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }]}>
                                 PICK UP
                             </Text>
                         </View>
                     }
                     {model && brand &&
-                        <View style={{ paddingHorizontal: 16 * rem, borderRadius: 12 * rem, backgroundColor: palette.dark, height: 24 * rem, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-end', marginVertical: 1 * rem, marginHorizontal: 1 * rem }}>
+                        <View style={[styles.ph16, styles.bgDark, styles.fullCenter, { borderRadius: 12 * rem, height: 24 * rem, alignSelf: 'flex-end', margin: 1 * rem }]}>
                             <Text style={[styles.text, { color: palette.white, fontSize: 10, fontWeight: '600', fontStyle: 'italic' }]}>{brand} {model}</Text>
                         </View>
                     }
                 </View>
                 <View style={[styles.flexCol, styles.alignEnd, styles.justifyEnd]}>
-                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{pricePerSeat}<Text style={{ fontSize: 12 }}> {t('EGP')}</Text></Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{pricePerSeat}<Text style={styles.font12}>&nbsp;{t('EGP')}</Text></Text>
+                    <View style={[styles.flexRow, styles.fullCenter]}>
                         <MaterialIcons name="person" size={16} color={palette.dark} />
                         <Text style={[styles.dark, styles.text]}>
                             {seatsAvailable && seatsOccupied ? seatsOccupied + '/' + seatsAvailable : seatsAvailable}
@@ -119,4 +119,4 @@ const styles2 = StyleSheet.create(
     }
 );
 
-export default AvailableRide;
+export default memo(AvailableRide);

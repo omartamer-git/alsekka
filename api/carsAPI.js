@@ -11,12 +11,34 @@ export const getUsableCars = async function (approved = 1) {
     return data;
 };
 
-export const newCar = async function (newCarBody) {
+export const newCar = async function (newCarBody, imageFront, imageBack) {
     try {
         const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(`/v1/car/newcar`, newCarBody, {
+
+        const formData = new FormData();
+        formData.append('front', {
+            uri: imageFront.uri,
+            type: imageFront.type,
+            name: imageFront.fileName || imageFront.uri.split('/').pop(),
+        });
+
+        formData.append('back', {
+            uri: imageBack.uri,
+            type: imageBack.type,
+            name: imageBack.fileName || imageBack.uri.split('/').pop(),
+        });
+
+        formData.append('brand', newCarBody.brand);
+        formData.append('year', newCarBody.year);
+        formData.append('model', newCarBody.model);
+        formData.append('color', newCarBody.color);
+        formData.append('licensePlateLetters', newCarBody.licensePlateLetters);
+        formData.append('licensePlateNumbers', newCarBody.licensePlateNumbers);
+
+        const response = await axiosManager.authAxios.post(`/v1/car/newcar`, formData, {
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "multipart/form-data",
+                Accept: "application/json",
             }
         });
 

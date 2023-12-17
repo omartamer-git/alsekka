@@ -144,7 +144,7 @@ export const driverRides = async function (limit) {
     }
 };
 
-export const postRide = async function (fromLatitude, fromLongitude, toLatitude, toLongitude, mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, date, car, community, gender, seatsAvailable) {
+export const postRide = async function (fromLatitude, fromLongitude, toLatitude, toLongitude, placeIdFrom, placeIdTo, pricePerSeat, pickupEnabled, pickupPrice, date, car, community, gender, seatsAvailable, mainTextFrom, mainTextTo) {
     const url = `/v1/ride/postride`;
     const uid = useUserStore.getState().id;
     const body = {
@@ -152,8 +152,8 @@ export const postRide = async function (fromLatitude, fromLongitude, toLatitude,
         fromLongitude: fromLongitude,
         toLatitude: toLatitude,
         toLongitude: toLongitude,
-        mainTextFrom: mainTextFrom,
-        mainTextTo: mainTextTo,
+        placeIdFrom: placeIdFrom,
+        placeIdTo: placeIdTo,
         pricePerSeat: pricePerSeat,
         pickupEnabled,
         pickupPrice,
@@ -165,16 +165,16 @@ export const postRide = async function (fromLatitude, fromLongitude, toLatitude,
         seatsAvailable: seatsAvailable
     };
 
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.post(url, body);
+    const data = response.data;
+
+    const oneHourBefore = subtractDates(date, 1);
+    const sixHoursBefore = subtractDates(date, 6);
+    const oneDayBefore = subtractDates(date, 24);
+    const twoDaysBefore = subtractDates(date, 48);
+
     try {
-        const axiosManager = useAxiosManager.getState();
-        const response = await axiosManager.authAxios.post(url, body);
-        const data = response.data;
-
-        const oneHourBefore = subtractDates(date, 1);
-        const sixHoursBefore = subtractDates(date, 6);
-        const oneDayBefore = subtractDates(date, 24);
-        const twoDaysBefore = subtractDates(date, 48);
-
         let localNotification = Notifications.postLocalNotification({
             body: `Get ready, you're driving to ${mainTextTo} in one hour!`,
             title: "Your Trip Status",
@@ -202,14 +202,28 @@ export const postRide = async function (fromLatitude, fromLongitude, toLatitude,
             silent: false,
             fireDate: twoDaysBefore.toISOString(),
         });
-
-
-        return data;
-    } catch (err) {
-        console.log(err);
-        throw err;
+    } catch(e) {
+        // noti error
     }
+
+
+    return data;
 };
+
+export const getSuggestedPrice = async function (fromLatitude, fromLongitude, toLatitude, toLongitude) {
+    const url = `/v1/ride/suggestedprice`;
+    const params = {
+        fromLatitude: fromLatitude,
+        fromLongitude: fromLongitude,
+        toLatitude: toLatitude,
+        toLongitude: toLongitude
+    }
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+    return data;
+}
 
 export const tripDetails = async function (tripId) {
     const url = `/v1/ride/tripdetails`;

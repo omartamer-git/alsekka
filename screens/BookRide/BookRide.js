@@ -127,6 +127,21 @@ function BookRide({ route, navigation }) {
             setPolyline(data.polyline);
             setPrevPassenger(data.Passenger);
             if (data.Passenger) {
+                if (data.Passenger.pickupLocationLat && data.Passenger.pickupLocationLng) {
+                    setWantPickup(true);
+                    setPickupLocation({
+                        lat: data.Passenger.pickupLocationLat,
+                        lng: data.Passenger.pickupLocationLng
+                    });
+                    // const locationName = await googleMapsAPI.geocode(data.Passenger.pickupLocationLat, data.Passenger.pickupLocationLng)).formatted_address;
+                    googleMapsAPI.geocode(data.Passenger.pickupLocationLat, data.Passenger.pickupLocationLng).then(
+                        result => {
+                            setPickupText(result.formatted_address)
+                        }
+                    )
+                }
+            }
+            if (data.Passenger) {
                 setNumSeats(data.Passenger.seats);
             }
 
@@ -269,6 +284,11 @@ function BookRide({ route, navigation }) {
         pickupMapRef.current.fitToCoordinates([markerFrom])
     }
 
+    function closeModalMap() {
+        setModalMapOpen(false);
+        setPickupText("Choose Location on Map");
+    }
+
     const safeAreaInsets = useSafeAreaInsets();
 
 
@@ -341,20 +361,20 @@ function BookRide({ route, navigation }) {
                                 {pickupEnabled &&
                                     <>
 
-                                        <Text style={[styles.text, styles.inputText]}>Do you want to be picked up? (+{pickupPrice} EGP)</Text>
+                                        <Text style={[styles.text, styles.inputText]}>{t('pickup_question')} (+{pickupPrice} {t('EGP')})</Text>
 
                                         <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                             <TouchableOpacity onPress={function () { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.primary : palette.dark }]}>
-                                                <Text style={[styles.text, styles.white, styles.bold]}>Yes</Text>
+                                                <Text style={[styles.text, styles.white, styles.bold]}>{t('yes')}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={function () { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.primary : palette.dark }]}>
-                                                <Text style={[styles.text, styles.white, styles.bold]}>No</Text>
+                                                <Text style={[styles.text, styles.white, styles.bold]}>{t('no')}</Text>
                                             </TouchableOpacity>
                                         </View>
                                         {
                                             wantPickup &&
                                             <View style={styles.w100}>
-                                                <Text style={[styles.text, styles.inputText]}>Pick Up From</Text>
+                                                <Text style={[styles.text, styles.inputText]}>{t('pickup_from')}</Text>
                                                 <Button onPress={() => setModalMapOpen(true)} bgColor={palette.white} textColor={palette.primary} borderColor={palette.primary} text={pickupText} />
                                             </View>
                                         }
@@ -385,7 +405,7 @@ function BookRide({ route, navigation }) {
                                     {
                                         wantPickup &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.text, styles.bold, styles.dark]}>Pick Up Fee</Text>
+                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('pickup_fee')}</Text>
                                             <View style={styles.flexOne} />
                                             <Text style={[styles.text]}>+ {pickupPrice} {t('EGP')}</Text>
                                         </View>
@@ -406,7 +426,7 @@ function BookRide({ route, navigation }) {
                                                 Math.max(0,
                                                     Math.abs(
                                                         -(pricePerSeat * numSeats)
-                                                        + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
+                                                        + ((balance > 0 ? 1 : -1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
                                                     )
                                                     - voucherDiscount.current
                                                     + (serviceFee * numSeats)
@@ -416,7 +436,7 @@ function BookRide({ route, navigation }) {
                                             &nbsp;{t('EGP')}</Text>
                                     </View>
                                     <View>
-                                        <Button text={prevPassenger ? t('update_booking') : t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} disabled={submitDisabled} />
+                                        <Button text={prevPassenger ? t('update_booking') : t('book_now')} bgColor={palette.primary} textColor={palette.white} onPress={bookRide} disabled={submitDisabled || (wantPickup && !pickupLocation)} />
                                     </View>
 
                                 </View>
@@ -460,7 +480,7 @@ function BookRide({ route, navigation }) {
             </ScreenWrapper>
 
             <BottomModal onHide={() => setPaymentMethodModalVisible(false)} modalVisible={paymentMethodModalVisible}>
-                <TouchableOpacity activeOpacity={0.75} style={{ ...styles.flexRow, width: '100%', height: 48 * rem, alignItems: 'center', borderBottomWidth: 1, borderColor: palette.light }} onPress={() => choosePayment({ type: 'cash' })}>
+                <TouchableOpacity activeOpacity={0.75} style={[styles.flexRow, styles.w100, styles.alignCenter, styles.borderLight, { height: 48 * rem, borderBottomWidth: 1 }]} onPress={() => choosePayment({ type: 'cash' })}>
                     <FontsAwesome5 name="money-bill" size={24 * rem} color={palette.success} />
                     <Text style={[styles.text, styles.ml15, styles.semiBold]}>{t('pay_using_cash')}</Text>
                     <View style={[styles.flexOne, styles.alignEnd]}>
@@ -490,6 +510,13 @@ function BookRide({ route, navigation }) {
                         </>
                     }
 
+                    {pickupEnabled && wantPickup &&
+                        <>
+                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('pickup_fee')}</Text>
+                            <Text style={[styles.text]}>+ {pickupPrice} {t('EGP')}</Text>
+                        </>
+                    }
+
                     {
                         passengerFee !== 0 &&
                         <>
@@ -508,7 +535,13 @@ function BookRide({ route, navigation }) {
 
                     <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
                     <Text style={[styles.text]}>{
-                        Math.abs(-(pricePerSeat * numSeats) + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))) - voucherDiscount.current + (serviceFee * numSeats)
+                        Math.abs(
+                            -(pricePerSeat * numSeats)
+                            + ((balance > 0 ? 1 : -1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
+                        )
+                        - voucherDiscount.current
+                        + (serviceFee * numSeats)
+                        + (wantPickup ? pickupPrice : 0)
                     } {t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Find a Ride')} />
                 </View>
@@ -532,7 +565,7 @@ function BookRide({ route, navigation }) {
 
             {modalMapOpen &&
                 <View style={[styles.defaultPadding, { position: 'absolute', top: safeAreaInsets.top + 50, left: 0, width: '100%', zIndex: 8 }]}>
-                    <TouchableOpacity style={[styles.bgWhite, styles.shadow, styles.fullCenter, { width: 55 * rem, height: 55 * rem, borderRadius: 55 / 2 * rem }]} onPress={() => setModalMapOpen(false)}>
+                    <TouchableOpacity style={[styles.bgWhite, styles.shadow, styles.fullCenter, { width: 55 * rem, height: 55 * rem, borderRadius: 55 / 2 * rem }]} onPress={closeModalMap}>
                         <MaterialIcons name="arrow-back-ios" size={16} />
                     </TouchableOpacity>
                 </View>
@@ -541,7 +574,7 @@ function BookRide({ route, navigation }) {
             {modalMapOpen &&
                 <>
                     <MapView
-                        style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}
+                        style={[StyleSheet.absoluteFillObject, styles.fullCenter]}
                         showsUserLocation={true}
                         region={markerFrom}
                         onRegionChangeComplete={(region) => onChangeRegion(region)}

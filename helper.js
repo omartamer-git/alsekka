@@ -170,6 +170,32 @@ export const getDateShort = function (date) {
     return `${day}/${month}/${year}`;
 }
 
+export const translateDate = function (date, t) {
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const dateString = `${t(days[date.getDay()])} ${date.getDate()} ${t(months[date.getMonth()])}`;
+
+
+    let hours = date.getHours();
+    let ampm = "AM";
+    if(hours >= 12) {
+        ampm = "PM";
+        hours -= 12;
+    }
+
+    if(hours === 0) {
+        hours = 12;
+    }
+
+    let mins = date.getMinutes();
+    if(mins < 10) {
+        mins = "0" + mins.toString();
+    }
+
+    const timeString = `${hours}:${mins} ${t(ampm)}`;
+    return [dateString, timeString];
+}
+
 export const getTime = function (date) {
     let hour = date.getHours();
     let minute = date.getMinutes();
@@ -385,6 +411,10 @@ export const styles = StyleSheet.create({
         marginEnd: 6 * rem,
     },
 
+    wrap: {
+        flexWrap: 'wrap'
+    },
+
     phoneInput: {
         color: palette.dark,
         fontWeight: 'bold',
@@ -413,8 +443,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8 * rem,
-        borderColor: palette.light,
         borderWidth: 1,
+        borderColor: palette.light,
         backgroundColor: '#F6F5F5',
     },
 
@@ -603,6 +633,14 @@ export const styles = StyleSheet.create({
         height: '100%',
     },
 
+    h50: {
+        height: '50%'
+    },
+
+    w50: {
+        width: '50%',
+    },
+
     flexRow: {
         flexDirection: I18nManager.isRTL ? 'row' : 'row',
     },
@@ -669,6 +707,10 @@ export const styles = StyleSheet.create({
 
     br0: {
         borderRadius: 0,
+    },
+
+    br4: {
+        borderRadius: 4 * rem,
     },
 
     br8: {

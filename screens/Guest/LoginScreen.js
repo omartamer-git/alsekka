@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -194,4 +194,4 @@ function LoginScreen({ route, navigation }) {
   );
 }
 
-export default LoginScreen;
+export default memo(LoginScreen);

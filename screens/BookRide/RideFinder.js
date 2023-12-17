@@ -180,29 +180,31 @@ function RideFinder({ route, navigation }) {
                 {!loading &&
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
-                        return (<AvailableRide
-                            key={"ar" + index}
-                            rid={data.id}
-                            model={data.model}
-                            brand={data.brand}
-                            fromAddress={data.mainTextFrom}
-                            toAddress={data.mainTextTo}
-                            seatsOccupied={data.seatsOccupied}
-                            seatsAvailable={data.seatsAvailable}
-                            DriverId={data.DriverId}
-                            pricePerSeat={data.pricePerSeat}
-                            duration={data.duration}
-                            date={objDate}
-                            onPress={onClickRide}
-                            pickupEnabled={data.pickupEnabled}
-                            gender={data.gender}
-                            style={rideFinderStyles.availableRide} />);
+                        return (
+                            <AvailableRide
+                                key={"ar" + index}
+                                rid={data.id}
+                                model={data.model}
+                                brand={data.brand}
+                                fromAddress={data.mainTextFrom}
+                                toAddress={data.mainTextTo}
+                                seatsOccupied={data.seatsOccupied}
+                                seatsAvailable={data.seatsAvailable}
+                                DriverId={data.DriverId}
+                                pricePerSeat={data.pricePerSeat}
+                                duration={data.duration}
+                                date={objDate}
+                                onPress={onClickRide}
+                                pickupEnabled={data.pickupEnabled}
+                                gender={data.gender}
+                                style={rideFinderStyles.availableRide} />
+                        );
                     }
                     )
                 }
                 {
                     !loading && availableRides && availableRides.length === 0 &&
-                    <View style={{ alignItems: 'center', justifyContent: 'center', width: '100%', flex: 1 }}>
+                    <View style={[styles.fullCenter, styles.w100, styles.flexOne]}>
                         <MaterialIcons name="sentiment-very-dissatisfied" size={125 * rem} color={palette.dark} />
                         <Text style={[styles.text, styles.bold, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
                         <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Post Ride')} />

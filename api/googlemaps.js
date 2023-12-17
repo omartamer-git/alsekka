@@ -1,15 +1,20 @@
 import useAxiosManager from '../context/axiosManager';
 
-export const getPredictions = async function (text) {
+export const getPredictions = async function (text, lat, lng) {
     let pred = [];
     const url = '/v1/map/getPredictions';
+    console.log(lat);
+    console.log(lng);
     const params = {
         text: text,
+        lat: lat,
+        lng: lng
     };
     const axiosManager = useAxiosManager.getState();
     const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;
-
+    console.log(data);
+    
     return data;
 };
 
@@ -31,6 +36,9 @@ export const getLocationFromPlaceId = async function (place_id) {
     const params = {
         place_id: place_id,
     };
+    // if(sessionToken !== null) {
+    //     params.sessiontoken = sessionToken;
+    // }
     const axiosManager = useAxiosManager.getState();
     const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;

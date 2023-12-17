@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState, memo } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Platform,
@@ -15,6 +15,7 @@ import {
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import DatePicker from 'react-native-date-picker';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import * as StoreReview from 'react-native-store-review';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
@@ -27,14 +28,14 @@ import Button from '../../components/Button';
 import CarCard from '../../components/CarCard';
 import CommunityCard from '../../components/CommunityCard';
 import CustomTextInput from '../../components/CustomTextInput';
+import CustomDatePicker from '../../components/DatePicker';
+import SuccessCheck from '../../components/SuccessCheck';
+import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
-import SuccessCheck from '../../components/SuccessCheck';
-import useAppManager from '../../context/appManager';
 import Counter from '../../components/Counter';
-import CustomDatePicker from '../../components/DatePicker';
-import * as StoreReview from 'react-native-store-review';
+import useRenderCounter from '../../components/useRenderCounter';
 
 function PostRide({ route, navigation }) {
     const { t } = useTranslation();
@@ -47,7 +48,10 @@ function PostRide({ route, navigation }) {
     const [timePickerOpen, setTimePickerOpen] = useState(false);
     const [carInput, setCarInput] = useState(null);
     const [mainTextFrom, setMainTextFrom] = useState('');
+    const placeIdFrom = useRef(null);
+
     const [mainTextTo, setMainTextTo] = useState('');
+    const placeIdTo = useRef(null);
 
     const [carSelectorOpen, setCarSelectorOpen] = useState(false);
     const [carSelectorText, setCarSelectorText] = useState(t('choose_car'));
@@ -133,38 +137,24 @@ function PostRide({ route, navigation }) {
 
     useEffect(function () {
         if (markerFrom && markerTo) {
-            // probably need a better algorithm for this
-            const dist = geolib.getDistance(markerFrom, markerTo) / 1000;
-            let costPerKilometer = 4;
-            if (dist < 50) {
-                costPerKilometer = 4.25;
-            } else if (dist < 100) {
-                costPerKilometer = 4;
-            } else if (dist < 200) {
-                costPerKilometer = 3.75;
-            } else {
-                costPerKilometer = 2.85;
-            }
-            const riders = 4;
-
-            setSuggestedPrice(
-                Math.ceil(
-                    (((dist * costPerKilometer) * (1 + driverFee)) / riders) / 5
-                ) * 5
-            );
+            ridesAPI.getSuggestedPrice(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude).then(data => {
+                setSuggestedPrice(data.suggestedPrice);
+            });
         }
     }, [markerFrom, markerTo])
 
-    function setLocationFrom(loc, mainTextFrom) {
+    function setLocationFrom(loc, mainTextFrom, placeId) {
         setFromTouched(true);
         setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
         setMainTextFrom(mainTextFrom);
+        placeIdFrom.current = placeId;
     }
 
-    function setLocationTo(loc, mainTextTo) {
+    function setLocationTo(loc, mainTextTo, placeId) {
         setToTouched(true);
         setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
         setMainTextTo(mainTextTo);
+        placeIdTo.current = placeId;
     }
 
     function selectCar(data) {
@@ -193,9 +183,12 @@ function PostRide({ route, navigation }) {
             newDate.setHours(newTime.getHours());
             newDate.setMinutes(newTime.getMinutes());
 
+            if(new Date() >= newDate) {
+                
+            }
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                mainTextFrom, mainTextTo, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable).then((res) => {
+                placeIdFrom.current, placeIdTo.current, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable, mainTextFrom, mainTextTo).then((res) => {
                     setRidePosted(true);
                     setRideId(res.id);
                 }).catch(console.error).finally(function () {
@@ -252,19 +245,59 @@ function PostRide({ route, navigation }) {
         priceInput: Yup.number().required(t('error_required')).min(20, t('error_pickup_price')),
         pickupPriceInput: Yup.number().typeError(t('error_number')).positive('Must be a positive number.').notRequired(),
         communityInput: Yup.object()
-    });
+    }).test(
+        'datetime-validation',
+        t('error_datetime'),
+        function (values) {
+            const newDateUTC = values.dateInput.toISOString(); // Convert to UTC string
+            const timeInputUTC = values.timeInput.toISOString(); // Convert to UTC string
 
+            let newDate = new Date(newDateUTC);
+            let newTime = new Date(timeInputUTC);
+
+            newDate.setHours(newTime.getHours());
+            newDate.setMinutes(newTime.getMinutes());
+
+            const currentDatetime = new Date();
+    
+            if (newDate <= currentDatetime) {
+                throw new Yup.ValidationError(
+                    t('error_datetime'),
+                    null,
+                    'timeInput'
+                );
+            }
+    
+            return true;
+        }
+    );    
+
+    function navigateDocuments() {
+        navigation.navigate("Driver Documents");
+    }
+
+    function navigateNewCar() {
+        setCarSelectorOpen(false);
+        navigation.navigate('New Car')
+    }
+
+    const counter = useRenderCounter();
+
+    let oneHourFromNow = new Date();
+    oneHourFromNow.setMinutes(0)
+    oneHourFromNow.setSeconds(0);
 
     return (
-        <ScreenWrapper screenName={t('post_ride')} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('post_ride')}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.wrapper} contentContainerStyle={styles.flexGrow}>
                 <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.defaultPadding]}>
+                    {counter}
                     {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
                             <PiggyBank width={300} height={300} />
                             <Text style={[styles.text, styles.headerText, styles.textCenter]}>{t('get_paid')}</Text>
                             <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10]}>{t('submit_license')}</Text>
-                            <Button bgColor={palette.primary} textColor={palette.white} text={t('cta_submit_driver')} onPress={() => navigation.navigate("Driver Documents")} />
+                            <Button bgColor={palette.primary} textColor={palette.white} text={t('cta_submit_driver')} onPress={navigateDocuments} />
                         </View>
                     }
                     {!loading && usableCars && usableCars.length > 0 && userStore.driver &&
@@ -273,8 +306,8 @@ function PostRide({ route, navigation }) {
                                 <Formik
                                     initialValues={{
                                         dateInput: new Date(),
-                                        timeInput: new Date(),
-                                        seatsInput: '',
+                                        timeInput: oneHourFromNow,
+                                        seatsInput: 1,
                                         priceInput: '',
                                         communityInput: '',
                                         pickupPriceInput: ''
@@ -299,7 +332,7 @@ function PostRide({ route, navigation }) {
                                                 placeholder={t('from')}
                                                 handleLocationSelect={setLocationFrom}
                                                 inputStyles={styles.bgWhite}
-                                                error={!markerFrom && fromTouched && "This field is required"}
+                                                error={!markerFrom && fromTouched && t('error_required')}
                                             />
 
                                             <Text style={[styles.text, styles.inputText]}>{t('destination')}</Text>
@@ -309,7 +342,7 @@ function PostRide({ route, navigation }) {
                                                 placeholder={t('to')}
                                                 handleLocationSelect={setLocationTo}
                                                 inputStyles={styles.bgWhite}
-                                                error={!markerTo && toTouched && "This field is required"}
+                                                error={!markerTo && toTouched && t('error_required')}
                                             />
 
                                             <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>
@@ -352,13 +385,15 @@ function PostRide({ route, navigation }) {
 
                                             <Text style={[styles.text, styles.inputText]}>{t('seats_available')}</Text>
 
-                                            <CustomTextInput
-                                                placeholder={t('num_empty_seats')}
-                                                value={values.seatsInput}
-                                                onChangeText={handleChange('seatsInput')}
-                                                onBlur={handleBlur('seatsInput')}
-                                                error={touched.seatsInput && errors.seatsInput}
-                                                iconLeft="groups"
+                                            <Counter
+                                                counter={values.seatsInput}
+                                                text={t("seat")}
+                                                textPlural={t("seats")}
+                                                setCounter={(f) => {
+                                                    setFieldValue('seatsInput', f(values.seatsInput));
+                                                }}
+                                                min={1}
+                                                max={4}
                                             />
 
                                             <Text style={[styles.text, styles.inputText]}>{t('price_per_seat')}</Text>
@@ -389,12 +424,12 @@ function PostRide({ route, navigation }) {
 
 
                                             {values.priceInput && driverFee !== 0 &&
-                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('your_share')} {Math.ceil((1 - driverFee) * values.priceInput)} EGP</Text>
+                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('your_share')} {Math.ceil((1 - driverFee) * values.priceInput)} {t('EGP')}</Text>
                                             }
 
                                             {
                                                 driverFee !== 0 && values.priceInput &&
-                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('service_fees')}{Math.floor(driverFee * values.priceInput)} EGP ({driverFee * 100}%)</Text>
+                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('service_fees')}{Math.floor(driverFee * values.priceInput)} {t('EGP')} ({driverFee * 100}%)</Text>
                                             }
 
 
@@ -452,7 +487,7 @@ function PostRide({ route, navigation }) {
                                                         role="button"
                                                         iconLeft="directions-car"
                                                         editable={false}
-                                                        error={!carInput && "This field is required"}
+                                                        error={!carInput && t('error_required')}
                                                     />
 
 
@@ -515,9 +550,9 @@ function PostRide({ route, navigation }) {
                                             <BottomModal onHide={function () { setRidePosted(false); navigation.goBack(); }} modalVisible={ridePosted}>
                                                 <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
                                                     <SuccessCheck width={100} height={100} />
-                                                    <Text style={[styles.text, styles.headerText3, styles.primary, styles.freeSans]}>Ride Posted</Text>
-                                                    <Text style={[styles.text, styles.smallText, styles.accent]}>Thank you for choosing seaats!</Text>
-                                                    <Button onPress={onShare} bgColor={palette.primary} textColor={palette.white} text="Share Ride Link" />
+                                                    <Text style={[styles.text, styles.headerText3, styles.primary, styles.freeSans]}>{t('ride_posted')}</Text>
+                                                    <Text style={[styles.text, styles.smallText, styles.accent]}>{t('ride_post_thanks')}</Text>
+                                                    <Button onPress={onShare} bgColor={palette.primary} textColor={palette.white} text={t('share_ride_link')} />
                                                 </View>
                                             </BottomModal>
 
@@ -534,7 +569,6 @@ function PostRide({ route, navigation }) {
                                                             licensePlateLetters={data.licensePlateLetters}
                                                             licensePlateNumbers={data.licensePlateNumbers}
                                                             onPress={function () {
-                                                                // setFieldValue('carInput', data);
                                                                 setCarInput(data);
                                                                 handleBlur('carInput');
                                                                 selectCar(data);
@@ -543,7 +577,7 @@ function PostRide({ route, navigation }) {
                                                     );
                                                 })}
 
-                                                <TouchableOpacity onPress={function () { setCarSelectorOpen(false); navigation.navigate("New Car") }} style={{ width: '100%', height: 60 * rem, padding: 16 * rem, ...styles.flexRow, alignItems: 'center' }}>
+                                                <TouchableOpacity onPress={navigateNewCar} style={[styles.w100, styles.p16, styles.flexRow, styles.alignCenter, { height: 60 * rem }]}>
                                                     <MaterialIcons name="add" size={18} color={palette.black} />
                                                     <Text style={[styles.text, { fontSize: 14, fontWeight: '600' }]}>{t('add_new_car')}</Text>
                                                 </TouchableOpacity>
@@ -553,10 +587,7 @@ function PostRide({ route, navigation }) {
 
 
                                             <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} disabled={submitDisabled} onPress={handleSubmit} />
-                                        </>
-                                    )}
-
-
+                                        </>)}
                                 </Formik>
                             </View>
                         </>
@@ -565,9 +596,9 @@ function PostRide({ route, navigation }) {
                         <>
                             <View style={[styles.defaultContainer, styles.bgLightGray, styles.w100, styles.alignCenter, styles.justifyCenter, { zIndex: 5 }]}>
                                 <Text style={[styles.text, styles.textCenter]}>
-                                    In order to post a ride, you must have a car registered with us, click the button below to add a car now!
+                                    {t('disclaimer_car')}
                                 </Text>
-                                <Button onPress={() => navigation.navigate('New Car')} bgColor={palette.primary} textColor={palette.white} text={t('add_new_car')} />
+                                <Button onPress={navigateNewCar} bgColor={palette.primary} textColor={palette.white} text={t('add_new_car')} />
                             </View>
                         </>
                     }
@@ -577,6 +608,7 @@ function PostRide({ route, navigation }) {
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
                                 </SkeletonPlaceholder>
+
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
                                 </SkeletonPlaceholder>
@@ -584,6 +616,15 @@ function PostRide({ route, navigation }) {
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
                                 </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
+                                </SkeletonPlaceholder>
+
+                                <SkeletonPlaceholder>
+                                    <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
+                                </SkeletonPlaceholder>
+
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
                                 </SkeletonPlaceholder>
@@ -592,14 +633,7 @@ function PostRide({ route, navigation }) {
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
                                 </SkeletonPlaceholder>
-                                <SkeletonPlaceholder>
-                                    <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
-                                </SkeletonPlaceholder>
 
-
-                                <SkeletonPlaceholder>
-                                    <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
-                                </SkeletonPlaceholder>
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
                                 </SkeletonPlaceholder>
@@ -607,6 +641,7 @@ function PostRide({ route, navigation }) {
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
                                 </SkeletonPlaceholder>
+
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
                                 </SkeletonPlaceholder>
@@ -614,6 +649,7 @@ function PostRide({ route, navigation }) {
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={20 * rem} marginTop={15 * rem} marginBottom={5 * rem} />
                                 </SkeletonPlaceholder>
+
                                 <SkeletonPlaceholder>
                                     <SkeletonPlaceholder.Item width={'100%'} height={60 * rem} marginTop={5 * rem} />
                                 </SkeletonPlaceholder>

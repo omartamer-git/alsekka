@@ -82,7 +82,7 @@ function AllTrips({ navigation, route }) {
                         </Text>
 
                         {driverElement && driverMainTextTo &&
-                            <LinearGradient style={[styles.mt20, styles.w100, styles.br8]} colors={[palette.primary, palette.secondary]}>
+                            <View style={[styles.mt20, styles.w100, styles.br8, styles.bgPrimary]} >
                                 <TouchableOpacity style={[styles.rideView, styles.pv8, styles.ph16, styles.flexOne, styles.alignCenter, styles.justifyStart, styles.flexRow, styles.bgTransparent]}
                                     onPress={function () { viewTrip(driverTripId); }}>
                                     <Text style={[styles.text, styles.white, styles.flexOne]}>{t('view_upcoming_trip_to')} {driverMainTextTo}</Text>
@@ -93,7 +93,7 @@ function AllTrips({ navigation, route }) {
                                         </TouchableOpacity>
                                     </View>
                                 </TouchableOpacity>
-                            </LinearGradient>
+                            </View>
                         }
                         {
                             driverElement && !driverMainTextTo &&

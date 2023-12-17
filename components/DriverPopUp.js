@@ -12,12 +12,9 @@ function DriverPopUp({ modalVisible, onHide, navigateToDriver }) {
             animationType="fade"
         >
             <TouchableOpacity
-                style={{
+                style={[styles.fullCenter, styles.flexOne, {
                     backgroundColor: 'rgba(0, 0, 0, 0.5)', // translucent background
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
+                }]}
                 activeOpacity={1}
                 onPress={onHide}
             >
@@ -43,10 +40,10 @@ function DriverPopUp({ modalVisible, onHide, navigateToDriver }) {
                             </Text>
 
 
-                            <Button onPress={ function () {
+                            <Button onPress={function () {
                                 onHide();
                                 navigateToDriver();
-                            }} bgColor={palette.primary} textColor={palette.white} text={t('driver_popup_cta')}/>
+                            }} bgColor={palette.primary} textColor={palette.white} text={t('driver_popup_cta')} />
                             <Text style={[styles.bold, styles.text, styles.textCenter, styles.dark, styles.font12]}>{t('driver_popup_d1')}{"\n"}{t('driver_popup_d2')}</Text>
                         </View>
 

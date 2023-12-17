@@ -9,6 +9,12 @@ function ArrowButton({ text, onPress, bgColor, disabled, textColor, style, icon,
         borderColor_ = bgColor;
     }
 
+    function onPress_(e) {
+        requestAnimationFrame(() => {
+            onPress();
+        })
+    }
+
     return (
         <TouchableOpacity
             style={[styles2.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
@@ -20,7 +26,7 @@ function ArrowButton({ text, onPress, bgColor, disabled, textColor, style, icon,
             <View style={[styles2.viewStyle, icon ? {} : { marginEnd: 20 }]}>
                 { text && <Text style={[styles2.continueBtnText, styles2.text, { color: disabled ? palette.light : textColor }]}>{text}</Text> }
             </View>
-            <View style={{alignItems: 'flex-end'}}>
+            <View style={[styles.alignEnd]}>
                 <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={13 * rem} color={disabled ? palette.light : iconColor || palette.black} />
             </View>
         </TouchableOpacity>

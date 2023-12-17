@@ -186,7 +186,7 @@ function UserHome({ navigation, route }) {
                                 gender={nextRideData.gender}
                                 duration={nextRideData.duration}
                                 date={nextRideDate}
-                                style={{ marginTop: 8 * rem, marginBottom: 8 * rem, minHeight: 140 * rem }}
+                                style={[styles.mv10, { minHeight: 140 * rem }]}
                                 onPress={function () { viewTrip(nextRideData.id); }} />
                         }
                         {

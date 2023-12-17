@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -35,13 +35,20 @@ function SignUpScreen({ route, navigation }) {
 
   const userStore = useUserStore();
 
-  useEffect(function () {
-
-  }, []);
-
-  function handleContinueClick(firstName, lastName, phoneNum, email, password) {
+  async function handleContinueClick(firstName, lastName, phoneNum, email, password) {
     setSubmitDisabled(true);
     phoneNum = "0" + phoneNum;
+
+    const available = await userStore.accountAvailable(phoneNum, email);
+    if (available.phone == false) {
+      setErrorMessage(t('error_phone_in_use'));
+      setSubmitDisabled(false);
+      return;
+    } else if(available.email == false) {
+      setErrorMessage(t('error_email_in_use'));
+      setSubmitDisabled(false);
+      return;
+    }
 
     navigation.navigate('Otp', {
       firstName: firstName,
@@ -240,4 +247,4 @@ const signupScreenStyles = StyleSheet.create({
   }
 });
 
-export default SignUpScreen;
+export default memo(SignUpScreen);

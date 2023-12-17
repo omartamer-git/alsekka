@@ -100,6 +100,24 @@ const useUserStore = create((set) => ({
         return data;
     },
 
+    accountAvailable: async function (phone, email) {
+        const params = {
+            phone: phone,
+            email: email
+        }
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.publicAxios.get('/v1/user/accountavailable', {
+            params: params
+        });
+
+        const data = response.data;
+
+        return data;
+    },
+
+
+
     userInfo: async function () {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
@@ -304,20 +322,24 @@ const useUserStore = create((set) => ({
     },
 
     isVerified: async function (phone) {
-        const url = `/v1/user/isverified`;
+        try {
+            const url = `/v1/user/isverified`;
 
-        const axiosManager = useAxiosManager.getState();
-        const isVerified = await axiosManager.publicAxios.get(url, {
-            params: {
-                phone: phone
+            const axiosManager = useAxiosManager.getState();
+            const isVerified = await axiosManager.publicAxios.get(url, {
+                params: {
+                    phone: phone
+                }
+            });
+
+            if (isVerified.data.verified == true) {
+                set(isVerified.data);
+                return true;
+            } else {
+                return false;
             }
-        });
-
-        if (isVerified.data.verified == true) {
-            set(isVerified.data);
-            return true;
-        } else {
-            return false;
+        } catch (e) {
+            console.log(e);
         }
     },
 

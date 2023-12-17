@@ -4,15 +4,21 @@ import * as Keychain from 'react-native-keychain';
 import { create } from 'zustand';
 import { SERVER_URL } from '../helper';
 import useAuthManager from './authManager';
+import axiosRetry from 'axios-retry';
 
 const useAxiosManager = create((set) => {
     const authAxios = axios.create({
         baseURL: SERVER_URL
     });
+    axiosRetry(authAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
     const publicAxios = axios.create({
         baseURL: SERVER_URL
     });
+
+    axiosRetry(publicAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+
+
 
     authAxios.interceptors.request.use(
         config => {

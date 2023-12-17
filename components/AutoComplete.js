@@ -2,8 +2,9 @@ import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import _debounce from 'lodash/debounce';
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import {
+    FlatList,
     Modal,
     NativeModules,
     Platform,
@@ -25,6 +26,7 @@ import HeaderView from './HeaderView';
 import { useTranslation } from 'react-i18next';
 import { requestLocationPermission } from '../util/maps';
 
+
 const StatusBarManager = NativeModules;
 
 const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handleLocationSelect, inputStyles = {}, error = false }, ref) {
@@ -35,16 +37,27 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     const [recentPlaces, setRecentPlaces] = useState(null);
 
     const [modalMap, setModalMap] = useState(false);
-    const [location, setLocation] = useState(null);
+    const myLocation = useRef(null);
+    // const sessionToken = useRef(null);
     const [mapPred, setMapPred] = useState(null);
     const inputLocRef = useRef(null);
     const { t } = useTranslation();
 
     const mapViewRef = useRef(null);
+    const currRegion = useRef(null);
 
     const [statusBarHeight, setStatusBarHeight] = useState(0);
 
     let placeIds = [];
+
+    Geolocation.getCurrentPosition(
+        info => {
+            myLocation.current = {
+                latitude: info.coords.latitude,
+                longitude: info.coords.longitude
+            };
+        }
+    );
 
     useImperativeHandle(ref, () => ({
         setCompletionText(txt) {
@@ -55,16 +68,6 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
 
     useEffect(function () {
         setModalMap(false);
-
-        Geolocation.getCurrentPosition(
-            info => {
-                setLocation({
-                    latitude: info.coords.latitude,
-                    longitude: info.coords.longitude
-                });
-            }
-        );
-
         AsyncStorage.getItem("favorite_places").then((value) => {
             setFavoritePlaces(JSON.parse(value));
         });
@@ -105,8 +108,9 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     async function handleTextChange(data) {
         if (data !== "") {
             placeIds = [];
-            const pred = await googleMapsAPI.getPredictions(data);
-            setPredictions(pred);
+            const pred = await googleMapsAPI.getPredictions(data, myLocation.current.latitude, myLocation.current.longitude);
+            setPredictions(pred.data);
+            // sessionToken.current = pred.sessiontoken;
         } else {
             setPredictions(null);
             placeIds = [];
@@ -115,13 +119,16 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
 
     async function handleRegionChange(region) {
         const results = await googleMapsAPI.geocode(region.latitude, region.longitude);
-
+        currRegion.current = {
+            latitude: region.latitude,
+            longitude: region.longitude
+        }
         const description = results.formatted_address;
         const placeId = results.place_id;
 
         setMapPred([description, placeId]);
 
-        moveInput([description, placeId], false);
+        moveInput([description, placeId], false, {lat: region.latitude, lng: region.longitude});
     }
 
     const debounceFn = useCallback(_debounce(handleTextChange, 300), []);
@@ -140,10 +147,16 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         return loc;
     }
 
-    async function moveInput(pred, exit = true) {
+    async function moveInput(pred, exit = true, extLoc=null) {
         try {
             setText(pred[0]);
-            const loc = (await getLocationFromPlaceId(pred[1]));
+            
+            let loc;
+            if(extLoc) {
+                loc = extLoc;
+            } else {
+                loc = (await getLocationFromPlaceId(pred[1]));
+            }
 
             const value = await AsyncStorage.getItem('recent_places');
             let currRecents = [];
@@ -164,7 +177,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
             if (exit) {
                 setModalVisible(false);
                 handleLocationSelect(
-                    loc, pred[0]
+                    loc, pred[0], pred[1]
                 );
             }
             setPredictions(null);
@@ -217,13 +230,35 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         setModalVisible(false);
     }
 
+    function Prediction({ prediction }) {
+        let color = palette.light;
+        if (favoritePlaces) {
+            const favoritePlaces_ids = favoritePlaces.map((subArr) => subArr[1]).concat();
+            if (favoritePlaces_ids.includes(prediction[1])) {
+                color = palette.red;
+            }
+        }
+        return (
+            <TouchableOpacity style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
+                <Text style={[styles2.text, { width: '90%' }]}>{prediction[0]}</Text>
+                <TouchableOpacity onPress={function () { addToFavorites(prediction) }} style={[{width: '10%'}]}>
+                    <MaterialIcons name="favorite" size={20} color={color} />
+                </TouchableOpacity>
+            </TouchableOpacity>
+        )
+    }
+
+    function RecentDestination({prediction}) {
+
+    }
+
 
     return (
-        <View style={{ width: '100%' }}>
+        <View style={styles2.w100}>
             <CustomTextInput onFocus={enableModal} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             <Modal animationType="slide" visible={modalVisible}>
-                <SafeAreaView style={[{ backgroundColor: palette.primary }, styles2.AndroidSafeArea]}>
-                    <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={cancelAutoComplete} >
+                <SafeAreaView style={[styles2.bgPrimary, styles2.AndroidSafeArea]}>
+                    <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={styles2.bgPrimary} action={cancelAutoComplete} >
                         <View style={styles2.localeWrapper}>
                             <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                             <Text style={[styles2.locale, styles2.text]}>EN</Text>
@@ -232,32 +267,18 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                 </SafeAreaView>
 
                 <View style={styles.container}>
-                    <View style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 5, }}>
+                    <View style={[styles2.positionAbsolute, styles2.w100, { top: 0, left: 0, zIndex: 5 }]}>
                         <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                         </View>
 
                         <View style={[styles2.defaultContainer, styles2.defaultPadding]}>
                             <CustomTextInput inputRef={inputLocRef} iconLeft="pin-drop" onChangeText={onChangeText} placeholder={placeholder} value={text} />
                             {!modalMap && predictions &&
-                                predictions.map(
-                                    (prediction, index) => {
-                                        let color = palette.light;
-                                        if (favoritePlaces) {
-                                            const favoritePlaces_ids = favoritePlaces.map((subArr) => subArr[1]).concat();
-                                            if (favoritePlaces_ids.includes(prediction[1])) {
-                                                color = palette.red;
-                                            }
-                                        }
-                                        return (
-                                            <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
-                                                <Text style={[styles2.text, { flex: 10 }]}>{prediction[0]}</Text>
-                                                <TouchableOpacity onPress={function () { addToFavorites(prediction) }} style={styles.flexOne}>
-                                                    <MaterialIcons name="favorite" size={20} color={color} />
-                                                </TouchableOpacity>
-                                            </TouchableOpacity>
-                                        )
-                                    }
-                                )
+                                <FlatList
+                                    data={predictions}
+                                    renderItem={({item}) => <Prediction prediction={item}/>}
+                                    style={styles.flexOne}
+                                />
                             }
                             {!modalMap && !predictions &&
                                 <ScrollView keyboardShouldPersistTaps={"handled"} style={[styles2.flexOne, styles2.w100]}>
@@ -301,12 +322,12 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                     </View>
 
 
-                                    <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={function () { setModalMap(true) }}>
+                                    <TouchableOpacity style={styles.alternativeOption} onPress={function () { setModalMap(true) }}>
                                         <MaterialIcons name="place" size={16} color={palette.black} />
                                         <Text style={[styles2.text, styles2.ml10]}>{t('choose_location')}</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={{ flexDirection: 'row', height: 48 * rem, width: '100%', borderBottomColor: '#d9d9d9', borderBottomWidth: 1, padding: 5, alignItems: 'center' }} onPress={setCurrentLocation}>
+                                    <TouchableOpacity style={styles.alternativeOption} onPress={setCurrentLocation}>
                                         <MaterialIcons name="my-location" size={16} color={palette.black} />
                                         <Text style={[styles2.text, styles2.ml10]}>{t('current_location')}</Text>
                                     </TouchableOpacity>
@@ -318,14 +339,14 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                     </View>
 
                     {modalMap && <View style={[styles2.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>
-                        <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={function () { moveInput(mapPred) }} />
+                        <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} onPress={function () { moveInput(mapPred, true, {lat: currRegion.current.latitude, lng: currRegion.current.longitude}) }} />
                     </View>}
 
                     {modalMap &&
                         <MapView
-                            style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}
+                            style={[styles2.fullCenter, { ...StyleSheet.absoluteFillObject }]}
                             showsUserLocation={true}
-                            initialRegion={location}
+                            initialRegion={myLocation.current}
                             onRegionChangeComplete={onChangeRegion}
                             provider={PROVIDER_GOOGLE}
                             ref={mapViewRef}
@@ -365,9 +386,18 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: palette.lightGray,
+    },
+    alternativeOption: {
+        flexDirection: 'row',
+        height: 48 * rem,
+        width: '100%',
+        borderBottomColor: '#d9d9d9',
+        borderBottomWidth: 1,
+        padding: 5,
+        alignItems: 'center'
     }
 
 });
 
 
-export default AutoComplete;
+export default memo(AutoComplete);

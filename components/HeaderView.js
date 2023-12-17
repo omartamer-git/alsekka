@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
+import { memo } from 'react';
 
 function HeaderView({ screenName, navType, action, children, borderVisible = true, style = {} }) {
     const styles2 = StyleSheet.create({
@@ -37,11 +38,11 @@ function HeaderView({ screenName, navType, action, children, borderVisible = tru
     }
     return (
         <View style={[styles2.viewStyle, modifierStyles, style]}>
-            <View style={{ alignItems: 'flex-start' }}>
+            <View style={styles.alignStart}>
                 {
                     navType &&
                     (
-                        <TouchableOpacity style={{ width: 44 * rem, height: '100%', justifyContent: 'center' }} onPress={action}>
+                        <TouchableOpacity style={[styles.justifyCenter, styles.h100, { width: 44 * rem }]} onPress={action}>
                             {
                                 (navType == "close" && <MaterialIcons name="close" size={22} color={palette.white} />) ||
                                 (navType == "back" && <MaterialIcons name={I18nManager.isRTL ? "arrow-forward" : "arrow-back"} size={22} color={palette.white} />) ||
@@ -52,7 +53,7 @@ function HeaderView({ screenName, navType, action, children, borderVisible = tru
                 }
             </View>
 
-            <View style={{ flex: 1, alignItems: 'center', paddingEnd: navType ? 44 * rem : 0 }}>
+            <View style={[styles.flexOne, styles.alignCenter, { paddingEnd: navType ? 44 * rem : 0 }]}>
                 {screenName && <View style={styles2.screenName}><Text style={[styles.text, { textAlign: 'center', color: palette.white, fontWeight: '600', fontSize: 16 }]}>{screenName}</Text></View>}
             </View>
         </View>
@@ -60,4 +61,4 @@ function HeaderView({ screenName, navType, action, children, borderVisible = tru
 }
 
 
-export default HeaderView;
+export default memo(HeaderView);

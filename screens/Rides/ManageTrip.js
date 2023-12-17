@@ -27,8 +27,17 @@ import Button from '../../components/Button';
 import { getOptimalPath } from '../../api/googlemaps';
 import { decodePolyline } from '../../util/maps';
 
-const Timer = function () {
-    const [seconds, setSeconds] = useState(300); // 5 minutes in seconds
+const Timer = function ({tripDate}) {
+    let date1Ms = (new Date()).getTime();
+    let date2Ms = (new Date(tripDate)).getTime();
+
+    // Calculate the difference in milliseconds
+    let timeDifferenceMs = Math.abs(date1Ms - date2Ms);
+
+    // Convert milliseconds to seconds
+    let secs = Math.floor(timeDifferenceMs / 1000);
+ 
+    const [seconds, setSeconds] = useState(secs + 300); // 5 minutes in seconds
 
     useEffect(function () {
         const interval = setInterval(function () {
@@ -278,15 +287,15 @@ function ManageTrip({ route, navigation }) {
                                     <LiveAnimation width={75} height={75} />
                                     <Text style={[styles.text, styles.bold, styles.font28, styles.textCenter]}>
                                         {
-                                            getPhase() === 0 ? 'Wait at Starting Point' :
-                                                getPhase() === 1 ? 'Head to Pick Up Point' :
-                                                    getPhase() === 2 ? 'Go to Destination' : 'Collect Payment'
+                                            getPhase() === 0 ? t('wait_starting') :
+                                                getPhase() === 1 ? t('head_pickup') :
+                                                    getPhase() === 2 ? t('go_destination') : t('collect_payment')
                                         }
                                     </Text>
                                 </>
                             }
                             {getPhase() === 0 &&
-                                <Timer />
+                                <Timer tripDate={tripDetails.datetime} />
                             }
                         </View>
 
@@ -347,7 +356,7 @@ function ManageTrip({ route, navigation }) {
                                         <Image source={{ uri: getPickupPassenger().User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                     </View>
                                     <View style={[styles.ml10]}>
-                                        <Text style={[styles.text, styles.mb5, styles.font14]}>You're picking up</Text>
+                                        <Text style={[styles.text, styles.mb5, styles.font14]}>{t('picking_up')}</Text>
                                         <Text style={[styles.text, styles.bold, styles.font18]}>
                                             {
                                                 getPickupPassenger().User.firstName
@@ -407,7 +416,7 @@ function ManageTrip({ route, navigation }) {
                                                 <View style={[styles.ml10]}>
                                                     <Text style={[styles.text, styles.mb5, styles.font14]}>
                                                         {
-                                                            passenger.paymentMethod === 'CASH' ? 'Collect payment from' : 'Good to go'
+                                                            passenger.paymentMethod === 'CASH' ? `${t('collect_payment_from')}` : t('good_to_go')
                                                         }
                                                     </Text>
                                                     <Text style={[styles.text, styles.bold, styles.font18]}>
@@ -421,7 +430,7 @@ function ManageTrip({ route, navigation }) {
                                                     </Text>
                                                     <Text style={[styles.text]}>
                                                         {
-                                                            passenger.paymentMethod === 'CASH' ? `${data.grandTotal} ${t('EGP')}` : 'paid using their card'
+                                                            passenger.paymentMethod === 'CASH' ? `${data.grandTotal} ${t('EGP')}` : t('paid_card')
                                                         }
                                                     </Text>
                                                 </View>
@@ -441,8 +450,8 @@ function ManageTrip({ route, navigation }) {
                         {
                             getPhase() === 4 &&
                             <>
-                                <Text style={[styles.text, styles.headerText, styles.primary]}>Ratings</Text>
-                                <Text style={[styles.text, styles.smallText, styles.dark]}>Please take a moment to rate the passengers you've taken this ride with. This helps us keep up the integrity of our market!</Text>
+                                <Text style={[styles.text, styles.headerText, styles.primary]}>{t('ratings')}</Text>
+                                <Text style={[styles.text, styles.smallText, styles.dark]}>{t('ratings_text')}</Text>
                                 <View style={[styles.w100, styles.mt10]}>
                                     {
                                         tripDetails.passengers.map((passenger, index) => {
@@ -493,19 +502,19 @@ function ManageTrip({ route, navigation }) {
 
                         {getPhase() === 0 &&
                             <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
-                                Please press the <Text style={styles.secondary}>Check In</Text> button when the passenger has gotten in the car. If a passenger fails to show up on time (within the waiting period), press the <Text style={styles.error}>Red X button</Text>.
+                                {t('please_press')} <Text style={styles.secondary}>{t('check_in')}</Text> {t('passenger_in_car')} <Text style={styles.error}>{t('red_x_button')}</Text>.
                             </Text>
                         }
 
                         {getPhase() === 2 &&
                             <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
-                                Please press the <Text style={styles.secondary}>Next</Text> button when you have arrived at the destination. After that, please check the passengers out.
+                                {t('please_press')} <Text style={styles.secondary}>{t('next')}</Text> {t('arrive_at_dest')}
                             </Text>
                         }
 
                         {getPhase() === 3 &&
                             <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
-                                Please press the <Text style={styles.secondary}>Confirm Collections</Text> button when you receive payments from everyone paying in cash.
+                                {t('please_press')} <Text style={styles.secondary}>{t('confirm_collections')}</Text> {t('receive_payments')}
                             </Text>
                         }
 

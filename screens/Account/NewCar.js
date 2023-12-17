@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     ActionSheetIOS,
@@ -38,7 +38,7 @@ function NewCar({ route, navigation }) {
     const [charLicense1, setCharLicense1] = useState("");
     const [charLicense2, setCharLicense2] = useState("");
     const [charLicense3, setCharLicense3] = useState("");
-    const imagePickerOptions = { title: 'Drivers\' License Photo', multiple: true, mediaType: 'photo', includeBase64: true, quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
+    const imagePickerOptions = { title: 'Drivers\' License Photo', mediaType: 'photo', quality: 0.5, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
 
     const [licenseFront, setLicenseFront] = useState("");
     const [licenseBack, setLicenseBack] = useState("");
@@ -85,30 +85,30 @@ function NewCar({ route, navigation }) {
     async function addCar(brand, year, model, color, charLicense1, charLicense2, charLicense3, licensePlateNumbers) {
         setSubmitDisabled(true);
         const newCarBody = {
-            uid: userStore.id,
             brand: brand,
             year: year,
             model: model,
             color: color,
             licensePlateLetters: charLicense1 + charLicense2 + charLicense3,
             licensePlateNumbers: licensePlateNumbers,
-            license_front: licenseFront,
-            license_back: licenseBack,
         };
 
-        carsAPI.newCar(newCarBody).then(() => setModalVisible(true)).catch((e) => console.error(e)).finally(() => setSubmitDisabled(false));
+        console.log(licenseFront);
+        console.log(licenseBack);
+
+        carsAPI.newCar(newCarBody, licenseFront, licenseBack).then(() => setModalVisible(true)).catch((e) => console.error(e)).finally(() => setSubmitDisabled(false));
     };
 
     function setImageFront(response) {
         if (!response.didCancel && !response.error) {
-            setLicenseFront(response.assets[0]['base64']);
+            setLicenseFront(response.assets[0]);
             setFrontPhotoButtonText(t('front_chosen'));
         }
     };
 
     function setImageBack(response) {
         if (!response.didCancel && !response.error) {
-            setLicenseBack(response.assets[0]['base64']);
+            setLicenseBack(response.assets[0]);
             setBackPhotoButtonText(t('back_chosen'));
         }
     };
@@ -271,7 +271,7 @@ function NewCar({ route, navigation }) {
                             />
 
                             <Text style={[styles.text, styles.inputText]}>{t('car_license_front')}</Text>
-                            <ErrorMessage condition={frontPhotoButtonTouched && !licenseFront} message="This field is required." />
+                            <ErrorMessage condition={frontPhotoButtonTouched && !licenseFront} message={t('error_required')} />
                             <Button
                                 text={frontPhotoButtonText}
                                 bgColor={palette.accent}
@@ -280,7 +280,7 @@ function NewCar({ route, navigation }) {
                             />
 
                             <Text style={[styles.text, styles.inputText]}>{t('car_license_back')}</Text>
-                            <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message="This field is required." />
+                            <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message={t('error_required')} />
                             <Button
                                 text={backPhotoButtonText}
                                 bgColor={palette.accent}
@@ -301,8 +301,8 @@ function NewCar({ route, navigation }) {
             </ScrollView>
 
             <Modal visible={modalVisible} animationType="slide">
-                <SafeAreaView style={{ backgroundColor: palette.primary }}>
-                    <HeaderView navType="back" screenName={t('manage_cars')} borderVisible={false} style={{ backgroundColor: palette.primary }} action={function () { setModalVisible(false) }} >
+                <SafeAreaView style={styles.bgPrimary}>
+                    <HeaderView navType="back" screenName={t('manage_cars')} borderVisible={false} style={styles.bgPrimary} action={function () { setModalVisible(false) }} >
                         <View style={styles.localeWrapper}>
                             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
                             <Text style={[styles.text, styles.locale]}>EN</Text>
@@ -320,4 +320,4 @@ function NewCar({ route, navigation }) {
     );
 }
 
-export default NewCar;
+export default memo(NewCar);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { I18nManager, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
@@ -9,9 +9,47 @@ function CustomTextInput({ value,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing,
-    onKeyPress, textStyles, onBlur, error }) {
+    onKeyPress, textStyles, onBlur, error, disabled = false }) {
+
+    const styles2 = StyleSheet.create({
+        container: {
+            height: 48 * rem,
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            borderRadius: 4 * rem,
+            ...styles.flexRow,
+            paddingStart: 24 * rem,
+            paddingEnd: 24 * rem,
+            marginTop: 8 * rem,
+            marginBottom: 8 * rem,
+            backgroundColor: disabled ? palette.light : palette.white
+        },
+        input: {
+            height: 24 * rem,
+            lineHeight: 16 * rem,
+            textAlign: I18nManager.isRTL ? 'right' : 'left',
+            fontWeight: '500',
+            marginHorizontal: 8 * rem,
+            color: palette.accent,
+            flex: 1
+        },
+
+        warningBorder: {
+            borderColor: palette.red,
+            borderWidth: 1,
+        },
+
+        successBorder: {
+            borderColor: palette.green,
+            borderWidth: 1
+        }
+    });
+
+    
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
+
+
 
     if (!inputRef) {
         inputRef = useRef(null);
@@ -53,7 +91,6 @@ function CustomTextInput({ value,
                     secureTextEntry={secureTextEntry}
                     onFocus={onFocus}
                     autoCorrect={false}
-                    autoCapitalize='none'
                     blurOnSubmit={true}
                     onBlur={onBlur}
                     placeholderTextColor={palette.light}
@@ -70,7 +107,7 @@ function CustomTextInput({ value,
                     <MaterialIcons name={iconRight} size={18} color={palette.primary} />
                 }
             </TouchableOpacity>
-            {error && <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, { color: palette.red, fontSize: 12 * rem }]}>{error}</Text>}
+            {error && <Text adjustsFontSizeToFit numberOfLines={3} style={[styles.text, { color: palette.red, fontSize: 12 * rem }]}>{error}</Text>}
         </>
     );
 };
@@ -84,38 +121,6 @@ CustomTextInput.defaultProps = {
     onPressIn: function () { },
 };
 
-const styles2 = StyleSheet.create({
-    container: {
-        height: 48 * rem,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        borderRadius: 4 * rem,
-        ...styles.flexRow,
-        paddingStart: 24 * rem,
-        paddingEnd: 24 * rem,
-        marginTop: 8 * rem,
-        marginBottom: 8 * rem,
-        backgroundColor: palette.white
-    },
-    input: {
-        height: 24 * rem,
-        lineHeight: 16 * rem,
-        textAlign: I18nManager.isRTL ? 'right' : 'left',
-        fontWeight: '500',
-        marginHorizontal: 8 * rem,
-        color: palette.accent,
-        flex: 1
-    },
 
-    warningBorder: {
-        borderColor: palette.red,
-        borderWidth: 1,
-    },
 
-    successBorder: {
-        borderColor: palette.green,
-        borderWidth: 1
-    }
-});
-
-export default CustomTextInput;
+export default memo(CustomTextInput);

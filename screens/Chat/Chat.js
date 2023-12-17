@@ -179,7 +179,7 @@ function Chat({ navigation, route }) {
                     </>
                 }
 
-                <View style={{ flex: 1 }} />
+                <View style={styles.flexOne} />
 
                 <View style={[styles.ph16, styles.w100, styles.flexRow, styles.mb5, { paddingBottom: insets.bottom, paddingHorizontal: 12 * rem, alignSelf: 'flex-end' }]}>
                     <View style={chatStyles.messageView}>

@@ -2,6 +2,7 @@ import { Image, Text, View } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 import { useTranslation } from "react-i18next";
+import { memo } from "react";
 
 function Passenger ({ borderTopWidth, data, children }) {
     const {t} = useTranslation();
@@ -30,4 +31,4 @@ function Passenger ({ borderTopWidth, data, children }) {
     );
 }
 
-export default Passenger;
+export default memo(Passenger);

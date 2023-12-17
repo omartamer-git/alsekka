@@ -5,21 +5,29 @@ import { palette, rem, styles } from '../helper';
 
 function Button({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) {
     let borderColor_ = borderColor;
-    if(borderColor_ === undefined) {
+    if (borderColor_ === undefined) {
         borderColor_ = bgColor;
+    }
+
+    function onPress_(e) {
+        requestAnimationFrame(
+            () => {
+                onPress();
+            }
+        )
     }
 
     return (
         <TouchableOpacity
-            style={[styles2.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_}, style]}
+            style={[styles2.button, { backgroundColor: disabled ? palette.dark : bgColor, borderColor: disabled ? palette.dark : borderColor_ }, style]}
             activeOpacity={0.9}
-            onPress={onPress}
+            onPress={onPress_}
             disabled={disabled}
         >
             {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={20} color={iconColor} />}
             <View style={[styles2.viewStyle, icon === undefined ? {} : { marginEnd: 20 }]}>
-                { text && <Text style={[styles2.continueBtnText, styles.text, { color: textColor }]}>{text}</Text> }
-                { children }
+                {text && <Text style={[styles2.continueBtnText, styles.text, { color: textColor }]}>{text}</Text>}
+                {children}
             </View>
         </TouchableOpacity>
     );

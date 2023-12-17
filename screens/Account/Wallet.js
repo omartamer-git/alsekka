@@ -37,7 +37,7 @@ function Wallet({ navigation, route }) {
                     <Text style={[styles.text, styles.white, styles.bold]}>{t('balance')}</Text>
                     <Text style={[styles.text, styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(balance) : balance}</Text>
                     <View style={[styles.justifyEnd, styles.mb5, styles.flexOne]}>
-                        <Button text={t('withdraw')} bgColor={palette.white} style={{ width: '50%' }} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
+                        <Button text={t('withdraw')} bgColor={palette.white} style={styles.w50} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
                     </View>
                 </LinearGradient>
 
