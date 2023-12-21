@@ -6,6 +6,7 @@ import { config } from '../config';
 import useAppManager from '../context/appManager';
 import { Platform } from 'react-native';
 import axios from 'axios';
+import { stopLocationUpdatesAsync } from 'expo-location';
 
 const useUserStore = create((set) => ({
     id: '',
@@ -115,8 +116,6 @@ const useUserStore = create((set) => ({
 
         return data;
     },
-
-
 
     userInfo: async function () {
         const axiosManager = useAxiosManager.getState();
@@ -471,6 +470,28 @@ const useUserStore = create((set) => ({
         const data = response.data;
         set(data);
         return data;
+    },
+
+    postDriverLocation: async function (lat, lng, timestamp) {
+        const body = {
+            lat,
+            lng,
+            timestamp
+        };
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.post('/v1/location/updatelocation', body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = response.data;
+        if (data.stop && data.stop == 1) {
+            await stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
+        }
+
+        return true;
     }
 }));
 

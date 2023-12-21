@@ -28,6 +28,7 @@ import UserHome from './screens/HomeScreen/UserHome';
 import PostRide from './screens/PostRide/PostRide';
 import ViewTrip from './screens/PostRide/ViewTrip';
 import ManageTrip from './screens/Rides/ManageTrip';
+import * as TaskManager from 'expo-task-manager';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -88,6 +89,8 @@ const PostRideStack = createNativeStackNavigator();
 const AccountStack = createNativeStackNavigator();
 const UserHomeStack = createNativeStackNavigator();
 const CommunityStack = createNativeStackNavigator();
+import Constants from 'expo-constants';
+import { stopLocationUpdatesAsync } from 'expo-location';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -240,6 +243,30 @@ function App() {
           };
         }
         inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    TaskManager.defineTask("UPDATE_LOCATION_DRIVER", ({ data, error }) => {
+      if (error) {
+        // Error occurred - check `error.message` for more details.
+        return;
+      }
+      if (data) {
+        console.log(data);
+        
+        const { locations } = data;
+        const lat = locations[0].coords.latitude;
+        const lng = locations[0].coords.longitude;
+        const timestamp = locations[0].timestamp;
+        console.log("hello! Post");
+        if(userStore.id) {
+          console.log("Posting Loc");
+          console.log(lat, lng);
+          userStore.postDriverLocation(lat, lng, timestamp);
+        }
+        // do something with the locations captured in the background
       }
     });
   }, []);

@@ -21,6 +21,7 @@ import Button from '../../components/Button';
 import Passenger from '../../components/Passenger';
 import { addSecondsToDate, customMapStyle, getDateTime, getDirections, palette, rem, styles, translateDate, translatedFormat } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import CarMarker from '../../components/CarMarker';
 
 
 function ViewTrip({ route, navigation }) {
@@ -104,6 +105,37 @@ function ViewTrip({ route, navigation }) {
         }
     }, [objDate]);
 
+    const [driverLocationMarker, setDriverLocationMarker] = useState(null);
+    let timeoutId;
+    function updateDriverLocation() {
+        ridesAPI.getDriverLocation(tripDetails.id).then(det => {
+            // console.log("Det: " + det.lat);
+            setDriverLocationMarker(prevLocation => {
+                return ({
+                    latitude: det.lat,
+                    longitude: det.lng
+                })
+            }
+            );
+        });
+
+        timeoutId = setTimeout(() => updateDriverLocation(), 3000);
+
+        // Return the timeoutId so it can be cleared
+        return () => clearTimeout(timeoutId);
+    }
+
+    useEffect(() => {
+        if (isDriver || !tripDetails || tripStatus !== 'ONGOING') {
+            console.log("Not Driver/Not Ready");
+            return;
+        }
+
+        updateDriverLocation();
+        return () => clearTimeout(timeoutId);
+    }, [isDriver, tripStatus, tripDetails]);
+
+
     const fitMarkers = function () {
         if (mapViewRef) {
             mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
@@ -152,8 +184,17 @@ function ViewTrip({ route, navigation }) {
                         ref={mapViewRef}
                         customMapStyle={customMapStyle}
                     >
-                        {markerFrom && <Marker identifier="from" coordinate={markerFrom} pinColor="blue" onLayout={fitMarkers} />}
-                        {markerTo && <Marker identifier="to" coordinate={markerTo} onLayout={fitMarkers} />}
+                        {markerFrom &&
+                            <Marker identifier="from" coordinate={markerFrom} pinColor="blue" onLayout={fitMarkers}>
+                                <Image source={require('../../assets/PickUp.png')} style={{ width: 35, height: 35 }} />
+                            </Marker>
+                        }
+                        {markerTo &&
+                            <Marker identifier="to" coordinate={markerTo} onLayout={fitMarkers}>
+                                <Image source={require('../../assets/Destination.png')} style={{ width: 35, height: 35 }} />
+                            </Marker>
+                        }
+                        {driverLocationMarker && <CarMarker car={driverLocationMarker} />}
                     </MapView>
 
                     {

@@ -1,9 +1,10 @@
+import Geolocation from '@react-native-community/geolocation';
+import { ActivityType, startLocationUpdatesAsync, stopLocationUpdatesAsync } from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Image,
-    Linking,
     PermissionsAndroid,
     Platform,
     ScrollView,
@@ -12,22 +13,22 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { getOptimalPath } from '../../api/googlemaps';
 import * as ridesAPI from '../../api/ridesAPI';
-import Passenger from '../../components/Passenger';
-import { containerStyle, customMapStyle, getDirections, mapPadding, palette, rem, styles } from '../../helper';
-import ScreenWrapper from '../ScreenWrapper';
-import LiveAnimation from '../../components/LiveAnimation';
-import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import MapViewDirections from 'react-native-maps-directions';
 import ArrowButton from '../../components/ArrowButton';
 import Button from '../../components/Button';
-import { getOptimalPath } from '../../api/googlemaps';
+import LiveAnimation from '../../components/LiveAnimation';
+import Passenger from '../../components/Passenger';
+import { containerStyle, customMapStyle, getDirections, palette, rem, styles } from '../../helper';
 import { decodePolyline } from '../../util/maps';
+import ScreenWrapper from '../ScreenWrapper';
 
-const Timer = function ({tripDate}) {
+
+const Timer = function ({ tripDate }) {
     let date1Ms = (new Date()).getTime();
     let date2Ms = (new Date(tripDate)).getTime();
 
@@ -36,7 +37,7 @@ const Timer = function ({tripDate}) {
 
     // Convert milliseconds to seconds
     let secs = Math.floor(timeDifferenceMs / 1000);
- 
+
     const [seconds, setSeconds] = useState(secs + 300); // 5 minutes in seconds
 
     useEffect(function () {
@@ -106,6 +107,14 @@ function ManageTrip({ route, navigation }) {
             setLoading(false);
         });
     }, []);
+
+    useEffect(() => {
+        startLocationUpdatesAsync("UPDATE_LOCATION_DRIVER", {
+            activityType: ActivityType.AutomotiveNavigation,
+            pausesUpdatesAutomatically: true,
+            showsBackgroundLocationIndicator: true
+        })
+    }, [])
 
     const fitToSuppliedMarkers = function () {
         if (!currentMapRef.current) return;
@@ -269,6 +278,8 @@ function ManageTrip({ route, navigation }) {
     }
 
     const submitRatings = function () {
+        console.log(tripId);
+        console.log(ratings);
         ridesAPI.submitDriverRatings(tripId, ratings).then(function () {
             // ratings submitted
             navigation.navigate('Home', { screen: 'User Home' });

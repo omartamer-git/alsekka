@@ -202,7 +202,7 @@ export const postRide = async function (fromLatitude, fromLongitude, toLatitude,
             silent: false,
             fireDate: twoDaysBefore.toISOString(),
         });
-    } catch(e) {
+    } catch (e) {
         // noti error
     }
 
@@ -348,6 +348,7 @@ export const checkPassengerOut = async function (tripId) {
             'Content-Type': 'application/json',
         },
     });
+    await stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
     const data = response.data;
     return data;
 };
@@ -393,3 +394,16 @@ export const noShow = async function (passengerId, tripId) {
     }
     return false;
 };
+
+export const getDriverLocation = async function (rideId) {
+    const url = `/v1/location/driverlocation`;
+    const params = {
+        rideId: rideId
+    };
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+
+    return data;
+}
