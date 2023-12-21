@@ -610,6 +610,8 @@ PODS:
     - React
   - RNCPicker (2.5.1):
     - React-Core
+  - RNCPushNotificationIOS (1.11.0):
+    - React-Core
   - RNDeviceInfo (10.11.0):
     - React-Core
   - RNFBApp (18.6.1):
@@ -624,10 +626,10 @@ PODS:
     - React-Core
   - RNKeychain (8.1.2):
     - React-Core
-  - RNNotifee (7.8.0):
+  - RNNotifee (7.8.2):
     - React-Core
-    - RNNotifee/NotifeeCore (= 7.8.0)
-  - RNNotifee/NotifeeCore (7.8.0):
+    - RNNotifee/NotifeeCore (= 7.8.2)
+  - RNNotifee/NotifeeCore (7.8.2):
     - React-Core
   - RNReanimated (3.5.4):
     - DoubleConversion
@@ -763,6 +765,7 @@ DEPENDENCIES:
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
@@ -931,6 +934,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
     :path: "../node_modules/@react-native-picker/picker"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFBApp:
@@ -1051,12 +1056,13 @@ SPEC CHECKSUMS:
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNCPicker: 529d564911e93598cc399b56cc0769ce3675f8c8
+  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDeviceInfo: bf8a32acbcb875f568217285d1793b0e8588c974
   RNFBApp: 5a16a735bad57ca29ee44757bde7e654c5bc8f60
   RNFBMessaging: d1727030c98a9dcc7cd44e2fd29398acb6531cba
   RNGestureHandler: 38aa38413896620338948fbb5c90579a7b1c3fde
   RNKeychain: a65256b6ca6ba6976132cc4124b238a5b13b3d9c
-  RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
+  RNNotifee: 8e2d3df3f0e9ce8f5d1fe4c967431138190b6175
   RNReanimated: be07c7ae209074d0e8a84cf38b7909457ac59a32
   RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
   RNStoreReview: 31dbfd0dac2eea9675f0b84f1dd3261c2110c337

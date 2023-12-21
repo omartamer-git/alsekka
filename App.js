@@ -9,12 +9,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-gesture-handler';
 
 
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PermissionsAndroid } from 'react-native';
 
+import * as TaskManager from 'expo-task-manager';
 import { requestTrackingPermission } from 'react-native-tracking-transparency';
 import Account from './screens/Account/Account';
 import Wallet from './screens/Account/Wallet';
@@ -28,7 +30,6 @@ import UserHome from './screens/HomeScreen/UserHome';
 import PostRide from './screens/PostRide/PostRide';
 import ViewTrip from './screens/PostRide/ViewTrip';
 import ManageTrip from './screens/Rides/ManageTrip';
-import * as TaskManager from 'expo-task-manager';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -66,7 +67,6 @@ import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { Notifications } from 'react-native-notifications';
 import SplashScreen from 'react-native-splash-screen';
 import SpInAppUpdates, {
   IAUUpdateKind
@@ -89,8 +89,6 @@ const PostRideStack = createNativeStackNavigator();
 const AccountStack = createNativeStackNavigator();
 const UserHomeStack = createNativeStackNavigator();
 const CommunityStack = createNativeStackNavigator();
-import Constants from 'expo-constants';
-import { stopLocationUpdatesAsync } from 'expo-location';
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -177,30 +175,39 @@ function App() {
   useEffect(function () {
     if (Platform.OS === 'ios') {
       requestTrackingPermission();
-      Notifications.registerRemoteNotifications();
-      Notifications.events().registerRemoteNotificationsRegistered((e) => {
-        registerDevice(e.deviceToken);
-        appManager.setDeviceToken(e.deviceToken);
+      // Notifications.registerRemoteNotifications();
+      // Notifications.events().registerRemoteNotificationsRegistered((e) => {
+      //   registerDevice(e.deviceToken);
+      //   appManager.setDeviceToken(e.deviceToken);
+      // });
+
+      // Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
+      //   console.error(e);
+      // })
+
+      // Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
+
+      //   // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+      //   completion({ alert: true, sound: true, badge: false });
+      // });
+
+      // Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
+      //   completion();
+      // });
+
+      // Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
+      //   // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+      //   completion({ alert: true, sound: true, badge: false });
+      // });
+
+
+      PushNotificationIOS.addEventListener("register", (deviceToken) => {
+        registerDevice(deviceToken);
+        appManager.setDeviceToken(deviceToken);
       });
 
-      Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
-        console.error(e);
-      })
+      PushNotificationIOS.requestPermissions();
 
-      Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-
-        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-        completion({ alert: true, sound: true, badge: false });
-      });
-
-      Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
-        completion();
-      });
-
-      Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-        completion({ alert: true, sound: true, badge: false });
-      });
     } else {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 

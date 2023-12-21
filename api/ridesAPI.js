@@ -1,8 +1,11 @@
-import { Notifications } from 'react-native-notifications';
+import { t } from 'i18next';
 import useAxiosManager from '../context/axiosManager';
-import { getDateTime } from '../helper';
+import { getDateTime, translatedFormat } from '../helper';
+import { scheduleLocalNotification } from '../util/notifications';
 import useUserStore from './accountAPI';
 import { subtractDates } from './utilAPI';
+import notifee from '@notifee/react-native';
+
 
 
 export const rideDetails = async function (rideId) {
@@ -43,34 +46,51 @@ export const bookRide = async function (rideId, seats, paymentMethod, voucherId,
             const sixHoursBefore = subtractDates(datetime, 6);
             const oneDayBefore = subtractDates(datetime, 24);
             const twoDaysBefore = subtractDates(datetime, 48);
+            const now = new Date();
 
-            let localNotification = Notifications.postLocalNotification({
-                body: `Get ready, your trip to ${mainTextTo} leaves in one hour!`,
-                title: "Your Trip Status",
-                silent: false,
-                fireDate: oneHourBefore.toISOString(),
-            });
+            // let localNotification = Notifications.postLocalNotification({
+            //     body: `Get ready, your trip to ${mainTextTo} leaves in one hour!`,
+            //     title: "Your Trip Status",
+            //     silent: false,
+            //     fireDate: oneHourBefore.toISOString(),
+            // });
 
-            let localNotification2 = Notifications.postLocalNotification({
-                body: `Your trip to ${mainTextTo} is tomorrow.`,
-                title: "Trip Status",
-                silent: false,
-                fireDate: oneDayBefore.toISOString(),
-            });
+            if(oneHourBefore >= now) {
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_onehour'), mainTextTo), oneHourBefore);
+            }
 
-            let localNotification3 = Notifications.postLocalNotification({
-                body: `Get ready, your trip to ${mainTextTo} leaves in 6 hours!`,
-                title: "Your Trip Status",
-                silent: false,
-                fireDate: sixHoursBefore.toISOString(),
-            });
+            if(sixHoursBefore >= now) {
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_sixhours'), mainTextTo), sixHoursBefore);
+            }
 
-            let localNotification4 = Notifications.postLocalNotification({
-                body: `Get ready, your trip to ${mainTextTo} leaves in less than 2 days!`,
-                title: "Your Trip Status",
-                silent: false,
-                fireDate: twoDaysBefore.toISOString(),
-            });
+            if(oneDayBefore >= now) {
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_oneday'), mainTextTo), oneDayBefore);
+            }
+
+            if(twoDaysBefore >= now) {
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_twodays'), mainTextTo), twoDaysBefore);
+            }
+
+            // let localNotification2 = Notifications.postLocalNotification({
+            //     body: `Your trip to ${mainTextTo} is tomorrow.`,
+            //     title: "Trip Status",
+            //     silent: false,
+            //     fireDate: oneDayBefore.toISOString(),
+            // });
+
+            // let localNotification3 = Notifications.postLocalNotification({
+            //     body: `Get ready, your trip to ${mainTextTo} leaves in 6 hours!`,
+            //     title: "Your Trip Status",
+            //     silent: false,
+            //     fireDate: sixHoursBefore.toISOString(),
+            // });
+
+            // let localNotification4 = Notifications.postLocalNotification({
+            //     body: `Get ready, your trip to ${mainTextTo} leaves in less than 2 days!`,
+            //     title: "Your Trip Status",
+            //     silent: false,
+            //     fireDate: twoDaysBefore.toISOString(),
+            // });
 
 
 

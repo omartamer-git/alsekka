@@ -332,6 +332,12 @@
         "driver_popup_d2": "Do it now instead!",
         "favorite_destinations": "Favorites",
         "recent_destinations": "Recent",
-        "update_booking": "Update Booking"
+        "update_booking": "Update Booking",
+
+        "notification_titlestatus": "Your Trip Status",
+        "notification_onehour": "Get ready, your trip to %% leaves in one hour!",
+        "notification_oneday": "Your trip to %% is tomorrow!",
+        "notification_sixhours": "Get ready, your trip to %% leaves in six hours!",
+        "notification_twodays": "Your trip to %% leaves in less than two days!"
     }
 }
