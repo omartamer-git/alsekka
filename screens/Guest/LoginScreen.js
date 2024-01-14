@@ -31,13 +31,14 @@ function LoginScreen({ route, navigation }) {
   // const objForm = new Form();
 
   function handleContinueClick(phoneNum, password) {
+    console.log("clk");
     if (password.length < config.PASSWORD_MIN_LENGTH) {
       setPasswordError(true);
       returnAfterValidation = true;
     }
 
     phoneNum = "0" + phoneNum;
-
+    
     userStore.login(phoneNum, password).then(
       (data) => {
         setSubmitDisabled(true);

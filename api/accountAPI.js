@@ -63,42 +63,49 @@ const useUserStore = create((set) => ({
     },
 
     login: async function (phoneNum, password) {
-        const axiosManager = useAxiosManager.getState();
-        const appManager = useAppManager.getState();
+        try {
 
-        const response = await axiosManager.publicAxios.get(`/v1/user/login`, {
-            params: {
-                phone: phoneNum,
-                password: password,
-                deviceToken: appManager.deviceToken,
-                platform: Platform.OS
-            },
-        });
+            const axiosManager = useAxiosManager.getState();
+            const appManager = useAppManager.getState();
 
-        const data = response.data;
-        set(data);
-
-        const authManager = useAuthManager.getState();
-        authManager.setAccessToken(data.accessToken);
-        authManager.setRefreshToken(data.refreshToken);
-        authManager.setAuthenticated(true);
-
-        appManager.setPassengerFee(data.passengerFee);
-        appManager.setDriverFee(data.driverFee);
-        appManager.setCardsEnabled(data.cardsEnabled);
-        appManager.setVerificationsDisabled(data.verificationsDisabled);
-        appManager.setReferralsDisabled(data.referralsDisabled);
-
-        await Keychain.setGenericPassword(
-            'token',
-            JSON.stringify({
-                accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
-            }),
-        );
+            const response = await axiosManager.publicAxios.get(`/v1/user/login`, {
+                params: {
+                    phone: phoneNum,
+                    password: password,
+                    deviceToken: appManager.deviceToken,
+                    platform: Platform.OS
+                },
+            });
+            console.log('helloooo');
 
 
-        return data;
+            const data = response.data;
+            set(data);
+
+            const authManager = useAuthManager.getState();
+            authManager.setAccessToken(data.accessToken);
+            authManager.setRefreshToken(data.refreshToken);
+            authManager.setAuthenticated(true);
+
+            appManager.setPassengerFee(data.passengerFee);
+            appManager.setDriverFee(data.driverFee);
+            appManager.setCardsEnabled(data.cardsEnabled);
+            appManager.setVerificationsDisabled(data.verificationsDisabled);
+            appManager.setReferralsDisabled(data.referralsDisabled);
+
+            await Keychain.setGenericPassword(
+                'token',
+                JSON.stringify({
+                    accessToken: data.accessToken,
+                    refreshToken: data.refreshToken,
+                }),
+            );
+
+            return data;
+        } catch (e) {
+            console.log('wtf');
+            console.log(e);
+        }
     },
 
     accountAvailable: async function (phone, email) {
@@ -487,6 +494,7 @@ const useUserStore = create((set) => ({
         });
 
         const data = response.data;
+
         if (data.stop && data.stop == 1) {
             await stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
         }

@@ -28,46 +28,6 @@ import { decodePolyline } from '../../util/maps';
 import ScreenWrapper from '../ScreenWrapper';
 
 
-const Timer = function ({ tripDate }) {
-    let date1Ms = (new Date()).getTime();
-    let date2Ms = (new Date(tripDate)).getTime();
-
-    // Calculate the difference in milliseconds
-    let timeDifferenceMs = Math.abs(date1Ms - date2Ms);
-
-    // Convert milliseconds to seconds
-    let secs = Math.floor(timeDifferenceMs / 1000);
-
-    const [seconds, setSeconds] = useState(secs + 300); // 5 minutes in seconds
-
-    useEffect(function () {
-        const interval = setInterval(function () {
-            if (seconds > 0) {
-                setSeconds(prevSeconds => prevSeconds - 1);
-            }
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [seconds]);
-
-    const displayTime = function () {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-
-        return `${formattedMinutes}:${formattedSeconds}`;
-    };
-
-    return (
-        <>
-            <Text style={[styles.text, styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
-        </>
-    );
-}
-
-
 function ManageTrip({ route, navigation }) {
     const { tripId } = route.params;
 
@@ -286,6 +246,54 @@ function ManageTrip({ route, navigation }) {
         }).catch((err) => console.log(err))
     }
 
+    const mapViewRef = useRef(null);
+    const onMarkerLayout = () => {
+        mapViewRef.current.fitToSuppliedMarkers(["from"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+    }
+
+    const Timer = function ({ tripDate }) {
+        let date1Ms = (new Date()).getTime();
+        let date2Ms = (new Date(tripDate)).getTime();
+
+        // Calculate the difference in milliseconds
+        let timeDifferenceMs = date2Ms - date1Ms;
+
+        // Convert milliseconds to seconds
+        let secs = Math.floor(timeDifferenceMs / 1000);
+        const [countdown, setCountdown] = useState(Math.max(0, secs+300));
+
+        // const [seconds, setSeconds] = useState(secs + 300); // 5 minutes in seconds
+        useEffect(function () {
+            if (!countdown) return;
+            const interval = setInterval(function () {
+                if (countdown > 0) {
+                    setCountdown(prevSeconds => {
+                        // console.log(prevSeconds);
+                        return prevSeconds - 1;
+                    });
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }, [countdown]);
+
+        const displayTime = function () {
+            const minutes = Math.floor(countdown / 60);
+            const remainingSeconds = countdown % 60;
+
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+            return `${formattedMinutes}:${formattedSeconds}`;
+        };
+
+        return (
+            <>
+                <Text style={[styles.text, styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
+            </>
+        );
+    }
+
     return (
         <ScreenWrapper screenName={t('manage_trip')} navType={"back"} navAction={() => navigation.goBack()}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
@@ -348,16 +356,9 @@ function ManageTrip({ route, navigation }) {
                                     showsMyLocationButton
                                     maxZoomLevel={18}
                                     initialRegion={location}
+                                    ref={mapViewRef}
                                 >
-                                    <Marker key={"markerFrom"} identifier='from' coordinate={{ latitude: getPickupPassenger().pickupLocationLat, longitude: getPickupPassenger().pickupLocationLng }}></Marker>
-                                    {getPickupPassenger() &&
-                                        <MapViewDirections
-                                            origin={`${location.latitude},${location.longitude}`}
-                                            destination={`${getPickupPassenger().pickupLocationLat},${getPickupPassenger().pickupLocationLng}`}
-                                            apikey='AIzaSyARuF4cAG9F8ay2EHiWYdz4Oge7XyDlTQc'
-                                            strokeWidth={3}
-                                            strokeColor={palette.accent}
-                                        />}
+                                    <Marker key={"markerFrom"} identifier='from' coordinate={{ latitude: getPickupPassenger().pickupLocationLat, longitude: getPickupPassenger().pickupLocationLng }} onLayout={onMarkerLayout}></Marker>
                                 </MapView>
 
                                 <ArrowButton bgColor={palette.light} text={t('directions_to_pickup')} onPress={() => getDirections(getPickupPassenger().pickupLocationLat, getPickupPassenger().pickupLocationLng, `Pick ${getPickupPassenger().User.firstName} Up`)} />
@@ -454,7 +455,7 @@ function ManageTrip({ route, navigation }) {
                                     })
                                 }
 
-                                <Button onPress={checkOut} bgColor={palette.secondary} textColor={palette.white} text={'Confirm Collections'} disabled={paidPassengers.length !== (tripDetails.passengers.filter((p) => p.paymentMethod === 'CASH')).length} />
+                                <Button onPress={checkOut} bgColor={palette.secondary} textColor={palette.white} text={t('confirm_collections')} disabled={paidPassengers.length !== (tripDetails.passengers.filter((p) => p.paymentMethod === 'CASH')).length} />
                             </>
                         }
 

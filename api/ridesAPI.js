@@ -5,6 +5,7 @@ import { scheduleLocalNotification } from '../util/notifications';
 import useUserStore from './accountAPI';
 import { subtractDates } from './utilAPI';
 import notifee from '@notifee/react-native';
+import { stopLocationUpdatesAsync } from 'expo-location';
 
 
 
@@ -368,7 +369,9 @@ export const checkPassengerOut = async function (tripId) {
             'Content-Type': 'application/json',
         },
     });
-    await stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
+    stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER").catch(() => {
+        // do nothing
+    });
     const data = response.data;
     return data;
 };

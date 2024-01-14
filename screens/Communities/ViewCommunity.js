@@ -26,6 +26,10 @@ import ScreenWrapper from '../ScreenWrapper';
 function ViewCommunity({ navigation, route }) {
     const { communityId, communityName, communityPicture, communityDescription, communityPrivacy } = route.params;
 
+    const [name, setName] = useState(communityName);
+    const [picture, setPicture] = useState(communityPicture);
+    const [description, setDescription] = useState(communityDescription);
+    const [privacy, setPrivacy] = useState(communityPrivacy);
     const [feed, setFeed] = useState([]);
     const [isJoined, setIsJoined] = useState(false);
     const [joinQuestion, setJoinQuestion] = useState(null);
@@ -39,6 +43,19 @@ function ViewCommunity({ navigation, route }) {
     useEffect(function () {
         communitiesAPI.getCommunityDetails(communityId).then(
             data => {
+                // console.log(data);
+                if(!name) {
+                    setName(data.name);
+                }
+                if(!picture) {
+                    setPicture(data.picture);
+                }
+                if(!description) {
+                    setDescription(data.description);
+                }
+                if(!privacy) {
+                    setPrivacy(data.private);
+                }
                 if (data.Member.length !== 0) {
                     if (data.Member[0].CommunityMember.joinStatus === "PENDING") {
                         setSentJoinRequest(true);
@@ -62,7 +79,7 @@ function ViewCommunity({ navigation, route }) {
     const joinCommunity = function () {
         communitiesAPI.joinCommunity(communityId, joinAnswer).then(
             data => {
-                if (communityPrivacy) {
+                if (privacy) {
                     setSentJoinRequest(true);
                 } else {
                     loadFeed();
@@ -123,13 +140,13 @@ function ViewCommunity({ navigation, route }) {
                         {isJoined && (
                             <>
                                 <View style={[styles.flexRow, styles.justifyCenter, styles.alignCenter]}>
-                                    <Image width={44} height={44} style={{ borderRadius: 44 / 2 }} source={{ uri: communityPicture }} />
+                                    <Image width={44} height={44} style={{ borderRadius: 44 / 2 }} source={{ uri: picture }} />
                                     <View style={[styles.ml10]}>
-                                        <Text style={[styles.text, styles.font14, styles.dark, styles.bold]}>{communityName}</Text>
+                                        <Text style={[styles.text, styles.font14, styles.dark, styles.bold]}>{name}</Text>
                                         <View style={[styles.flexRow, styles.alignCenter]}>
-                                            {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
+                                            {privacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                                             <Text style={[styles.text, styles.font12, styles.dark, styles.ml5]}>
-                                                {communityPrivacy === true ? t('private') : t('public')}
+                                                {privacy === true ? t('private') : t('public')}
                                             </Text>
                                         </View>
                                     </View>
@@ -192,24 +209,24 @@ function ViewCommunity({ navigation, route }) {
                         {!isJoined && !sentJoinRequest && (
                             <>
                                 <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
-                                    <Image width={100} height={100} style={{ borderRadius: 100 / 2 }} source={{ uri: communityPicture }} />
-                                    <Text style={[styles.text, styles.font18, styles.bold, styles.mt10]}>{communityName}</Text>
+                                    <Image width={100} height={100} style={{ borderRadius: 100 / 2 }} source={{ uri: picture }} />
+                                    <Text style={[styles.text, styles.font18, styles.bold, styles.mt10]}>{name}</Text>
                                     <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
                                         <Text style={[styles.text, styles.font12, styles.dark, styles.mr5]}>
-                                            {communityPrivacy === true ? t('private') : t('public')}
+                                            {privacy === true ? t('private') : t('public')}
                                         </Text>
-                                        {communityPrivacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
+                                        {privacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                                     </View>
-                                    <Text style={[styles.text, styles.font14, styles.mt10]}>{communityDescription}</Text>
+                                    <Text style={[styles.text, styles.font14, styles.mt10]}>{description}</Text>
 
-                                    {communityPrivacy && joinQuestion && (
+                                    {privacy && joinQuestion && (
                                         <View style={[styles.w100, styles.mt10]}>
                                             <Text style={[styles.text, styles.font14, styles.mt10, styles.textCenter, styles.w100]}>{joinQuestion}</Text>
                                             <CustomTextInput placeholder={t('answer')} style={[styles.mt10]} value={joinAnswer} onChangeText={(data) => setJoinAnswer(data)} />
                                         </View>
                                     )}
 
-                                    <Button text={communityPrivacy ? t('request_join') : t('join_community')} bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={joinCommunity} />
+                                    <Button text={privacy ? t('request_join') : t('join_community')} bgColor={palette.primary} textColor={palette.white} style={[styles.mt10]} onPress={joinCommunity} />
                                 </View>
                             </>
                         )}

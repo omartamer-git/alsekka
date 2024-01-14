@@ -14,7 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { PermissionsAndroid } from 'react-native';
+import { Linking, PermissionsAndroid } from 'react-native';
 
 import * as TaskManager from 'expo-task-manager';
 import { requestTrackingPermission } from 'react-native-tracking-transparency';
@@ -77,6 +77,8 @@ import useLocale from './locale/localeContext';
 import './locale/translate';
 import AddReferral from './screens/Account/AddReferral';
 import CustomerService from './screens/Chat/CustomerService';
+import { stopLocationUpdatesAsync } from 'expo-location';
+import codePush from 'react-native-code-push';
 
 
 const RootStack = createNativeStackNavigator();
@@ -109,14 +111,19 @@ function App() {
         screens: {
           TabScreen: {
             screens: {
-              Home: {
+              'Find Rides': {
                 screens: {
-                  "View Trip": 'ride/:tripId'
+                  "Book Ride": 'ride/:rideId'
                 }
               },
               Account: {
                 screens: {
                   "Add Referral": 'referral/:referralCode'
+                }
+              },
+              Communities: {
+                screens: {
+                  "View Community":"community/:communityId"
                 }
               }
             }
@@ -127,7 +134,7 @@ function App() {
   };
 
   const linking = {
-    prefixes: ['seaats://', 'https://seaats.app'],
+    prefixes: ['seaats://', 'https://seaats.app/share/'],
     config
   };
 
@@ -175,31 +182,6 @@ function App() {
   useEffect(function () {
     if (Platform.OS === 'ios') {
       requestTrackingPermission();
-      // Notifications.registerRemoteNotifications();
-      // Notifications.events().registerRemoteNotificationsRegistered((e) => {
-      //   registerDevice(e.deviceToken);
-      //   appManager.setDeviceToken(e.deviceToken);
-      // });
-
-      // Notifications.events().registerRemoteNotificationsRegistrationFailed((e) => {
-      //   console.error(e);
-      // })
-
-      // Notifications.events().registerNotificationReceivedForeground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-
-      //   // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-      //   completion({ alert: true, sound: true, badge: false });
-      // });
-
-      // Notifications.events().registerNotificationOpened((notification: Notification, completion: () => void, action: NotificationActionResponse) => {
-      //   completion();
-      // });
-
-      // Notifications.events().registerNotificationReceivedBackground((notification: Notification, completion: (response: NotificationCompletion) => void) => {
-      //   // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-      //   completion({ alert: true, sound: true, badge: false });
-      // });
-
 
       PushNotificationIOS.addEventListener("register", (deviceToken) => {
         registerDevice(deviceToken);
@@ -227,56 +209,56 @@ function App() {
 
   }, []);
 
-  useEffect(function () {
-    const inAppUpdates = new SpInAppUpdates(
-      true // isDebug
-    );
-    // curVersion is optional if you don't provide it will automatically take from the app using react-native-device-info
-    inAppUpdates.checkNeedsUpdate().then(async (result) => {
-      if (result.shouldUpdate) {
+  // useEffect(function () {
+  //   const inAppUpdates = new SpInAppUpdates(
+  //     true // isDebug
+  //   );
+  //   // curVersion is optional if you don't provide it will automatically take from the app using react-native-device-info
+  //   inAppUpdates.checkNeedsUpdate().then(async (result) => {
+  //     if (result.shouldUpdate) {
 
-        const versionData = await appManager.getVersionData();
-        let forceUpgrade = false;
-        if (versionData.minVersion > DeviceInfo.getVersion()) {
-          forceUpgrade = true;
-        }
-        let updateOptions = {
-          forceUpgrade: forceUpgrade
-        };
-        if (Platform.OS === 'android') {
-          // android only, on iOS the user will be promped to go to your app store page
-          updateOptions = {
-            updateType: IAUUpdateKind.FLEXIBLE,
-          };
-        }
-        inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
-      }
-    });
-  }, []);
+  //       const versionData = await appManager.getVersionData();
+  //       let forceUpgrade = false;
+  //       if (versionData.minVersion > DeviceInfo.getVersion()) {
+  //         forceUpgrade = true;
+  //       }
+  //       let updateOptions = {
+  //         forceUpgrade: forceUpgrade
+  //       };
+  //       if (Platform.OS === 'android') {
+  //         // android only, on iOS the user will be promped to go to your app store page
+  //         updateOptions = {
+  //           updateType: IAUUpdateKind.FLEXIBLE,
+  //         };
+  //       }
+  //       inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    TaskManager.defineTask("UPDATE_LOCATION_DRIVER", ({ data, error }) => {
-      if (error) {
-        // Error occurred - check `error.message` for more details.
-        return;
+
+  TaskManager.defineTask("UPDATE_LOCATION_DRIVER", ({ data, error }) => {
+    if (error) {
+      // Error occurred - check `error.message` for more details.
+      return;
+    }
+    if (data) {
+      // console.log(data);
+
+      const { locations } = data;
+      const lat = locations[0].coords.latitude;
+      const lng = locations[0].coords.longitude;
+      const timestamp = locations[0].timestamp;
+      console.log(authManager.authenticated);
+      if (authManager.authenticated) {
+        userStore.postDriverLocation(lat, lng, timestamp);
+      } else {
+        console.log("NOT AUTHED, STOPPED");
+        stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
       }
-      if (data) {
-        console.log(data);
-        
-        const { locations } = data;
-        const lat = locations[0].coords.latitude;
-        const lng = locations[0].coords.longitude;
-        const timestamp = locations[0].timestamp;
-        console.log("hello! Post");
-        if(userStore.id) {
-          console.log("Posting Loc");
-          console.log(lat, lng);
-          userStore.postDriverLocation(lat, lng, timestamp);
-        }
-        // do something with the locations captured in the background
-      }
-    });
-  }, []);
+      // do something with the locations captured in the background
+    }
+  });
 
 
   const loadJWT = useCallback(async function () {
@@ -334,7 +316,7 @@ function App() {
     );
   } else {
     return (
-      <>
+      <React.Fragment>
         <StatusBar barStyle={'light-content'} />
         <NavigationContainer linking={linking}>
           <RootStack.Navigator>
@@ -347,7 +329,7 @@ function App() {
             }
           </RootStack.Navigator>
         </NavigationContainer>
-      </>
+      </React.Fragment>
     );
   }
 
@@ -509,4 +491,4 @@ const UserHomeNavigator = ({ route, navigation }) => {
   );
 }
 
-export default App;
+export default codePush(App);
