@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
     I18nManager,
     Image,
+    Linking,
     ScrollView,
     Text,
     TouchableOpacity,
@@ -38,7 +39,9 @@ function ChatsList({ navigation, route }) {
                 {
                     !loading &&
                     <>
-                        <TouchableOpacity onPress={function () { navigation.navigate('Customer Service') }} activeOpacity={0.9} key={"chat_cs"} style={[styles.flexRow, styles.justifyStart, styles.alignCenter, styles.w100, styles.pv8, styles.borderLight, { borderBottomWidth: 1 }]}>
+                        <TouchableOpacity onPress={function () { 
+                            Linking.openURL("https://wa.me/201028182577")
+                         }} activeOpacity={0.9} key={"chat_cs"} style={[styles.flexRow, styles.justifyStart, styles.alignCenter, styles.w100, styles.pv8, styles.borderLight, { borderBottomWidth: 1 }]}>
                             <Image source={{ uri: 'https://storage.googleapis.com/alsekka_profile_pics/customer_service.png' }} width={60} height={60} style={[styles.borderAccent, styles.border1, { borderRadius: 60 / 2 }]} />
                             <View style={[styles.flexRow, styles.flexOne, styles.spaceBetween, styles.alignCenter]}>
                                 <Text style={[styles.text, styles.ml10, styles.semiBold, styles.font18]}>{t('customer_service')}</Text>

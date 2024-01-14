@@ -23,6 +23,7 @@ import AvailableRide from '../../components/AvailableRide';
 import ScreenWrapper from '../ScreenWrapper';
 import { DriverPopUp } from '../../components/DriverPopUp';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createLocalNotification } from '../../util/notifications';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -101,8 +102,7 @@ function UserHome({ navigation, route }) {
                 }
             });
         }
-    }, [loading])
-
+    }, [loading]);
 
     function viewTrip(id) {
         navigation.navigate('View Trip', { tripId: id });

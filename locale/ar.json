@@ -328,7 +328,13 @@
         "driver_popup_d2": "سجل دلوقتي!",
         "favorite_destinations": "الوجهات المفضلة",
         "recent_destinations": "تم استخدامها مؤخرًا",
-        "update_booking": "تحديث الحجز"
+        "update_booking": "تحديث الحجز",
+
+        "notification_titlestatus": "وضع رحلتك",
+        "notification_onehour": "استعد، ستغادر رحلتك إلى %% خلال ساعة واحدة!",
+        "notification_oneday": "رحلتك إلى %% غدًا!",
+        "notification_sixhours": "استعد، ستغادر رحلتك إلى %% خلال ست ساعات!",
+        "notification_twodays": "رحلتك إلى %% ستغادر في أقل من يومين!"
 
     }
 }

@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as ridesAPI from '../../api/ridesAPI';
@@ -22,6 +22,7 @@ import Passenger from '../../components/Passenger';
 import { addSecondsToDate, customMapStyle, getDateTime, getDirections, palette, rem, styles, translateDate, translatedFormat } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import CarMarker from '../../components/CarMarker';
+import { decodePolyline } from '../../util/maps';
 
 
 function ViewTrip({ route, navigation }) {
@@ -109,7 +110,7 @@ function ViewTrip({ route, navigation }) {
     let timeoutId;
     function updateDriverLocation() {
         ridesAPI.getDriverLocation(tripDetails.id).then(det => {
-            // console.log("Det: " + det.lat);
+            console.log(det);
             setDriverLocationMarker(prevLocation => {
                 return ({
                     latitude: det.lat,
@@ -194,6 +195,10 @@ function ViewTrip({ route, navigation }) {
                                 <Image source={require('../../assets/Destination.png')} style={{ width: 35, height: 35 }} />
                             </Marker>
                         }
+                        {tripDetails && tripDetails.polyline && 
+                        <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(tripDetails.polyline)} strokeWidth={3} />
+                        }
+
                         {driverLocationMarker && <CarMarker car={driverLocationMarker} />}
                     </MapView>
 

@@ -422,15 +422,26 @@ function BookRide({ route, navigation }) {
                                         <Text style={[styles.text, styles.bold, styles.dark]}>{t('you_pay')}</Text>
                                         <View style={styles.flexOne} />
                                         <Text style={[styles.text]}>
-                                            {
+                                            {/* {
                                                 Math.max(0,
                                                     Math.abs(
                                                         -(pricePerSeat * numSeats)
-                                                        + ((balance > 0 ? 1 : -1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
+                                                        + ((balance > 0 ? -1 : 1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
                                                     )
                                                     - voucherDiscount.current
                                                     + (serviceFee * numSeats)
                                                     + (wantPickup ? pickupPrice : 0)
+                                                )
+                                            } */}
+                                            {
+                                                Math.max(0,
+                                                    (
+                                                        (balance * -1)
+                                                        + (pricePerSeat * numSeats)
+                                                        - voucherDiscount.current
+                                                        + (serviceFee * numSeats)
+                                                        + (wantPickup ? pickupPrice : 0)
+                                                    )
                                                 )
                                             }
                                             &nbsp;{t('EGP')}</Text>
@@ -506,7 +517,7 @@ function BookRide({ route, navigation }) {
                     {balance != 0 &&
                         <>
                             <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
-                            <Text style={[styles.text]}>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
+                            <Text style={[styles.text]}>{balance > 0 ? '+' : '-'} {Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance)))} {t('EGP')}</Text>
                         </>
                     }
 
@@ -534,15 +545,19 @@ function BookRide({ route, navigation }) {
                     }
 
                     <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
-                    <Text style={[styles.text]}>{
-                        Math.abs(
-                            -(pricePerSeat * numSeats)
-                            + ((balance > 0 ? 1 : -1) * Math.min(pricePerSeat * numSeats, parseInt(balance)))
-                        )
-                        - voucherDiscount.current
-                        + (serviceFee * numSeats)
-                        + (wantPickup ? pickupPrice : 0)
-                    } {t('EGP')}</Text>
+                    <Text style={[styles.text]}>
+                        {
+                            Math.max(0,
+                                (
+                                    (balance * -1)
+                                    + (pricePerSeat * numSeats)
+                                    - voucherDiscount.current
+                                    + (serviceFee * numSeats)
+                                    + (wantPickup ? pickupPrice : 0)
+                                )
+                            )
+                        }
+                        &nbsp;{t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Find a Ride')} />
                 </View>
             </BottomModal>

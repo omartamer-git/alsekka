@@ -111,17 +111,27 @@ export const abbreviate = function (string) {
     return string;
 };
 
-export const getDirections = function (lat, lng, label) {
-    const scheme = Platform.select({ ios: 'maps://0,0?q=', android: 'geo:0,0?q=' });
-    const latLng = `${lat},${lng}`;
-    const url = Platform.select({
-        ios: `${scheme}${label}@${latLng}`,
-        android: `${scheme}${latLng}(${label})`
+export const getDirections = async (lat, lng, label) => {
+    // Define the URLs for Google Maps and the default map app
+    const googleMapsURL = Platform.select({
+        ios: `comgooglemaps://?q=${label}@${lat},${lng}`,
+        android: `google.navigation:q=${lat},${lng}`
+    });
+    const defaultMapsURL = Platform.select({
+        ios: `maps://0,0?q=${label}@${lat},${lng}`,
+        android: `geo:0,0?q=${lat},${lng}(${label})`
     });
 
+    // Check if Google Maps can be opened
+    const canOpenGoogleMaps = await Linking.canOpenURL(googleMapsURL);
 
-    Linking.openURL(url);
-}
+    // Open Google Maps if possible, otherwise open the default map app
+    if (canOpenGoogleMaps) {
+        await Linking.openURL(googleMapsURL);
+    } else {
+        await Linking.openURL(defaultMapsURL);
+    }
+};
 
 export const getPhoneCarrier = function (phone) {
     const carrierCode = phone.substring(0, 3);
@@ -178,17 +188,17 @@ export const translateDate = function (date, t) {
 
     let hours = date.getHours();
     let ampm = "AM";
-    if(hours >= 12) {
+    if (hours >= 12) {
         ampm = "PM";
         hours -= 12;
     }
 
-    if(hours === 0) {
+    if (hours === 0) {
         hours = 12;
     }
 
     let mins = date.getMinutes();
-    if(mins < 10) {
+    if (mins < 10) {
         mins = "0" + mins.toString();
     }
 

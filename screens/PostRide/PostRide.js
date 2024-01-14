@@ -200,7 +200,7 @@ function PostRide({ route, navigation }) {
     }
 
     async function onShare() {
-        const shareMsg = "Hey! Join my carpool on Seaats and save money commuting! https://seaats.app/joinride/" + rideId;
+        const shareMsg = "Hey! Join my carpool on Seaats and save money commuting! https://seaats.app/share/ride/" + rideId;
         try {
             const result = await Share.share({
                 message: shareMsg
