@@ -61,6 +61,7 @@ function ViewTrip({ route, navigation }) {
         setLoading(true);
         ridesAPI.tripDetails(tripId).then(
             data => {
+                console.log(data);
                 setTripDetails(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
@@ -195,8 +196,8 @@ function ViewTrip({ route, navigation }) {
                                 <Image source={require('../../assets/Destination.png')} style={{ width: 35, height: 35 }} />
                             </Marker>
                         }
-                        {tripDetails && tripDetails.polyline && 
-                        <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(tripDetails.polyline)} strokeWidth={3} />
+                        {tripDetails && tripDetails.polyline &&
+                            <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(tripDetails.polyline)} strokeWidth={3} />
                         }
 
                         {driverLocationMarker && <CarMarker car={driverLocationMarker} />}
@@ -284,24 +285,37 @@ function ViewTrip({ route, navigation }) {
                                 {
                                     !isDriver &&
                                     <View style={[styles.w100, styles.mt10]}>
-                                        {tripDetails.passenger.pickupLocationLat &&
-                                            <Text style={[styles.text]}>{tripDetails.Driver.firstName} {t('is_picking_up')}!</Text>}
-                                        <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt5]}>
-                                            {(tripStatus == "SCHEDULED" || tripStatus == "ONGOING") &&
-                                                <ArrowButton onPress={() => getDirections(
-                                                    tripDetails.passenger.pickupLocationLat ? tripDetails.passenger.pickupLocationLat : markerFrom.latitude,
-                                                    tripDetails.passenger.pickupLocationLng ? tripDetails.passenger.pickupLocationLng : markerFrom.longitude,
-                                                    "Directions to pick up")} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
-                                            }
-                                            {
-                                                tripStatus === 'SCHEDULED' &&
+                                        {
+                                            tripDetails.passenger.pickupLocationLat &&
+                                            <Text style={[styles.text]}>{tripDetails.Driver.firstName} {t('is_picking_up')}!</Text>
+                                        }
 
-                                                <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
-                                                    <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={[styles.bgLight, styles.br8, styles.fullCenter, styles.flexOne, { width: 44 * rem, height: 44 * rem }]}>
-                                                        <MaterialIcons name="close" size={25} />
-                                                    </TouchableOpacity>
-                                                    <Text style={[styles.text, styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
-                                                </View>
+                                        <View style={[styles.w100, styles.flexRow, styles.justifyStart, styles.alignStart, styles.mt5]}>
+                                            {tripDetails.passenger.status !== 'CANCELLED' &&
+                                                <>
+                                                    {(tripStatus == "SCHEDULED" || tripStatus == "ONGOING") &&
+                                                        <ArrowButton onPress={() => getDirections(
+                                                            tripDetails.passenger.pickupLocationLat ? tripDetails.passenger.pickupLocationLat : markerFrom.latitude,
+                                                            tripDetails.passenger.pickupLocationLng ? tripDetails.passenger.pickupLocationLng : markerFrom.longitude,
+                                                            "Directions to pick up")} style={[styles.flexOne]} bgColor={palette.light} text={t('directions_to_pickup')} />
+                                                    }
+                                                    {
+                                                        tripStatus === 'SCHEDULED' &&
+                                                        <View style={[styles.alignCenter, styles.justifyStart, styles.ml10, { marginTop: 8 * rem, marginBottom: 8 * rem }]}>
+                                                            <TouchableOpacity onPress={() => setCancelModalVisible(true)} style={[styles.bgLight, styles.br8, styles.fullCenter, styles.flexOne, { width: 44 * rem, height: 44 * rem }]}>
+                                                                <MaterialIcons name="close" size={25} />
+                                                            </TouchableOpacity>
+                                                            <Text style={[styles.text, styles.smallText, styles.black, { marginTop: 2 * rem }]}>{t('cancel_seat')}</Text>
+                                                        </View>
+                                                    }
+                                                </>
+                                            }
+
+                                            {
+                                                tripDetails.passenger.status === 'CANCELLED' &&
+                                                <>
+                                                    <Button style={styles.w100} disabled textColor={palette.white} bgColor={palette.red} text={t('trip_cancelled')} />
+                                                </>
                                             }
                                         </View>
 

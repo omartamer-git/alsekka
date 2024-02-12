@@ -1,20 +1,19 @@
 import useAxiosManager from '../context/axiosManager';
 
-export const getPredictions = async function (text, lat, lng) {
+export const getPredictions = async function (text, lat, lng, city) {
     let pred = [];
+    console.log(city);
     const url = '/v1/map/getPredictions';
-    console.log(lat);
-    console.log(lng);
     const params = {
         text: text,
         lat: lat,
-        lng: lng
+        lng: lng,
+        city: city
     };
     const axiosManager = useAxiosManager.getState();
     const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;
     console.log(data);
-    
     return data;
 };
 

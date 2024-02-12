@@ -32,6 +32,7 @@
     "axios": "^1.6.5",
     "axios-auth-refresh": "^3.3.6",
     "axios-retry": "^4.0.0",
+    "d3-geo": "^3.1.0",
     "expo": "^49.0.21",
     "expo-constants": "~14.4.2",
     "expo-location": "~16.1.0",

@@ -24,6 +24,8 @@ import ScreenWrapper from '../ScreenWrapper';
 import MapViewDirections from 'react-native-maps-directions';
 import CustomDatePicker from '../../components/DatePicker';
 import { requestLocationPermission } from '../../util/maps';
+import useAppManager from '../../context/appManager';
+const geolib = require('geolib');
 
 
 function MapScreen({ route, navigation }) {
@@ -39,11 +41,16 @@ function MapScreen({ route, navigation }) {
 
   const [textFrom, setTextFrom] = useState('');
   const [textTo, setTextTo] = useState('');
+  const { cities } = useAppManager();
+  const listCities = Object.keys(cities);
+  const [citiesFrom, setCitiesFrom] = useState(listCities);
+  const [citiesTo, setCitiesTo] = useState(listCities);
 
   // const [timePickerOpen, setTimePickerOpen] = useState(false);
   // const [time, setTime] = useState(new Date());
   const [genderChoice, setGenderChoice] = useState('ANY');
   const { gender } = useUserStore();
+
 
   const fromRef = useRef(null);
   const toRef = useRef(null);
@@ -67,7 +74,18 @@ function MapScreen({ route, navigation }) {
               }
             );
             setTextFrom(t("current_location"));
-            fromRef.current.setCompletionText(t("current_location"))
+            fromRef.current.setCompletionText(t("current_location"));
+
+            for (const c of listCities) {
+              const isWithinRadius = geolib.isPointWithinRadius(info.coords, { latitude: cities[c].latitude, longitude: cities[c].longitude }, cities[c].radius);
+              if(isWithinRadius) {
+                setCitiesTo(
+                  listCities.filter(ct => ct != c)
+                );
+                break;
+              }
+            }
+
           }
         );
       }
@@ -113,17 +131,36 @@ function MapScreen({ route, navigation }) {
     }
   }
 
-  function setLocationFrom(loc, text) {
+  function setLocationFrom(loc, text, _, city) {
     setTextFrom(text);
     setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
     adjustMarkers();
+    setCitiesTo(listCities.filter(c => c != city));
   }
 
-  function setLocationTo(loc, text) {
+  function setLocationTo(loc, text, _, city) {
     setTextTo(text);
     setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
     adjustMarkers();
+    setCitiesFrom(listCities.filter(c => c != city));
   }
+
+  function cancelLocationFrom(city) {
+    const oldCitiesTo = citiesTo;
+
+    if (city && !oldCitiesTo.includes(city)) {
+      setCitiesTo([...oldCitiesTo, city])
+    }
+  }
+
+  function cancelLocationTo(city) {
+    const oldCitiesFrom = citiesFrom;
+
+    if (city && !oldCitiesFrom.includes(city)) {
+      setCitiesFrom([...oldCitiesFrom, city])
+    }
+  }
+
 
   function goFindRides(e) {
     if (markerFrom && markerTo) {
@@ -196,8 +233,26 @@ function MapScreen({ route, navigation }) {
         <View style={[containerStyle, styles.flexOne]}>
 
           <View style={mapScreenStyles.autoCompletePair}>
-            <AutoComplete ref={fromRef} key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
-            <AutoComplete ref={toRef} key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
+            <AutoComplete
+              ref={fromRef}
+              key="autoCompleteFrom"
+              type="my-location"
+              placeholder={t('from')}
+              handleLocationSelect={setLocationFrom}
+              inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]}
+              cities={citiesFrom}
+              handleCancelLocationSelect={cancelLocationFrom}
+            />
+            <AutoComplete
+              ref={toRef}
+              key="autoCompleteTo"
+              type="place"
+              placeholder={t('to')}
+              handleLocationSelect={setLocationTo}
+              inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]}
+              cities={citiesTo}
+              handleCancelLocationSelect={cancelLocationTo}
+            />
             <TouchableOpacity activeOpacity={0.8} onPress={swapDestinations} style={[styles.positionAbsolute, styles.alignCenter, styles.justifyCenter, styles.bgWhite, styles.borderSecondary, { top: 24 * rem, right: 5 * rem, height: 48 * rem, width: 48 * rem, borderRadius: 24 * rem, shadowColor: palette.black, shadowRadius: 12 * rem, shadowOpacity: 0.2 }]}>
               <MaterialIcons name="swap-vert" size={22} color={palette.primary} />
             </TouchableOpacity>

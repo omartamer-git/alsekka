@@ -1,14 +1,14 @@
-import { ScrollView, Text } from "react-native";
-import ScreenWrapper from "../ScreenWrapper";
-import { abbreviate, containerStyle, getPhoneCarrier, palette, styles } from "../../helper";
-import WithdrawalMethod from "../../components/WithdrawalMethod";
-import useUserStore from "../../api/accountAPI";
-import BottomModal from "../../components/BottomModal";
 import { useRef, useState } from "react";
-import ArrowButton from "../../components/ArrowButton";
-import Button from "../../components/Button";
 import { useTranslation } from "react-i18next";
+import { ScrollView, Text } from "react-native";
 import * as StoreReview from 'react-native-store-review';
+import useUserStore from "../../api/accountAPI";
+import ArrowButton from "../../components/ArrowButton";
+import BottomModal from "../../components/BottomModal";
+import Button from "../../components/Button";
+import WithdrawalMethod from "../../components/WithdrawalMethod";
+import { abbreviate, containerStyle, getPhoneCarrier, palette, styles } from "../../helper";
+import ScreenWrapper from "../ScreenWrapper";
 
 function Withdraw({ route, navigation }) {
     const { bankAccounts, mobileWallets, balance, sendWithdrawalRequest } = useUserStore();

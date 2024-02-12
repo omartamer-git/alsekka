@@ -14,9 +14,9 @@ import useUserStore from '../../api/accountAPI';
 import BankCard from '../../components/BankCard';
 import Button from '../../components/Button';
 import WithdrawalMethod from '../../components/WithdrawalMethod';
+import useAppManager from '../../context/appManager';
 import { abbreviate, containerStyle, getPhoneCarrier, palette, rem, styles, translateEnglishNumbers } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import useAppManager from '../../context/appManager';
 
 function Wallet({ navigation, route }) {
     const { availableCards, bankAccounts, mobileWallets, balance } = useUserStore();

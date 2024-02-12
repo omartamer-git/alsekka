@@ -55,7 +55,8 @@ function LoginScreen({ route, navigation }) {
             });
         }
       }).catch(err => {
-        console.log(err);
+        console.log("hello");
+        console.log(err.response);
         setErrorMessage(err.response.data.error.message);
       }).finally(function () {
         setSubmitDisabled(false);

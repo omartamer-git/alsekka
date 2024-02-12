@@ -123,7 +123,7 @@ function App() {
               },
               Communities: {
                 screens: {
-                  "View Community":"community/:communityId"
+                  "View Community": "community/:communityId"
                 }
               }
             }
@@ -176,7 +176,6 @@ function App() {
         i18n.changeLanguage('en');
       }
     }
-
   }, []);
 
   useEffect(function () {
