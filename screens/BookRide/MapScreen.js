@@ -1,4 +1,3 @@
-import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,25 +11,27 @@ import {
   View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import DatePicker from 'react-native-date-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../../api/accountAPI';
 import AutoComplete from '../../components/AutoComplete';
 import Button from '../../components/Button';
-import CustomTextInput from '../../components/CustomTextInput';
-import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
-import ScreenWrapper from '../ScreenWrapper';
-import MapViewDirections from 'react-native-maps-directions';
 import CustomDatePicker from '../../components/DatePicker';
-import { requestLocationPermission } from '../../util/maps';
+import useAppManager from '../../context/appManager';
+import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
+import { getDeviceLocation } from '../../util/location';
+import ScreenWrapper from '../ScreenWrapper';
+const geolib = require('geolib');
 
 
 function MapScreen({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const loc = route.params?.loc;
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({
+    latitude: 30.0444,
+    longitude: 31.2357
+  });
   const [markerFrom, setMarkerFrom] = useState(null);
   const [markerTo, setMarkerTo] = useState(null);
   const mapViewRef = useRef(null);
@@ -39,39 +40,38 @@ function MapScreen({ route, navigation }) {
 
   const [textFrom, setTextFrom] = useState('');
   const [textTo, setTextTo] = useState('');
+  const { cities } = useAppManager();
+  const listCities = Object.keys(cities);
+  const [citiesFrom, setCitiesFrom] = useState(listCities);
+  const [citiesTo, setCitiesTo] = useState(listCities);
 
   // const [timePickerOpen, setTimePickerOpen] = useState(false);
   // const [time, setTime] = useState(new Date());
   const [genderChoice, setGenderChoice] = useState('ANY');
   const { gender } = useUserStore();
 
+
   const fromRef = useRef(null);
   const toRef = useRef(null);
 
-
-
-  useEffect(function () {
-    const result = requestLocationPermission();
-    result.then((res) => {
-      if (res) {
-        Geolocation.getCurrentPosition(
-          info => {
-            setLocation({
-              latitude: info.coords.latitude,
-              longitude: info.coords.longitude
-            });
-            setMarkerFrom(
-              {
-                latitude: info.coords.latitude,
-                longitude: info.coords.longitude
-              }
+  useEffect(() => {
+    getDeviceLocation().then(result => {
+      if (result) {
+        setLocation(result);
+        setMarkerFrom(result);
+        setTextFrom(t("current_location"));
+        fromRef.current.setCompletionText(t("current_location"));
+        for (const c of listCities) {
+          const isWithinRadius = geolib.isPointWithinRadius(result, { latitude: cities[c].latitude, longitude: cities[c].longitude }, cities[c].radius);
+          if (isWithinRadius) {
+            setCitiesTo(
+              listCities.filter(ct => ct != c)
             );
-            setTextFrom(t("current_location"));
-            fromRef.current.setCompletionText(t("current_location"))
+            break;
           }
-        );
+        }
       }
-    });
+    })
   }, []);
 
   const [markerUpdateCount, setMarkerUpdateCount] = useState(0);
@@ -102,28 +102,44 @@ function MapScreen({ route, navigation }) {
     } else if (markerTo) {
       mapViewRef.current.fitToSuppliedMarkers(["to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
     } else {
-      Geolocation.getCurrentPosition(
-        info => {
-          setLocation({
-            latitude: info.coords.latitude,
-            longitude: info.coords.longitude
-          });
+      getDeviceLocation().then(result => {
+        if (result) {
+          setLocation(result);
         }
-      );
+      })
     }
   }
 
-  function setLocationFrom(loc, text) {
+  function setLocationFrom(loc, text, _, city) {
     setTextFrom(text);
     setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
     adjustMarkers();
+    setCitiesTo(listCities.filter(c => c != city));
   }
 
-  function setLocationTo(loc, text) {
+  function setLocationTo(loc, text, _, city) {
     setTextTo(text);
     setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
     adjustMarkers();
+    setCitiesFrom(listCities.filter(c => c != city));
   }
+
+  function cancelLocationFrom(city) {
+    const oldCitiesTo = citiesTo;
+
+    if (city && !oldCitiesTo.includes(city)) {
+      setCitiesTo([...oldCitiesTo, city])
+    }
+  }
+
+  function cancelLocationTo(city) {
+    const oldCitiesFrom = citiesFrom;
+
+    if (city && !oldCitiesFrom.includes(city)) {
+      setCitiesFrom([...oldCitiesFrom, city])
+    }
+  }
+
 
   function goFindRides(e) {
     if (markerFrom && markerTo) {
@@ -166,7 +182,11 @@ function MapScreen({ route, navigation }) {
         <MapView
           style={[styles.mapStyle]}
           showsUserLocation={true}
-          region={location}
+          region={{
+            ...location,
+            latitudeDelta: 0.0922, // Adjust as needed
+            longitudeDelta: 0.0421, // Adjust as needed
+          }}
           provider={PROVIDER_GOOGLE}
           ref={mapViewRef}
           customMapStyle={customMapStyle}
@@ -196,8 +216,26 @@ function MapScreen({ route, navigation }) {
         <View style={[containerStyle, styles.flexOne]}>
 
           <View style={mapScreenStyles.autoCompletePair}>
-            <AutoComplete ref={fromRef} key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]} />
-            <AutoComplete ref={toRef} key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]} />
+            <AutoComplete
+              ref={fromRef}
+              key="autoCompleteFrom"
+              type="my-location"
+              placeholder={t('from')}
+              handleLocationSelect={setLocationFrom}
+              inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteTop]}
+              cities={citiesFrom}
+              handleCancelLocationSelect={cancelLocationFrom}
+            />
+            <AutoComplete
+              ref={toRef}
+              key="autoCompleteTo"
+              type="place"
+              placeholder={t('to')}
+              handleLocationSelect={setLocationTo}
+              inputStyles={[mapScreenStyles.autoCompleteStyles, mapScreenStyles.autoCompleteBottom]}
+              cities={citiesTo}
+              handleCancelLocationSelect={cancelLocationTo}
+            />
             <TouchableOpacity activeOpacity={0.8} onPress={swapDestinations} style={[styles.positionAbsolute, styles.alignCenter, styles.justifyCenter, styles.bgWhite, styles.borderSecondary, { top: 24 * rem, right: 5 * rem, height: 48 * rem, width: 48 * rem, borderRadius: 24 * rem, shadowColor: palette.black, shadowRadius: 12 * rem, shadowOpacity: 0.2 }]}>
               <MaterialIcons name="swap-vert" size={22} color={palette.primary} />
             </TouchableOpacity>

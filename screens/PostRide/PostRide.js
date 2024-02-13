@@ -27,6 +27,7 @@ import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import CarCard from '../../components/CarCard';
 import CommunityCard from '../../components/CommunityCard';
+import Counter from '../../components/Counter';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomDatePicker from '../../components/DatePicker';
 import SuccessCheck from '../../components/SuccessCheck';
@@ -34,8 +35,6 @@ import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
-import Counter from '../../components/Counter';
-import useRenderCounter from '../../components/useRenderCounter';
 
 function PostRide({ route, navigation }) {
     const { t } = useTranslation();
@@ -75,8 +74,12 @@ function PostRide({ route, navigation }) {
 
     const formikRef = useRef(null);
 
+    const { cities, driverFee } = useAppManager();
+    const listCities = Object.keys(cities);
+    const [citiesFrom, setCitiesFrom] = useState(listCities);
+    const [citiesTo, setCitiesTo] = useState(listCities);
+
     const userStore = useUserStore();
-    const { driverFee } = useAppManager();
 
 
     const mapViewRef = useRef(null);
@@ -89,6 +92,25 @@ function PostRide({ route, navigation }) {
     const loadCommunities = function () {
         return communitiesAPI.myCommunities();
     };
+
+    function resetData() {
+        setMarkerFrom(null);
+        setMarkerTo(null);
+        setPricePerSeat('');
+        setMainTextFrom('');
+        setMainTextTo('');
+        placeIdFrom.current = null;
+        placeIdTo.current = null;
+
+        setFromTouched(false);
+        setToTouched(false);
+        setRideId(null);
+        setPickupEnabled(false);
+        setAdvancedOptions(false);
+        setGenderChoice('ANY');
+        setCitiesFrom(listCities);
+        setCitiesTo(listCities);
+    }
 
     const loadData = function () {
         if (!userStore.driver) {
@@ -133,7 +155,6 @@ function PostRide({ route, navigation }) {
     }, []);
 
     const [suggestedPrice, setSuggestedPrice] = useState(0);
-    const geolib = require('geolib');
 
     useEffect(function () {
         if (markerFrom && markerTo) {
@@ -143,18 +164,36 @@ function PostRide({ route, navigation }) {
         }
     }, [markerFrom, markerTo])
 
-    function setLocationFrom(loc, mainTextFrom, placeId) {
+    function setLocationFrom(loc, mainTextFrom, placeId, city) {
         setFromTouched(true);
         setMarkerFrom({ latitude: loc.lat, longitude: loc.lng });
         setMainTextFrom(mainTextFrom);
+        setCitiesTo(listCities.filter(c => c != city));
         placeIdFrom.current = placeId;
     }
 
-    function setLocationTo(loc, mainTextTo, placeId) {
+    function setLocationTo(loc, mainTextTo, placeId, city) {
         setToTouched(true);
         setMarkerTo({ latitude: loc.lat, longitude: loc.lng });
         setMainTextTo(mainTextTo);
+        setCitiesFrom(listCities.filter(c => c != city));
         placeIdTo.current = placeId;
+    }
+
+    function cancelLocationFrom(city) {
+        const oldCitiesTo = citiesTo;
+
+        if (city && !oldCitiesTo.includes(city)) {
+            setCitiesTo([...oldCitiesTo, city])
+        }
+    }
+
+    function cancelLocationTo(city) {
+        const oldCitiesFrom = citiesFrom;
+
+        if (city && !oldCitiesFrom.includes(city)) {
+            setCitiesFrom([...oldCitiesFrom, city])
+        }
     }
 
     function selectCar(data) {
@@ -183,14 +222,15 @@ function PostRide({ route, navigation }) {
             newDate.setHours(newTime.getHours());
             newDate.setMinutes(newTime.getMinutes());
 
-            if(new Date() >= newDate) {
-                
+            if (new Date() >= newDate) {
+
             }
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
                 placeIdFrom.current, placeIdTo.current, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable, mainTextFrom, mainTextTo).then((res) => {
                     setRidePosted(true);
                     setRideId(res.id);
+                    resetData();
                 }).catch(console.error).finally(function () {
                     StoreReview.requestReview();
                     setSubmitDisabled(false);
@@ -259,7 +299,7 @@ function PostRide({ route, navigation }) {
             newDate.setMinutes(newTime.getMinutes());
 
             const currentDatetime = new Date();
-    
+
             if (newDate <= currentDatetime) {
                 throw new Yup.ValidationError(
                     t('error_datetime'),
@@ -267,10 +307,10 @@ function PostRide({ route, navigation }) {
                     'timeInput'
                 );
             }
-    
+
             return true;
         }
-    );    
+    );
 
     function navigateDocuments() {
         navigation.navigate("Driver Documents");
@@ -281,9 +321,9 @@ function PostRide({ route, navigation }) {
         navigation.navigate('New Car')
     }
 
-    const counter = useRenderCounter();
 
     let oneHourFromNow = new Date();
+    oneHourFromNow.setHours(oneHourFromNow.getHours() + 1);
     oneHourFromNow.setMinutes(0)
     oneHourFromNow.setSeconds(0);
 
@@ -291,7 +331,6 @@ function PostRide({ route, navigation }) {
         <ScreenWrapper screenName={t('post_ride')}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.wrapper} contentContainerStyle={styles.flexGrow}>
                 <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.defaultPadding]}>
-                    {counter}
                     {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
                             <PiggyBank width={300} height={300} />
@@ -327,22 +366,26 @@ function PostRide({ route, navigation }) {
                                         <>
                                             <Text style={[styles.text, styles.inputText]}>{t('pickup_point')}</Text>
                                             <AutoComplete
-                                                key="autoCompleteFrom"
+                                                key={"autoCompleteFrom" + rideId}
                                                 type="my-location"
                                                 placeholder={t('from')}
                                                 handleLocationSelect={setLocationFrom}
                                                 inputStyles={styles.bgWhite}
                                                 error={!markerFrom && fromTouched && t('error_required')}
+                                                cities={citiesFrom}
+                                                handleCancelLocationSelect={cancelLocationFrom}
                                             />
 
                                             <Text style={[styles.text, styles.inputText]}>{t('destination')}</Text>
                                             <AutoComplete
-                                                key="autoCompleteTo"
+                                                key={"autoCompleteTo" + rideId}
                                                 type="place"
                                                 placeholder={t('to')}
                                                 handleLocationSelect={setLocationTo}
                                                 inputStyles={styles.bgWhite}
                                                 error={!markerTo && toTouched && t('error_required')}
+                                                cities={citiesTo}
+                                                handleCancelLocationSelect={cancelLocationTo}
                                             />
 
                                             <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>

@@ -104,7 +104,6 @@ function Account({ route, navigation }) {
             setEditNameModalVisible(false);
         }).catch(err => {
             console.log(err);
-            // name error??
         })
     };
 

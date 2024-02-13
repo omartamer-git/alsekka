@@ -1,12 +1,9 @@
-import Geolocation from '@react-native-community/geolocation';
-import { ActivityType, startLocationUpdatesAsync, stopLocationUpdatesAsync } from 'expo-location';
+import { ActivityType, startLocationUpdatesAsync } from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Alert,
     Image,
-    PermissionsAndroid,
-    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -14,7 +11,6 @@ import {
     View
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { getOptimalPath } from '../../api/googlemaps';
@@ -24,6 +20,7 @@ import Button from '../../components/Button';
 import LiveAnimation from '../../components/LiveAnimation';
 import Passenger from '../../components/Passenger';
 import { containerStyle, customMapStyle, getDirections, palette, rem, styles } from '../../helper';
+import { getDeviceLocation } from '../../util/location';
 import { decodePolyline } from '../../util/maps';
 import ScreenWrapper from '../ScreenWrapper';
 
@@ -37,7 +34,10 @@ function ManageTrip({ route, navigation }) {
 
     const [passengersAtOrigin, setPassengersAtOrigin] = useState([]);
     const [passengersPickup, setPassengersPickup] = useState([]);
-    const [location, setLocation] = useState({});
+    const [location, setLocation] = useState({
+        latitude: 30.0444,
+        longitude: 31.2357
+    });
     // const [arrived, setArrived] = useState(false);
     const [tripTotals, setTripTotals] = useState(null);
     const [paidPassengers, setPaidPassengers] = useState([]);
@@ -81,38 +81,12 @@ function ManageTrip({ route, navigation }) {
         currentMapRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
     };
 
-    const requestLocationPermission = async function () {
-        if (Platform.OS === 'ios') {
-            const auth = Geolocation.requestAuthorization();
-            return true;
-        }
-
-        if (Platform.OS === 'android') {
-            await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                return true;
-            }
-        }
-
-        return false;
-    };
-
     useEffect(function () {
-        const result = requestLocationPermission();
-        result.then((res) => {
-            if (res) {
-                Geolocation.getCurrentPosition(
-                    info => {
-                        setLocation({
-                            latitude: info.coords.latitude,
-                            longitude: info.coords.longitude
-                        });
-                    }
-                );
+        getDeviceLocation().then(result => {
+            if (result) {
+                setLocation(result);
             }
-        });
+        })
     }, [])
 
     const getPhase = function () {
@@ -238,8 +212,6 @@ function ManageTrip({ route, navigation }) {
     }
 
     const submitRatings = function () {
-        console.log(tripId);
-        console.log(ratings);
         ridesAPI.submitDriverRatings(tripId, ratings).then(function () {
             // ratings submitted
             navigation.navigate('Home', { screen: 'User Home' });
@@ -260,7 +232,7 @@ function ManageTrip({ route, navigation }) {
 
         // Convert milliseconds to seconds
         let secs = Math.floor(timeDifferenceMs / 1000);
-        const [countdown, setCountdown] = useState(Math.max(0, secs+300));
+        const [countdown, setCountdown] = useState(Math.max(0, secs + 300));
 
         // const [seconds, setSeconds] = useState(secs + 300); // 5 minutes in seconds
         useEffect(function () {
@@ -268,7 +240,6 @@ function ManageTrip({ route, navigation }) {
             const interval = setInterval(function () {
                 if (countdown > 0) {
                     setCountdown(prevSeconds => {
-                        // console.log(prevSeconds);
                         return prevSeconds - 1;
                     });
                 }
@@ -355,7 +326,11 @@ function ManageTrip({ route, navigation }) {
                                     customMapStyle={customMapStyle}
                                     showsMyLocationButton
                                     maxZoomLevel={18}
-                                    initialRegion={location}
+                                    initialRegion={{
+                                        ...location,
+                                        latitudeDelta: 0.0922, // Adjust as needed
+                                        longitudeDelta: 0.0421, // Adjust as needed        
+                                    }}
                                     ref={mapViewRef}
                                 >
                                     <Marker key={"markerFrom"} identifier='from' coordinate={{ latitude: getPickupPassenger().pickupLocationLat, longitude: getPickupPassenger().pickupLocationLng }} onLayout={onMarkerLayout}></Marker>
@@ -397,7 +372,11 @@ function ManageTrip({ route, navigation }) {
                                     customMapStyle={customMapStyle}
                                     showsMyLocationButton
                                     maxZoomLevel={18}
-                                    initialRegion={location}
+                                    region={{
+                                        ...location,
+                                        latitudeDelta: 0.0922, // Adjust as needed
+                                        longitudeDelta: 0.0421, // Adjust as needed        
+                                    }}
                                     ref={currentMapRef}
                                 >
                                     <Marker onLayout={fitToSuppliedMarkers} key={"markerFrom"} pinColor={palette.primary} identifier='from' coordinate={{ latitude: tripDetails.fromLatitude, longitude: tripDetails.fromLongitude }}></Marker>

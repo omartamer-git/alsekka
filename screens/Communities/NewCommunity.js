@@ -32,13 +32,17 @@ function NewCommunity({ navigation, route }) {
         const response = await launchImageLibrary(imagePickerOptions);
         if (!response.didCancel && !response.error) {
             setCommunityPhoto(response);
-            // console.log(response);
         }
     }
+
+    const [error, setError] = useState(null);
 
     async function handleSubmit(name, description, privacy, joinQuestion) {
         setSubmitDisabled(true);
         try {
+            if (!communityPhoto) {
+                setError("A community picture is required")
+            }
             await createCommunity(name, description, privacy, communityPhoto, joinQuestion);
             navigation.goBack();
         } catch (e) {
@@ -74,6 +78,8 @@ function NewCommunity({ navigation, route }) {
                                         <MaterialIcons name="photo-camera" size={50} style={[styles.positionAbsolute, { borderRadius: 50 * rem }]} color={palette.light} />
                                     </View>
                                 </TouchableOpacity>
+
+                                <Text style={[styles.text, styles.error, styles.bold, styles.font14, styles.mt10]}>{error}</Text>
                             </View>
 
                             <Text style={[styles.text, styles.inputText]}>{t('community_name')}</Text>

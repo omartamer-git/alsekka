@@ -18,6 +18,7 @@ import AvailableRide from '../../components/AvailableRide';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import Button from '../../components/Button';
+import useAppManager from '../../context/appManager';
 
 
 function RideFinder({ route, navigation }) {
@@ -43,6 +44,10 @@ function RideFinder({ route, navigation }) {
 
     const [loading, setLoading] = useState(true);
 
+    const { cities } = useAppManager();
+    const listCities = Object.keys(cities);
+    const [citiesFrom, setCitiesFrom] = useState(listCities);
+    const [citiesTo, setCitiesTo] = useState(listCities);
 
 
     useEffect(function () {
@@ -106,17 +111,36 @@ function RideFinder({ route, navigation }) {
         setTextTo(oldTextFrom);
     }
 
-    function setLocationFrom(loc, text) {
+    function setLocationFrom(loc, text, _, city) {
         setTextFrom(text);
         setFromLng(loc.lng);
         setFromLat(loc.lat);
+        setCitiesTo(listCities.filter(c => c != city));
     }
 
-    function setLocationTo(loc, text) {
+    function setLocationTo(loc, text, _, city) {
         setTextTo(text);
         setToLng(loc.lng);
         setToLat(loc.lat);
+        setCitiesFrom(listCities.filter(c => c != city));
     }
+
+    function cancelLocationFrom(city) {
+        const oldCitiesTo = citiesTo;
+
+        if (city && !oldCitiesTo.includes(city)) {
+            setCitiesTo([...oldCitiesTo, city])
+        }
+    }
+
+    function cancelLocationTo(city) {
+        const oldCitiesFrom = citiesFrom;
+
+        if (city && !oldCitiesFrom.includes(city)) {
+            setCitiesFrom([...oldCitiesFrom, city])
+        }
+    }
+
 
     const { t } = useTranslation();
 
@@ -124,8 +148,26 @@ function RideFinder({ route, navigation }) {
         <ScreenWrapper navType="back" navAction={() => navigation.goBack()}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={rideFinderStyles.autoCompletePair}>
-                    <AutoComplete ref={fromRef} key="autoCompleteFrom" type="my-location" placeholder={t('from')} handleLocationSelect={setLocationFrom} inputStyles={[{ marginTop: 0, marginBottom: 0, borderBottomWidth: 0.5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }, styles.borderLight, styles.bgWhite]} />
-                    <AutoComplete ref={toRef} key="autoCompleteTo" type="place" placeholder={t('to')} handleLocationSelect={setLocationTo} inputStyles={[{ marginTop: 0, marginBottom: 0, borderTopWidth: 0.5, borderTopRightRadius: 0, borderTopLeftRadius: 0 }, styles.borderLight, styles.bgWhite]} />
+                    <AutoComplete
+                        ref={fromRef}
+                        key="autoCompleteFrom"
+                        type="my-location"
+                        placeholder={t('from')}
+                        handleLocationSelect={setLocationFrom}
+                        inputStyles={[{ marginTop: 0, marginBottom: 0, borderBottomWidth: 0.5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }, styles.borderLight, styles.bgWhite]}
+                        cities={citiesFrom}
+                        handleCancelLocationSelect={cancelLocationFrom}
+                    />
+                    <AutoComplete
+                        ref={toRef}
+                        key="autoCompleteTo"
+                        type="place"
+                        placeholder={t('to')}
+                        handleLocationSelect={setLocationTo}
+                        inputStyles={[{ marginTop: 0, marginBottom: 0, borderTopWidth: 0.5, borderTopRightRadius: 0, borderTopLeftRadius: 0 }, styles.borderLight, styles.bgWhite]}
+                        cities={citiesTo}
+                        handleCancelLocationSelect={cancelLocationTo}
+                    />
 
                     <TouchableOpacity activeOpacity={0.8} onPress={swapDestinations} style={[styles.positionAbsolute, styles.alignCenter, styles.justifyCenter, styles.bgWhite, styles.borderSecondary, { top: 24 * rem, right: 5 * rem, height: 48 * rem, width: 48 * rem, borderRadius: 24 * rem, shadowColor: palette.black, shadowRadius: 12 * rem, shadowOpacity: 0.2 }]}>
                         <MaterialIcons name="swap-vert" size={22} color={palette.primary} />

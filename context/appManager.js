@@ -11,6 +11,7 @@ const useAppManager = create((set) => ({
     allowedEmails: "",
     minVersion: "1.0.0",
     latestVersion: "1.0.0",
+    cities: {},
 
     getVersionData: async function () {
         try {
@@ -46,7 +47,8 @@ const useAppManager = create((set) => ({
     setCardsEnabled: (cardsEnabled) => set((state) => ({ cardsEnabled: cardsEnabled })),
     setVerificationsDisabled: (verificationsDisabled) => set((state) => ({ verificationsDisabled: verificationsDisabled })),
     setDeviceToken: (deviceToken) => set((state) => ({ deviceToken: deviceToken })),
-    setReferralsDisabled: (referralsDisabled) => set((state) => ({ referralsDisabled: referralsDisabled }))
+    setReferralsDisabled: (referralsDisabled) => set((state) => ({ referralsDisabled: referralsDisabled })),
+    setCities: (cities) => set((state) => ({ cities: cities }))
 }));
 
 export default useAppManager;

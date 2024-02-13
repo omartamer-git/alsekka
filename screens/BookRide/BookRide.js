@@ -1,4 +1,3 @@
-import Geolocation from '@react-native-community/geolocation';
 import _debounce from 'lodash/debounce';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,11 +12,13 @@ import {
     View
 } from 'react-native';
 import MapView, { Circle, Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import * as StoreReview from 'react-native-store-review';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../../api/accountAPI';
+import * as googleMapsAPI from '../../api/googlemaps';
 import * as ridesAPI from '../../api/ridesAPI';
 import ArrowButton from '../../components/ArrowButton';
 import BankCard from '../../components/BankCard';
@@ -27,17 +28,18 @@ import Counter from '../../components/Counter';
 import CustomTextInput from '../../components/CustomTextInput';
 import useAppManager from '../../context/appManager';
 import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
-import ScreenWrapper from '../ScreenWrapper';
-import * as StoreReview from 'react-native-store-review';
-import * as googleMapsAPI from '../../api/googlemaps';
+import { getDeviceLocation } from '../../util/location';
 import { decodePolyline } from '../../util/maps';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ScreenWrapper from '../ScreenWrapper';
 
 function BookRide({ route, navigation }) {
     const { rideId } = route.params;
     const { t } = useTranslation();
 
-    const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState({
+        latitude: 30.0444,
+        longitude: 31.2357
+    });
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
     const mapViewRef = useRef(null);
@@ -99,14 +101,11 @@ function BookRide({ route, navigation }) {
     const { cardsEnabled, passengerFee } = useAppManager();
 
     useEffect(function () {
-        Geolocation.getCurrentPosition(
-            info => {
-                setLocation({
-                    latitude: info.coords.latitude,
-                    longitude: info.coords.longitude
-                });
+        getDeviceLocation().then(result => {
+            if(result) {
+                setLocation(result);
             }
-        );
+        })
 
         setLoading(true);
         const data = ridesAPI.rideDetails(rideId).then((data) => {

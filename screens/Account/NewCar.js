@@ -93,9 +93,6 @@ function NewCar({ route, navigation }) {
             licensePlateNumbers: licensePlateNumbers,
         };
 
-        console.log(licenseFront);
-        console.log(licenseBack);
-
         carsAPI.newCar(newCarBody, licenseFront, licenseBack).then(() => setModalVisible(true)).catch((e) => console.error(e)).finally(() => setSubmitDisabled(false));
     };
 

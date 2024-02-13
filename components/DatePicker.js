@@ -38,7 +38,9 @@ function CustomDatePicker({ date, setDate }) {
         );
     }
 
-    populateDates();
+    useEffect(() => {
+        populateDates();
+    }, [])
 
     function DateInstance({ i }) {
         const chosen = chosenDate === i;
