@@ -1,4 +1,3 @@
-import Geolocation from '@react-native-community/geolocation';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -18,11 +17,12 @@ import ArrowButton from '../../components/ArrowButton';
 import AvailableRide from '../../components/AvailableRide';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
-import Passenger from '../../components/Passenger';
-import { addSecondsToDate, customMapStyle, getDateTime, getDirections, palette, rem, styles, translateDate, translatedFormat } from '../../helper';
-import ScreenWrapper from '../ScreenWrapper';
 import CarMarker from '../../components/CarMarker';
+import Passenger from '../../components/Passenger';
+import { addSecondsToDate, customMapStyle, getDirections, palette, rem, styles, translateDate, translatedFormat } from '../../helper';
+import { getDeviceLocation } from '../../util/location';
 import { decodePolyline } from '../../util/maps';
+import ScreenWrapper from '../ScreenWrapper';
 
 
 function ViewTrip({ route, navigation }) {
@@ -31,7 +31,10 @@ function ViewTrip({ route, navigation }) {
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
     const [ratings, setRatings] = useState(null);
-    const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState({
+        latitude: 30.0444,
+        longitude: 31.2357
+    });
     const [objDate, setObjDate] = useState(new Date());
     const [isDriver, setIsDriver] = useState(false);
 
@@ -49,19 +52,15 @@ function ViewTrip({ route, navigation }) {
     const mapViewRef = useRef(null);
 
     useEffect(function () {
-        Geolocation.getCurrentPosition(
-            info => {
-                setLocation({
-                    latitude: info.coords.latitude,
-                    longitude: info.coords.longitude
-                });
+        getDeviceLocation().then(result => {
+            if(result) {
+                setLocation(result);
             }
-        );
+        })
 
         setLoading(true);
         ridesAPI.tripDetails(tripId).then(
             data => {
-                console.log(data);
                 setTripDetails(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
@@ -111,7 +110,6 @@ function ViewTrip({ route, navigation }) {
     let timeoutId;
     function updateDriverLocation() {
         ridesAPI.getDriverLocation(tripDetails.id).then(det => {
-            console.log(det);
             setDriverLocationMarker(prevLocation => {
                 return ({
                     latitude: det.lat,
@@ -129,7 +127,6 @@ function ViewTrip({ route, navigation }) {
 
     useEffect(() => {
         if (isDriver || !tripDetails || tripStatus !== 'ONGOING') {
-            console.log("Not Driver/Not Ready");
             return;
         }
 
@@ -181,7 +178,11 @@ function ViewTrip({ route, navigation }) {
                     <MapView
                         style={[styles.mapStyle]}
                         showUserLocation={true}
-                        region={location}
+                        region={{
+                            ...location,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
                         provider={PROVIDER_GOOGLE}
                         ref={mapViewRef}
                         customMapStyle={customMapStyle}

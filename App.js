@@ -242,17 +242,13 @@ function App() {
       return;
     }
     if (data) {
-      // console.log(data);
-
       const { locations } = data;
       const lat = locations[0].coords.latitude;
       const lng = locations[0].coords.longitude;
       const timestamp = locations[0].timestamp;
-      console.log(authManager.authenticated);
       if (authManager.authenticated) {
         userStore.postDriverLocation(lat, lng, timestamp);
       } else {
-        console.log("NOT AUTHED, STOPPED");
         stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
       }
       // do something with the locations captured in the background

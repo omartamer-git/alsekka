@@ -74,8 +74,6 @@ const useUserStore = create((set) => ({
                 platform: Platform.OS
             },
         });
-        console.log('helloooo');
-
 
         const data = response.data;
         set(data);

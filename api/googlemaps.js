@@ -2,7 +2,6 @@ import useAxiosManager from '../context/axiosManager';
 
 export const getPredictions = async function (text, lat, lng, city) {
     let pred = [];
-    console.log(city);
     const url = '/v1/map/getPredictions';
     const params = {
         text: text,
@@ -13,7 +12,6 @@ export const getPredictions = async function (text, lat, lng, city) {
     const axiosManager = useAxiosManager.getState();
     const result = await axiosManager.authAxios.get(url, { params });
     const data = result.data;
-    console.log(data);
     return data;
 };
 

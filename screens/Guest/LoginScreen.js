@@ -31,7 +31,6 @@ function LoginScreen({ route, navigation }) {
   // const objForm = new Form();
 
   function handleContinueClick(phoneNum, password) {
-    console.log("clk");
     if (password.length < config.PASSWORD_MIN_LENGTH) {
       setPasswordError(true);
       returnAfterValidation = true;
@@ -55,8 +54,6 @@ function LoginScreen({ route, navigation }) {
             });
         }
       }).catch(err => {
-        console.log("hello");
-        console.log(err.response);
         setErrorMessage(err.response.data.error.message);
       }).finally(function () {
         setSubmitDisabled(false);

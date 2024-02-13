@@ -1,4 +1,3 @@
-import Geolocation from '@react-native-community/geolocation';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,19 +11,16 @@ import {
   View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import DatePicker from 'react-native-date-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useUserStore from '../../api/accountAPI';
 import AutoComplete from '../../components/AutoComplete';
 import Button from '../../components/Button';
-import CustomTextInput from '../../components/CustomTextInput';
-import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
-import ScreenWrapper from '../ScreenWrapper';
-import MapViewDirections from 'react-native-maps-directions';
 import CustomDatePicker from '../../components/DatePicker';
-import { requestLocationPermission } from '../../util/maps';
 import useAppManager from '../../context/appManager';
+import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPadding, palette, rem, styles } from '../../helper';
+import { getDeviceLocation } from '../../util/location';
+import ScreenWrapper from '../ScreenWrapper';
 const geolib = require('geolib');
 
 
@@ -32,7 +28,10 @@ function MapScreen({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const loc = route.params?.loc;
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({
+    latitude: 30.0444,
+    longitude: 31.2357
+  });
   const [markerFrom, setMarkerFrom] = useState(null);
   const [markerTo, setMarkerTo] = useState(null);
   const mapViewRef = useRef(null);
@@ -55,41 +54,24 @@ function MapScreen({ route, navigation }) {
   const fromRef = useRef(null);
   const toRef = useRef(null);
 
-
-
-  useEffect(function () {
-    const result = requestLocationPermission();
-    result.then((res) => {
-      if (res) {
-        Geolocation.getCurrentPosition(
-          info => {
-            setLocation({
-              latitude: info.coords.latitude,
-              longitude: info.coords.longitude
-            });
-            setMarkerFrom(
-              {
-                latitude: info.coords.latitude,
-                longitude: info.coords.longitude
-              }
+  useEffect(() => {
+    getDeviceLocation().then(result => {
+      if (result) {
+        setLocation(result);
+        setMarkerFrom(result);
+        setTextFrom(t("current_location"));
+        fromRef.current.setCompletionText(t("current_location"));
+        for (const c of listCities) {
+          const isWithinRadius = geolib.isPointWithinRadius(result, { latitude: cities[c].latitude, longitude: cities[c].longitude }, cities[c].radius);
+          if (isWithinRadius) {
+            setCitiesTo(
+              listCities.filter(ct => ct != c)
             );
-            setTextFrom(t("current_location"));
-            fromRef.current.setCompletionText(t("current_location"));
-
-            for (const c of listCities) {
-              const isWithinRadius = geolib.isPointWithinRadius(info.coords, { latitude: cities[c].latitude, longitude: cities[c].longitude }, cities[c].radius);
-              if(isWithinRadius) {
-                setCitiesTo(
-                  listCities.filter(ct => ct != c)
-                );
-                break;
-              }
-            }
-
+            break;
           }
-        );
+        }
       }
-    });
+    })
   }, []);
 
   const [markerUpdateCount, setMarkerUpdateCount] = useState(0);
@@ -120,14 +102,11 @@ function MapScreen({ route, navigation }) {
     } else if (markerTo) {
       mapViewRef.current.fitToSuppliedMarkers(["to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
     } else {
-      Geolocation.getCurrentPosition(
-        info => {
-          setLocation({
-            latitude: info.coords.latitude,
-            longitude: info.coords.longitude
-          });
+      getDeviceLocation().then(result => {
+        if (result) {
+          setLocation(result);
         }
-      );
+      })
     }
   }
 
@@ -203,7 +182,11 @@ function MapScreen({ route, navigation }) {
         <MapView
           style={[styles.mapStyle]}
           showsUserLocation={true}
-          region={location}
+          region={{
+            ...location,
+            latitudeDelta: 0.0922, // Adjust as needed
+            longitudeDelta: 0.0421, // Adjust as needed
+          }}
           provider={PROVIDER_GOOGLE}
           ref={mapViewRef}
           customMapStyle={customMapStyle}

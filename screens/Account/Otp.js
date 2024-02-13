@@ -36,7 +36,6 @@ function Otp({ route, navigation }) {
         isVerified(phone).then(response => {
             if (response === true) {
                 if (onVerify === 'login') {
-                    console.log(phone);
                     createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
                         login(phone, password).then(function () {
                             navigation.popToTop();

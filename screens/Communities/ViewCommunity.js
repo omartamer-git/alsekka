@@ -43,7 +43,6 @@ function ViewCommunity({ navigation, route }) {
     useEffect(function () {
         communitiesAPI.getCommunityDetails(communityId).then(
             data => {
-                // console.log(data);
                 if(!name) {
                     setName(data.name);
                 }

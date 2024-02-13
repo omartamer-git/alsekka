@@ -1,8 +1,8 @@
-import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import _debounce from 'lodash/debounce';
 import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     FlatList,
     I18nManager,
@@ -18,18 +18,16 @@ import {
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import MapView, { Geojson, PROVIDER_GOOGLE } from 'react-native-maps';
+import Animated, { SlideInLeft, SlideInRight, SlideOutLeft, SlideOutRight } from 'react-native-reanimated';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { getCityBounds } from '../api/geojson';
 import * as googleMapsAPI from '../api/googlemaps';
-import { customMapStyle, mapPadding, palette, rem, styles as styles2 } from '../helper';
+import useAppManager from '../context/appManager';
+import { customMapStyle, palette, rem, styles as styles2 } from '../helper';
+import { getDeviceLocation } from '../util/location';
 import Button from './Button';
 import CustomTextInput from './CustomTextInput';
 import HeaderView from './HeaderView';
-import { useTranslation } from 'react-i18next';
-import { requestLocationPermission } from '../util/maps';
-import ListItem from './WithdrawalMethod';
-import Animated, { SlideInLeft, SlideInRight, SlideOutLeft, SlideOutRight } from 'react-native-reanimated';
-import useAppManager from '../context/appManager';
-import { getCityBounds } from '../api/geojson';
 const geolib = require('geolib');
 const d3 = require('d3-geo'); // Importing d3-geo module
 
@@ -46,7 +44,10 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     const [modalMap, setModalMap] = useState(false);
     const [city, setCity] = useState(null);
 
-    const myLocation = useRef(null);
+    const [myLocation, setMyLocation] = useState({
+        latitude: 30.0444,
+        longitude: 31.2357
+    });
     // const sessionToken = useRef(null);
     const [mapPred, setMapPred] = useState(null);
     const inputLocRef = useRef(null);
@@ -61,16 +62,6 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     const appManager = useAppManager();
 
     let placeIds = [];
-
-    Geolocation.getCurrentPosition(
-        info => {
-            myLocation.current = {
-                latitude: info.coords.latitude,
-                longitude: info.coords.longitude
-            };
-        }
-    );
-
     useImperativeHandle(ref, () => ({
         setCompletionText(txt) {
             setText(txt);
@@ -123,19 +114,16 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     function handleTextChange(data) {
         if (data !== "") {
             placeIds = [];
-            console.log("zhoooo");
-            console.log(city);
-            const pred = googleMapsAPI.getPredictions(data, myLocation.current.latitude, myLocation.current.longitude, city).then(pred => {
+            const pred = googleMapsAPI.getPredictions(data, myLocation.latitude, myLocation.longitude, city).then(pred => {
                 setPredictions(pred.data);
             });
-            // sessionToken.current = pred.sessiontoken;
         } else {
             setPredictions(null);
             placeIds = [];
         }
     }
 
-    function isLocationWithinBounds(point) {
+    function isLocationWithinBounds(point, geojson) {
         for (const feature of geojson.features) {
             // Convert the feature to a GeoJSON object
             const geoJSONObject = {
@@ -145,24 +133,24 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
             // Check if the GeoJSON contains the point
             if (d3.geoContains(geojson, [point.longitude, point.latitude])) {
                 return true;
-            } else {
-                console.log(feature);
             }
         }
         return false;
     }
 
-    async function handleRegionChange(region) {
-        console.log(region);
-        console.log(isLocationWithinBounds(region));
-        console.log(geojson);
-        if (isLocationWithinBounds(region)) {
+    async function handleRegionChange(region, geojson) {
+        if (!geojson) {
+            // Handle the case where geojson is undefined
+            return;
+        }
+
+        if (isLocationWithinBounds(region, geojson)) {
             setChooseLocationDisabled(false);
             const results = await googleMapsAPI.geocode(region.latitude, region.longitude);
             currRegion.current = {
                 latitude: region.latitude,
                 longitude: region.longitude
-            }
+            };
             const description = results.formatted_address;
             const placeId = results.place_id;
 
@@ -174,8 +162,9 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         }
     }
 
+
     const debounceFn = useCallback(_debounce(handleTextChange, 300), [city]);
-    const debounceRegion = useCallback(_debounce(handleRegionChange, 300), [])
+    const debounceRegion = useCallback(_debounce(region => handleRegionChange(region, geojson), 300), [geojson]);
     function onChangeText(data) {
         setText(data);
         debounceFn(data);
@@ -230,25 +219,24 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     }
 
     const [currLocation, setCurrLocation] = useState(null);
-    useEffect(() => {
-        requestLocationPermission().then(result => {
-            if (result) {
-                Geolocation.getCurrentPosition(
-                    info => {
-                        if (!city) {
-                            return;
-                        }
-                        const isWithinRadius = geolib.isPointWithinRadius(info.coords, { latitude: appManager.cities[city].latitude, longitude: appManager.cities[city].longitude }, appManager.cities[city].radius);
 
-                        if (isWithinRadius) {
-                            setCurrLocation({ lat: info.coords.latitude, lng: info.coords.longitude });
-                        } else {
-                            setCurrLocation(null);
-                        }
-                    }
-                );
+
+    useEffect(() => {
+        getDeviceLocation().then(result => {
+            if (!result) {
+                return;
             }
-        });
+            setMyLocation(result);
+            if (city) {
+                const isWithinRadius = geolib.isPointWithinRadius(result, { latitude: appManager.cities[city].latitude, longitude: appManager.cities[city].longitude }, appManager.cities[city].radius);
+
+                if (isWithinRadius) {
+                    setCurrLocation({ lat: result.latitude, lng: result.longitude });
+                } else {
+                    setCurrLocation(null);
+                }
+            }
+        })
     }, [city])
 
     async function setCurrentLocation() {
@@ -311,159 +299,202 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         )
     }
 
+    const CitySelector = React.memo(({ cities, onCitySelect }) => {
+        return (
+            <>
+                <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={[styles2.defaultContainer, styles2.defaultPadding]}>
+                    {
+                        cities.map((city, index) => (
+                            <TouchableOpacity key={`city-${index}`} style={styles.predictionBox} onPress={() => onCitySelect(city)}>
+                                <Text style={[styles2.text, { width: '90%' }]}>
+                                    {I18nManager.isRTL ? appManager.cities[city].label_ar : appManager.cities[city].label_en}
+                                </Text>
+                                <MaterialIcons name="arrow-forward-ios" />
+                            </TouchableOpacity>
+                        ))
+                    }
+                </Animated.View>
+            </>
+        );
+    });
+
+    function ModalMap() {
+        return (
+            <>
+                <View style={[styles2.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>
+                    <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} disabled={chooseLocationDisabled} onPress={function () { moveInput(mapPred, true, { lat: currRegion.current.latitude, lng: currRegion.current.longitude }) }} />
+                </View>
+
+                <MapView
+                    style={[styles2.fullCenter, { ...StyleSheet.absoluteFillObject }]}
+                    showsUserLocation={true}
+                    region={{
+                        latitude: myLocation.latitude,
+                        longitude: myLocation.longitude,
+                        latitudeDelta: 0.0922, // Adjust as needed
+                        longitudeDelta: 0.0421, // Adjust as needed
+                    }}
+                    onRegionChangeComplete={onChangeRegion}
+                    provider={PROVIDER_GOOGLE}
+                    ref={mapViewRef}
+                    customMapStyle={customMapStyle}
+                    mapPadding={{ bottom: 96 * rem, top: 0, left: 0 * rem, right: 0 }}
+                    minZoomLevel={6}
+                    showsMyLocationButton
+                >
+                    <MaterialIcons style={{ marginBottom: (96 + 48) * rem }} name="place" size={48} color={palette.red} />
+                    {geojson &&
+                        <Geojson
+                            geojson={geojson}
+                            strokeColor="#2e1760"
+                            fillColor="rgba(46,23,96,0.5)"
+                            strokeWidth={2}
+                        />
+                    }
+                </MapView>
+            </>
+        )
+    }
+
+    function Recents() {
+        return (
+            <>
+                <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
+                    {
+                        recentPlaces &&
+                        recentPlaces.map(
+                            (prediction, index) => {
+                                if (prediction.city !== city) {
+                                    return (<React.Fragment key={index}></React.Fragment>);
+                                }
+                                return (
+                                    <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
+                                        <Text numberOfLines={2} style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
+                                        <TouchableOpacity activeOpacity={1} style={[styles2.alignEnd, { flex: 3 }]}>
+                                            <MaterialIcons name="history" size={20} color={palette.dark} />
+                                        </TouchableOpacity>
+                                    </TouchableOpacity>
+                                )
+                            }
+                        )
+                    }
+                </View>
+            </>
+        )
+    }
+
+    function Favorites() {
+        return (
+            <>
+                <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
+                    {
+                        favoritePlaces &&
+                        favoritePlaces.map(
+                            (prediction, index) => {
+                                if (prediction.city !== city) {
+                                    return (<React.Fragment key={index}></React.Fragment>);
+                                }
+                                let color = palette.red;
+                                return (
+                                    <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
+                                        <Text numberOfLines={2} style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
+                                        <TouchableOpacity onPress={function () { addToFavorites(prediction) }} style={[styles2.alignEnd, { flex: 3 }]}>
+                                            <MaterialIcons name="favorite" size={20} color={color} />
+                                        </TouchableOpacity>
+                                    </TouchableOpacity>
+                                )
+                            }
+                        )
+                    }
+                </View>
+            </>
+        )
+    }
+
 
     return (
         <View style={styles2.w100}>
             <CustomTextInput onFocus={enableModal} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
-            <Modal animationType="slide" visible={modalVisible}>
-                <SafeAreaView style={[styles2.bgPrimary, styles2.AndroidSafeArea]}>
-                    <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={styles2.bgPrimary} action={cancelAutoComplete} >
-                        <View style={styles2.localeWrapper}>
-                            <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                            <Text style={[styles2.locale, styles2.text]}>EN</Text>
-                        </View>
-                    </HeaderView>
-                </SafeAreaView>
+            { modalVisible &&
+                <Modal animationType="slide" visible={modalVisible}>
+                    <SafeAreaView style={[styles2.bgPrimary, styles2.AndroidSafeArea]}>
+                        <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={styles2.bgPrimary} action={cancelAutoComplete} >
+                            <View style={styles2.localeWrapper}>
+                                <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
+                                <Text style={[styles2.locale, styles2.text]}>EN</Text>
+                            </View>
+                        </HeaderView>
+                    </SafeAreaView>
 
-                <View style={styles.container}>
-                    <View style={[styles2.positionAbsolute, styles2.w100, { top: 0, left: 0, zIndex: 5 }]}>
-                        <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                    <View style={styles.container}>
+                        <View style={[styles2.positionAbsolute, styles2.w100, { top: 0, left: 0, zIndex: 5 }]}>
+                            <View style={{ width: '100%', zIndex: 4, elevation: 4, backgroundColor: palette.primary, height: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                            </View>
+
+                            {
+                                !city &&
+                                <CitySelector cities={cities} onCitySelect={setCity} />
+                            }
+
+                            {
+                                city &&
+                                <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={[styles2.defaultContainer, styles2.defaultPadding]}>
+                                    <>
+                                        <CustomTextInput inputRef={inputLocRef} iconLeft="pin-drop" onChangeText={onChangeText} placeholder={placeholder} value={text} />
+                                        {
+                                            !modalMap &&
+                                            <>
+                                                {
+                                                    predictions &&
+                                                    <>
+                                                        <FlatList
+                                                            data={predictions}
+                                                            renderItem={({ item }) => <Prediction prediction={item} />}
+                                                            style={styles.flexOne}
+                                                        />
+                                                    </>
+                                                }
+                                                {
+                                                    !predictions &&
+                                                    <>
+                                                        <ScrollView keyboardShouldPersistTaps={"handled"} style={[styles2.flexOne, styles2.w100]}>
+                                                            <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>{t('recent_destinations')}</Text>
+                                                            <Recents />
+
+                                                            <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>{t('favorite_destinations')}</Text>
+                                                            <Favorites />
+
+
+                                                            <TouchableOpacity style={styles.alternativeOption} onPress={function () { setModalMap(true) }}>
+                                                                <MaterialIcons name="place" size={16} color={palette.black} />
+                                                                <Text style={[styles2.text, styles2.ml10]}>{t('choose_location')}</Text>
+                                                            </TouchableOpacity>
+
+                                                            {currLocation &&
+                                                                <TouchableOpacity style={styles.alternativeOption} onPress={setCurrentLocation}>
+                                                                    <MaterialIcons name="my-location" size={16} color={palette.black} />
+                                                                    <Text style={[styles2.text, styles2.ml10]}>{t('current_location')}</Text>
+                                                                </TouchableOpacity>
+                                                            }
+
+                                                        </ScrollView>
+                                                    </>
+                                                }
+                                            </>
+                                        }
+                                    </>
+
+                                </Animated.View>
+                            }
                         </View>
 
                         {
-                            !city &&
-                            <Animated.View entering={SlideInLeft} exiting={SlideOutLeft} style={[styles2.defaultContainer, styles2.defaultPadding]}>
-                                <>
-                                    {
-                                        cities.map((city, index) => {
-                                            return (
-                                                <TouchableOpacity key={`city${index}`} style={styles.predictionBox} onPress={() => setCity(city)}>
-                                                    <Text style={[styles2.text, { width: '90%' }]}>
-                                                        {
-                                                            I18nManager.isRTL ? appManager.cities[city].label_ar : appManager.cities[city].label_en
-                                                        }
-                                                    </Text>
-
-                                                    <MaterialIcons name="arrow-forward-ios" />
-                                                </TouchableOpacity>
-                                            )
-                                        })
-                                    }
-                                </>
-                            </Animated.View>
-                        }
-
-                        {
-                            city &&
-
-                            <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={[styles2.defaultContainer, styles2.defaultPadding]}>
-                                <>
-                                    <CustomTextInput inputRef={inputLocRef} iconLeft="pin-drop" onChangeText={onChangeText} placeholder={placeholder} value={text} />
-                                    {!modalMap && predictions &&
-                                        <FlatList
-                                            data={predictions}
-                                            renderItem={({ item }) => <Prediction prediction={item} />}
-                                            style={styles.flexOne}
-                                        />
-                                    }
-                                    {!modalMap && !predictions &&
-                                        <ScrollView keyboardShouldPersistTaps={"handled"} style={[styles2.flexOne, styles2.w100]}>
-                                            <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>{t('recent_destinations')}</Text>
-                                            <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
-                                                {
-                                                    recentPlaces &&
-                                                    recentPlaces.map(
-                                                        (prediction, index) => {
-                                                            if (prediction.city !== city) {
-                                                                return (<React.Fragment key={index}></React.Fragment>);
-                                                            }
-                                                            return (
-                                                                <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
-                                                                    <Text numberOfLines={2} style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
-                                                                    <TouchableOpacity activeOpacity={1} style={[styles2.alignEnd, { flex: 3 }]}>
-                                                                        <MaterialIcons name="history" size={20} color={palette.dark} />
-                                                                    </TouchableOpacity>
-                                                                </TouchableOpacity>
-                                                            )
-                                                        }
-                                                    )
-                                                }
-                                            </View>
-
-                                            <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>{t('favorite_destinations')}</Text>
-                                            <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
-                                                {
-                                                    favoritePlaces &&
-                                                    favoritePlaces.map(
-                                                        (prediction, index) => {
-                                                            if (prediction.city !== city) {
-                                                                return (<React.Fragment key={index}></React.Fragment>);
-                                                            }
-                                                            let color = palette.red;
-                                                            return (
-                                                                <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
-                                                                    <Text numberOfLines={2} style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
-                                                                    <TouchableOpacity onPress={function () { addToFavorites(prediction) }} style={[styles2.alignEnd, { flex: 3 }]}>
-                                                                        <MaterialIcons name="favorite" size={20} color={color} />
-                                                                    </TouchableOpacity>
-                                                                </TouchableOpacity>
-                                                            )
-                                                        }
-                                                    )
-                                                }
-                                            </View>
-
-
-                                            <TouchableOpacity style={styles.alternativeOption} onPress={function () { setModalMap(true) }}>
-                                                <MaterialIcons name="place" size={16} color={palette.black} />
-                                                <Text style={[styles2.text, styles2.ml10]}>{t('choose_location')}</Text>
-                                            </TouchableOpacity>
-
-                                            {currLocation &&
-                                                <TouchableOpacity style={styles.alternativeOption} onPress={setCurrentLocation}>
-                                                    <MaterialIcons name="my-location" size={16} color={palette.black} />
-                                                    <Text style={[styles2.text, styles2.ml10]}>{t('current_location')}</Text>
-                                                </TouchableOpacity>
-                                            }
-
-                                        </ScrollView>
-                                    }
-                                </>
-
-                            </Animated.View>
+                            modalMap &&
+                            <ModalMap />
                         }
                     </View>
-
-                    {modalMap && <View style={[styles2.defaultPadding, { position: 'absolute', bottom: 80, left: 0, width: '100%', zIndex: 8 }]}>
-                        <Button text={t('choose_location')} bgColor={palette.primary} textColor={palette.white} disabled={chooseLocationDisabled} onPress={function () { moveInput(mapPred, true, { lat: currRegion.current.latitude, lng: currRegion.current.longitude }) }} />
-                    </View>}
-
-                    {modalMap &&
-                        <MapView
-                            style={[styles2.fullCenter, { ...StyleSheet.absoluteFillObject }]}
-                            showsUserLocation={true}
-                            initialRegion={myLocation.current}
-                            onRegionChangeComplete={onChangeRegion}
-                            provider={PROVIDER_GOOGLE}
-                            ref={mapViewRef}
-                            customMapStyle={customMapStyle}
-                            mapPadding={{ bottom: 96 * rem, top: 0, left: 0 * rem, right: 0 }}
-                            minZoomLevel={6}
-                            showsMyLocationButton
-                        >
-                            <MaterialIcons style={{ marginBottom: (96 + 48) * rem }} name="place" size={48} color={palette.red} />
-                            {geojson &&
-                                <Geojson
-                                    geojson={geojson}
-                                    strokeColor="#2e1760"
-                                    fillColor="rgba(46,23,96,0.5)"
-                                    strokeWidth={2}
-                                />
-                            }
-                        </MapView>}
-
-                </View>
-            </Modal>
+                </Modal>
+            }
         </View>
     );
 });

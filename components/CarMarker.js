@@ -15,8 +15,6 @@ export default function CarMarker({ car }) {
   );
 
   useEffect(() => {
-    // console.log("CAR");
-    // console.log(car);
     animateMarker();
   }, [car]);
 
