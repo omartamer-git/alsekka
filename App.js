@@ -14,7 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Linking, PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 
 import * as TaskManager from 'expo-task-manager';
 import { requestTrackingPermission } from 'react-native-tracking-transparency';
@@ -63,22 +63,23 @@ import Announcement from './screens/HomeScreen/Announcement';
 import AllTrips from './screens/Rides/AllTrips';
 import Checkout from './screens/Rides/Checkout';
 
+import { stopLocationUpdatesAsync } from 'expo-location';
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+import codePush from 'react-native-code-push';
 import SplashScreen from 'react-native-splash-screen';
-import SpInAppUpdates, {
-  IAUUpdateKind
-} from 'sp-react-native-in-app-updates';
 import { registerDevice } from './api/utilAPI';
 import useAppManager from './context/appManager';
 import useLocale from './locale/localeContext';
 import './locale/translate';
 import AddReferral from './screens/Account/AddReferral';
 import CustomerService from './screens/Chat/CustomerService';
-import { stopLocationUpdatesAsync } from 'expo-location';
-import codePush from 'react-native-code-push';
+import Animated, { SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
+import DismissableError from './components/DismissableError';
+import useErrorManager from './context/errorManager';
+import Payment from './screens/BookRide/Payment';
+import RideBooked from './screens/BookRide/RideBooked';
 
 
 const RootStack = createNativeStackNavigator();
@@ -208,34 +209,6 @@ function App() {
 
   }, []);
 
-  // useEffect(function () {
-  //   const inAppUpdates = new SpInAppUpdates(
-  //     true // isDebug
-  //   );
-  //   // curVersion is optional if you don't provide it will automatically take from the app using react-native-device-info
-  //   inAppUpdates.checkNeedsUpdate().then(async (result) => {
-  //     if (result.shouldUpdate) {
-
-  //       const versionData = await appManager.getVersionData();
-  //       let forceUpgrade = false;
-  //       if (versionData.minVersion > DeviceInfo.getVersion()) {
-  //         forceUpgrade = true;
-  //       }
-  //       let updateOptions = {
-  //         forceUpgrade: forceUpgrade
-  //       };
-  //       if (Platform.OS === 'android') {
-  //         // android only, on iOS the user will be promped to go to your app store page
-  //         updateOptions = {
-  //           updateType: IAUUpdateKind.FLEXIBLE,
-  //         };
-  //       }
-  //       inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
-  //     }
-  //   });
-  // }, []);
-
-
   TaskManager.defineTask("UPDATE_LOCATION_DRIVER", ({ data, error }) => {
     if (error) {
       // Error occurred - check `error.message` for more details.
@@ -293,11 +266,13 @@ function App() {
     loadJWT()
   }, [loadJWT]);
 
+  const errorManager = useErrorManager();
+
   useEffect(function () {
     if (appManager.deviceToken && userStore.id) {
       userStore.linkDevice(appManager.deviceToken);
     }
-  }, [appManager.deviceToken, userStore.id])
+  }, [appManager.deviceToken, userStore.id]);
 
   if (state === 'LOADING') {
     return (
@@ -324,6 +299,10 @@ function App() {
             }
           </RootStack.Navigator>
         </NavigationContainer>
+
+        {errorManager.error &&
+          <DismissableError />
+        }
       </React.Fragment>
     );
   }
@@ -424,6 +403,8 @@ const BookRideNavigator = ({ route, navigation }) => {
       <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
       <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
       <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
+      <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
+      <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
       <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
     </BookingStack.Navigator>
   );

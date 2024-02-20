@@ -24,6 +24,8 @@ import ScreenWrapper from '../ScreenWrapper';
 import { DriverPopUp } from '../../components/DriverPopUp';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createLocalNotification } from '../../util/notifications';
+import Button from '../../components/Button';
+import useErrorManager from '../../context/errorManager';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -118,7 +120,6 @@ function UserHome({ navigation, route }) {
     };
 
     const width = Dimensions.get('window').width;
-
 
     return (
         <ScreenWrapper screenName={t('home')}>
