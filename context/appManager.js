@@ -4,7 +4,7 @@ import useAxiosManager from './axiosManager';
 const useAppManager = create((set) => ({
     passengerFee: 43,
     driverFee: 42,
-    cardsEnabled: false,
+    cardsEnabled: true,
     verificationsDisabled: false,
     referralsDisabled: true,
     deviceToken: null,

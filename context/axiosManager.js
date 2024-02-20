@@ -10,13 +10,13 @@ const useAxiosManager = create((set) => {
     const authAxios = axios.create({
         baseURL: SERVER_URL
     });
-    axiosRetry(authAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+    // axiosRetry(authAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
     const publicAxios = axios.create({
         baseURL: SERVER_URL
     });
 
-    axiosRetry(publicAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+    // axiosRetry(publicAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
 
 

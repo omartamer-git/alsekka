@@ -31,6 +31,7 @@ import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles
 import { getDeviceLocation } from '../../util/location';
 import { decodePolyline } from '../../util/maps';
 import ScreenWrapper from '../ScreenWrapper';
+import { useFocusEffect } from '@react-navigation/native';
 
 function BookRide({ route, navigation }) {
     const { rideId } = route.params;
@@ -102,7 +103,7 @@ function BookRide({ route, navigation }) {
 
     useEffect(function () {
         getDeviceLocation().then(result => {
-            if(result) {
+            if (result) {
                 setLocation(result);
             }
         })
@@ -179,16 +180,25 @@ function BookRide({ route, navigation }) {
     function bookRide(e) {
         setSubmitDisabled(true);
         const voucherId = voucher ? voucher.id : null;
-
-        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then(function () {
-            setRideBookedModalVisible(true);
+        ridesAPI.bookRide(rideId, numSeats, paymentMethod, voucherId, wantPickup ? pickupLocation : null, datetime, mainTextTo).then(function (data) {
+            console.log(data);
+            if (paymentMethod.type === 'cash') {
+                setRideBookedModalVisible(true);
+                StoreReview.requestReview();
+            } else {
+                // console.log("Credit attempt");
+                console.log(data);
+                // console.log("data^^");
+                navigation.navigate('Payment', {data});
+            }
         }).catch((e) => {
-            console.log(e.stack);
+            console.log(e);
+            // console.log(e.stack);
         }).finally(function () {
-            StoreReview.requestReview();
             setSubmitDisabled(false);
         });
     }
+
 
     function choosePayment(paymentMethod) {
         setPaymentMethodModalVisible(false);
@@ -344,7 +354,7 @@ function BookRide({ route, navigation }) {
                                 </View>
 
                                 <View style={[styles.flexRow]}>
-                                    <ArrowButton disabled={prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
+                                    <ArrowButton disabled={prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : paymentMethod.type === 'newcard' ? 'Card' : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
                                     <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={prevPassenger ? prevPassenger.seats : 1} max={prevPassenger ? prevPassenger.seats + (seatsAvailable - seatsOccupied) : seatsAvailable - seatsOccupied} />
                                 </View>
                                 {!prevPassenger &&
@@ -497,6 +507,16 @@ function BookRide({ route, navigation }) {
                         <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
                     </View>
                 </TouchableOpacity>
+
+                <TouchableOpacity activeOpacity={0.75} style={[styles.flexRow, styles.w100, styles.alignCenter, styles.borderLight, { height: 48 * rem, borderBottomWidth: 1 }]} onPress={() => choosePayment({ type: 'newcard' })}>
+                    <FontsAwesome5 name="credit-card" size={24 * rem} color={palette.accent} />
+                    <Text style={[styles.text, styles.ml15, styles.semiBold]}>{t('add_card')}</Text>
+                    <View style={[styles.flexOne, styles.alignEnd]}>
+                        <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
+                    </View>
+                </TouchableOpacity>
+                {/* <BankCard type={'mastercard'} number={'4819'} onPress={() => choosePayment(card)} /> */}
+
                 {cardsEnabled &&
                     availableCards.map((card, index) => (
                         <BankCard key={"card" + index} type={card.type} number={card.number} onPress={() => choosePayment(card)} />

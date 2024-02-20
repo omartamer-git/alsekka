@@ -25,6 +25,29 @@ export const rideDetails = async function (rideId) {
     }
 };
 
+export const holdRide = async function (rideId, seats, voucherId, pickupLocation, mainTextTo) {
+    const url = `/v1/ride/holdride`;
+    const params = {
+        rideId: rideId,
+        paymentMethod: 'CARD',
+        seats: seats || 1,
+        cardId: paymentMethod.id || null,
+        voucherId: voucherId,
+        pickupLocationLat: pickupLocation ? pickupLocation.lat : null,
+        pickupLocationLng: pickupLocation ? pickupLocation.lng : null
+    };
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url, { params });
+    const data = response.data;
+
+    if (data.success) {
+        return data;
+    } else {
+        return false;
+    }
+}
+
 export const bookRide = async function (rideId, seats, paymentMethod, voucherId, pickupLocation, datetime, mainTextTo) {
     const url = `/v1/ride/bookride`;
     const params = {
@@ -41,7 +64,7 @@ export const bookRide = async function (rideId, seats, paymentMethod, voucherId,
     const response = await axiosManager.authAxios.get(url, { params });
     const data = response.data;
 
-    if (data.id) {
+    if (data.passenger.id) {
         try {
             const oneHourBefore = subtractDates(datetime, 1);
             const sixHoursBefore = subtractDates(datetime, 6);
@@ -56,46 +79,23 @@ export const bookRide = async function (rideId, seats, paymentMethod, voucherId,
             //     fireDate: oneHourBefore.toISOString(),
             // });
 
-            if(oneHourBefore >= now) {
+            if (oneHourBefore >= now) {
                 scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_onehour'), mainTextTo), oneHourBefore);
             }
 
-            if(sixHoursBefore >= now) {
+            if (sixHoursBefore >= now) {
                 scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_sixhours'), mainTextTo), sixHoursBefore);
             }
 
-            if(oneDayBefore >= now) {
+            if (oneDayBefore >= now) {
                 scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_oneday'), mainTextTo), oneDayBefore);
             }
 
-            if(twoDaysBefore >= now) {
+            if (twoDaysBefore >= now) {
                 scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_twodays'), mainTextTo), twoDaysBefore);
             }
 
-            // let localNotification2 = Notifications.postLocalNotification({
-            //     body: `Your trip to ${mainTextTo} is tomorrow.`,
-            //     title: "Trip Status",
-            //     silent: false,
-            //     fireDate: oneDayBefore.toISOString(),
-            // });
-
-            // let localNotification3 = Notifications.postLocalNotification({
-            //     body: `Get ready, your trip to ${mainTextTo} leaves in 6 hours!`,
-            //     title: "Your Trip Status",
-            //     silent: false,
-            //     fireDate: sixHoursBefore.toISOString(),
-            // });
-
-            // let localNotification4 = Notifications.postLocalNotification({
-            //     body: `Get ready, your trip to ${mainTextTo} leaves in less than 2 days!`,
-            //     title: "Your Trip Status",
-            //     silent: false,
-            //     fireDate: twoDaysBefore.toISOString(),
-            // });
-
-
-
-            return true;
+            return data;
         } catch (e) {
             console.log(e);
         }
@@ -282,6 +282,23 @@ export const cancelRide = async function (tripId) {
     const data = response.data;
     return data;
 };
+
+export const forceCancelRide = async function (passengerId, invoiceId) {
+    const url = `/v1/ride/forcecancel`;
+    const body = {
+        passengerId,
+        invoiceId
+    };
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.post(url, body, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    return true;
+}
 
 export const cancelPassenger = async function (tripId) {
     const url = `/v1/ride/cancelpassenger`;
