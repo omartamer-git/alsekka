@@ -12,6 +12,7 @@ import notifee, {
   TriggerType,
   Trigger,
 } from '@notifee/react-native';
+import Geolocation from '@react-native-community/geolocation';
 
 if (Platform.OS === 'android') {
   const onMessageReceived = async message => {
@@ -57,6 +58,14 @@ if (Platform.OS === 'android') {
     }
   });
 }
+
+Geolocation.setRNConfiguration(
+  {
+    authorizationLevel: 'always',
+    locationProvider: 'auto'
+  }
+);
+
 
 
 AppRegistry.registerComponent(appName, () => App);

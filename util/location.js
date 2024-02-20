@@ -3,17 +3,8 @@ const { Platform, PermissionsAndroid } = require("react-native");
 
 async function requestLocationPermission() {
     if (Platform.OS === 'ios') {
-        // Await the authorization request and check its result
-        return new Promise((resolve, reject) => {
-            Geolocation.requestAuthorization(
-                success => {
-                    resolve(true);
-                },
-                error => {
-                    resolve(false);
-                }
-            );
-        });    }
+        return true;
+    }
 
     if (Platform.OS === 'android') {
         // Store the result of the permission request in a variable
@@ -28,7 +19,6 @@ async function requestLocationPermission() {
 
 exports.getDeviceLocation = async () => {
     const perms = await requestLocationPermission();
-
     if (perms) {
         return new Promise((resolve, reject) => {
             Geolocation.getCurrentPosition(
@@ -43,6 +33,7 @@ exports.getDeviceLocation = async () => {
             );
         });
     } else {
+        console.log('perms failed');
         return false;
     }
 };

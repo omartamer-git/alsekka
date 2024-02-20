@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { useCallback, useEffect, useState, memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -18,10 +18,10 @@ import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
-import ErrorMessage from '../../components/ErrorMessage';
 import HeaderView from '../../components/HeaderView';
 import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
+import useErrorManager from '../../context/errorManager';
 
 function SignUpScreen({ route, navigation }) {
   const { t } = useTranslation();
@@ -29,11 +29,11 @@ function SignUpScreen({ route, navigation }) {
 
   const [phoneNumExists, setPhoneNumExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const { allowedEmails } = useAppManager();
 
   const userStore = useUserStore();
+  const errorManager = useErrorManager();
 
   async function handleContinueClick(firstName, lastName, phoneNum, email, password) {
     setSubmitDisabled(true);
@@ -41,11 +41,11 @@ function SignUpScreen({ route, navigation }) {
 
     const available = await userStore.accountAvailable(phoneNum, email);
     if (available.phone == false) {
-      setErrorMessage(t('error_phone_in_use'));
       setSubmitDisabled(false);
+      errorManager.setError(t('error_phone_in_use'));
       return;
     } else if(available.email == false) {
-      setErrorMessage(t('error_email_in_use'));
+      errorManager.setError(t('error_email_in_use'));
       setSubmitDisabled(false);
       return;
     }
@@ -80,7 +80,7 @@ function SignUpScreen({ route, navigation }) {
     )
       .required(t('error_required')),
     passwordInput: Yup.string().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, t('error_invalid_password')).required(t('error_required')),
-    emailInput: Yup.string().email(t('error_invalid_email')).matches(emailValidationRegex, t('error_university_mail')).required(t('error_required')),
+    emailInput: Yup.string().email(t('error_invalid_email')).required(t('error_required')),
     firstNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required')),
     lastNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required'))
   });
@@ -122,7 +122,6 @@ function SignUpScreen({ route, navigation }) {
             <View style={[styles.flexOne, styles.w100, styles.defaultPaddingVertical]}>
               <Text style={[styles.text, styles.headerText, styles.black]}>{t('get_started')}</Text>
               <Text style={[styles.text, styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('account_needed')}</Text>
-              <ErrorMessage condition={errorMessage} message={errorMessage} />
               <Formik
                 initialValues={{ phoneInput: '', passwordInput: '', emailInput: '', firstNameInput: '', lastNameInput: '' }}
                 validationSchema={signUpSchema}
@@ -174,9 +173,6 @@ function SignUpScreen({ route, navigation }) {
                     <Text style={[styles.text, styles.inputText]}>
                       {t('email')}
                     </Text>
-                    <TouchableOpacity onPress={() => Linking.openURL("https://seaats.app/universities")}>
-                      <Text style={[styles.text, styles.font12, styles.dark, styles.mt5]}>{t('see_uni_list')}</Text>
-                    </TouchableOpacity>
                     <CustomTextInput
                       value={values.emailInput}
                       onChangeText={handleChange('emailInput')}

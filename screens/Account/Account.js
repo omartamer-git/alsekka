@@ -114,6 +114,7 @@ function Account({ route, navigation }) {
             setEmailError(err.response.data.error.message);
         });
     };
+    
     function saveEditPhone(phoneInput) {
         userStore.editPhone(phoneInput).then(function () {
             setEditPhoneModalVisible(false);
