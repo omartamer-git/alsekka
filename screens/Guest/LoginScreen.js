@@ -117,7 +117,7 @@ function LoginScreen({ route, navigation }) {
             <View style={[styles.w100, styles.flexOne, styles.defaultPaddingVertical]}>
               <Text style={[styles.text, styles.headerText, styles.black]}>{t('welcome_back')}</Text>
               <Text style={[styles.text, styles.dark, styles.mt10, styles.font14, styles.normal]}>{t('welcome_message')}</Text>
-              <ErrorMessage message={errorMessage} condition={errorMessage} />
+              {/* <ErrorMessage message={errorMessage} condition={errorMessage} /> */}
               <Formik
                 initialValues={{ phoneInput: '', passwordInput: '' }}
                 validationSchema={loginSchema}

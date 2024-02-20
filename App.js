@@ -300,9 +300,7 @@ function App() {
           </RootStack.Navigator>
         </NavigationContainer>
 
-        {errorManager.error &&
-          <DismissableError />
-        }
+        <DismissableError />
       </React.Fragment>
     );
   }

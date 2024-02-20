@@ -1,56 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
-import { palette, styles } from '../helper';
+import { Animated, Keyboard, KeyboardAvoidingView, PanResponder, Text } from 'react-native';
 import useErrorManager from '../context/errorManager';
-import { SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
+import { palette, styles } from '../helper';
 
 const DismissableError = () => {
-    // Initial state for the horizontal translation
     const translateX = useRef(new Animated.Value(-500)).current;
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
     const errorManager = useErrorManager();
 
-    // Slide In Animation
     const slideIn = () => {
         Animated.timing(translateX, {
-            toValue: 0, // Slide to original position
+            toValue: 0,
             duration: 400,
             useNativeDriver: true,
         }).start();
     };
 
-    // Slide Out Animation
     const slideOut = (direction = 1) => {
         Animated.timing(translateX, {
-            toValue: direction * 500, // Slide out of screen
+            toValue: direction * 500,
             duration: 400,
             useNativeDriver: true,
         }).start(() => {
-            errorManager.setError(null); // After sliding out, dismiss the error
+            errorManager.setError(null);
         });
     };
 
-
-    // Setup PanResponder
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: () => true,
             onPanResponderMove: Animated.event([null, { dx: translateX }], { useNativeDriver: false }),
             onPanResponderRelease: (e, gestureState) => {
-                // Determine if the view should be dismissed
-                if (Math.abs(gestureState.dx) > 50) { // Threshold to decide if the gesture is a dismiss
-                    Animated.timing(translateX, {
-                        toValue: gestureState.dx > 0 ? 500 : -500, // Move out of screen based on direction
-                        duration: 200,
-                        useNativeDriver: true,
-                    }).start(() => {
-                        slideOut();
-                        // Optional: reset state or call a callback after dismissal
-                    });
+                if (Math.abs(gestureState.dx) > 50) {
+                    slideOut(gestureState.dx > 0 ? 1 : -1);
                 } else {
-                    // Return the view back to its original position if not dismissed
                     Animated.spring(translateX, {
                         toValue: 0,
+                        friction: 5,
                         useNativeDriver: true,
                     }).start();
                 }
@@ -58,14 +45,12 @@ const DismissableError = () => {
         })
     ).current;
 
-    // Style that includes the animated translation
     const animatedStyle = {
         ...styles.positionAbsolute,
         ...styles.br16,
         ...styles.p16,
         position: 'absolute',
-        bottom: 0,
-        marginBottom: 55,
+        bottom: keyboardHeight ? keyboardHeight + 20 : 55, // Adjust based on keyboard height
         marginHorizontal: '5%',
         width: '90%',
         height: 96,
@@ -74,25 +59,45 @@ const DismissableError = () => {
     };
 
     useEffect(() => {
-        slideIn(); // Slide in when component mounts
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {
+            setKeyboardHeight(e.endCoordinates.height);
+        });
 
-        const _id = setTimeout(() => {
-            slideOut(); // Slide out after 5 seconds
-        }, 5000);
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardHeight(0);
+        });
 
         return () => {
-            clearTimeout(_id);
-            // Consider adding a cleanup animation if needed
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
         };
     }, []);
 
+    useEffect(() => {
+        if (errorManager.error) {
+            slideIn(); // Slide in if there's an error
+        }
+    }, [errorManager.error]); // React to changes in error
+
+    useEffect(() => {
+        const _id = setTimeout(() => {
+            if (errorManager.error) {
+                slideOut(); // Slide out after 5 seconds if there's an error
+            }
+        }, 5000);
+
+        return () => clearTimeout(_id);
+    }, [errorManager.error]); // React to changes in error
+
     return (
-        <Animated.View
-            {...panResponder.panHandlers}
-            style={animatedStyle}>
-            <Text style={[styles.text, styles.bold, styles.font14, styles.white]}>Error</Text>
-            <Text style={[styles.text, styles.bold, styles.font14, styles.white]}>{errorManager.error}</Text>
-        </Animated.View>
+        <>
+            {errorManager.error && (
+                <Animated.View {...panResponder.panHandlers} style={animatedStyle}>
+                    <Text style={[styles.text, styles.bold, styles.font14, styles.white]}>Error</Text>
+                    <Text style={[styles.text, styles.font14, styles.white]}>{errorManager.error}</Text>
+                </Animated.View>
+            )}
+        </>
     );
 };
 

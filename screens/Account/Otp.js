@@ -1,6 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    I18nManager,
     Linking,
     Platform,
     ScrollView,
@@ -48,8 +49,8 @@ function Otp({ route, navigation }) {
                             clearInterval(countdownInterval);
                         })
                     }).catch(err => {
-                        console.log(err);
-                        setError(err.response.data.error.message);
+                        const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
+                        setError(errorMessage);
                     })
                 } else {
                     navigation.popToTop();
@@ -58,7 +59,8 @@ function Otp({ route, navigation }) {
             }
         }).catch(err => {
             console.log(err);
-            setError(err.response.data.error.message);
+            const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
+            setError(errorMessage);
         })
     };
 
@@ -83,8 +85,8 @@ function Otp({ route, navigation }) {
             setToken(response.token);
             setTriggerCountdown(true);
         }).catch(err => {
-            console.log(err);
-            setError(err.response.data.error.message)
+            const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
+            setError(errorMessage);
         });
     };
 

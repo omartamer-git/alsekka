@@ -133,6 +133,7 @@ const useUserStore = create((set) => ({
         appManager.setDriverFee(data.driverFee);
         appManager.setCardsEnabled(data.cardsEnabled);
         appManager.setVerificationsDisabled(data.verificationsDisabled);
+        console.log(data.cities);
         appManager.setCities(data.cities);
 
         return data;

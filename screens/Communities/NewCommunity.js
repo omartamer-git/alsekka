@@ -41,7 +41,8 @@ function NewCommunity({ navigation, route }) {
         setSubmitDisabled(true);
         try {
             if (!communityPhoto) {
-                setError("A community picture is required")
+                const errorMessage = I18nManager.isRTL ? "مطلوب صورة المجتمع" : "Community picture is required";
+                setError(errorMessage);
             }
             await createCommunity(name, description, privacy, communityPhoto, joinQuestion);
             navigation.goBack();
