@@ -278,7 +278,7 @@ export const rem = Dimensions.get('window').width / 380;
 
 export const styles = StyleSheet.create({
     freeSans: {
-        fontFamily: I18nManager.isRTL ? 'TheSansArabic-Bold' : 'FreeSansBold',
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'ios' ? 'TheSansArabic-Bold' : 'thesansarabic') : (Platform.OS === 'ios' ? 'FreeSansBold' : 'freesans'),
     },
     text: {
         fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'generalsans' : 'General Sans Variable'),

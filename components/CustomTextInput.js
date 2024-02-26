@@ -25,12 +25,13 @@ function CustomTextInput({ value,
             backgroundColor: disabled ? palette.light : palette.white
         },
         input: {
-            borderWidth: 1,
             height: 24 * rem,
-            lineHeight: Platform.OS === 'ios' ? 16 * rem : 1,
+            lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
             textAlign: I18nManager.isRTL ? 'right' : 'left',
+            paddingTop: Platform.OS === 'android' ? 0 : undefined,
+            paddingBottom: Platform.OS === 'android' ? 0 : undefined,
             fontWeight: '500',
-            textAlignVertical: 'bottom',
+            textAlignVertical: 'center',
             marginHorizontal: 8 * rem,
             color: palette.accent,
             flex: 1
