@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
 import {
+    I18nManager,
     ScrollView,
     Share,
     Text,
@@ -39,11 +40,12 @@ function Referral({ navigation, route }) {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
-    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 50 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together!`;
+    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 100 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
+    const shareMsgAr = `نزل تطبيق Seaats لمشاركة الرحلات ووفر فلوس المواصلات والبنزين! إكسب خصم 100 جنيه مصري في أول رحلة ليك على التطبيق باستخدام كود الإحالة ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. انضم الآن! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`
     const onShare = async function () {
         try {
             const result = await Share.share({
-                message: shareMsg
+                message: I18nManager.isRTL ? shareMsgAr : shareMsg
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {

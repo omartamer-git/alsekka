@@ -115,6 +115,8 @@ export const updateCommunity = async function(communityId, description, privacy,
     formData.append('private', privacy);
     if (joinQuestion) { formData.append('joinQuestion', joinQuestion); }
 
+    console.log(formData);
+
     const axiosManager = useAxiosManager.getState();
     try {
         const response = await axiosManager.authAxios.patch(url, formData, {

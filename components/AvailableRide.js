@@ -75,7 +75,7 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                     }
                 </View>
                 <View style={[styles.flexCol, styles.alignEnd, styles.justifyEnd]}>
-                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{pricePerSeat}<Text style={styles.font12}>&nbsp;{t('EGP')}</Text></Text>
+                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{Math.ceil(pricePerSeat/100)}<Text style={styles.font12}>&nbsp;{t('EGP')}</Text></Text>
                     <View style={[styles.flexRow, styles.fullCenter]}>
                         <MaterialIcons name="person" size={16} color={palette.dark} />
                         <Text style={[styles.dark, styles.text]}>

@@ -24,6 +24,7 @@ function CommunitySettings({ route, navigation }) {
         joinQuestion
     } = route.params;
 
+
     const [communityPhoto, setCommunityPhoto] = useState(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
@@ -58,7 +59,8 @@ function CommunitySettings({ route, navigation }) {
         communityPrivacyInput: Yup.bool(),
         joinQuestionInput: Yup.string().when('communityPrivacyInput', {
             is: true,
-            then: () => Yup.string().required(t('error_required'))
+            then: () => Yup.string().required(t('error_required')),
+            otherwise: () => Yup.string().notRequired()
         })
     });
 
@@ -140,7 +142,7 @@ function CommunitySettings({ route, navigation }) {
 
                             <Text style={[styles.text, styles.headerText3, styles.mt5]}>{communityName}</Text>
 
-                            <Button bgColor={palette.red} textColor={palette.white} text={t('leave_community')} onPress={() => leaveCommunity(communityId)} />
+                            <Button bgColor={palette.red} textColor={palette.white} text={t('leave_community')} onPress={() => { leaveCommunity(communityId); navigation.navigate('View Communities') }} />
                         </View>
                     }
                 </ScrollView>

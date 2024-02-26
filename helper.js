@@ -114,8 +114,8 @@ export const abbreviate = function (string) {
 export const getDirections = async (lat, lng, label) => {
     // Define the URLs for Google Maps and the default map app
     const googleMapsURL = Platform.select({
-        ios: `comgooglemaps://?q=${label}@${lat},${lng}`,
-        android: `google.navigation:q=${lat},${lng}`
+        ios: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+        android: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
     });
     const defaultMapsURL = Platform.select({
         ios: `maps://0,0?q=${label}@${lat},${lng}`,
@@ -281,7 +281,7 @@ export const styles = StyleSheet.create({
         fontFamily: I18nManager.isRTL ? 'TheSansArabic-Bold' : 'FreeSansBold',
     },
     text: {
-        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : 'General Sans Variable',
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'generalsans' : 'General Sans Variable'),
     },
     logoSpacing: {
         letterSpacing: I18nManager.isRTL ? 0 : -3 * rem

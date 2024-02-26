@@ -11,13 +11,14 @@ import { abbreviate, containerStyle, getPhoneCarrier, palette, styles } from "..
 import ScreenWrapper from "../ScreenWrapper";
 
 function Withdraw({ route, navigation }) {
+    const { t } = useTranslation();
     const { bankAccounts, mobileWallets, balance, sendWithdrawalRequest } = useUserStore();
     const [modalVisible, setModalVisible] = useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const withdrawalType = useRef("BANK");
     const withdrawalId = useRef(null);
-    const [withdrawalMethodChosen, setWithdrawalMethodChosen] = useState("Choose Withdrawal Method");
+    const [withdrawalMethodChosen, setWithdrawalMethodChosen] = useState(t("choose_withdrawal_method"));
 
     function changeMethod(data, type) {
         withdrawalType.current = type;
@@ -40,22 +41,21 @@ function Withdraw({ route, navigation }) {
         setSubmitDisabled(false);
     };
 
-    const { t } = useTranslation();
 
     return (
         <>
             <ScreenWrapper screenName={t('withdraw') + " " + t('balance')} navType="back" navAction={navigation.goBack}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                     <Text style={[styles.text, styles.headerText3]}>{t('you_have')}</Text>
-                    <Text style={[styles.text, styles.headerText]}>{balance} {t('EGP')}</Text>
+                    <Text style={[styles.text, styles.headerText]}>{Math.ceil(balance / 100)} {t('EGP')}</Text>
                     <Text style={[styles.text, styles.headerText3]}>{t('available_to_withdraw')}</Text>
 
                     <ArrowButton
                         text={withdrawalMethodChosen}
-                        bgColor={palette.lightGray}
-                        textColor={palette.primary}
-                        iconColor={palette.primary}
-                        borderColor={palette.primary}
+                        bgColor={palette.light}
+                        icon="money-bill-wave"
+                        textColor={palette.dark}
+                        iconColor={palette.dark}
                         onPress={() => setModalVisible(true)}
                     />
 

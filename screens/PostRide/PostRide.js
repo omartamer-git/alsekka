@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+    I18nManager,
     Platform,
     ScrollView,
     Share,
@@ -78,6 +79,7 @@ function PostRide({ route, navigation }) {
     const listCities = Object.keys(cities);
     const [citiesFrom, setCitiesFrom] = useState(listCities);
     const [citiesTo, setCitiesTo] = useState(listCities);
+    const [suggestedPrice, setSuggestedPrice] = useState(0);
 
     const userStore = useUserStore();
 
@@ -99,6 +101,8 @@ function PostRide({ route, navigation }) {
         setPricePerSeat('');
         setMainTextFrom('');
         setMainTextTo('');
+        setSuggestedPrice(0);
+
         placeIdFrom.current = null;
         placeIdTo.current = null;
 
@@ -154,12 +158,11 @@ function PostRide({ route, navigation }) {
         loadData();
     }, []);
 
-    const [suggestedPrice, setSuggestedPrice] = useState(0);
 
     useEffect(function () {
         if (markerFrom && markerTo) {
             ridesAPI.getSuggestedPrice(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude).then(data => {
-                setSuggestedPrice(data.suggestedPrice);
+                setSuggestedPrice(parseInt(data.suggestedPrice / 100));
             });
         }
     }, [markerFrom, markerTo])
@@ -227,7 +230,7 @@ function PostRide({ route, navigation }) {
             }
 
             ridesAPI.postRide(markerFrom.latitude, markerFrom.longitude, markerTo.latitude, markerTo.longitude,
-                placeIdFrom.current, placeIdTo.current, pricePerSeat, pickupEnabled, pickupPrice, newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable, mainTextFrom, mainTextTo).then((res) => {
+                placeIdFrom.current, placeIdTo.current, parseInt(parseFloat(pricePerSeat) * 100), pickupEnabled, parseInt(parseFloat(pickupPrice) * 100), newDate, selectedCar.id, selectedCommunity ? selectedCommunity.id : null, genderChoice, seatsAvailable, mainTextFrom, mainTextTo).then((res) => {
                     setRidePosted(true);
                     setRideId(res.id);
                     resetData();
@@ -240,10 +243,11 @@ function PostRide({ route, navigation }) {
     }
 
     async function onShare() {
-        const shareMsg = "Hey! Join my carpool on Seaats and save money commuting! https://seaats.app/share/ride/" + rideId;
+        const shareMsg = "🚗✨ Save on transportation by joining my carpool on Seaats! Click here: https://seaats.app/share/ride/" + rideId + " Let's ride together and cut costs! 🌍💰"
+        const shareMsgAr = "🚗✨ وفر في تكاليف التنقل بالانضمام إلى رحلتي في Seaats! اضغط هنا: https://seaats.app/share/ride/" + rideId + " يلا نشارك الرحلة نوفر في المصاريف! 🌍💰";
         try {
             const result = await Share.share({
-                message: shareMsg
+                message: I18nManager.isRTL ? shareMsgAr : shareMsg
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -467,7 +471,7 @@ function PostRide({ route, navigation }) {
 
 
                                             {values.priceInput && driverFee !== 0 &&
-                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('your_share')} {Math.ceil((1 - driverFee) * values.priceInput)} {t('EGP')}</Text>
+                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('your_share')} {Math.ceil(((1 - driverFee) * values.priceInput))} {t('EGP')}</Text>
                                             }
 
                                             {

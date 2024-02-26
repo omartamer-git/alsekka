@@ -58,6 +58,7 @@ function RideFinder({ route, navigation }) {
         ridesAPI.nearbyRides(fromLng, fromLat, toLng, toLat, date, genderChoice).then
             (
                 data => {
+                    console.log(data);
                     setAvailableRides(data);
                     setLoading(false);
                 }

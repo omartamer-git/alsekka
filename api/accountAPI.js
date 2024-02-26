@@ -132,8 +132,8 @@ const useUserStore = create((set) => ({
         appManager.setPassengerFee(data.passengerFee);
         appManager.setDriverFee(data.driverFee);
         appManager.setCardsEnabled(data.cardsEnabled);
+        appManager.setReferralsDisabled(data.referralsDisabled);
         appManager.setVerificationsDisabled(data.verificationsDisabled);
-        console.log(data.cities);
         appManager.setCities(data.cities);
 
         return data;
@@ -286,7 +286,7 @@ const useUserStore = create((set) => ({
 
 
         const data = response.data;
-        set(oldState => ({ bankAccounts: oldState.bankAccounts.concat([body]) }));
+        set(oldState => ({ bankAccounts: oldState.bankAccounts.concat([data]) }));
 
         return data;
     },
@@ -474,6 +474,14 @@ const useUserStore = create((set) => ({
         return data;
     },
 
+    getWithdrawalRequests: async function () {
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get('/v1/user/withdrawalrequest');
+
+        const data = response.data;
+        return data;
+    },
+
     postDriverLocation: async function (lat, lng, timestamp) {
         const body = {
             lat,
@@ -495,6 +503,25 @@ const useUserStore = create((set) => ({
         }
 
         return true;
+    },
+
+    getSettlementId: async function () {
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.get('/v1/user/settlementid');
+
+        const data = response.data;
+        return data.settlementId;
+    },
+
+    getHash: async function (settlementId) {
+        const axiosManager = useAxiosManager.getState();
+        const params = {
+            settlementId: settlementId
+        };
+        const response = await axiosManager.authAxios.get('/v1/user/settle', { params });
+
+        const data = response.data;
+        return data.hash;
     }
 }));
 

@@ -179,6 +179,7 @@ function SignUpScreen({ route, navigation }) {
                       placeholder={t('enter_email')}
                       onBlur={handleBlur('emailInput')}
                       error={touched.emailInput && errors.emailInput}
+                      autoCapitalize='none'
                     />
 
                     <Text style={[styles.text, styles.inputText]}>{t('password')}</Text>

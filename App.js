@@ -80,6 +80,8 @@ import DismissableError from './components/DismissableError';
 import useErrorManager from './context/errorManager';
 import Payment from './screens/BookRide/Payment';
 import RideBooked from './screens/BookRide/RideBooked';
+import DebtPayment from './screens/Account/DebtPayment';
+import ViewWithdrawals from './screens/Account/ViewWithdrawals';
 
 
 const RootStack = createNativeStackNavigator();
@@ -438,6 +440,8 @@ const AccountNavigator = ({ route, navigation }) => {
       <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
       <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
       <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
+      <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
       <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
       <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
       <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />

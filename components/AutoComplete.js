@@ -323,7 +323,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
 
     return (
         <View style={styles2.w100}>
-            <CustomTextInput onFocus={enableModal} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
+            <CustomTextInput onFocus={enableModal} disabled={!modalMap} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             {modalVisible &&
                 <Modal animationType="slide" visible={modalVisible}>
                     <SafeAreaView style={[styles2.bgPrimary, styles2.AndroidSafeArea]}>
@@ -349,7 +349,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                 city &&
                                 <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={[styles2.defaultContainer, styles2.defaultPadding]}>
                                     <>
-                                        <CustomTextInput inputRef={inputLocRef} iconLeft="pin-drop" onChangeText={onChangeText} placeholder={placeholder} value={text} />
+                                        <CustomTextInput inputRef={inputLocRef} editable={!modalMap} iconLeft="pin-drop" onChangeText={onChangeText} placeholder={placeholder} value={text} />
                                         {
                                             !modalMap &&
                                             <>

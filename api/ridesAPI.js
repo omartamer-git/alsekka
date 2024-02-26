@@ -80,19 +80,19 @@ export const bookRide = async function (rideId, seats, paymentMethod, voucherId,
             // });
 
             if (oneHourBefore >= now) {
-                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_onehour'), mainTextTo), oneHourBefore);
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_onehour'), [mainTextTo]), oneHourBefore);
             }
 
             if (sixHoursBefore >= now) {
-                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_sixhours'), mainTextTo), sixHoursBefore);
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_sixhours'), [mainTextTo]), sixHoursBefore);
             }
 
             if (oneDayBefore >= now) {
-                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_oneday'), mainTextTo), oneDayBefore);
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_oneday'), [mainTextTo]), oneDayBefore);
             }
 
             if (twoDaysBefore >= now) {
-                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_twodays'), mainTextTo), twoDaysBefore);
+                scheduleLocalNotification(t('notification_titlestatus'), translatedFormat(t('notification_twodays'), [mainTextTo]), twoDaysBefore);
             }
 
             return data;

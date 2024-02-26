@@ -95,7 +95,7 @@ function Checkout({ route, navigation }) {
                             passengerDetails &&
                             <Text style={[styles.text, styles.headerText3]}>{t('checking_out')} {passengerDetails.firstName}</Text>
                         }
-                        <Text style={[styles.text]}>{t('amount_due')} {passengerDetails && passengerDetails.amountDue} {t('EGP')}</Text>
+                        <Text style={[styles.text]}>{t('amount_due')} {passengerDetails && Math.ceil(passengerDetails.amountDue/100)} {t('EGP')}</Text>
 
                         {
                             passengerDetails &&

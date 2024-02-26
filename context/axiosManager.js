@@ -63,6 +63,7 @@ const useAxiosManager = create((set) => {
                 useErrorManager.getState().setError('An unexpected error occurred');
                 return Promise.reject(error);
             }
+            if(error.response.status == 401) return Promise.reject(error);
             // Handle response errors, extracting error message
             const errorMessage = I18nManager.isRTL ? error.response.data.error.message_ar : error.response.data.error.message;
             useErrorManager.getState().setError(errorMessage);

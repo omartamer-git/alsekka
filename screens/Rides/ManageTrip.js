@@ -421,7 +421,7 @@ function ManageTrip({ route, navigation }) {
                                                     </Text>
                                                     <Text style={[styles.text]}>
                                                         {
-                                                            passenger.paymentMethod === 'CASH' ? `${data.grandTotal} ${t('EGP')}` : t('paid_card')
+                                                            passenger.paymentMethod === 'CASH' ? `${Math.ceil(data.grandTotal/100)} ${t('EGP')}` : t('paid_card')
                                                         }
                                                     </Text>
                                                 </View>

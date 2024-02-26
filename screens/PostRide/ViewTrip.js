@@ -53,7 +53,7 @@ function ViewTrip({ route, navigation }) {
 
     useEffect(function () {
         getDeviceLocation().then(result => {
-            if(result) {
+            if (result) {
                 setLocation(result);
             }
         })
@@ -339,9 +339,29 @@ function ViewTrip({ route, navigation }) {
 
                             <BottomModal modalVisible={cancelRideModalVisible} onHide={() => setCancelRideModalVisible(false)}>
                                 <View style={[styles.w100, styles.alignCenter, styles.justifyCenter, styles.pv16]}>
-                                    <Text style={[styles.text, styles.font28, styles.bold, styles.textCenter]}>
+                                    <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter]}>
                                         {t('cancel_confirm')}
                                     </Text>
+
+                                    <Text style={[styles.text, styles.font14, styles.textCenter]}>
+                                        {
+                                            translatedFormat(
+                                                t('cancel_disclaimer_driver'),
+                                                [translateDate(addSecondsToDate(objDate, -(48 * 60 * 60)), t).join(" ")]
+                                            )
+                                        }
+                                    </Text>
+
+                                    { objDate && tripDetails &&
+                                        (addSecondsToDate(objDate, -(48 * 60 * 60)) <= new Date() && tripDetails.seatsOccupied && addSecondsToDate(new Date(tripDetails.createdAt), (60 * 30)) <= new Date()) ?
+                                            <Text style={[styles.error, styles.bold, styles.text, styles.mv5]}>
+                                                {t('penalty_cancel')}
+                                            </Text>
+                                            :
+                                            <Text style={[styles.success, styles.bold, styles.text, styles.mv5]}>
+                                                {t('free_cancel')}
+                                            </Text>
+                                    }
 
                                     <Button onPress={cancelRide} text={t('cancel_ride')} bgColor={palette.red} textColor={palette.white} />
                                     <Button onPress={() => setCancelRideModalVisible(false)} text={t('back')} bgColor={palette.primary} textColor={palette.white} />
@@ -373,14 +393,26 @@ function ViewTrip({ route, navigation }) {
                 </ScrollView>
             </ScreenWrapper>
 
-            <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
-                <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
-                    <Text style={[styles.text, styles.headerText3, styles.mv5, styles.textCenter]}>{t('cancel_confirm')}</Text>
-                    <Text style={[styles.text, styles.textCenter]}>{translatedFormat(t('cancel_disclaimer'), [translateDate(addSecondsToDate(objDate, -(24 * 60 * 60)), t).join(" ")])}</Text>
-                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
-                    <Button bgColor={palette.red} textColor={palette.white} text={t('cancel_seat')} onPress={cancelPassenger} />
-                </View>
-            </BottomModal>
+            {!loading &&
+                <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
+                    <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
+                        <Text style={[styles.text, styles.headerText3, styles.mv5, styles.textCenter]}>{t('cancel_confirm')}</Text>
+                        <Text style={[styles.text, styles.textCenter]}>{translatedFormat(t('cancel_disclaimer'), [translateDate(addSecondsToDate(objDate, -(24 * 60 * 60)), t).join(" ")])}</Text>
+                        { tripDetails && tripDetails.passenger &&
+                            (addSecondsToDate(objDate, -(24 * 60 * 60)) <= new Date() && addSecondsToDate(new Date(tripDetails.passenger.createdAt), (60 * 15)) <= new Date()) ?
+                                <Text style={[styles.error, styles.bold, styles.text, styles.mv5]}>
+                                    {t('penalty_cancel')}
+                                </Text>
+                                :
+                                <Text style={[styles.success, styles.bold, styles.text, styles.mv5]}>
+                                    {t('free_cancel')}
+                                </Text>
+                        }
+                        <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
+                        <Button bgColor={palette.red} textColor={palette.white} text={t('cancel_seat')} onPress={cancelPassenger} />
+                    </View>
+                </BottomModal>
+            }
 
             <BottomModal modalVisible={cancelledModalVisible} onHide={function () { setCancelledModalVisible(false); navigation.goBack() }}>
                 <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>

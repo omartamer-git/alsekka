@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef } from 'react';
-import { I18nManager, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
@@ -9,7 +9,7 @@ function CustomTextInput({ value,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing,
-    onKeyPress, textStyles, onBlur, error, disabled = false }) {
+    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false }) {
 
     const styles2 = StyleSheet.create({
         container: {
@@ -25,10 +25,12 @@ function CustomTextInput({ value,
             backgroundColor: disabled ? palette.light : palette.white
         },
         input: {
+            borderWidth: 1,
             height: 24 * rem,
-            lineHeight: 16 * rem,
+            lineHeight: Platform.OS === 'ios' ? 16 * rem : 1,
             textAlign: I18nManager.isRTL ? 'right' : 'left',
             fontWeight: '500',
+            textAlignVertical: 'bottom',
             marginHorizontal: 8 * rem,
             color: palette.accent,
             flex: 1
@@ -101,6 +103,7 @@ function CustomTextInput({ value,
                     numberOfLines={1}
                     returnKeyType={returnKeyType}
                     ellipsizeMode='tail'
+                    autoCapitalize={autoCapitalize || 'sentences'}
                 />
                 {
                     iconRight &&

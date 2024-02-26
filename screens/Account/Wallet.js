@@ -17,6 +17,7 @@ import WithdrawalMethod from '../../components/WithdrawalMethod';
 import useAppManager from '../../context/appManager';
 import { abbreviate, containerStyle, getPhoneCarrier, palette, rem, styles, translateEnglishNumbers } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import ArrowButton from '../../components/ArrowButton';
 
 function Wallet({ navigation, route }) {
     const { availableCards, bankAccounts, mobileWallets, balance } = useUserStore();
@@ -35,9 +36,17 @@ function Wallet({ navigation, route }) {
                 <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.primary, palette.secondary]} style={walletStyles.card}>
                     <Text style={[styles.text, styles.white, styles.bold]}>{t('balance')}</Text>
-                    <Text style={[styles.text, styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(balance) : balance}</Text>
+                    <Text style={[styles.text, styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(Math.ceil(balance / 100)) : Math.ceil(balance / 100)}</Text>
                     <View style={[styles.justifyEnd, styles.mb5, styles.flexOne]}>
-                        <Button text={t('withdraw')} bgColor={palette.white} style={styles.w50} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
+                        {
+                            balance >= 0 &&
+                            <Button text={t('withdraw')} bgColor={palette.white} style={styles.w50} onPress={() => navigation.navigate('Withdraw')} disabled={balance <= 0} />
+                        }
+
+                        {
+                            balance < 0 &&
+                            <Button text={t('pay_debt')} bgColor={palette.white} style={styles.w50} onPress={() => navigation.navigate('Debt Payment')} />
+                        }
                     </View>
                 </LinearGradient>
 
@@ -86,6 +95,18 @@ function Wallet({ navigation, route }) {
                     <MaterialIcons name="wallet-travel" size={18} color={palette.dark} />
                     <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_mobile_wallet')}</Text>
                 </TouchableOpacity>
+
+                <Text style={[styles.text, styles.headerText3, styles.mt15]}>{t('my_withdrawals')}</Text>
+                <ArrowButton
+                    icon="money-bill-wave"
+                    bgColor={palette.light}
+                    iconColor={palette.dark}
+                    textColor={palette.dark}
+                    text={t('view_my_withdrawals')}
+                    onPress={() => navigation.navigate('View Withdrawals')}
+                    activeOpacity={0.9}
+                />
+
             </ScrollView>
         </ScreenWrapper>
     );

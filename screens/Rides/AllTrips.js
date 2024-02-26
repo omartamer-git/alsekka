@@ -130,15 +130,18 @@ function AllTrips({ navigation, route }) {
                             })
                         }
                         {
-                            !nextRides &&
+                            (!nextRides || nextRides.length === 0) &&
                             <View style={allTripsStyle.noRides} >
                                 <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
                                 <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
-                        <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
-                            <Text style={[styles.text, styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
-                        </TouchableOpacity>
+                        {
+                            (nextRides && nextRides.length > 0) &&
+                            <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
+                                <Text style={[styles.text, styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
+                            </TouchableOpacity>
+                        }
 
                     </>
                 }

@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+    I18nManager,
     Image,
     Platform,
     ScrollView,
@@ -43,16 +44,16 @@ function ViewCommunity({ navigation, route }) {
     useEffect(function () {
         communitiesAPI.getCommunityDetails(communityId).then(
             data => {
-                if(!name) {
+                if (!name) {
                     setName(data.name);
                 }
-                if(!picture) {
+                if (!picture) {
                     setPicture(data.picture);
                 }
-                if(!description) {
+                if (!description) {
                     setDescription(data.description);
                 }
-                if(!privacy) {
+                if (!privacy) {
                     setPrivacy(data.private);
                 }
                 if (data.Member.length !== 0) {
@@ -68,6 +69,7 @@ function ViewCommunity({ navigation, route }) {
                 } else {
                     setLoading(false);
                 }
+                console.log(data);
                 setJoinQuestion(data.joinQuestion);
             }
         ).catch(err => {
@@ -129,7 +131,26 @@ function ViewCommunity({ navigation, route }) {
     }
 
     const { t } = useTranslation();
-
+    const shareMsg = `Hey ${name}! 👋 Join our Seaats carpool, save money, and make commutes fun! Click to join: https://seaats.app/share/community/${communityId} Let's ride together! 🚗💨`;
+    const shareMsgAr = `انضم إلى مجتمعنا في مشاركة الرحلات على سيتس، ${name}! https://seaats.app/share/community/${communityId}`;
+    const onShare = async function () {
+        try {
+            const result = await Share.share({
+                message: I18nManager.isRTL ? shareMsgAr : shareMsg
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <ScreenWrapper screenName={t('view_community')} navType="back" navAction={() => navigation.goBack()}>
@@ -150,14 +171,17 @@ function ViewCommunity({ navigation, route }) {
                                         </View>
                                     </View>
                                     <View style={styles.flexOne} />
-                                    <TouchableOpacity activeOpacity={0.75} onPress={() => navigation.navigate('Community Settings', { ...route.params, owner: owner, joinQuestion: joinQuestion })}>
+                                    <TouchableOpacity style={[styles.mh5]} activeOpacity={0.75} onPress={() => navigation.navigate('Community Settings', { communityId: communityId, communityName: communityName || name, communityPicture: communityPicture || picture, communityDescription: communityDescription || description, communityPrivacy: communityPrivacy || privacy, owner: owner, joinQuestion: joinQuestion })}>
                                         <MaterialIcons name="settings" size={25} color={palette.dark} />
                                     </TouchableOpacity>
                                     {owner && (
-                                        <TouchableOpacity activeOpacity={0.75} style={[styles.ml5]} onPress={() => navigation.navigate('Community Members', { communityId })}>
+                                        <TouchableOpacity style={[styles.mh5]} activeOpacity={0.75} style={[styles.ml5]} onPress={() => navigation.navigate('Community Members', { communityId })}>
                                             <MaterialIcons name="people" size={25} color={palette.dark} />
                                         </TouchableOpacity>
                                     )}
+                                    <TouchableOpacity style={[styles.mh5]} activeOpacity={0.75} onPress={onShare}>
+                                        <MaterialIcons name="share" size={25} color={palette.dark} />
+                                    </TouchableOpacity>
                                 </View>
 
                                 {feed && feed.map((data, index) => {
