@@ -1,0 +1,497 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow strict-local
+ */
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import 'react-native-gesture-handler';
+
+
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import messaging from '@react-native-firebase/messaging';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Image, PermissionsAndroid } from 'react-native';
+
+import analytics from '@react-native-firebase/analytics';
+import * as TaskManager from 'expo-task-manager';
+import { requestTrackingPermission } from 'react-native-tracking-transparency';
+import Account from './screens/Account/Account';
+import Wallet from './screens/Account/Wallet';
+import BookRide from './screens/BookRide/BookRide';
+import MapScreen from './screens/BookRide/MapScreen';
+import RideFinder from './screens/BookRide/RideFinder';
+import HomeScreen from './screens/Guest/HomeScreen';
+import LoginScreen from './screens/Guest/LoginScreen';
+import SignUpScreen from './screens/Guest/SignUpScreen';
+import UserHome from './screens/HomeScreen/UserHome';
+import PostRide from './screens/PostRide/PostRide';
+import ViewTrip from './screens/PostRide/ViewTrip';
+import ManageTrip from './screens/Rides/ManageTrip';
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import { I18nManager, NativeModules, Platform, StatusBar, TextInput, View } from 'react-native';
+import * as Keychain from 'react-native-keychain';
+import RNRestart from 'react-native-restart'; // Import package from node modules
+import useUserStore from './api/accountAPI';
+import useAuthManager from './context/authManager';
+import { palette, styles } from './helper';
+import AddBank from './screens/Account/AddBank';
+import AddCard from './screens/Account/AddCard';
+import AddMobileWallet from './screens/Account/AddMobileWallet';
+import ManageCars from './screens/Account/ManageCars';
+import NewCar from './screens/Account/NewCar';
+import Otp from './screens/Account/Otp';
+import Referral from './screens/Account/Referral';
+import SubmitDriverDocuments from './screens/Account/SubmitDriverDocuments';
+import Withdraw from './screens/Account/Withdraw';
+import Chat from './screens/Chat/Chat';
+import ChatsList from './screens/Chat/ChatsList';
+import CommunityMembers from './screens/Communities/CommunityMembers';
+import CommunitySettings from './screens/Communities/CommunitySettings';
+import NewCommunity from './screens/Communities/NewCommunity';
+import SearchCommunities from './screens/Communities/SearchCommunities';
+import ViewCommunities from './screens/Communities/ViewCommunities';
+import ViewCommunity from './screens/Communities/ViewCommunity';
+import ChangePasswordScreen from './screens/Guest/ChangePasswordScreen';
+import ForgotPasswordScreen from './screens/Guest/ForgotPasswordScreen';
+import Announcement from './screens/HomeScreen/Announcement';
+import AllTrips from './screens/Rides/AllTrips';
+import Checkout from './screens/Rides/Checkout';
+
+import { stopLocationUpdatesAsync } from 'expo-location';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
+import { Text } from 'react-native';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import codePush from 'react-native-code-push';
+import SplashScreen from 'react-native-splash-screen';
+import { registerDevice } from './api/utilAPI';
+import DismissableError from './components/DismissableError';
+import useAppManager from './context/appManager';
+import useErrorManager from './context/errorManager';
+import useLocale from './locale/localeContext';
+import './locale/translate';
+import AddReferral from './screens/Account/AddReferral';
+import DebtPayment from './screens/Account/DebtPayment';
+import ViewWithdrawals from './screens/Account/ViewWithdrawals';
+import Payment from './screens/BookRide/Payment';
+import RideBooked from './screens/BookRide/RideBooked';
+import CustomerService from './screens/Chat/CustomerService';
+
+
+const RootStack = createNativeStackNavigator();
+const GuestStack = createNativeStackNavigator();
+
+const UserStack = createNativeStackNavigator();
+
+const BookingStack = createNativeStackNavigator();
+const PostRideStack = createNativeStackNavigator();
+const AccountStack = createNativeStackNavigator();
+const UserHomeStack = createNativeStackNavigator();
+const CommunityStack = createNativeStackNavigator();
+
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
+
+function App() {
+  const { t, i18n } = useTranslation();
+
+  const authManager = useAuthManager();
+  const userStore = useUserStore();
+  const appManager = useAppManager();
+  const [state, setState] = useState('LOADING');
+  I18nManager.allowRTL(true);
+  // const { t } = useTranslation();
+
+  const config = {
+    screens: {
+      LoggedIn: {
+        screens: {
+          TabScreen: {
+            screens: {
+              'Find Rides': {
+                screens: {
+                  "Book Ride": 'ride/:rideId'
+                }
+              },
+              Account: {
+                screens: {
+                  "Add Referral": 'referral/:referralCode'
+                }
+              },
+              Communities: {
+                screens: {
+                  "View Community": "community/:communityId"
+                }
+              }
+            }
+          }
+        },
+      },
+    },
+  };
+
+  const linking = {
+    prefixes: ['seaats://', 'https://seaats.app/share/', 'https://www.seaats.app/share/'],
+    config
+  };
+
+  const localeContext = useLocale();
+  Text.defaultProps = {};
+  Text.defaultProps.maxFontSizeMultiplier = 1.3;
+
+  TextInput.defaultProps = {};
+  TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
+
+
+  useEffect(function () {
+    AvoidSoftInput.setShouldMimicIOSBehavior(true);
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
+    let locale;
+    if (Platform.OS === "ios") {
+      locale = NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0];
+    } else {
+      locale = NativeModules.I18nManager.localeIdentifier;
+    }
+
+    if (locale.split('_')[0] === 'ar') {
+      localeContext.setLanguage('ar');
+      if (I18nManager.isRTL) {
+        // OK - do nothing
+        i18n.changeLanguage('ar');
+      } else {
+        I18nManager.forceRTL(true);
+        RNRestart.restart();
+      }
+    } else {
+      if (I18nManager.isRTL) {
+        I18nManager.forceRTL(false);
+        RNRestart.restart();
+      } else {
+        // OK - do nothing
+        i18n.changeLanguage('en');
+      }
+    }
+  }, []);
+
+  useEffect(function () {
+    if (Platform.OS === 'ios') {
+      requestTrackingPermission();
+
+      PushNotificationIOS.addEventListener("register", (deviceToken) => {
+        registerDevice(deviceToken);
+        appManager.setDeviceToken(deviceToken);
+      });
+
+      PushNotificationIOS.requestPermissions();
+
+    } else {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+      messaging().requestPermission().then(function () {
+        // Get the device token
+        messaging()
+          .getToken()
+          .then(token => {
+            registerDevice(token);
+            appManager.setDeviceToken(token);
+          })
+          .catch(error => {
+            console.error('Error getting device token:', error);
+          });
+      });
+    }
+
+  }, []);
+
+  TaskManager.defineTask("UPDATE_LOCATION_DRIVER", ({ data, error }) => {
+    if (error) {
+      // Error occurred - check `error.message` for more details.
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+      const lat = locations[0].coords.latitude;
+      const lng = locations[0].coords.longitude;
+      const timestamp = locations[0].timestamp;
+      if (authManager.authenticated) {
+        userStore.postDriverLocation(lat, lng, timestamp);
+      } else {
+        stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
+      }
+      // do something with the locations captured in the background
+    }
+  });
+
+
+  const loadJWT = useCallback(async function () {
+    try {
+      const value = await Keychain.getGenericPassword();
+      if (!value) {
+        authManager.setAccessToken(null);
+        authManager.setRefreshToken(null);
+        authManager.setAuthenticated(false);
+        return setState("Guest");
+      }
+      const jwt = JSON.parse(value.password);
+
+      authManager.setAccessToken(jwt.accessToken || null);
+      authManager.setRefreshToken(jwt.refreshToken || null);
+      authManager.setAuthenticated(jwt.accessToken !== null);
+      await userStore.userInfo();
+      await userStore.getAvailableCards();
+      await userStore.getBankAccounts();
+      await userStore.getMobileWallets();
+
+
+      setState("LoggedIn");
+    } catch (error) {
+      setState("Guest");
+      authManager.setAccessToken(null);
+      authManager.setRefreshToken(null);
+      authManager.setAuthenticated(false);
+    }
+  }, []);
+
+  useEffect(function () {
+    appManager.getAllowedEmails();
+  }, [])
+
+  useEffect(function () {
+    loadJWT()
+  }, [loadJWT]);
+
+  const errorManager = useErrorManager();
+  const navigationRef = useRef();
+  const routeNameRef = useRef();
+
+  useEffect(function () {
+    if (appManager.deviceToken && userStore.id) {
+      userStore.linkDevice(appManager.deviceToken);
+    }
+  }, [appManager.deviceToken, userStore.id]);
+
+  if (state === 'LOADING') {
+    return (
+      <>
+        <StatusBar barStyle={'light-content'} />
+        <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
+          {/* <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
+        { fontSize: 75 * rem }
+        ]
+        }>{t('seaats')}</Text> */}
+          <Image source={require('./assets/logo.png')} resizeMode='contain' style={{ width: '70%', height: '9.5%' }} />
+        </View>
+      </>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <StatusBar barStyle={'light-content'} />
+        <NavigationContainer
+          ref={navigationRef}
+          linking={linking}
+          onReady={() => {
+            routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+          }}
+          onStateChange={async () => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+            if (previousRouteName !== currentRouteName) {
+              await analytics().logScreenView({
+                screen_name: currentRouteName,
+                screen_class: currentRouteName,
+              });
+            }
+            routeNameRef.current = currentRouteName;
+          }}
+        >
+          <RootStack.Navigator>
+            {
+              authManager.authenticated === false || (userStore.verified === false && !appManager.verificationsDisabled) ? (
+                <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
+              ) : (
+                <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+              )
+            }
+          </RootStack.Navigator>
+        </NavigationContainer>
+
+        <DismissableError />
+      </React.Fragment>
+    );
+  }
+
+}
+
+const LoggedInStack = ({ route, navigation }) => {
+  return (
+    <UserStack.Navigator initialRouteName="TabScreen">
+      <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
+      <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+      <UserStack.Screen name="Customer Service" component={CustomerService} options={{ headerShown: false }} />
+    </UserStack.Navigator>
+  );
+};
+
+const LoggedInHome = ({ route, navigation }) => {
+  return (
+    <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
+      <Tab.Screen name="Home" component={UserHomeNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="home" size={size} color={color} />
+          ),
+          tabBarLabel: ({ color }) => (
+            <Text style={[styles.text, { color }, styles.font10]}>{t('home')}</Text>
+          ),
+          title: t('home')
+        }} />
+      <Tab.Screen name="Find Rides" component={BookRideNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="search" size={size} color={color} />
+          ),
+          tabBarLabel: ({ color }) => (
+            <Text style={[styles.text, { color }, styles.font10]}>{t('find_rides')}</Text>
+          ),
+          title: t('find_rides')
+        }} />
+      <Tab.Screen name="Post Ride" component={PostRideNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => {
+            return (<MaterialIcons name="directions-car" size={size} color={color} />);
+          },
+          tabBarLabel: ({ color }) => (
+            <Text style={[styles.text, { color }, styles.font10]}>{t('post_ride')}</Text>
+          ),
+
+          title: t('post_ride')
+        }} />
+      <Tab.Screen name="Communities" component={CommunityNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => {
+            return (<MaterialIcons name="forum" size={size} color={color} />);
+          },
+          tabBarLabel: ({ color }) => (
+            <Text style={[styles.text, { color }, styles.font10]}>{t('communities')}</Text>
+          ),
+          title: t('communities')
+        }} />
+      <Tab.Screen name="Account" component={AccountNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => {
+            return (<MaterialIcons name="person" size={size} color={color} />);
+          },
+          tabBarLabel: ({ color }) => (
+            <Text style={[styles.text, { color }, styles.font10]}>{t('account')}</Text>
+          ),
+          title: t('account')
+        }} />
+
+    </Tab.Navigator>
+  );
+}
+
+const Guest = ({ route, navigation }) => {
+  return (
+    <GuestStack.Navigator>
+      <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} options={{ headerShown: false }} />
+      <GuestStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
+    </GuestStack.Navigator>
+  );
+}
+
+
+const BookRideNavigator = ({ route, navigation }) => {
+  return (
+    <BookingStack.Navigator initialRouteName='Find a Ride'>
+      <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
+      <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
+      <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
+      <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
+      <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+    </BookingStack.Navigator>
+  );
+}
+
+
+const PostRideNavigator = ({ route, navigation }) => {
+  return (
+    <PostRideStack.Navigator initialRouteName='Post a Ride'>
+      <PostRideStack.Screen name="Post a Ride" component={PostRide} options={{ headerShown: false }} />
+      <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+      <PostRideStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+    </PostRideStack.Navigator>
+  );
+}
+
+const CommunityNavigator = ({ route, navigator }) => {
+  return (
+    <CommunityStack.Navigator>
+      <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="New Community" component={NewCommunity} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="Community Settings" component={CommunitySettings} options={{ headerShown: false }} />
+      <CommunityStack.Screen name="Community Members" component={CommunityMembers} options={{ headerShown: false }} />
+    </CommunityStack.Navigator>
+  );
+};
+
+const AccountNavigator = ({ route, navigation }) => {
+  return (
+    <AccountStack.Navigator initialRouteName='Account Home'>
+      <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
+      <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
+      <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
+      <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
+      <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
+    </AccountStack.Navigator>
+  );
+}
+
+const UserHomeNavigator = ({ route, navigation }) => {
+  return (
+    <UserHomeStack.Navigator >
+      <UserHomeStack.Screen name="User Home" component={UserHome} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Announcement" component={Announcement} options={{ headerShown: false }} />
+      <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+    </UserHomeStack.Navigator>
+  );
+}
+
+export default codePush(App);
