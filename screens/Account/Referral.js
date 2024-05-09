@@ -14,19 +14,20 @@ import useUserStore from '../../api/accountAPI';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
 import ErrorMessage from '../../components/ErrorMessage';
-import { containerStyle, palette, styles } from '../../helper';
+import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import Treasure from '../../svgs/treasure';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { config } from '../../config';
 // import Clipboard from '@react-native-community/clipboard';
 import { useTranslation } from 'react-i18next';
 
 function List({ icon, headline, text }) {
     return (
-        <View style={[styles.flexRow, styles.w100, styles.mt15]}>
+        <View style={[styles.flexRow, styles.w100, styles.mt15, styles.justifyCenter, styles.alignCenter]}>
             <View>
-                <FontsAwesome5 style={styles.icon} name={icon} size={20} color={palette.accent} light />
+                <MaterialIcons style={styles.icon} name={icon} size={22 * rem} color={palette.accent} light />
             </View>
             <View style={[styles.flexOne, styles.justifyCenter, styles.ml5]}>
                 <Text style={[styles.text, styles.font12, styles.bold]}>{headline}</Text>
@@ -69,9 +70,9 @@ function Referral({ navigation, route }) {
                 <Treasure width={250} height={250} />
                 <View style={[styles.w100, styles.mt5]}>
                     <Text style={[styles.text, styles.font18, styles.bold, styles.mt20]}>{t('share_earn_repeat')}</Text>
-                    <List icon="share" headline={t('share_your_code')} text={t('share_your_code2')} />
-                    <List icon="coins" headline={t('earn_vouchers')} text={t('earn_vouchers2')} />
-                    <List icon="redo" headline={t('repeat')} text={t('repeat2')} />
+                    <List icon="group" headline={t('share_your_code')} text={t('share_your_code2')} />
+                    <List icon="paid" headline={t('earn_vouchers')} text={t('earn_vouchers2')} />
+                    <List icon="replay" headline={t('repeat')} text={t('repeat2')} />
                 </View>
 
                 <View style={[styles.flexOne, styles.justifyEnd, styles.w100]}>

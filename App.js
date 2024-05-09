@@ -283,7 +283,7 @@ function App() {
   if (state === 'LOADING') {
     return (
       <>
-        <StatusBar barStyle={'light-content'} />
+        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
         <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
           {/* <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
         { fontSize: 75 * rem }
@@ -296,7 +296,7 @@ function App() {
   } else {
     return (
       <React.Fragment>
-        <StatusBar barStyle={'light-content'} />
+        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
         <NavigationContainer
           ref={navigationRef}
           linking={linking}

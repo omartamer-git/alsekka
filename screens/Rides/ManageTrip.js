@@ -192,12 +192,12 @@ function ManageTrip({ route, navigation }) {
     };
     const errorManager = useErrorManager();
     function noShowConfirmed(passengerId) {
+        if(new Date().getTime() < new Date(tripDetails.datetime).getTime()) {
+            errorManager.setError(t('error_wait_time'));
+            return;
+        }
         ridesAPI.noShow(passengerId, tripId).then(data => {
             if (data) {
-                if(new Date().getTime() < new Date(tripDetails.datetime).getTime()) {
-                    errorManager.setError(t('error_wait_time'));
-                    return;
-                }
                 const newPassengers = tripDetails.passengers.filter(p => (p.UserId !== passengerId));
                 setTripDetails(tripDetails => ({
                     ...tripDetails,

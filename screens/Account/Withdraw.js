@@ -53,7 +53,7 @@ function Withdraw({ route, navigation }) {
                     <ArrowButton
                         text={withdrawalMethodChosen}
                         bgColor={palette.light}
-                        icon="money-bill-wave"
+                        icon="account-balance-wallet"
                         textColor={palette.dark}
                         iconColor={palette.dark}
                         onPress={() => setModalVisible(true)}

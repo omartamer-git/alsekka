@@ -107,7 +107,7 @@ const useAxiosManager = create((set) => {
                     I18nManager.isRTL ? error.response.data.error.message_ar : error.response.data.error.message
                 )
                 : 'Login failed, please retry.';
-            useErrorManager.getState().setError(errorMessage);
+            // useErrorManager.getState().setError(errorMessage);
             return Promise.reject(e);
         });
     };

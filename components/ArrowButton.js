@@ -1,6 +1,7 @@
 import React from 'react';
 import { I18nManager, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { palette, rem, styles } from '../helper';
 
 function ArrowButton({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) {
@@ -22,12 +23,12 @@ function ArrowButton({ text, onPress, bgColor, disabled, textColor, style, icon,
             onPress={onPress}
             disabled={disabled}
         >
-            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={13 * rem} color={disabled ? palette.light : iconColor} />}
+            {icon === undefined ? null : <MaterialIcons style={styles2.icon} name={icon} size={19 * rem} color={disabled ? palette.light : iconColor} />}
             <View style={[styles2.viewStyle, icon ? {} : { marginEnd: 20 }]}>
                 { text && <Text style={[styles2.continueBtnText, styles.text, styles.bold, { color: disabled ? palette.light : textColor }]}>{text}</Text> }
             </View>
             <View style={[styles.alignEnd]}>
-                <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={13 * rem} color={disabled ? palette.light : iconColor || palette.black} />
+                <MaterialIcons name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={19 * rem} color={disabled ? palette.light : iconColor || palette.black} />
             </View>
         </TouchableOpacity>
     );

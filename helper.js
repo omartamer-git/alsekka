@@ -150,7 +150,7 @@ export const getPhoneCarrier = function (phone) {
 
 
 export const palette = {
-    primary: '#2B175D',
+    primary: '#2B175D', 
     secondary: '#c4accf',
     accent: '#20C78A',
     dark: '#24202E',

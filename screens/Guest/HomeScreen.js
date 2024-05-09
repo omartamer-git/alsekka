@@ -28,7 +28,7 @@ function HomeScreen({ navigation }) {
   return (
     <View style={styles.backgroundStyle}>
 
-      <SafeAreaView style={styles.wrapper}>
+      <SafeAreaView style={[styles.wrapper, styles.AndroidSafeArea]}>
         <HeaderView borderVisible={false}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />

@@ -363,14 +363,14 @@ function BookRide({ route, navigation }) {
                                 </View>
 
                                 <View style={[styles.flexRow]}>
-                                    <ArrowButton disabled={prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : paymentMethod.type === 'newcard' ? 'Card' : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money-bill" : 'credit-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
+                                    <ArrowButton disabled={prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : paymentMethod.type === 'newcard' ? 'Card' : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money" : 'add-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
                                     <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={prevPassenger ? prevPassenger.seats : 1} max={prevPassenger ? prevPassenger.seats + (seatsAvailable - seatsOccupied) : seatsAvailable - seatsOccupied} />
                                 </View>
                                 {!prevPassenger &&
                                     <ArrowButton
                                         bgColor={palette.light}
                                         text={useVoucherText}
-                                        icon="gift"
+                                        icon="discount"
                                         iconColor={palette.primary}
                                         onPress={() => setVoucherModalVisible(true)}
                                     />
@@ -510,18 +510,18 @@ function BookRide({ route, navigation }) {
 
             <BottomModal onHide={() => setPaymentMethodModalVisible(false)} modalVisible={paymentMethodModalVisible}>
                 <TouchableOpacity activeOpacity={0.75} style={[styles.flexRow, styles.w100, styles.alignCenter, styles.borderLight, { height: 48 * rem, borderBottomWidth: 1 }]} onPress={() => choosePayment({ type: 'cash' })}>
-                    <FontsAwesome5 name="money-bill" size={24 * rem} color={palette.success} />
+                    <MaterialIcons name="money" size={24 * rem} color={palette.success} />
                     <Text style={[styles.text, styles.ml15, styles.semiBold]}>{t('pay_using_cash')}</Text>
                     <View style={[styles.flexOne, styles.alignEnd]}>
-                        <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
+                        <MaterialIcons name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity activeOpacity={0.75} style={[styles.flexRow, styles.w100, styles.alignCenter, styles.borderLight, { height: 48 * rem, borderBottomWidth: 1 }]} onPress={() => choosePayment({ type: 'newcard' })}>
-                    <FontsAwesome5 name="credit-card" size={24 * rem} color={palette.accent} />
+                    <MaterialIcons name="add-card" size={24 * rem} color={palette.success} />
                     <Text style={[styles.text, styles.ml15, styles.semiBold]}>{t('add_card')}</Text>
                     <View style={[styles.flexOne, styles.alignEnd]}>
-                        <FontsAwesome5 name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
+                        <MaterialIcons name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={18 * rem} color={palette.dark} />
                     </View>
                 </TouchableOpacity>
                 {/* <BankCard type={'mastercard'} number={'4819'} onPress={() => choosePayment(card)} /> */}
@@ -535,7 +535,7 @@ function BookRide({ route, navigation }) {
 
             <BottomModal onHide={hideRideBooked} modalVisible={rideBookedModalVisible}>
                 <View style={[styles.alignCenter, styles.justifyCenter]}>
-                    <FontsAwesome5 name="check-circle" size={55} color={palette.success} />
+                    <MaterialIcons name="check-circle" size={55} color={palette.success} />
                     <Text style={[styles.text, styles.mt10, styles.font18, styles.success]}>{t('booked_successfully')}</Text>
 
                     <Text style={[styles.text, styles.bold, styles.font18, styles.mt10]}>{t('bill_summary')}</Text>

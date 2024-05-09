@@ -82,7 +82,7 @@ function LoginScreen({ route, navigation }) {
 
   return (
     <View style={styles.backgroundStyle}>
-      <SafeAreaView>
+      <SafeAreaView style={[styles.AndroidSafeArea]}>
         <HeaderView navType="back" borderVisible={false} action={function () { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />

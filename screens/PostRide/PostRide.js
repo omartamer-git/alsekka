@@ -209,9 +209,8 @@ function PostRide({ route, navigation }) {
     }
 
     function postRide(pricePerSeat, pickupPrice, date, time, selectedCar, selectedCommunity, seatsAvailable) {
-        setSubmitDisabled(true);
         if (markerFrom && markerTo) {
-
+            setSubmitDisabled(true);
             const newDateUTC = date.toISOString(); // Convert to UTC string
             const timeInputUTC = time.toISOString(); // Convert to UTC string
 
@@ -235,7 +234,6 @@ function PostRide({ route, navigation }) {
                     setSubmitDisabled(false);
                 });
         }
-        setSubmitDisabled(false);
     }
 
     async function onShare() {

@@ -98,7 +98,7 @@ function Wallet({ navigation, route }) {
 
                 <Text style={[styles.text, styles.headerText3, styles.mt15]}>{t('my_withdrawals')}</Text>
                 <ArrowButton
-                    icon="money-bill-wave"
+                    icon="account-balance-wallet"
                     bgColor={palette.light}
                     iconColor={palette.dark}
                     textColor={palette.dark}

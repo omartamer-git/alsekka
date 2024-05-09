@@ -41,7 +41,7 @@ function Payment({ route, navigation }) {
         });      
     }, [])
 
-    const url = `https://checkout.kashier.io/?merchantId=MID-23738-353&orderId=${passengerDetails.id}&amount=${Math.ceil(invoice.grandTotal/100)}&currency=EGP&hash=${passengerDetails.hash}&mode=test&merchantRedirect=https://seaats.app/paymentsuccess&serverWebhook=https://api.seaats.app/api/v1/payment/webhook&metaData=${JSON.stringify({ passengerId: passengerDetails.id, userId: passengerDetails.UserId, rideId: passengerDetails.RideId })}&failureRedirect=FALSE&display=${I18nManager.isRTL ? 'ar' : 'en'}&manualCapture=FALSE&customer=${JSON.stringify({ reference: passengerDetails.UserId.toString() })}&saveCard=forced&interactionSource=Ecommerce&enable3DS=true`
+    const url = `https://checkout.kashier.io/?merchantId=MID-23738-353&orderId=${passengerDetails.id}&amount=${Math.ceil(invoice.grandTotal/100)}&currency=EGP&hash=${passengerDetails.hash}&mode=live&merchantRedirect=https://seaats.app/paymentsuccess&serverWebhook=https://api.seaats.app/api/v1/payment/webhook&metaData=${JSON.stringify({ passengerId: passengerDetails.id, userId: passengerDetails.UserId, rideId: passengerDetails.RideId })}&failureRedirect=FALSE&display=${I18nManager.isRTL ? 'ar' : 'en'}&manualCapture=FALSE&customer=${JSON.stringify({ reference: passengerDetails.UserId.toString() })}&saveCard=forced&interactionSource=Ecommerce&enable3DS=true`
     const { t } = useTranslation();
 
     return (

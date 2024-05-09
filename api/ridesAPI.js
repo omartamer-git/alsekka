@@ -442,8 +442,14 @@ export const getDriverLocation = async function (rideId) {
     };
 
     const axiosManager = useAxiosManager.getState();
-    const response = await axiosManager.authAxios.get(url, { params });
-    const data = response.data;
+    try {
+        const response = await axiosManager.authAxios.get(url, { params });
+        const data = response.data;
+    
+        return data;
+    } catch(e) {
+        console.log(e.response.data);
+        throw Error();
+    }
 
-    return data;
 }

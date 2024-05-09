@@ -15,19 +15,6 @@ import ScreenWrapper from '../ScreenWrapper';
 import { Formik } from 'formik';
 import SuccessCheck from '../../components/SuccessCheck';
 
-function List({ icon, headline, text }) {
-    return (
-        <View style={[styles.flexRow, styles.w100, styles.mt15]}>
-            <View>
-                <FontsAwesome5 style={styles.icon} name={icon} size={20} color={palette.accent} light />
-            </View>
-            <View style={[styles.flexOne, styles.justifyCenter, styles.ml5]}>
-                <Text style={[styles.text, styles.font12, styles.bold]}>{headline}</Text>
-                <Text style={[styles.text, styles.font12, styles.mt5]}>{text}</Text>
-            </View>
-        </View>
-    )
-};
 
 function AddReferral({ navigation, route }) {
     const referralCode = route.params?.referralCode;

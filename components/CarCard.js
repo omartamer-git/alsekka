@@ -9,7 +9,7 @@ function CarCard({ approved, brand, model, year, color, licensePlateLetters, lic
         <TouchableOpacity onPress={onPress} activeOpacity={0.75} style={{ width: '100%', padding: 16, borderBottomWidth: 1, borderColor: palette.light, ...styles.flexRow, justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={[styles.flexRow, { width: '60%' }]}>
                 <View style={styles.fullCenter}>
-                    {approved === 'APPROVED' && <FontsAwesome5 name="car-alt" size={28} />}
+                    {approved === 'APPROVED' && <MaterialIcons name="directions-car" size={28} />}
                     {approved === 'PENDING' && <MaterialIcons name="schedule" size={28} color={palette.dark} />}
                 </View>
                 <View style={[styles.justifyCenter, styles.ml10]}>

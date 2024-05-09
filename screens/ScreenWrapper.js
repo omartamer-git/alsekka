@@ -1,7 +1,9 @@
 import React, { memo } from 'react';
 import {
     Keyboard,
+    Platform,
     SafeAreaView,
+    StatusBar,
     StyleSheet,
     TouchableWithoutFeedback,
     View
@@ -19,7 +21,7 @@ function ScreenWrapper({ screenName, children, navType, navAction, lip = true })
         },
 
         paddingInsets: {
-            paddingTop: insets.top
+            paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : insets.top
         }
     });
 

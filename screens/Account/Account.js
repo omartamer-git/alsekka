@@ -284,8 +284,8 @@ function Account({ route, navigation }) {
 
             <BottomModal onHide={() => setTermsModalVisible(false)} modalVisible={termsModalVisible}>
                 <View style={[styles.w100, styles.mt10]}>
-                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={function () { Linking.openURL('https://seaats.app/terms.pdf') }} />
-                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={function () { Linking.openURL('https://seaats.app/policy.pdf') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={function () { Linking.openURL('https://seaats.app/terms.html') }} />
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={function () { Linking.openURL('https://seaats.app/privacy.html') }} />
                 </View>
             </BottomModal>
 

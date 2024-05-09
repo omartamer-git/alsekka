@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Image, Text } from "react-native";
+import { Image, Platform, Text } from "react-native";
 import { Animated, AnimatedRegion, Marker } from "react-native-maps";
 import { styles } from "../helper";
 

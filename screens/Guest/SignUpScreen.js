@@ -87,6 +87,7 @@ function SignUpScreen({ route, navigation }) {
 
   const onFocusEffect = useCallback(function () {
     // This should be run when screen gains focus - enable the module where it's needed
+    AvoidSoftInput.setShouldMimicIOSBehavior(true);
     AvoidSoftInput.setEnabled(true);
     return function () {
       // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
@@ -100,7 +101,7 @@ function SignUpScreen({ route, navigation }) {
 
   return (
     <View style={styles.backgroundStyle} >
-      <SafeAreaView>
+      <SafeAreaView style={[styles.AndroidSafeArea]}>
         <HeaderView navType="back" borderVisible={false} action={function () { navigation.goBack() }}>
           <View style={styles.localeWrapper}>
             <MaterialIcons style={styles.icon} name="language" size={18} color="rgba(255,255,255,255)" />
@@ -200,7 +201,7 @@ function SignUpScreen({ route, navigation }) {
                     </View>
 
                     <Text style={[styles.text, styles.mt5, styles.smallText, styles.dark]}>
-                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={function () { Linking.openURL('https://seaats.app/terms.pdf') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={function () { Linking.openURL('https://seaats.app/privacy.pdf') }}>{t('privacy_policy')}</Text>.
+                      {t('by_continuing')} <Text style={[styles.text, styles.primary]} onPress={function () { Linking.openURL('https://seaats.app/terms.html') }}>{t('terms')}</Text> {t('and')} <Text style={[styles.text, styles.primary]} onPress={function () { Linking.openURL('https://seaats.app/privacy.html') }}>{t('privacy_policy')}</Text>.
                     </Text>
 
 

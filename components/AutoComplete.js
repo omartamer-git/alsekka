@@ -266,6 +266,8 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         setModalVisible(true);
     }
 
+    const outRef = useRef(null);
+
     function cancelAutoComplete() {
         if (city) {
             handleCancelLocationSelect(city);
@@ -274,6 +276,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         }
 
         setText('');
+        outRef.current.blur();
         setPredictions(null);
         setModalVisible(false);
     }
@@ -316,9 +319,10 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
     });
 
 
+
     return (
         <View style={styles2.w100}>
-            <CustomTextInput onFocus={enableModal} disabled={!modalMap} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
+            <CustomTextInput inputRef={outRef} onFocus={enableModal} disabled={!modalMap} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             {modalVisible &&
                 <Modal animationType="slide" visible={modalVisible}>
                     <SafeAreaView style={[styles2.bgPrimary, styles2.AndroidSafeArea]}>
@@ -457,7 +461,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                             :
                                             { bottom: 0 * rem, top: 96 * rem, left: 0 * rem, right: 0 }
                                     }
-                                    minZoomLevel={6}
+                                    minZoomLevel={12}
                                     showsMyLocationButton
                                 >
                                     {/* <MaterialIcons style={{ marginBottom: (96 + 48) * rem }} name="place" size={48} color={palette.red} /> */}

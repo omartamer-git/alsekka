@@ -17,7 +17,7 @@ function DebtPayment({ route, navigation }) {
         user.getSettlementId().then(id => {
             user.getHash(id).then((hash) => {
                 setUrl(
-                    `https://checkout.kashier.io/?merchantId=MID-23738-353&orderId=${id}&amount=${Math.ceil(user.balance / -100)}&currency=EGP&hash=${hash}&mode=test&merchantRedirect=https://seaats.app/paymentsuccess&serverWebhook=https://api.seaats.app/api/v1/payment/settlewebhook&metaData=${JSON.stringify({ userId: user.id.toString() })}&failureRedirect=FALSE&display=${I18nManager.isRTL ? 'ar' : 'en'}&manualCapture=FALSE&customer=${JSON.stringify({ reference: user.id.toString() })}&saveCard=forced&interactionSource=Ecommerce&enable3DS=true`
+                    `https://checkout.kashier.io/?merchantId=MID-23738-353&orderId=${id}&amount=${Math.ceil(user.balance / -100)}&currency=EGP&hash=${hash}&mode=live&merchantRedirect=https://seaats.app/paymentsuccess&serverWebhook=https://api.seaats.app/api/v1/payment/settlewebhook&metaData=${JSON.stringify({ userId: user.id.toString() })}&failureRedirect=FALSE&display=${I18nManager.isRTL ? 'ar' : 'en'}&manualCapture=FALSE&customer=${JSON.stringify({ reference: user.id.toString() })}&saveCard=forced&interactionSource=Ecommerce&enable3DS=true`
                 )
             })
         });
