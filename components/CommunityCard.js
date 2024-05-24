@@ -10,8 +10,8 @@ function CommunityCard({ name, picture, description, minified = false, privacy =
             <View style={[styles.flexRow, styles.flexOne]}>
                 <FastImage style={{ width: minified ? 50 : 75, height: minified ? 50 : 75, borderRadius: 75 / 2 }} source={{ uri: picture }} />
                 <View style={[styles.justifyCenter, styles.ml10, { flexShrink: 1 }]}>
-                    <Text style={[styles.text, { fontSize: 18, fontWeight: '600', flexWrap: 'wrap', color: palette.black }]}>{name}</Text>
-                    {!minified && <Text style={[styles.text, styles.textStart, { flexWrap: 'wrap', width: '90%' }]} ellipsizeMode='tail' numberOfLines={2}>{description}</Text>}
+                    <Text style={[styles.text, { fontSize: 18, fontWeight: '600', flexWrap: 'wrap', color: palette.dark }]}>{name}</Text>
+                    {!minified && <Text style={[styles.text, styles.dark, styles.textStart, { flexWrap: 'wrap', width: '90%' }]} ellipsizeMode='tail' numberOfLines={2}>{description}</Text>}
                 </View>
             </View>
             <View style={[styles.justifyCenter]}>

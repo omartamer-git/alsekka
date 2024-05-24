@@ -314,10 +314,13 @@ function ViewTrip({ route, navigation }) {
                                                 return (
                                                     <Passenger key={"passenger" + index} borderTopWidth={borderTopWidth} data={data}>
                                                         <View style={[styles.flexRow, styles.alignCenter]}>
-                                                            <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.userId)}>
+
+                                                            <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => goToChat(data.UserId)}>
                                                                 <MaterialIcons name="chat-bubble" size={24} color={palette.accent} />
                                                             </TouchableOpacity>
-                                                            <MaterialIcons name="phone" size={24} color={palette.accent} style={styles.ml10} />
+                                                            <TouchableOpacity activeOpacity={0.9} style={styles.mr10} onPress={() => Linking.openURL(`tel:${data.User.phone}`)}>
+                                                                <MaterialIcons name="phone" size={24} color={palette.accent} style={styles.ml10} />
+                                                            </TouchableOpacity>
                                                         </View>
                                                     </Passenger>
                                                 );

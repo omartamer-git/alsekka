@@ -27,6 +27,7 @@ function ChatsList({ navigation, route }) {
         setLoading(true);
         chatAPI.getChats().then((data) => {
             setChats(data);
+            console.log(data);
             setLoading(false);
         });
     }, []);
@@ -53,13 +54,14 @@ function ChatsList({ navigation, route }) {
                         {
                             chats &&
                             chats.map((data, index) => {
-                                const secondParty = data.Sender === null ? data.Receiver : data.Sender;
+                                console.log(data);
+                                const secondParty = data.User;
                                 return (
-                                    <TouchableOpacity onPress={function () { navigation.navigate('Chat', { receiver: data.senderId == userStore.id ? data.receiverId : data.senderId }) }} activeOpacity={0.9} key={"chat" + index} style={[styles.flexRow, styles.justifyStart, styles.alignCenter, styles.w100, styles.pv8, styles.borderLight, { borderBottomWidth: 1 }]}>
+                                    <TouchableOpacity onPress={function () { navigation.navigate('Chat', { receiver: data.SenderId == userStore.id ? data.ReceiverId : data.SenderId }) }} activeOpacity={0.9} key={"chat" + index} style={[styles.flexRow, styles.justifyStart, styles.alignCenter, styles.w100, styles.pv8, styles.borderLight, { borderBottomWidth: 1 }]}>
                                         <FastImage source={{ uri: secondParty.profilePicture }} style={[styles.borderAccent, styles.border1, { borderRadius: 60 / 2, height: 60, width: 60 }]} />
                                         <View style={[styles.flexRow, styles.flexOne, styles.spaceBetween, styles.alignCenter]}>
-                                            <Text style={[styles.text, styles.ml10, styles.semiBold, styles.font18]}>{secondParty.firstName} {secondParty.lastName}</Text>
-                                            <MaterialIcons name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} />
+                                            <Text style={[styles.text, styles.ml10, styles.semiBold, styles.font18, {color: data.messageread === 0 ? palette.accent : palette.black, fontWeight: data.messageread === 0 ? '600': 'normal'}]}>{secondParty.firstName} {secondParty.lastName}</Text>
+                                            <MaterialIcons color={data.messageread ? palette.dark : palette.accent} name={I18nManager.isRTL ? "arrow-back-ios" : "arrow-forward-ios"} size={18} />
                                         </View>
                                     </TouchableOpacity>
                                 );

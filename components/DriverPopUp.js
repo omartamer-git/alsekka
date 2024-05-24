@@ -31,11 +31,11 @@ function DriverPopUp({ modalVisible, onHide, navigateToDriver }) {
                         </TouchableOpacity>
 
                         <View style={[styles.w100, styles.mt20]}>
-                            <Text style={[styles.text, styles.font28, styles.textCenter, styles.bold]}>
+                            <Text style={[styles.text, styles.font28, styles.textCenter, styles.bold, styles.dark]}>
                                 {t('driver_popup_title')}
                             </Text>
 
-                            <Text style={[styles.text, styles.textCenter, styles.mt5]}>
+                            <Text style={[styles.text, styles.textCenter, styles.mt5, styles.dark]}>
                                 {t('driver_popup_text')}
                             </Text>
 

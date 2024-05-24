@@ -594,8 +594,8 @@ function PostRide({ route, navigation }) {
                                                 <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
                                                     <SuccessCheck width={100} height={100} />
                                                     <Text style={[styles.text, styles.headerText3, styles.primary, styles.freeSans]}>{t('ride_posted')}</Text>
-                                                    <Text style={[styles.text, styles.smallText, styles.primary]}>{t('ride_post_thanks')}</Text>
-                                                    <Button onPress={onShare} bgColor={palette.secondary} textColor={palette.white} text={t('share_ride_link')} />
+                                                    <Text style={[styles.text, styles.smallText, styles.dark]}>{t('ride_post_thanks')}</Text>
+                                                    <Button onPress={onShare} bgColor={palette.accent} textColor={palette.white} text={t('share_ride_link')} />
                                                 </View>
                                             </BottomModal>
 

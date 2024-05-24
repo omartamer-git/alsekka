@@ -24,7 +24,7 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
             items.push(<MaterialIcons key={"emptyseat" + j} name="account-circle" size={16} color={palette.light} />);
         }
     } else {
-        items.push(<Text style={[styles.text]} key={"full" + rid}>{t('ride_full')}</Text>)
+        items.push(<Text style={[styles.text, styles.dark]} key={"full" + rid}>{t('ride_full')}</Text>)
     }
 
 
@@ -34,8 +34,8 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                     <View style={styles.flexRow}>
                         <View>
-                            <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(date)[0]}
-                                <Text style={styles.font12}>&nbsp;{t(getTime(date)[1])}</Text>
+                            <Text style={[styles.text, styles.dark, { fontWeight: '700', fontSize: 16 }]}>{getTime(date)[0]}
+                                <Text style={[styles.font12]}>&nbsp;{t(getTime(date)[1])}</Text>
                             </Text>
                         </View>
                         <View style={[styles.flexRow, styles.fullCenter, styles.mt5]}>
@@ -44,12 +44,12 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
                         </View>
                     </View>
-                    <Text style={[styles.text]} numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
+                    <Text style={[styles.text, styles.pr8, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
                 </View>
 
                 <View style={[styles.flexOne, styles.alignStart]}>
-                    <Text style={[styles.text, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
-                    <Text style={[styles.text]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
+                    <Text style={[styles.text, styles.dark, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
+                    <Text style={[styles.text, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
                 </View>
             </View>
 
@@ -75,11 +75,11 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                     }
                 </View>
                 <View style={[styles.flexCol, styles.alignEnd, styles.justifyEnd]}>
-                    {pricePerSeat && <Text style={[styles.text, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{Math.ceil(pricePerSeat/100)}<Text style={styles.font12}>&nbsp;{t('EGP')}</Text></Text>}
+                    {pricePerSeat && <Text style={[styles.text, styles.dark, { fontWeight: '700', fontSize: 16, alignSelf: 'flex-end' }]}>{Math.ceil(pricePerSeat/100)}<Text style={styles.font12}>&nbsp;{t('EGP')}</Text></Text>}
                     <View style={[styles.flexRow, styles.fullCenter]}>
                         <MaterialIcons name="person" size={16} color={palette.dark} />
                         <Text style={[styles.dark, styles.text]}>
-                            {seatsAvailable && seatsOccupied ? seatsOccupied + '/' + seatsAvailable : seatsAvailable}
+                            {seatsAvailable && seatsOccupied ? Math.min((seatsOccupied), (seatsAvailable)) + '/' + seatsAvailable : seatsAvailable}
                             &nbsp;•&nbsp;
                             {t(days[date.getDay()])} {date.getDate()} {t(months[date.getMonth()])}
                         </Text>

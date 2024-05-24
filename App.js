@@ -40,7 +40,7 @@ import * as Keychain from 'react-native-keychain';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import useUserStore from './api/accountAPI';
 import useAuthManager from './context/authManager';
-import { palette, styles } from './helper';
+import { palette, rem, styles } from './helper';
 import AddBank from './screens/Account/AddBank';
 import AddCard from './screens/Account/AddCard';
 import AddMobileWallet from './screens/Account/AddMobileWallet';
@@ -83,6 +83,9 @@ import ViewWithdrawals from './screens/Account/ViewWithdrawals';
 import Payment from './screens/BookRide/Payment';
 import RideBooked from './screens/BookRide/RideBooked';
 import CustomerService from './screens/Chat/CustomerService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BottomModal from './components/BottomModal';
+import Button from './components/Button';
 
 
 const RootStack = createNativeStackNavigator();
@@ -149,7 +152,6 @@ function App() {
   TextInput.defaultProps = {};
   TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
 
-
   useEffect(function () {
     AvoidSoftInput.setShouldMimicIOSBehavior(true);
     if (Platform.OS === 'android') {
@@ -183,35 +185,80 @@ function App() {
     }
   }, []);
 
-  useEffect(function () {
-    if (Platform.OS === 'ios') {
-      requestTrackingPermission();
+  const [modalFineLocation, setModalFineLocation] = useState(false);
+  const [modalBackgroundLocation, setModalBackgroundLocation] = useState(false);
 
-      PushNotificationIOS.addEventListener("register", (deviceToken) => {
-        registerDevice(deviceToken);
-        appManager.setDeviceToken(deviceToken);
-      });
-
-      PushNotificationIOS.requestPermissions();
-
-    } else {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-
-      messaging().requestPermission().then(function () {
-        // Get the device token
-        messaging()
-          .getToken()
-          .then(token => {
-            registerDevice(token);
-            appManager.setDeviceToken(token);
-          })
-          .catch(error => {
-            console.error('Error getting device token:', error);
-          });
-      });
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(hasPermission => {
+        if (!hasPermission) {
+          setModalFineLocation(true);
+        }
+      })
     }
-
   }, []);
+
+  function requestLocationPermissions() {
+    setModalFineLocation(false);
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: t('location_perm'),
+        message: t('location_perm_desc'),
+        buttonNeutral: t('ask_later'),
+        buttonNegative: t('cancel'),
+        buttonPositive: t('allow'),
+      },
+    ).then((granted) => {
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        setModalBackgroundLocation(true);
+      }
+    })
+  }
+
+  function requestBgLocationPermissions() {
+    setModalBackgroundLocation(false);
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+      {
+        title: t('bg_location_perm'),
+        message: t('bg_location_perm_desc'),
+        buttonNeutral: t('ask_later'),
+        buttonNegative: t('cancel'),
+        buttonPositive: t('allow'),
+      },
+    );
+  }
+
+  useEffect(
+    function () {
+      if (Platform.OS === 'ios') {
+        requestTrackingPermission();
+
+        PushNotificationIOS.addEventListener("register", (deviceToken) => {
+          registerDevice(deviceToken);
+          appManager.setDeviceToken(deviceToken);
+        });
+
+        PushNotificationIOS.requestPermissions();
+
+      } else {
+        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+        messaging().requestPermission().then(function () {
+          // Get the device token
+          messaging()
+            .getToken()
+            .then(token => {
+              registerDevice(token);
+              appManager.setDeviceToken(token);
+            })
+            .catch(error => {
+              console.error('Error getting device token:', error);
+            });
+        });
+      }
+    }, []);
 
   TaskManager.defineTask("UPDATE_LOCATION_DRIVER", ({ data, error }) => {
     if (error) {
@@ -280,6 +327,174 @@ function App() {
     }
   }, [appManager.deviceToken, userStore.id]);
 
+  const LoggedInStack = ({ route, navigation }) => {
+    return (
+      <UserStack.Navigator initialRouteName="TabScreen">
+        <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
+        <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+        <UserStack.Screen name="Customer Service" component={CustomerService} options={{ headerShown: false }} />
+      </UserStack.Navigator>
+    );
+  };
+
+  const LoggedInHome = ({ route, navigation }) => {
+    return (
+      <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
+        <Tab.Screen name="Home" component={UserHomeNavigator}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="home" size={size} color={color} />
+            ),
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.text, { color }, styles.font10]}>{t('home')}</Text>
+            ),
+            title: t('home')
+          }} />
+        <Tab.Screen name="Find Rides" component={BookRideNavigator}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="search" size={size} color={color} />
+            ),
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.text, { color }, styles.font10]}>{t('find_rides')}</Text>
+            ),
+            title: t('find_rides')
+          }} />
+        <Tab.Screen name="Post Ride" component={PostRideNavigator}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+              return (<MaterialIcons name="directions-car" size={size} color={color} />);
+            },
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.text, { color }, styles.font10]}>{t('post_ride')}</Text>
+            ),
+
+            title: t('post_ride')
+          }} />
+        <Tab.Screen name="Communities" component={CommunityNavigator}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+              return (<MaterialIcons name="forum" size={size} color={color} />);
+            },
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.text, { color }, styles.font10]}>{t('communities')}</Text>
+            ),
+            title: t('communities')
+          }} />
+        <Tab.Screen name="Account" component={AccountNavigator}
+          options={{
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+              return (
+                <View style={{ position: 'relative' }}>
+                  <MaterialIcons name="person" size={size} color={color} />
+                  {userStore.unreadMessages > 0 &&
+                    <View style={[styles.positionAbsolute, styles.bgRed, styles.br24, { top: 0, right: 0, width: 10 * rem, height: 10 * rem }]}>
+                    </View>
+                  }
+                </View>
+              );
+            },
+            tabBarLabel: ({ color }) => (
+              <Text style={[styles.text, { color }, styles.font10]}>{t('account')}</Text>
+            ),
+            title: t('account')
+          }} />
+
+      </Tab.Navigator>
+    );
+  }
+
+  const Guest = ({ route, navigation }) => {
+    return (
+      <GuestStack.Navigator>
+        <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
+      </GuestStack.Navigator>
+    );
+  }
+
+
+  const BookRideNavigator = ({ route, navigation }) => {
+    return (
+      <BookingStack.Navigator initialRouteName='Find a Ride'>
+        <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+      </BookingStack.Navigator>
+    );
+  }
+
+
+  const PostRideNavigator = ({ route, navigation }) => {
+    return (
+      <PostRideStack.Navigator initialRouteName='Post a Ride'>
+        <PostRideStack.Screen name="Post a Ride" component={PostRide} options={{ headerShown: false }} />
+        <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+        <PostRideStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+      </PostRideStack.Navigator>
+    );
+  }
+
+  const CommunityNavigator = ({ route, navigator }) => {
+    return (
+      <CommunityStack.Navigator>
+        <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="New Community" component={NewCommunity} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="Community Settings" component={CommunitySettings} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="Community Members" component={CommunityMembers} options={{ headerShown: false }} />
+      </CommunityStack.Navigator>
+    );
+  };
+
+  const AccountNavigator = ({ route, navigation }) => {
+    return (
+      <AccountStack.Navigator initialRouteName='Account Home'>
+        <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
+        <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
+        <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
+        <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
+      </AccountStack.Navigator>
+    );
+  }
+
+  const UserHomeNavigator = ({ route, navigation }) => {
+    return (
+      <UserHomeStack.Navigator >
+        <UserHomeStack.Screen name="User Home" component={UserHome} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Announcement" component={Announcement} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+      </UserHomeStack.Navigator>
+    );
+  }
+
   if (state === 'LOADING') {
     return (
       <>
@@ -296,6 +511,33 @@ function App() {
   } else {
     return (
       <React.Fragment>
+        {
+          modalFineLocation &&
+          <BottomModal modalVisible={modalFineLocation} onHide={() => setModalFineLocation(false)}>
+            <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
+              <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('location_perm')}</Text>
+              <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
+                {t('location_perm_desc')}
+              </Text>
+              <Button text={t('allow')} onPress={requestLocationPermissions} bgColor={palette.primary} textColor={palette.lightGray} />
+              <Button text={t('cancel')} onPress={() => setModalFineLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
+            </View>
+          </BottomModal>
+        }
+
+        {
+          modalBackgroundLocation &&
+          <BottomModal modalVisible={modalBackgroundLocation} onHide={() => setModalBackgroundLocation(false)}>
+            <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
+              <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('bg_location_perm')}</Text>
+              <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
+                {t('bg_location_perm_desc')}
+              </Text>
+              <Button text={t('allow')} onPress={requestBgLocationPermissions} bgColor={palette.primary} textColor={palette.lightGray} />
+              <Button text={t('cancel')} onPress={() => setModalBackgroundLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
+            </View>
+          </BottomModal>
+        }
         <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
         <NavigationContainer
           ref={navigationRef}
@@ -332,166 +574,6 @@ function App() {
     );
   }
 
-}
-
-const LoggedInStack = ({ route, navigation }) => {
-  return (
-    <UserStack.Navigator initialRouteName="TabScreen">
-      <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
-      <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-      <UserStack.Screen name="Customer Service" component={CustomerService} options={{ headerShown: false }} />
-    </UserStack.Navigator>
-  );
-};
-
-const LoggedInHome = ({ route, navigation }) => {
-  return (
-    <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
-      <Tab.Screen name="Home" component={UserHomeNavigator}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="home" size={size} color={color} />
-          ),
-          tabBarLabel: ({ color }) => (
-            <Text style={[styles.text, { color }, styles.font10]}>{t('home')}</Text>
-          ),
-          title: t('home')
-        }} />
-      <Tab.Screen name="Find Rides" component={BookRideNavigator}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="search" size={size} color={color} />
-          ),
-          tabBarLabel: ({ color }) => (
-            <Text style={[styles.text, { color }, styles.font10]}>{t('find_rides')}</Text>
-          ),
-          title: t('find_rides')
-        }} />
-      <Tab.Screen name="Post Ride" component={PostRideNavigator}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => {
-            return (<MaterialIcons name="directions-car" size={size} color={color} />);
-          },
-          tabBarLabel: ({ color }) => (
-            <Text style={[styles.text, { color }, styles.font10]}>{t('post_ride')}</Text>
-          ),
-
-          title: t('post_ride')
-        }} />
-      <Tab.Screen name="Communities" component={CommunityNavigator}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => {
-            return (<MaterialIcons name="forum" size={size} color={color} />);
-          },
-          tabBarLabel: ({ color }) => (
-            <Text style={[styles.text, { color }, styles.font10]}>{t('communities')}</Text>
-          ),
-          title: t('communities')
-        }} />
-      <Tab.Screen name="Account" component={AccountNavigator}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => {
-            return (<MaterialIcons name="person" size={size} color={color} />);
-          },
-          tabBarLabel: ({ color }) => (
-            <Text style={[styles.text, { color }, styles.font10]}>{t('account')}</Text>
-          ),
-          title: t('account')
-        }} />
-
-    </Tab.Navigator>
-  );
-}
-
-const Guest = ({ route, navigation }) => {
-  return (
-    <GuestStack.Navigator>
-      <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
-      <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-      <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} options={{ headerShown: false }} />
-      <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} options={{ headerShown: false }} />
-      <GuestStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
-    </GuestStack.Navigator>
-  );
-}
-
-
-const BookRideNavigator = ({ route, navigation }) => {
-  return (
-    <BookingStack.Navigator initialRouteName='Find a Ride'>
-      <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
-      <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
-      <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
-      <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
-      <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
-    </BookingStack.Navigator>
-  );
-}
-
-
-const PostRideNavigator = ({ route, navigation }) => {
-  return (
-    <PostRideStack.Navigator initialRouteName='Post a Ride'>
-      <PostRideStack.Screen name="Post a Ride" component={PostRide} options={{ headerShown: false }} />
-      <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
-      <PostRideStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
-    </PostRideStack.Navigator>
-  );
-}
-
-const CommunityNavigator = ({ route, navigator }) => {
-  return (
-    <CommunityStack.Navigator>
-      <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
-      <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
-      <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
-      <CommunityStack.Screen name="New Community" component={NewCommunity} options={{ headerShown: false }} />
-      <CommunityStack.Screen name="Community Settings" component={CommunitySettings} options={{ headerShown: false }} />
-      <CommunityStack.Screen name="Community Members" component={CommunityMembers} options={{ headerShown: false }} />
-    </CommunityStack.Navigator>
-  );
-};
-
-const AccountNavigator = ({ route, navigation }) => {
-  return (
-    <AccountStack.Navigator initialRouteName='Account Home'>
-      <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
-      <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
-      <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
-      <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
-      <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
-    </AccountStack.Navigator>
-  );
-}
-
-const UserHomeNavigator = ({ route, navigation }) => {
-  return (
-    <UserHomeStack.Navigator >
-      <UserHomeStack.Screen name="User Home" component={UserHome} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="Announcement" component={Announcement} options={{ headerShown: false }} />
-      <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
-    </UserHomeStack.Navigator>
-  );
 }
 
 export default codePush(App);

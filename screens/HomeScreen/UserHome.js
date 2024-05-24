@@ -22,6 +22,9 @@ import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
 import { DriverPopUp } from '../../components/DriverPopUp';
 import ScreenWrapper from '../ScreenWrapper';
+import LottieView from 'lottie-react-native';
+import Button from '../../components/Button';
+import BottomModal from '../../components/BottomModal';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -31,12 +34,14 @@ function UserHome({ navigation, route }) {
     const currentTime = new Date();
 
     const [driverElement, setDriverElement] = useState(false);
+    const [referralElement, setReferralElement] = useState(true);
     const [driverMainTextFrom, setDriverMainTextFrom] = useState('');
     const [driverMainTextTo, setDriverMainTextTo] = useState('');
     const [driverTripId, setDriverTripId] = useState(null);
     const [carouselWidth, setCarouselWidth] = useState(200);
     const [carouselData, setCarouselData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [safetyTipsVisible, setSafetyTipsVisible] = useState(false);
 
     const { t } = useTranslation();
 
@@ -189,7 +194,7 @@ function UserHome({ navigation, route }) {
                         {
                             !nextRideData &&
                             <View style={userHomeStyles.noRides} >
-                                <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
+                                <MaterialIcons name="sentiment-very-satisfied" size={48} color={palette.dark} />
                                 <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
@@ -197,38 +202,155 @@ function UserHome({ navigation, route }) {
                             <Text style={[styles.text, styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
                         </TouchableOpacity>
 
-                        <View onLayout={findCarouselWidth} style={[styles.w100, styles.mt20]}>
-                            {carouselData && carouselData.length !== 0 &&
-                                <Carousel loop style={[styles.bgPrimary, styles.br8]} autoPlay={true} autoPlayInterval={5000} width={carouselWidth} height={MAX_CAROUSEL_TEXT_LENGTH / 1.4} data={carouselData} renderItem={
-                                    ({ index }) => {
-                                        const announcementText = I18nManager.isRTL ? carouselData[index].text_ar : carouselData[index].text_en;
-                                        const announcementTitle = I18nManager.isRTL ? carouselData[index].title_ar : carouselData[index].title_en;
-                                        return (
-                                            <View style={[styles.flexOne, styles.w100, styles.justifyStart, styles.alignStart, styles.p16]}>
-                                                <Text style={[styles.text, styles.white, styles.bold, styles.font18]}>
-                                                    {announcementTitle}
-                                                </Text>
-                                                <Text style={[styles.text, styles.light, styles.semiBold, styles.mt10, styles.font14]}>
-                                                    {
-                                                        announcementText.substring(0, MAX_CAROUSEL_TEXT_LENGTH) +
-                                                        (announcementText.length > MAX_CAROUSEL_TEXT_LENGTH ? "..." : "")
-                                                    }
-                                                </Text>
-                                                {announcementText.length > MAX_CAROUSEL_TEXT_LENGTH &&
-                                                    <TouchableOpacity
-                                                        onPress={
-                                                            function () {
-                                                                navigation.navigate('Announcement', { id: carouselData[index].id });
-                                                            }
-                                                        }
-                                                    >
-                                                        <Text style={[styles.text, styles.mt5, styles.dark, styles.font14]}>{t('read_more')}</Text></TouchableOpacity>
-                                                }
-                                            </View>
-                                        )
-                                    }
-                                }></Carousel>}
+                        <View style={[styles.w100, styles.mt10]}>
+                            <Text style={[styles.text, styles.headerText3]}>{t('shortcuts')}</Text>
+
+                            <View style={[styles.w100, styles.flexRow, styles.gap10, styles.mt10]}>
+                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Referral' }) }} style={[styles.flexOne, styles.bgPrimary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                    <View style={[styles.p8, styles.w100, styles.h100, { overflow: 'hidden' }]}>
+                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
+                                            {t('refer_shortcut')}
+                                        </Text>
+                                        <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, styles.white]}>
+                                            {t('refer_shortcut_2')}
+                                        </Text>
+                                        <View style={[styles.positionAbsolute, styles.w100, styles.h100, styles.alignStart, styles.justifyStart, { top: 0, left: 0, opacity: 0.2, zIndex: -1 }]}>
+                                            <LottieView style={{ width: 100 * rem, height: 100 * rem, marginLeft: 20, marginTop: 15 }} source={require('../../assets/refer_animation.json')} autoPlay loop useNativeLooping />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Wallet' }) }} style={[styles.flexOne, styles.bgGray, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                    <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
+                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
+                                            {t('earnings_shortcut')}
+                                        </Text>
+                                        <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, styles.white]}>
+                                            {t('earnings_shortcut_2')}
+                                        </Text>
+                                    </View>
+                                    <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, styles.bgDark, { opacity: 0.8, zIndex: 39 }]}>
+                                    </View>
+                                    <View style={[styles.p8, styles.w100, styles.h100, { overflow: 'hidden' }]}>
+                                        <View style={[styles.positionAbsolute, styles.w100, styles.h100, styles.alignStart, styles.justifyStart, { top: 0, left: 0, opacity: 1, zIndex: -1 }]}>
+                                            <LottieView style={{ width: 100 * rem, height: 100 * rem, marginLeft: 20, marginTop: 15 }} source={require('../../assets/money_animation.json')} autoPlay loop useNativeLooping />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+
+
+                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Communities') }} style={[styles.flexOne, styles.bgSecondary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                    <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
+                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
+                                            {t('community_shortcut')}
+                                        </Text>
+                                        <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, styles.white]}>
+                                            {t('community_shortcut_2')}
+                                        </Text>
+                                    </View>
+                                    <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, styles.bgSecondary, { opacity: 0.8, zIndex: 39 }]}>
+                                    </View>
+                                    <View style={[styles.p8, styles.w100, styles.h100, { overflow: 'hidden' }]}>
+                                        <View style={[styles.positionAbsolute, styles.w100, styles.h100, styles.alignStart, styles.justifyStart, { top: 0, left: 0, opacity: 1, zIndex: -1 }]}>
+                                            <LottieView style={{ width: 100 * rem, height: 100 * rem, marginLeft: 20, marginTop: 15 }} source={require('../../assets/community_animation.json')} autoPlay loop useNativeLooping />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
                         </View>
+
+                        <View style={[styles.w100, styles.br8, styles.p8, styles.bgAccent, styles.mt10, styles.flexRow, styles.spaceBetween, styles.gap15]}>
+                            <View style={[styles.spaceBetween, styles.flexOne, styles.gap10]}>
+                                <View>
+                                    <Text style={[styles.text, styles.white, styles.bold, styles.headerText3]}>
+                                        {t('safety_tips')}
+                                    </Text>
+                                    <Text style={[styles.text, styles.dark, styles.semibold, styles.black]}>
+                                        {t('ensure_safety')}
+                                    </Text>
+                                </View>
+                                <TouchableOpacity onPress={() => setSafetyTipsVisible(true)} activeOpacity={0.9} style={[styles.bgWhite, styles.p8, styles.br8, styles.fullCenter, styles.mt5]}>
+                                    <Text style={[styles.text, styles.bold]}>
+                                        {t('learn_more')}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <LottieView style={[{ height: 96 * rem, width: 96 * rem }]} source={require('../../assets/safety_animation.json')} autoPlay loop />
+                        </View>
+
+                        {safetyTipsVisible &&
+                            <BottomModal modalVisible={safetyTipsVisible} onHide={() => setSafetyTipsVisible(false)} extended>
+                                <View style={[styles.flexOne, styles.w100, styles.p8, styles.gap10]}>
+                                    <View style={[styles.w100, styles.flexRow, styles.fullCenter, styles.gap20]}>
+                                        <View style={[styles.fullCenter]}>
+                                            <LottieView source={require('../../assets/license_animation.json')} loop autoPlay style={[{ width: 100 * rem, height: 100 * rem }]} />
+                                        </View>
+
+                                        <View style={[styles.flexOne]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                                {t('safety_verify_driver')}
+                                            </Text>
+
+                                            <Text style={[styles.text, styles.font14]}>
+                                                {t('safety_verify_driver_2')}
+                                            </Text>
+                                        </View>
+                                    </View>
+
+
+                                    <View style={[styles.w100, styles.flexRow, styles.fullCenter, styles.gap20]}>
+                                        <View style={[styles.fullCenter]}>
+                                            <LottieView source={require('../../assets/routing_animation.json')} loop autoPlay style={[{ width: 100 * rem, height: 100 * rem }]} />
+                                        </View>
+
+                                        <View style={[styles.flexOne]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                                {t('safety_route')}
+                                            </Text>
+
+                                            <Text style={[styles.text, styles.font14]}>
+                                                {t('safety_route_2')}
+                                            </Text>
+                                        </View>
+                                    </View>
+
+
+                                    <View style={[styles.w100, styles.flexRow, styles.fullCenter, styles.gap20]}>
+                                        <View style={[styles.fullCenter]}>
+                                            <LottieView source={require('../../assets/rating_animation.json')} loop autoPlay style={[{ width: 100 * rem, height: 100 * rem }]} />
+                                        </View>
+
+                                        <View style={[styles.flexOne]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                                {t('safety_ratings')}
+                                            </Text>
+
+                                            <Text style={[styles.text, styles.font14]}>
+                                                {t('safety_ratings_2')}
+                                            </Text>
+                                        </View>
+                                    </View>
+
+                                    <View style={[styles.w100, styles.flexRow, styles.fullCenter, styles.gap20]}>
+                                        <View style={[styles.fullCenter]}>
+                                            <LottieView source={require('../../assets/emergency_animation.json')} loop autoPlay style={[{ width: 100 * rem, height: 100 * rem }]} />
+                                        </View>
+
+                                        <View style={[styles.flexOne]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                                {t('safety_emergency')}
+                                            </Text>
+
+                                            <Text style={[styles.text, styles.font14]}>
+                                                {t('safety_emergency_2')}
+                                            </Text>
+                                        </View>
+                                    </View>
+
+                                    <Button text={t('ok')} bgColor={palette.accent} textColor={palette.white} onPress={() => setSafetyTipsVisible(false)} />
+                                </View>
+                            </BottomModal>
+                        }
                     </>
                 }
 
@@ -265,7 +387,7 @@ function UserHome({ navigation, route }) {
 
 
             </ScrollView>
-        </ScreenWrapper>
+        </ScreenWrapper >
 
 
     );

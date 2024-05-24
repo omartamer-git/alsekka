@@ -19,14 +19,14 @@ function CarCard({ approved, brand, model, year, color, licensePlateLetters, lic
             </View>
             <View style={[styles.mt10, styles.br8, styles.borderDark, styles.border2, { height: 60 * rem, alignSelf: 'flex-end', width: '30%' }]}>
                 <View style={[styles.flexRow, styles.spaceBetween, styles.borderDark, styles.w100, { borderTopLeftRadius: 6 * rem, borderTopRightRadius: 6 * rem, borderBottomWidth: 2, flexShrink: 1, paddingStart: 2, paddingEnd: 2, backgroundColor: approved === 'APPROVED' ? '#0377b4' : palette.light }]}>
-                    <Text style={[styles.semiBold, styles.text, styles.font12]}>EGYPT</Text>
-                    <Text style={[styles.semiBold, styles.text, styles.font12]}>مصر</Text>
+                    <Text style={[styles.semiBold, styles.text, styles.font12, styles.dark]}>EGYPT</Text>
+                    <Text style={[styles.semiBold, styles.text, styles.font12, styles.dark]}>مصر</Text>
                 </View>
                 <View style={[styles.flexOne, styles.flexRow, styles.w100, styles.spaceBetween]}  >
-                    <View style={{ flex: 10, justifyContent: 'center', alignItems: 'center' }}><Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, { fontSize: 13, flexWrap: 'nowrap' }]}>{translateEnglishNumbers(licensePlateNumbers)}</Text>
+                    <View style={{ flex: 10, justifyContent: 'center', alignItems: 'center' }}><Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, styles.dark, { fontSize: 13, flexWrap: 'nowrap' }]}>{translateEnglishNumbers(licensePlateNumbers)}</Text>
                     </View>
                     <View style={{ flex: 1, backgroundColor: '#999999' }}></View>
-                    <View style={{ flex: 10, justifyContent: 'center', alignItems: 'center' }}><Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, { fontSize: 13, flexWrap: 'nowrap' }]}>{licensePlateLetters.split('').join('​ ')}</Text></View>
+                    <View style={{ flex: 10, justifyContent: 'center', alignItems: 'center' }}><Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, styles.dark, { fontSize: 13, flexWrap: 'nowrap' }]}>{licensePlateLetters.split('').join('​ ')}</Text></View>
                 </View>
             </View>
         </TouchableOpacity>

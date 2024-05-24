@@ -31,7 +31,7 @@ function Chat({ navigation, route }) {
     const ref = useRef();
     const lastSender = useRef(null);
     const [loading, setLoading] = useState(true);
-    
+
     const sendMessage = function () {
         if (!(messageText.trim())) return;
         setMessageText('');
@@ -51,10 +51,14 @@ function Chat({ navigation, route }) {
         ])
             .then(([receiverData, chatMessages]) => {
                 setReceiverData(receiverData);
-                setChatMessages(chatMessages);
+                setChatMessages(chatMessages.chat);
                 setLoading(false);
+                if (chatMessages.readCount !== 0) {
+                    userStore.setUnreadMessages(u => u - parseInt(chatMessages.readCount));
+                }
             })
             .catch(error => {
+                console.log(error)
                 // Handle error if needed
             });
     }, []);
@@ -163,11 +167,12 @@ function Chat({ navigation, route }) {
                 <View style={styles.flexOne} />
             </ScrollView>
 
-            <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={Platform.select({ios: 80})} style={[styles.w100]}>
+            <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={Platform.select({ ios: 80 })} style={[styles.w100]}>
                 <View behavior='height' style={[styles.ph16, styles.w100, styles.flexRow, { paddingBottom: insets.bottom, paddingHorizontal: 12 * rem, alignSelf: 'flex-end' }]}>
                     <View style={chatStyles.messageView}>
-                        <TextInput style={[styles.text, styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onPressIn={() => {setTimeout(
-                            () => ref.current.scrollToEnd({ animated: true }), 400)
+                        <TextInput style={[styles.text, styles.flexOne]} placeholderTextColor={palette.dark} placeholder={t('send_a_message')} value={messageText} onPressIn={() => {
+                            setTimeout(
+                                () => ref.current.scrollToEnd({ animated: true }), 400)
                         }} onChangeText={(text) => { setMessageText(text) }} />
                     </View>
                     <TouchableOpacity onPress={sendMessage} activeOpacity={0.9} style={chatStyles.sendBtn}>

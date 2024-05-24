@@ -81,7 +81,7 @@ function CustomTextInput({ value,
                 }
                 {
                     emojiLeft &&
-                    <Text style={[styles.font14]}>{emojiLeft}</Text>
+                    <Text style={[styles.font14, styles.dark]}>{emojiLeft}</Text>
                 }
                 <TextInput
                     style={[styles2.input, textStyles]}

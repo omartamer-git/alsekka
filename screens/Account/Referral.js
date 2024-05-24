@@ -41,8 +41,8 @@ function Referral({ navigation, route }) {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
-    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 100 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
-    const shareMsgAr = `نزل تطبيق Seaats لمشاركة الرحلات ووفر فلوس المواصلات والبنزين! إكسب خصم 100 جنيه مصري في أول رحلة ليك على التطبيق باستخدام كود الإحالة ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. انضم الآن! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`
+    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 60 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
+    const shareMsgAr = `نزل تطبيق Seaats لمشاركة الرحلات ووفر فلوس المواصلات والبنزين! إكسب خصم 60 جنيه مصري في أول رحلة ليك على التطبيق باستخدام كود الدعوة ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. انضم الآن! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`
     const onShare = async function () {
         try {
             const result = await Share.share({

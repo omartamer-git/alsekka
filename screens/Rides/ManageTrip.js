@@ -192,7 +192,7 @@ function ManageTrip({ route, navigation }) {
     };
     const errorManager = useErrorManager();
     function noShowConfirmed(passengerId) {
-        if(new Date().getTime() < new Date(tripDetails.datetime).getTime()) {
+        if (new Date().getTime() < new Date(tripDetails.datetime).getTime()) {
             errorManager.setError(t('error_wait_time'));
             return;
         }
@@ -347,22 +347,26 @@ function ManageTrip({ route, navigation }) {
                                 }
 
                                 return (
-                                    <View key={"passenger" + index} style={[styles.w100, styles.border1, styles.borderLight, styles.br8]}>
-                                        <Passenger borderTopWidth={borderTopWidth} data={data}>
+                                    <>
+                                        <View key={"passenger" + index} style={[styles.w100, styles.border1, styles.borderLight, styles.mv10]}>
+                                            <Passenger borderTopWidth={borderTopWidth} data={data}>
+                                            </Passenger>
+
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgSecondary]} activeOpacity={0.9}>
+                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgAccent]} activeOpacity={0.9}>
                                                     <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('check_in')}</Text>
                                                 </TouchableOpacity>
                                             }
                                             {
                                                 data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.ml5, styles.bgRed]} activeOpacity={0.9}>
-                                                    <MaterialIcons name="close" size={14} color={palette.white} />
+                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgRed]} activeOpacity={0.9}>
+                                                    {/* <MaterialIcons name="close" size={14} color={palette.white} /> */}
+                                                    <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('no_show')}</Text>
                                                 </TouchableOpacity>
                                             }
-                                        </Passenger>
-                                    </View>
+                                        </View>
+                                    </>
                                 );
                             })
                         }
@@ -433,14 +437,14 @@ function ManageTrip({ route, navigation }) {
 
                                     </Marker>
                                     <Marker onLayout={fitToSuppliedMarkers} key={"markerTo"} identifier='to' coordinate={{ latitude: tripDetails.toLatitude, longitude: tripDetails.toLongitude }}>
-                                        
+
                                     </Marker>
                                     <Polyline strokeColors={[palette.secondary, palette.primary]} coordinates={decodePolyline(tripDetails.polyline)} strokeWidth={3} />
 
                                 </MapView>
 
                                 <ArrowButton bgColor={palette.light} text={`Directions to ${tripDetails.mainTextTo}`} onPress={() => getDirections(tripDetails.toLatitude, tripDetails.toLongitude, `Arrive at ${tripDetails.mainTextTo}`)} />
-                                <Button bgColor={palette.secondary} textColor={palette.white} text={`Next`} onPress={enableArrived} />
+                                <Button bgColor={palette.accent} textColor={palette.white} text={`Next`} onPress={enableArrived} />
                             </>
                         }
 
@@ -480,7 +484,7 @@ function ManageTrip({ route, navigation }) {
                                                     </Text>
                                                 </View>
                                                 <View style={styles.flexOne} />
-                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={function () { setPassengerPaid(passenger.UserId) }} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgDark : styles.bgSuccess]}>
+                                                <TouchableOpacity disabled={hasPassengerPaid(passenger.UserId)} onPress={function () { setPassengerPaid(passenger.UserId) }} style={[{ width: 44 * rem, height: 44 * rem, alignSelf: 'center' }, styles.br8, styles.fullCenter, hasPassengerPaid(passenger.UserId) ? styles.bgSuccess : styles.bgLight]}>
                                                     <MaterialIcons name="check" size={22} color={palette.white} />
                                                 </TouchableOpacity>
                                             </View>
@@ -488,7 +492,7 @@ function ManageTrip({ route, navigation }) {
                                     })
                                 }
 
-                                <Button onPress={checkOut} bgColor={palette.secondary} textColor={palette.white} text={t('confirm_collections')} disabled={(paidPassengers.length !== (tripDetails.passengers.filter((p) =>( p.status !== 'NOSHOW' && p.status !== 'CANCELLED' && p.paymentMethod === 'CASH'))).length)} />
+                                <Button onPress={checkOut} bgColor={palette.success} textColor={palette.white} text={t('confirm_collections')} disabled={(paidPassengers.length !== (tripDetails.passengers.filter((p) => (p.status !== 'NOSHOW' && p.status !== 'CANCELLED' && p.paymentMethod === 'CASH'))).length)} />
                             </>
                         }
 
@@ -541,25 +545,25 @@ function ManageTrip({ route, navigation }) {
                                     }
                                 </View>
 
-                                <Button bgColor={palette.secondary} textColor={palette.white} text="End Ride" onPress={submitRatings} />
+                                <Button bgColor={palette.accent} textColor={palette.white} text={t('end_ride')} onPress={submitRatings} />
                             </>
                         }
 
                         {getPhase() === 0 &&
                             <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
-                                {t('please_press')} <Text style={styles.secondary}>{t('check_in')}</Text> {t('passenger_in_car')} <Text style={styles.error}>{t('red_x_button')}</Text>.
+                                {t('please_press')} <Text style={styles.accent}>{t('check_in')}</Text> {t('passenger_in_car')} <Text style={styles.error}>{t('red_x_button')}</Text>.
                             </Text>
                         }
 
                         {getPhase() === 2 &&
                             <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
-                                {t('please_press')} <Text style={styles.secondary}>{t('next')}</Text> {t('arrive_at_dest')}
+                                {t('please_press')} <Text style={styles.accent}>{t('next')}</Text> {t('arrive_at_dest')}
                             </Text>
                         }
 
                         {getPhase() === 3 &&
                             <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
-                                {t('please_press')} <Text style={styles.secondary}>{t('confirm_collections')}</Text> {t('receive_payments')}
+                                {t('please_press')} <Text style={styles.success}>{t('confirm_collections')}</Text> {t('receive_payments')}
                             </Text>
                         }
 
@@ -610,8 +614,8 @@ function ManageTrip({ route, navigation }) {
 const manageTripStyles = StyleSheet.create({
     manageBtn: {
         ...styles.fullCenter,
-        ...styles.p8,
-        ...styles.br8,
+        ...styles.p16,
+        // ...styles.br8,
     },
 
     manageBtnText: {

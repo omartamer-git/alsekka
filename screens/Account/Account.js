@@ -58,11 +58,11 @@ function Account({ route, navigation }) {
 
         let ratingsItems = [];
         for (let i = 0; i < fullStars; i++) {
-            ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" color={palette.secondary} />);
+            ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" color={palette.accent} />);
         }
 
         for (let j = 0; j < halfStars; j++) {
-            ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" color={palette.secondary} />);
+            ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" color={palette.accent} />);
         }
 
         setRatings(ratingsItems);
@@ -161,13 +161,20 @@ function Account({ route, navigation }) {
                     </View>
 
                     <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
-                        <Text style={[styles.text, styles.headerText2]}>{userStore.firstName} {userStore.lastName}</Text>
+                        <Text style={[styles.text, styles.headerText2, styles.dark]}>{userStore.firstName} {userStore.lastName}</Text>
                         <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
                             {ratings}
                         </View>
                         <View style={accountStyles.acctButtonsView}>
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Chats List') }}>
-                                <MaterialIcons name="message" size={40} color={palette.white} />
+                                <View style={[{ position: 'relative' }, styles.fullCenter]}>
+                                    <MaterialIcons name="message" size={40} color={palette.white} />
+                                    {userStore.unreadMessages > 0 &&
+                                        <View style={[styles.positionAbsolute, styles.bgRed, styles.br24, styles.fullCenter, { top: -5, right: -5, width: 20 * rem, height: 20 * rem }]}>
+                                            <Text style={[styles.text, styles.white]}>{userStore.unreadMessages > 9 ? '9+' : userStore.unreadMessages}</Text>
+                                        </View>
+                                    }
+                                </View>
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet') }}>
@@ -212,9 +219,12 @@ function Account({ route, navigation }) {
                                 <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={function () { navigation.navigate('Add Referral') }} />
                             </>
                         }
+                        <Button bgColor={palette.accent} textColor={palette.white} text={t('help')} onPress={() => {
+                            Linking.openURL("https://wa.me/201028182577")
+                        }} />
                         <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
                         <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={function () { setTermsModalVisible(true) }} />
-                        <Button bgColor={palette.red} textColor={palette.white} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
+                        <Button bgColor={palette.light} textColor={palette.dark} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
                     </View>
                 </ScrollView>
             </ScreenWrapper>
@@ -291,8 +301,8 @@ function Account({ route, navigation }) {
 
             <BottomModal onHide={() => setDeleteAccountModalVisible(false)} modalVisible={deleteAccountModalVisible}>
                 <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
-                    <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter]}>{t('sure_delete')}</Text>
-                    <Text style={[styles.text, styles.inputText]}>{t('enter_password')}</Text>
+                    <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter, styles.dark]}>{t('sure_delete')}</Text>
+                    <Text style={[styles.text, styles.inputText, styles.dark]}>{t('enter_password')}</Text>
                     <CustomTextInput
                         value={deletePassword}
                         onChangeText={setDeletePassword}
@@ -301,18 +311,18 @@ function Account({ route, navigation }) {
                         error={deleteError}
                     />
 
-                    <Button text={t('confirm')} bgColor={palette.red} textColor={palette.white} onPress={confirmDelete} />
-                    <Button text={t('cancel')} bgColor={palette.secondary} textColor={palette.white} onPress={() => setDeleteAccountModalVisible(false)} />
+                    <Button text={t('confirm')} bgColor={palette.light} textColor={palette.dark} onPress={confirmDelete} />
+                    <Button text={t('cancel')} bgColor={palette.accent} textColor={palette.white} onPress={() => setDeleteAccountModalVisible(false)} />
                 </View>
             </BottomModal>
 
             <BottomModal onHide={hideDeleteConfirmation} modalVisible={deleteConfirmationVisible}>
                 <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
 
-                    <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5]}>
+                    <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5, styles.dark]}>
                         {t('deletion_confirmation')}
                     </Text>
-                    <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5]}>
+                    <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5, styles.dark]}>
                         {t('deletion_confirmation_thanks')}
                     </Text>
 
@@ -345,6 +355,7 @@ const accountStyles = StyleSheet.create({
         ...styles.mh5,
         borderRadius: 4 * rem,
         ...styles.fullCenter,
+        position: 'relative'
     },
 
     acctButtonsText: {

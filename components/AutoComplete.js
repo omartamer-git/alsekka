@@ -291,7 +291,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         }
         return (
             <TouchableOpacity style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
-                <Text style={[styles2.text, { width: '90%' }]}>{prediction[0]}</Text>
+                <Text style={[styles2.text, styles2.dark, { width: '90%' }]}>{prediction[0]}</Text>
                 <TouchableOpacity onPress={function () { addToFavorites(prediction) }} style={[{ width: '10%' }]}>
                     <MaterialIcons name="favorite" size={20} color={color} />
                 </TouchableOpacity>
@@ -306,7 +306,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                     {
                         cities.map((city, index) => (
                             <TouchableOpacity key={`city-${index}`} style={styles.predictionBox} onPress={() => onCitySelect(city)}>
-                                <Text style={[styles2.text, { width: '90%' }]}>
+                                <Text style={[styles2.text, styles2.dark, { width: '90%' }]}>
                                     {I18nManager.isRTL ? appManager.cities[city].label_ar : appManager.cities[city].label_en}
                                 </Text>
                                 <MaterialIcons name="arrow-forward-ios" />
@@ -329,7 +329,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                         <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={styles2.bgPrimary} action={cancelAutoComplete} >
                             <View style={styles2.localeWrapper}>
                                 <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
-                                <Text style={[styles2.locale, styles2.text]}>EN</Text>
+                                <Text style={[styles2.locale, styles2.dark, styles2.text]}>EN</Text>
                             </View>
                         </HeaderView>
                     </SafeAreaView>
@@ -367,7 +367,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                                     !predictions &&
                                                     <>
                                                         <ScrollView keyboardShouldPersistTaps={"handled"} style={[styles2.flexOne, styles2.w100]}>
-                                                            <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>{t('recent_destinations')}</Text>
+                                                            <Text style={[styles2.headerText3, styles2.text, styles2.dark, { marginTop: 30 }]}>{t('recent_destinations')}</Text>
                                                             <>
                                                                 <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
                                                                     {
@@ -379,7 +379,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                                                                 }
                                                                                 return (
                                                                                     <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
-                                                                                        <Text numberOfLines={2} style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
+                                                                                        <Text numberOfLines={2} style={[styles2.text, styles2.dark, { flex: 17 }]}>{prediction[0]}</Text>
                                                                                         <TouchableOpacity activeOpacity={1} style={[styles2.alignEnd, { flex: 3 }]}>
                                                                                             <MaterialIcons name="history" size={20} color={palette.dark} />
                                                                                         </TouchableOpacity>
@@ -391,7 +391,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                                                 </View>
                                                             </>
 
-                                                            <Text style={[styles2.headerText3, styles2.text, { marginTop: 30 }]}>{t('favorite_destinations')}</Text>
+                                                            <Text style={[styles2.headerText3, styles2.text, styles2.dark, { marginTop: 30 }]}>{t('favorite_destinations')}</Text>
                                                             <>
                                                                 <View style={[{ flex: 1, marginTop: 10, width: '100%' }]}>
                                                                     {
@@ -404,7 +404,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                                                                 let color = palette.red;
                                                                                 return (
                                                                                     <TouchableOpacity key={index} style={styles.predictionBox} onPress={function () { moveInput(prediction) }}>
-                                                                                        <Text numberOfLines={2} style={[styles2.text, { flex: 17 }]}>{prediction[0]}</Text>
+                                                                                        <Text numberOfLines={2} style={[styles2.text, styles2.dark, { flex: 17 }]}>{prediction[0]}</Text>
                                                                                         <TouchableOpacity onPress={function () { addToFavorites(prediction) }} style={[styles2.alignEnd, { flex: 3 }]}>
                                                                                             <MaterialIcons name="favorite" size={20} color={color} />
                                                                                         </TouchableOpacity>
@@ -419,13 +419,13 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
 
                                                             <TouchableOpacity style={styles.alternativeOption} onPress={function () { setModalMap(true) }}>
                                                                 <MaterialIcons name="place" size={16} color={palette.black} />
-                                                                <Text style={[styles2.text, styles2.ml10]}>{t('choose_location')}</Text>
+                                                                <Text style={[styles2.text, styles2.dark, styles2.ml10]}>{t('choose_location')}</Text>
                                                             </TouchableOpacity>
 
                                                             {currLocation &&
                                                                 <TouchableOpacity style={styles.alternativeOption} onPress={setCurrentLocation}>
                                                                     <MaterialIcons name="my-location" size={16} color={palette.black} />
-                                                                    <Text style={[styles2.text, styles2.ml10]}>{t('current_location')}</Text>
+                                                                    <Text style={[styles2.text, styles2.dark, styles2.ml10]}>{t('current_location')}</Text>
                                                                 </TouchableOpacity>
                                                             }
 
