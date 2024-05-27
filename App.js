@@ -14,7 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, PermissionsAndroid } from 'react-native';
+import { Image, PermissionsAndroid, ScrollView } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 import * as TaskManager from 'expo-task-manager';
@@ -86,6 +86,9 @@ import CustomerService from './screens/Chat/CustomerService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomModal from './components/BottomModal';
 import Button from './components/Button';
+import { passengerPendingRatings } from './api/ridesAPI';
+import FastImage from 'react-native-fast-image';
+import PendingRatingsModal from './components/PendingRatingsModal';
 
 
 const RootStack = createNativeStackNavigator();
@@ -320,12 +323,22 @@ function App() {
   const errorManager = useErrorManager();
   const navigationRef = useRef();
   const routeNameRef = useRef();
+  const [pendingRatings, setPendingRatings] = useState();
 
   useEffect(function () {
     if (appManager.deviceToken && userStore.id) {
       userStore.linkDevice(appManager.deviceToken);
     }
   }, [appManager.deviceToken, userStore.id]);
+
+  useEffect(() => {
+    const pending = passengerPendingRatings().then(pending => {
+      console.log(pending);
+      if (!pending.complete) {
+        setPendingRatings(pending);
+      }
+    });
+  }, [authManager.authenticated]);
 
   const LoggedInStack = ({ route, navigation }) => {
     return (
@@ -537,6 +550,11 @@ function App() {
               <Button text={t('cancel')} onPress={() => setModalBackgroundLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
             </View>
           </BottomModal>
+        }
+
+        {
+          pendingRatings &&
+          <PendingRatingsModal pendingRatings={pendingRatings} />
         }
         <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
         <NavigationContainer

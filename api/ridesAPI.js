@@ -341,6 +341,40 @@ export const submitDriverRatings = async function (tripId, ratings) {
     return data;
 };
 
+export const passengerPendingRatings = async function () {
+    const url = `/v1/ride/passengerpendingratings`;
+    
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url);
+
+    const data = response.data;
+    return data;
+}
+
+export const dismissPassengerPendingRatings = async function() {
+    const url = `/v1/ride/dismisspassengerratings`;
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.get(url);
+
+    return true;
+}
+
+
+export const submitPassengerRatings = async function (tripId, ratings) {
+    const url = `/v1/ride/submitpassengerratings`;
+    const body = { tripId, ratings };
+
+    const axiosManager = useAxiosManager.getState();
+    const response = await axiosManager.authAxios.post(url, body, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    const data = response.data;
+    return data;
+};
+
 export const pastRides = async function (limit, page = 1) {
     let url = `/v1/ride/pastrides`;
     const uid = useUserStore.getState().id;

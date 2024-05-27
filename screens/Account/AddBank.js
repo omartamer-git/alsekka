@@ -98,7 +98,7 @@ function AddBank({ navigation, route }) {
                                 iconLeft="tag"
                             />
 
-
+{/* 
                             <Text style={[styles.text, styles.inputText]}>{t('swift_code')}</Text>
 
                             <CustomTextInput
@@ -108,10 +108,10 @@ function AddBank({ navigation, route }) {
                                 onChangeText={handleChange('swiftCodeInput')}
                                 error={touched.swiftCodeInput && errors.swiftCodeInput}
                                 iconLeft="next-week"
-                            />
+                            /> */}
 
                             <View style={styles.flexOne} />
-                            <Button text={t('add_account')} bgColor={palette.secondary} textColor={palette.white} onPress={handleSubmit} disabled={submitDisabled} />
+                            <Button text={t('add_account')} bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} disabled={submitDisabled} />
                         </>
                     )}
                 </Formik>

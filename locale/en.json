@@ -164,6 +164,7 @@
         "rate": "Rate",
         "ratings": "Ratings",
         "ratings_text": "Please take a moment to rate the passengers you've taken this ride with. This helps us keep up the integrity of our market!",
+        "ratings_passengers": "We hope you enjoyed your ride to %%. Please take a moment to rate your fellow passengers and the ride host.",
         "check_out": "Check Out",
         "confirm_check_out": "By clicking CONFIRM, you confirm that the passenger has paid the amount you specified and has left the car.",
         "check_in": "Check In",
