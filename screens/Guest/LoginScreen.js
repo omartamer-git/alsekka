@@ -37,9 +37,10 @@ function LoginScreen({ route, navigation }) {
     }
 
     phoneNum = "0" + phoneNum;
-
+    // console.log("phone num");
     userStore.login(phoneNum, password).then(
       (data) => {
+        console.log(data);
         setSubmitDisabled(true);
         userStore.getAvailableCards();
         userStore.getBankAccounts();
@@ -54,7 +55,8 @@ function LoginScreen({ route, navigation }) {
             });
         }
       }).catch(err => {
-        setErrorMessage(err.response.data.error.message);
+        console.log(err);
+        // setErrorMessage(err.response.data.error.message);
       }).finally(function () {
         setSubmitDisabled(false);
       });
@@ -79,6 +81,7 @@ function LoginScreen({ route, navigation }) {
   }, []);
 
   useFocusEffect(onFocusEffect); // register callback to focus events
+
 
   return (
     <View style={styles.backgroundStyle}>
@@ -131,6 +134,7 @@ function LoginScreen({ route, navigation }) {
                       onBlur={handleBlur('passwordInput')}
                       placeholder={t('enter_password')}
                       secureTextEntry={true}
+                      textContentType={'oneTimeCode'}
                       error={touched.passwordInput && errors.passwordInput}
                     />
 

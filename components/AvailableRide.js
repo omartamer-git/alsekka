@@ -9,7 +9,7 @@ import useLocale from '../locale/localeContext';
 function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsAvailable, date, driverName, duration, model, brand, pickupEnabled, gender, DriverId, onPress = function () { }, style = {} }) {
     const items = [];
     const rideFull = (seatsAvailable - seatsOccupied) <= 0;
-    const { id } = useUserStore();
+    const id = useUserStore((state) => state.id);
     const { t } = useTranslation();
     const { language } = useLocale();
     const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];

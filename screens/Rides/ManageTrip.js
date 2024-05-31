@@ -347,26 +347,24 @@ function ManageTrip({ route, navigation }) {
                                 }
 
                                 return (
-                                    <>
-                                        <View key={"passenger" + index} style={[styles.w100, styles.border1, styles.borderLight, styles.mv10]}>
-                                            <Passenger borderTopWidth={borderTopWidth} data={data}>
-                                            </Passenger>
+                                    <View key={"passenger" + index} style={[styles.w100, styles.border1, styles.borderLight, styles.mv10]}>
+                                        <Passenger borderTopWidth={borderTopWidth} data={data}>
+                                        </Passenger>
 
-                                            {
-                                                data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgAccent]} activeOpacity={0.9}>
-                                                    <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('check_in')}</Text>
-                                                </TouchableOpacity>
-                                            }
-                                            {
-                                                data.status === 'CONFIRMED' &&
-                                                <TouchableOpacity disabled={submitDisabled} onPress={function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgRed]} activeOpacity={0.9}>
-                                                    {/* <MaterialIcons name="close" size={14} color={palette.white} /> */}
-                                                    <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('no_show')}</Text>
-                                                </TouchableOpacity>
-                                            }
-                                        </View>
-                                    </>
+                                        {
+                                            data.status === 'CONFIRMED' &&
+                                            <TouchableOpacity disabled={submitDisabled} onPress={function () { checkIn(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgAccent]} activeOpacity={0.9}>
+                                                <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('check_in')}</Text>
+                                            </TouchableOpacity>
+                                        }
+                                        {
+                                            data.status === 'CONFIRMED' &&
+                                            <TouchableOpacity disabled={submitDisabled} onPress={function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgRed]} activeOpacity={0.9}>
+                                                {/* <MaterialIcons name="close" size={14} color={palette.white} /> */}
+                                                <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('no_show')}</Text>
+                                            </TouchableOpacity>
+                                        }
+                                    </View>
                                 );
                             })
                         }

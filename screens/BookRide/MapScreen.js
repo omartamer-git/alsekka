@@ -243,7 +243,7 @@ function MapScreen({ route, navigation }) {
               cities={citiesTo}
               handleCancelLocationSelect={cancelLocationTo}
             />
-            <TouchableOpacity activeOpacity={0.8} onPress={swapDestinations} style={[styles.positionAbsolute, styles.alignCenter, styles.justifyCenter, styles.bgWhite, styles.borderSecondary, { top: 24 * rem, right: 5 * rem, height: 48 * rem, width: 48 * rem, borderRadius: 24 * rem, shadowColor: palette.black, shadowRadius: 12 * rem, shadowOpacity: 0.2 }]}>
+            <TouchableOpacity activeOpacity={0.8} onPress={swapDestinations} style={[styles.positionAbsolute, styles.alignCenter, styles.justifyCenter, styles.bgWhite, styles.borderSecondary, { top: 24 * rem, right: 5 * rem, height: 48 * rem, width: 48 * rem, borderRadius: 24 * rem, shadowColor: palette.black, shadowRadius: 12 * rem, shadowOpacity: 0.2, elevation: 10 }]}>
               <MaterialIcons name="swap-vert" size={22} color={palette.primary} />
             </TouchableOpacity>
           </View>
@@ -295,6 +295,7 @@ const mapScreenStyles = StyleSheet.create({
     shadowColor: palette.black,
     shadowOffset: { width: 0, height: 1 * rem },
     shadowOpacity: 0.2, shadowRadius: 4,
+    elevation: 10,
     position: 'relative',
     marginTop: -64 * rem,
     zIndex: 6

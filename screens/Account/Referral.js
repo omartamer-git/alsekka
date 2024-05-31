@@ -41,8 +41,8 @@ function Referral({ navigation, route }) {
 
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
-    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 60 EGP off your first trip using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
-    const shareMsgAr = `نزل تطبيق Seaats لمشاركة الرحلات ووفر فلوس المواصلات والبنزين! إكسب خصم 60 جنيه مصري في أول رحلة ليك على التطبيق باستخدام كود الدعوة ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. انضم الآن! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`
+    const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 60 EGP added to your wallet using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
+    const shareMsgAr = `نزل تطبيق Seaats لمشاركة الرحلات ووفر فلوس المواصلات والبنزين! إكسب 60 جنيه في محفظتك على التطبيق باستخدام كود الدعوة ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. انضم الآن! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`
     const onShare = async function () {
         try {
             const result = await Share.share({
@@ -85,7 +85,7 @@ function Referral({ navigation, route }) {
                             }, 3000)
                         }}
                         style={[styles.w100, styles.br8, styles.mt10]}>
-                        <View style={[styles.bgAccent, styles.alignCenter, styles.justifyCenter, styles.border1, styles.p8, styles.br8]}>
+                        <View style={[styles.bgAccent, styles.alignCenter, styles.justifyCenter, styles.p8, styles.br8]}>
                             <Text style={[styles.text, styles.white]}>{t('your_code')}</Text>
                             {!copied && <Text style={[styles.text, styles.white, styles.bold]}>{config.REFERRAL_PREFIX}{config.REFERRAL_INCREMENT + id}</Text>}
                             {copied && <Text style={[styles.text, styles.white, styles.bold]}>{t('copied')}</Text>}

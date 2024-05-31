@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -79,7 +79,7 @@ function SignUpScreen({ route, navigation }) {
       t('error_invalid_phone')
     )
       .required(t('error_required')),
-    passwordInput: Yup.string().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, t('error_invalid_password')).required(t('error_required')),
+    passwordInput: Yup.string().min(8, t('error_invalid_password')).required(t('error_required')),
     emailInput: Yup.string().email(t('error_invalid_email')).required(t('error_required')),
     firstNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required')),
     lastNameInput: Yup.string().min(2, t('error_name_short')).max(20, t('error_name_long')).required(t('error_required'))
@@ -97,7 +97,11 @@ function SignUpScreen({ route, navigation }) {
 
   useFocusEffect(onFocusEffect); // register callback to focus events    
 
-
+  const refFirstName = useRef();
+  const refLastName = useRef();
+  const refPhone = useRef();
+  const refEmail = useRef();
+  const refPassword = useRef();
 
   return (
     <View style={styles.backgroundStyle} >
@@ -135,6 +139,9 @@ function SignUpScreen({ route, navigation }) {
                           onBlur={handleBlur('firstNameInput')}
                           error={touched.firstNameInput && errors.firstNameInput}
                           placeholder={t('first_name')}
+                          returnKeyType={'next'}
+                          blurOnSubmit={false}
+                          onSubmitEditing={() => refLastName.current.focus()}
                         />
                       </View>
 
@@ -146,6 +153,10 @@ function SignUpScreen({ route, navigation }) {
                           onBlur={handleBlur('lastNameInput')}
                           error={touched.lastNameInput && errors.lastNameInput}
                           placeholder={t('last_name')}
+                          blurOnSubmit={false}
+                          returnKeyType={'next'}
+                          inputRef={refLastName}
+                          onSubmitEditing={() => refPhone.current.focus()}
                         />
                       </View>
 
@@ -165,6 +176,10 @@ function SignUpScreen({ route, navigation }) {
                       error={touched.phoneInput && errors.phoneInput}
                       placeholder={t('enter_phone')}
                       keyboardType="number-pad"
+                      blurOnSubmit={false}
+                      returnKeyType={'next'}
+                      inputRef={refPhone}
+                      onSubmitEditing={() => refEmail.current.focus()}
                     />
 
                     <Text style={[styles.text, styles.inputText]}>
@@ -177,6 +192,10 @@ function SignUpScreen({ route, navigation }) {
                       onBlur={handleBlur('emailInput')}
                       error={touched.emailInput && errors.emailInput}
                       autoCapitalize='none'
+                      blurOnSubmit={false}
+                      returnKeyType={'next'}
+                      inputRef={refEmail}
+                      onSubmitEditing={() => refPassword.current.focus()}
                     />
 
                     <Text style={[styles.text, styles.inputText]}>{t('password')}</Text>
@@ -187,6 +206,10 @@ function SignUpScreen({ route, navigation }) {
                       secureTextEntry={true}
                       onBlur={handleBlur('passwordInput')}
                       error={touched.passwordInput && errors.passwordInput}
+                      blurOnSubmit={false}
+                      textContentType={'newPassword'}
+                      returnKeyType={'next'}
+                      inputRef={refPassword}
                     />
 
                     <View style={[styles.flexRow, styles.w100, styles.mt20]}>

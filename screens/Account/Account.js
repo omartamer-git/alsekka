@@ -37,9 +37,24 @@ function Account({ route, navigation }) {
     const [deleteError, setDeleteError] = useState('');
     const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
 
-    const userStore = useUserStore();
+    // const userStore = useUserStore();
+    const userPhone = useUserStore((state) => state.phone);
+    const userReset = useUserStore((state) => state.reset);
+    const userRating = useUserStore((state) => state.rating);
+    const userEditName = useUserStore((state) => state.editName);
+    const userEditEmail = useUserStore((state) => state.editEmail);
+    const userEditPhone = useUserStore((state) => state.editPhone);
+    const userDeleteAccount = useUserStore((state) => state.deleteAccount);
+    const userUpdateProfilePicture = useUserStore((state) => state.uploadProfilePicture);
+    const userProfilePicture = useUserStore((state) => state.profilePicture);
+    const userFirstName = useUserStore((state) => state.firstName);
+    const userLastName = useUserStore((state) => state.lastName);
+    const userUnreadMessages = useUserStore((state) => state.unreadMessages);
+    const userDriver = useUserStore((state) => state.driver)
+    const userEmail = useUserStore((state) => state.email);
 
-    const [editPhoneText, setEditPhoneText] = useState(userStore.phone);
+
+    const [editPhoneText, setEditPhoneText] = useState(userPhone);
     const [emailError, setEmailError] = useState(null);
     const [phoneError, setPhoneError] = useState(null);
     const authManager = useAuthManager();
@@ -49,12 +64,12 @@ function Account({ route, navigation }) {
     const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
     const logout = function () {
         authManager.logout();
-        userStore.reset();
+        userReset();
     };
 
     useEffect(function () {
-        const fullStars = Math.floor(userStore.rating);
-        const halfStars = Math.ceil(userStore.rating) - Math.abs(userStore.rating);
+        const fullStars = Math.floor(userRating);
+        const halfStars = Math.ceil(userRating) - Math.abs(userRating);
 
         let ratingsItems = [];
         for (let i = 0; i < fullStars; i++) {
@@ -96,7 +111,7 @@ function Account({ route, navigation }) {
     });
 
     function saveEditName(firstNameInput, lastNameInput) {
-        userStore.editName(firstNameInput, lastNameInput).then(function () {
+        userEditName(firstNameInput, lastNameInput).then(function () {
             setEditNameModalVisible(false);
         }).catch(err => {
             console.log(err);
@@ -104,7 +119,7 @@ function Account({ route, navigation }) {
     };
 
     function saveEditEmail(emailInput) {
-        userStore.editEmail(emailInput).then(data => {
+        userEditEmail(emailInput).then(data => {
             setEditEmailModalVisible(false);
         }).catch(err => {
             setEmailError(err.response.data.error.message);
@@ -112,7 +127,7 @@ function Account({ route, navigation }) {
     };
 
     function saveEditPhone(phoneInput) {
-        userStore.editPhone(phoneInput).then(function () {
+        userEditPhone(phoneInput).then(function () {
             setEditPhoneModalVisible(false);
         }).catch(err => {
             setPhoneError(err.response.data.error.message);
@@ -120,7 +135,7 @@ function Account({ route, navigation }) {
     };
 
     function confirmDelete() {
-        userStore.deleteAccount(deletePassword).then(function () {
+        userDeleteAccount(deletePassword).then(function () {
             setDeleteAccountModalVisible(false);
             setDeleteConfirmationVisible(true);
         }).catch(err => {
@@ -141,7 +156,7 @@ function Account({ route, navigation }) {
     async function onClickUpload(e) {
         const response = await launchImageLibrary(imagePickerOptions);
         if (!response.didCancel && !response.error) {
-            userStore.uploadProfilePicture(response);
+            userUpdateProfilePicture(response);
         }
     };
 
@@ -152,7 +167,7 @@ function Account({ route, navigation }) {
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
                         <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
-                            {userStore.profilePicture && <FastImage source={{ uri: userStore.profilePicture }} style={accountStyles.profilePicture} />}
+                            {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}
 
                             <View style={accountStyles.profilePictureOverlay}>
                                 <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
@@ -161,7 +176,7 @@ function Account({ route, navigation }) {
                     </View>
 
                     <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
-                        <Text style={[styles.text, styles.headerText2, styles.dark]}>{userStore.firstName} {userStore.lastName}</Text>
+                        <Text style={[styles.text, styles.headerText2, styles.dark]}>{userFirstName} {userLastName}</Text>
                         <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
                             {ratings}
                         </View>
@@ -169,9 +184,9 @@ function Account({ route, navigation }) {
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Chats List') }}>
                                 <View style={[{ position: 'relative' }, styles.fullCenter]}>
                                     <MaterialIcons name="message" size={40} color={palette.white} />
-                                    {userStore.unreadMessages > 0 &&
+                                    {userUnreadMessages > 0 &&
                                         <View style={[styles.positionAbsolute, styles.bgRed, styles.br24, styles.fullCenter, { top: -5, right: -5, width: 20 * rem, height: 20 * rem }]}>
-                                            <Text style={[styles.text, styles.white]}>{userStore.unreadMessages > 9 ? '9+' : userStore.unreadMessages}</Text>
+                                            <Text style={[styles.text, styles.white]}>{userUnreadMessages > 9 ? '9+' : userUnreadMessages}</Text>
                                         </View>
                                     }
                                 </View>
@@ -190,17 +205,17 @@ function Account({ route, navigation }) {
                         <View style={styles.w100}>
                             <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={function () { navigation.navigate('Manage Cars') }} />
                             <CustomTextInput
-                                value={userStore.firstName + " " + userStore.lastName}
+                                value={userFirstName + " " + userLastName}
                                 iconLeft="badge"
                                 iconRight="edit"
                                 editable={false}
                                 style={accountStyles.editInput}
-                                onPressIn={() => !userStore.driver ? setEditNameModalVisible(true) : ""}
+                                onPressIn={() => !userDriver ? setEditNameModalVisible(true) : ""}
                                 role="button"
-                                disabled={userStore.driver}
+                                disabled={userDriver}
                             />
                             <CustomTextInput
-                                value={userStore.email}
+                                value={userEmail}
                                 iconLeft="mail"
                                 iconRight="edit"
                                 editable={false}
@@ -232,7 +247,7 @@ function Account({ route, navigation }) {
             <BottomModal onHide={() => setEditNameModalVisible(false)} modalVisible={editNameModalVisible}>
                 <View style={[styles.w100]}>
                     <Formik
-                        initialValues={{ firstNameInput: userStore.firstName, lastNameInput: userStore.lastName }}
+                        initialValues={{ firstNameInput: userFirstName, lastNameInput: userLastName }}
                         validationSchema={editNameSchema}
                         onSubmit={(values) => { saveEditName(values.firstNameInput, values.lastNameInput) }}
                     >
@@ -269,7 +284,7 @@ function Account({ route, navigation }) {
                 <View style={[styles.w100]}>
                     <ErrorMessage message={emailError} condition={emailError} />
                     <Formik
-                        initialValues={{ emailInput: userStore.email }}
+                        initialValues={{ emailInput: userEmail }}
                         validationSchema={editEmailSchema}
                         onSubmit={(values) => { saveEditEmail(values.emailInput) }}
                     >

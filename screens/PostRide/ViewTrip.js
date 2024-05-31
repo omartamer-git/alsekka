@@ -180,8 +180,8 @@ function ViewTrip({ route, navigation }) {
     }
 
     async function onShare() {
-        const shareMsg = "🚗✨ Save on transportation by joining my carpool on Seaats! Click here: https://seaats.app/share/ride/" + tripId + " Let's ride together and cut costs! 🌍💰"
-        const shareMsgAr = "🚗✨ وفر في تكاليف التنقل بالانضمام إلى رحلتي في Seaats! اضغط هنا: https://seaats.app/share/ride/" + tripId + " يلا نشارك الرحلة نوفر في المصاريف! 🌍💰";
+        const shareMsg = "🚗✨ Save on transportation by joining my carpool on Seaats! I'm traveling from " + tripDetails.mainTextFrom + " to " + tripDetails.mainTextTo + ". Click here: https://seaats.app/share/ride/" + tripId + " Let's ride together and cut costs! 🌍💰"
+        const shareMsgAr = "🚗✨ وفر في تكاليف التنقل بالانضمام إلى رحلتي في Seaats! أنا مسافر من " + tripDetails.mainTextTo + " إلى " + tripDetails.mainTextFrom + ". اضغط هنا: https://seaats.app/share/ride/" + tripId + " يلا نشارك الرحلة نوفر في المصاريف! 🌍💰";
         try {
             const result = await Share.share({
                 message: I18nManager.isRTL ? shareMsgAr : shareMsg
@@ -563,7 +563,8 @@ const viewTripStyles = StyleSheet.create({
         shadowColor: palette.black,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.2,
-        shadowRadius: 4
+        shadowRadius: 4,
+        elevation: 10
     },
 
     biggerBubble: {

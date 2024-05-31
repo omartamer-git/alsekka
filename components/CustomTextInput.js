@@ -8,8 +8,8 @@ function CustomTextInput({ value,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
-    returnKeyType, onSubmitEditing,
-    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false }) {
+    returnKeyType, onSubmitEditing, textContentType,
+    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit=true }) {
 
     const styles2 = StyleSheet.create({
         container: {
@@ -94,17 +94,18 @@ function CustomTextInput({ value,
                     secureTextEntry={secureTextEntry}
                     onFocus={onFocus}
                     autoCorrect={false}
-                    blurOnSubmit={true}
+                    blurOnSubmit={blurOnSubmit}
                     onBlur={onBlur}
                     placeholderTextColor={palette.light}
                     ref={inputRef}
                     onKeyPress={onKeyPress}
-                    textContentType={secureTextEntry ? 'oneTimeCode' : 'none'}
+                    textContentType={textContentType || 'none'}
                     onFocus={onPressIn_}
                     numberOfLines={1}
                     returnKeyType={returnKeyType}
                     ellipsizeMode='tail'
                     autoCapitalize={autoCapitalize || 'sentences'}
+                    onSubmitEditing={onSubmitEditing}
                 />
                 {
                     iconRight &&

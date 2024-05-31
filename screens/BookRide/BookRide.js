@@ -681,7 +681,8 @@ const bookRideStyles = StyleSheet.create({
         shadowColor: palette.black,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.2,
-        shadowRadius: 4 * rem
+        shadowRadius: 4 * rem,
+        elevation: 10
     },
 
     paymentMethod: {

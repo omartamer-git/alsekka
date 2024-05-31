@@ -11,7 +11,15 @@ const useAuthManager = create((set) => ({
     setAuthenticated: (authenticated) => set((state) => ({ authenticated: authenticated })),
     
     logout: async  function () {
-        await Keychain.resetGenericPassword();
+        await Keychain.setGenericPassword(
+            'token',
+            JSON.stringify({
+                accessToken: null,
+                refreshToken: null,
+            }),
+        );
+        
+        // await Keychain.resetGenericPassword();
         set({
             accessToken: null,
             refreshToken: null,

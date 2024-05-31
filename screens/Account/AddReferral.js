@@ -18,12 +18,14 @@ import SuccessCheck from '../../components/SuccessCheck';
 
 function AddReferral({ navigation, route }) {
     const referralCode = route.params?.referralCode;
-    const { id, addReferral } = useUserStore();
+    const id = useUserStore((state) => state.id);
+    const addReferral = useUserStore((state) => state.addReferral);
     const { t } = useTranslation();
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [success, setSuccess] = useState(false);
 
     function onSubmitReferralCode(referralCode) {
+        console.log(referralCode);
         setSubmitDisabled(true);
         addReferral(referralCode).then(res => {
             setSuccess(true);

@@ -1,4 +1,4 @@
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { I18nManager, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import ScreenWrapper from "../ScreenWrapper";
 import { containerStyle, palette, rem, styles } from "../../helper";
 import CustomTextInput from "../../components/CustomTextInput";
@@ -13,6 +13,7 @@ import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as Yup from 'yup';
 import FastImage from "react-native-fast-image";
+import useErrorManager from "../../context/errorManager";
 
 
 function NewCommunity({ navigation, route }) {
@@ -36,7 +37,8 @@ function NewCommunity({ navigation, route }) {
         }
     }
 
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
+    const setError = useErrorManager((state) => state.setError);
 
     async function handleSubmit(name, description, privacy, joinQuestion) {
         setSubmitDisabled(true);
@@ -44,6 +46,7 @@ function NewCommunity({ navigation, route }) {
             if (!communityPhoto) {
                 const errorMessage = I18nManager.isRTL ? "مطلوب صورة المجتمع" : "Community picture is required";
                 setError(errorMessage);
+                return;
             }
             await createCommunity(name, description, privacy, communityPhoto, joinQuestion);
             navigation.goBack();
@@ -81,7 +84,7 @@ function NewCommunity({ navigation, route }) {
                                     </View>
                                 </TouchableOpacity>
 
-                                <Text style={[styles.text, styles.error, styles.bold, styles.font14, styles.mt10]}>{error}</Text>
+                                {/* <Text style={[styles.text, styles.error, styles.bold, styles.font14, styles.mt10]}>{error}</Text> */}
                             </View>
 
                             <Text style={[styles.text, styles.inputText]}>{t('community_name')}</Text>

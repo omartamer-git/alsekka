@@ -16,6 +16,7 @@ import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
+import FastImage from 'react-native-fast-image';
 
 function Otp({ route, navigation }) {
     const firstName = route.params?.firstName;
@@ -129,6 +130,8 @@ function Otp({ route, navigation }) {
             </View>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle]}>
                 <Button disabled={!uri} onPress={openWhatsapp} bgColor={palette.success} textColor={palette.white} text="Verify Using WhatsApp" />
+
+                <FastImage source={{uri: 'https://seaats.app/img/create_acc_guide.png'}} style={{width: '100%', aspectRatio: 1, borderRadius: 8}}/>
             </ScrollView>
         </ScreenWrapper>
     );

@@ -30,7 +30,7 @@ export default function TextArea(props) {
                     multiline={true}
                     numberOfLines={4}
                     placeholderTextColor={palette.light}
-                    style={[styles.text, styles.accent, styles.flexOne, styles.semiBold, styles.textStart, {lineHeight: 16 * rem}]}
+                    style={[styles.text, styles.dark, styles.flexOne, styles.semiBold, styles.textStart, {lineHeight: 16 * rem}]}
                     ref={inputRef}
                 />
             </TouchableOpacity>

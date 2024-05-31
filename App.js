@@ -14,7 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, PermissionsAndroid, ScrollView } from 'react-native';
+import { Image, PermissionsAndroid } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 import * as TaskManager from 'expo-task-manager';
@@ -65,16 +65,18 @@ import AllTrips from './screens/Rides/AllTrips';
 import Checkout from './screens/Rides/Checkout';
 
 import { stopLocationUpdatesAsync } from 'expo-location';
-import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
 import codePush from 'react-native-code-push';
 import SplashScreen from 'react-native-splash-screen';
+import { passengerPendingRatings } from './api/ridesAPI';
 import { registerDevice } from './api/utilAPI';
+import BottomModal from './components/BottomModal';
+import Button from './components/Button';
 import DismissableError from './components/DismissableError';
+import PendingRatingsModal from './components/PendingRatingsModal';
 import useAppManager from './context/appManager';
-import useErrorManager from './context/errorManager';
 import useLocale from './locale/localeContext';
 import './locale/translate';
 import AddReferral from './screens/Account/AddReferral';
@@ -83,12 +85,7 @@ import ViewWithdrawals from './screens/Account/ViewWithdrawals';
 import Payment from './screens/BookRide/Payment';
 import RideBooked from './screens/BookRide/RideBooked';
 import CustomerService from './screens/Chat/CustomerService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import BottomModal from './components/BottomModal';
-import Button from './components/Button';
-import { passengerPendingRatings } from './api/ridesAPI';
-import FastImage from 'react-native-fast-image';
-import PendingRatingsModal from './components/PendingRatingsModal';
+import useErrorManager from './context/errorManager';
 
 
 const RootStack = createNativeStackNavigator();
@@ -109,7 +106,17 @@ function App() {
   const { t, i18n } = useTranslation();
 
   const authManager = useAuthManager();
-  const userStore = useUserStore();
+
+  const postDriverLocation = useUserStore((state) => state.postDriverLocation);
+  const userInfo = useUserStore((state) => state.userInfo);
+  const getAvailableCards = useUserStore((state) => state.getAvailableCards);
+  const getBankAccounts = useUserStore((state) => state.getBankAccounts);
+  const getMobileWallets = useUserStore((state) => state.getMobileWallets);
+  const userId = useUserStore((state) => state.id);
+  const unreadMessages = useUserStore((state) => state.unreadMessages);
+  const verified = useUserStore((state) => state.verified);
+  const linkDevice = useUserStore((state) => state.linkDevice);
+
   const appManager = useAppManager();
   const [state, setState] = useState('LOADING');
   I18nManager.allowRTL(true);
@@ -154,6 +161,7 @@ function App() {
 
   TextInput.defaultProps = {};
   TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
+
 
   useEffect(function () {
     AvoidSoftInput.setShouldMimicIOSBehavior(true);
@@ -274,7 +282,7 @@ function App() {
       const lng = locations[0].coords.longitude;
       const timestamp = locations[0].timestamp;
       if (authManager.authenticated) {
-        userStore.postDriverLocation(lat, lng, timestamp);
+        postDriverLocation(lat, lng, timestamp);
       } else {
         stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
       }
@@ -286,25 +294,32 @@ function App() {
   const loadJWT = useCallback(async function () {
     try {
       const value = await Keychain.getGenericPassword();
-      if (!value) {
+
+      if (!value || JSON.parse(value.password).accessToken === null) {
+        console.log("VALUE FALSE")
+
         authManager.setAccessToken(null);
         authManager.setRefreshToken(null);
         authManager.setAuthenticated(false);
         return setState("Guest");
+      } else {
+        console.log("VALUE TRUE")
+        console.log(value);
       }
       const jwt = JSON.parse(value.password);
 
       authManager.setAccessToken(jwt.accessToken || null);
       authManager.setRefreshToken(jwt.refreshToken || null);
       authManager.setAuthenticated(jwt.accessToken !== null);
-      await userStore.userInfo();
-      await userStore.getAvailableCards();
-      await userStore.getBankAccounts();
-      await userStore.getMobileWallets();
+      await userInfo();
+      await getAvailableCards();
+      await getBankAccounts();
+      await getMobileWallets();
 
 
       setState("LoggedIn");
     } catch (error) {
+      console.log(error);
       setState("Guest");
       authManager.setAccessToken(null);
       authManager.setRefreshToken(null);
@@ -320,24 +335,26 @@ function App() {
     loadJWT()
   }, [loadJWT]);
 
-  const errorManager = useErrorManager();
+  // const errorManager = useErrorManager();
   const navigationRef = useRef();
   const routeNameRef = useRef();
   const [pendingRatings, setPendingRatings] = useState();
 
   useEffect(function () {
-    if (appManager.deviceToken && userStore.id) {
-      userStore.linkDevice(appManager.deviceToken);
+    if (appManager.deviceToken && userId) {
+      linkDevice(appManager.deviceToken);
     }
-  }, [appManager.deviceToken, userStore.id]);
+  }, [appManager.deviceToken, userId]);
 
   useEffect(() => {
-    const pending = passengerPendingRatings().then(pending => {
-      console.log(pending);
-      if (!pending.complete) {
-        setPendingRatings(pending);
-      }
-    });
+    console.log(authManager.authenticated);
+    if (authManager.authenticated) {
+      const pending = passengerPendingRatings().then(pending => {
+        if (!pending.complete) {
+          setPendingRatings(pending);
+        }
+      });
+    }
   }, [authManager.authenticated]);
 
   const LoggedInStack = ({ route, navigation }) => {
@@ -405,7 +422,7 @@ function App() {
               return (
                 <View style={{ position: 'relative' }}>
                   <MaterialIcons name="person" size={size} color={color} />
-                  {userStore.unreadMessages > 0 &&
+                  {unreadMessages > 0 &&
                     <View style={[styles.positionAbsolute, styles.bgRed, styles.br24, { top: 0, right: 0, width: 10 * rem, height: 10 * rem }]}>
                     </View>
                   }
@@ -578,7 +595,7 @@ function App() {
         >
           <RootStack.Navigator>
             {
-              authManager.authenticated === false || (userStore.verified === false && !appManager.verificationsDisabled) ? (
+              authManager.authenticated === false || (verified === false && !appManager.verificationsDisabled) ? (
                 <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
               ) : (
                 <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
