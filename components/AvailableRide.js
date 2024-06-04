@@ -44,12 +44,12 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
                         </View>
                     </View>
-                    <Text style={[styles.text, styles.pr8, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0]}</Text>
+                    <Text style={[styles.text, styles.pr8, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{fromAddress.split(',')[0].split('،')[0]}</Text>
                 </View>
 
                 <View style={[styles.flexOne, styles.alignStart]}>
                     <Text style={[styles.text, styles.dark, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
-                    <Text style={[styles.text, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0]}</Text>
+                    <Text style={[styles.text, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0].split('،')[0]}</Text>
                 </View>
             </View>
 

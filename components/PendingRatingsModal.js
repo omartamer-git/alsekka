@@ -23,7 +23,7 @@ export default function PendingRatingsModal({ pendingRatings }) {
     const { driver, passengers, ride } = pendingRatings;
     const [ratings, setRatings] = useState([]);
     const [modalVisible, setModalVisible] = useState(true);
-    
+
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -116,35 +116,34 @@ export default function PendingRatingsModal({ pendingRatings }) {
 
                 {
                     pendingRatings.passengers.map((passenger, index) => {
-
                         return (
-                            <View key={`reviews${index}`} style={[styles.flexRow, styles.alignCenter, styles.w100, styles.borderLight, styles.pv8, { borderTopWidth: 1 }]}>
+                            <View key={`reviews${index}`} style={[styles.flexRow, styles.alignCenter, styles.justifyCenter, styles.w100, styles.borderLight, styles.pv8, { borderTopWidth: 0 }]}>
                                 <View style={[styles.border2, styles.fullCenter, { height: 75 * rem, width: 75 * rem, borderRadius: 75 * rem / 2 }]}>
-                                    <FastImage source={{ uri: passenger.User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
+                                    <FastImage source={{ uri: passenger.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                 </View>
                                 <View style={[styles.ml10]}>
                                     <Text style={[styles.text, styles.bold, styles.font18]}>
                                         {
-                                            passenger.User.firstName
+                                            passenger.firstName
                                         }
                                         &nbsp;
                                         {
-                                            passenger.User.lastName
+                                            passenger.lastName
                                         }
                                     </Text>
 
                                     <View style={[styles.flexRow]}>
                                         {
-                                            Array.from({ length: ratings.find(r => r.id === passenger.UserId).stars }, (_, index2) => (
-                                                <TouchableOpacity onPress={() => setRating(passenger.UserId, index2 + 1)} key={"ratingStarPassenger" + index2 + "_" + passenger.UserId}>
-                                                    <MaterialIcons name="star" size={30} color={palette.secondary} />
+                                            Array.from({ length: ratings.find(r => r.id === passenger.id).stars }, (_, index2) => (
+                                                <TouchableOpacity onPress={() => setRating(passenger.id, index2 + 1)} key={"ratingStarPassenger" + index2 + "_" + passenger.id}>
+                                                    <MaterialIcons name="star" size={30} color={palette.accent} />
                                                 </TouchableOpacity>
                                             ))
                                         }
 
                                         {
-                                            Array.from({ length: (5 - (ratings.find(r => r.id === passenger.UserId).stars)) }, (_, index2) => (
-                                                <TouchableOpacity onPress={() => setRating(passenger.UserId, ratings.find(r => r.id === passenger.UserId).stars + index2 + 1)} key={"ratingStarPassenger" + (ratings.find(r => r.id === passenger.UserId).stars + index2) + "_" + passenger.UserId}>
+                                            Array.from({ length: (5 - (ratings.find(r => r.id === passenger.id).stars)) }, (_, index2) => (
+                                                <TouchableOpacity onPress={() => setRating(passenger.id, ratings.find(r => r.id === passenger.id).stars + index2 + 1)} key={"ratingStarPassenger" + (ratings.find(r => r.id === passenger.id).stars + index2) + "_" + passenger.id}>
                                                     <MaterialIcons name="star" size={30} color={palette.light} />
                                                 </TouchableOpacity>
                                             ))

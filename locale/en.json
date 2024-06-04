@@ -186,6 +186,8 @@
         "add_card": "Add Card",
         "add_wallet": "Add Wallet",
         "choose_photo": "Choose Photo...",
+        "choose_from_photos": "Choose From Photos",
+        "choose_from_camera": "Open Camera",
         "front_chosen": "Front Side Chosen",
         "back_chosen": "Back Side Chosen",
         "confirm": "Confirm",
@@ -364,6 +366,8 @@
         "error_phone_in_use": "Phone number is already in use",
         "error_datetime": "Date and time must be in the future",
         "error_wait_time": "You must wait for the timer to reach zero in order to set a passenger as no show",
+        "error_number_type": "Please enter a number in English numerals (eg. 1234)",
+
         "permissions": "Permissions",
         "permissions_open_settings": "Open Settings",
         "permissions_location": "You have not granted us location permissions. In order to provide you with the best experience, we need access to your location.",

@@ -24,6 +24,7 @@ import HeaderView from '../../components/HeaderView';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
+import ImagePicker from '../../components/ImagePicker';
 
 function NewCar({ route, navigation }) {
     const { t } = useTranslation();
@@ -57,6 +58,8 @@ function NewCar({ route, navigation }) {
     const [backPhotoButtonTouched, setBackPhotoButtonTouched] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [frontImageModal, setFrontImageModal] = useState(false);
+    const [backImageModal, setBackImageModal] = useState(false);
 
     const onFocusEffect = useCallback(function () {
         // This should be run when screen gains focus - enable the module where it's needed
@@ -107,14 +110,16 @@ function NewCar({ route, navigation }) {
 
     async function chooseLicenseFront(e) {
         setFrontPhotoButtonTouched(true);
-        const response = await launchCamera(imagePickerOptions);
-        setImageFront(response);
+        setFrontImageModal(true);
+        // const response = await launchCamera(imagePickerOptions);
+        // setImageFront(response);
     };
 
     async function chooseLicenseBack(e) {
         setBackPhotoButtonTouched(true);
-        const response = await launchCamera(imagePickerOptions);
-        setImageBack(response);
+        setBackImageModal(true);
+        // const response = await launchCamera(imagePickerOptions);
+        // setImageBack(response);
     };
 
     const newCarSchema = Yup.object().shape({
@@ -125,7 +130,7 @@ function NewCar({ route, navigation }) {
         licensePlateLetters1: Yup.string().required(' ').max(1, ' '),
         licensePlateLetters2: Yup.string(),
         licensePlateLetters3: Yup.string(),
-        licensePlateNumbersInput: Yup.number().required(t('error_required')).positive().integer().max(9999).required(t('error_required')),
+        licensePlateNumbersInput: Yup.number('not a num').required(t('error_required')).positive().integer().max(9999).required(t('error_required')).typeError(t('error_number_type')),
     });
 
 
@@ -268,19 +273,21 @@ function NewCar({ route, navigation }) {
                             <ErrorMessage condition={frontPhotoButtonTouched && !licenseFront} message={t('error_required')} />
                             <Button
                                 text={frontPhotoButtonText}
-                                bgColor={palette.secondary}
+                                bgColor={palette.accent}
                                 textColor={palette.white}
                                 onPress={chooseLicenseFront}
                             />
+                            <ImagePicker visible={frontImageModal} onHide={() => setFrontImageModal(false)} onChoose={setImageFront} />
 
                             <Text style={[styles.text, styles.inputText]}>{t('car_license_back')}</Text>
                             <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message={t('error_required')} />
                             <Button
                                 text={backPhotoButtonText}
-                                bgColor={palette.secondary}
+                                bgColor={palette.accent}
                                 textColor={palette.white}
                                 onPress={chooseLicenseBack}
                             />
+                            <ImagePicker visible={backImageModal} onHide={() => setBackImageModal(false)} onChoose={setImageBack} />
 
                             <Button
                                 text={t('confirm')}

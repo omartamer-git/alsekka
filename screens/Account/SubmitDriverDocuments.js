@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+    Image,
     ScrollView,
     Text,
     View
@@ -15,6 +16,8 @@ import HeaderLip from '../../components/HeaderLip';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
+import FastImage from 'react-native-fast-image';
+import ImagePicker from '../../components/ImagePicker';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -51,14 +54,16 @@ function SubmitDriverDocuments({ route, navigation }) {
 
     async function onClickUploadFront(e) {
         setFrontSideTouched(true);
-        const response = await launchCamera(imagePickerOptions);
-        setImageFront(response);
+        setImageFrontModal(true);
+        // const response = await launchCamera(imagePickerOptions);
+        // setImageFront(response);
     };
 
     async function onClickUploadBack(e) {
         setBackSideTouched(true);
-        const response = await launchCamera(imagePickerOptions);
-        setImageBack(response);
+        setImageBackModal(true);
+        // const response = await launchCamera(imagePickerOptions);
+        // setImageBack(response);
     };
 
     const uploadLicense = async function () {
@@ -79,6 +84,8 @@ function SubmitDriverDocuments({ route, navigation }) {
     };
 
     const [loading, setLoading] = useState(true);
+    const [imageFrontModal, setImageFrontModal] = useState(false);
+    const [imageBackModal, setImageBackModal] = useState(false);
 
     useEffect(function () {
         setLoading(true);
@@ -98,13 +105,28 @@ function SubmitDriverDocuments({ route, navigation }) {
                         <>
                             {!userStore.driver && !licenseStatus &&
                                 <>
+                                    {/* <Text style={[styles.text, styles.textCenter, styles.mb5]}>
+                                        Please upload your driving license
+                                    </Text>
+                                    <Text style={[styles.bold, styles.mb5]}>(رخصة القيادة الشخصية)</Text>
+                                    <Text style={[styles.text, styles.textCenter, styles.mb5]}>
+                                        in order to proceed
+                                    </Text> */}
+                                    <FastImage
+                                        source={{ uri: 'https://storage.googleapis.com/seaatspublic/license.png??' }}
+                                        style={{ width: '100%', aspectRatio: 1.8 }}
+                                        resizeMode='contain'
+                                    />
                                     <Text style={[styles.text, styles.inputText]}>{t('front_side_drivers_license')}</Text>
                                     <ErrorMessage condition={frontSideTouched && !licenseFront} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
+                                    <ImagePicker visible={imageFrontModal} onChoose={setImageFront} onHide={() => setImageFrontModal(false)} />
 
                                     <Text style={[[styles.text, styles.inputText]]}>{t('back_side_drivers_license')}</Text>
                                     <ErrorMessage condition={backSideTouched && !licenseBack} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
+                                    <ImagePicker visible={imageBackModal} onChoose={setImageBack} onHide={() => setImageBackModal(false)} />
+
 
                                     <Button bgColor={palette.primary} textColor={palette.white} text={t('next_new_car')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack || submitDisabled} />
                                 </>

@@ -27,7 +27,7 @@ import Button from '../../components/Button';
 import Counter from '../../components/Counter';
 import CustomTextInput from '../../components/CustomTextInput';
 import useAppManager from '../../context/appManager';
-import { containerStyle, customMapStyle, mapContainerStyle, palette, rem, styles } from '../../helper';
+import { addSecondsToDate, containerStyle, customMapStyle, getDurationValues, getTime, mapContainerStyle, palette, rem, styles } from '../../helper';
 import { getDeviceLocation } from '../../util/location';
 import { decodePolyline } from '../../util/maps';
 import ScreenWrapper from '../ScreenWrapper';
@@ -114,6 +114,7 @@ function BookRide({ route, navigation }) {
 
         setLoading(true);
         const data = ridesAPI.rideDetails(rideId).then((data) => {
+            console.log(data);
             if (data.Driver.id === id) {
                 return navigation.navigate('View Trip', { tripId: rideId })
             }
@@ -121,6 +122,7 @@ function BookRide({ route, navigation }) {
             setMaintextTo(data.mainTextTo);
             setSeatsOccupied(data.seatsOccupied);
             setDateTime(data.datetime);
+            setDurationOfTrip(data.duration);
             setSeatsAvailable(data.seatsAvailable);
             setPricePerSeat(data.pricePerSeat);
             setObjDate(new Date(data.datetime));
@@ -339,6 +341,32 @@ function BookRide({ route, navigation }) {
                         {polyline && <Polyline strokeColors={[palette.primary, palette.secondary]} coordinates={decodePolyline(polyline)} strokeWidth={3} />}
 
                     </MapView>
+
+                    <View style={[containerStyle, styles.p24, styles.bgPrimary, styles.fullCenter, { borderTopWidth: 1 }, styles.borderLight]}>
+                        <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
+                            <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
+                                <View style={styles.flexRow}>
+                                    <View>
+                                        <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(new Date(datetime))[0]}
+                                            <Text style={[styles.font12]}>&nbsp;{t(getTime(new Date(datetime))[1])}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={[styles.flexRow, styles.fullCenter, styles.mt5]}>
+                                        <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
+                                        <Text style={[styles.text, { color: palette.light, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }]}>{getDurationValues(durationOfTrip)[0]}{t('h')}{getDurationValues(durationOfTrip)[1]}{t('m')}</Text>
+                                        <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
+                                    </View>
+                                </View>
+                                <Text style={[styles.text, styles.pr8, styles.light]} numberOfLines={2} ellipsizeMode='tail'>{mainTextFrom.split(',')[0].split('،')[0]}</Text>
+                            </View>
+
+                            <View style={[styles.flexOne, styles.alignStart]}>
+                                <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
+                                <Text style={[styles.text, styles.light]} numberOfLines={2} ellipsizeMode='tail'>{mainTextTo.split(',')[0].split('،')[0]}</Text>
+                            </View>
+                        </View>
+
+                    </View>
 
                     <View style={[containerStyle, styles.flexOne]}>
                         {

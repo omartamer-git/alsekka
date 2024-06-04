@@ -933,7 +933,8 @@ export const styles = StyleSheet.create({
         borderBottomWidth: 1 * rem,
     },
     AndroidSafeArea: {
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        paddingBottom: Platform.OS === "android" ? Dimensions.get('screen').height - Dimensions.get('window').height : 0
     }
 });
 
