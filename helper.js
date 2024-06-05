@@ -1197,4 +1197,4 @@ export const mapPadding = Platform.OS === 'ios' ? { bottom: 48 * rem, top: 0, le
 
 export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
-export const SERVER_URL = "https://api.seaats.app/api";
+// export const SERVER_URL = "http://127.0.0.1:3000";
