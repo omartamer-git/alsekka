@@ -1,9 +1,10 @@
-import React, { memo, useEffect, useRef } from 'react';
-import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import React, { memo, useRef } from 'react';
+import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, rem, styles } from '../helper';
+import { palette, rem, styles, translateEnglishNumbers } from '../helper';
+import useLocale from '../locale/localeContext';
 
-function CustomTextInput({ value,
+function CustomTextInput({ value, prefix,
     onChangeText, placeholder, style,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn, role,
@@ -11,6 +12,7 @@ function CustomTextInput({ value,
     returnKeyType, onSubmitEditing, textContentType,
     onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit=true }) {
 
+    const { language } = useLocale();
     const styles2 = StyleSheet.create({
         container: {
             height: 48 * rem,
@@ -83,6 +85,10 @@ function CustomTextInput({ value,
                     emojiLeft &&
                     <Text style={[styles.font14, styles.dark]}>{emojiLeft}</Text>
                 }
+                {
+                    prefix &&
+                    <Text style={[styles.bgWhite, styles.text]}>{language === 'ar' ? translateEnglishNumbers(prefix) + ' +  🇪🇬' : '🇪🇬  +' + prefix}</Text>
+                }
                 <TextInput
                     style={[styles2.input, textStyles]}
                     placeholder={placeholder}
@@ -92,7 +98,6 @@ function CustomTextInput({ value,
                     onChangeText={onChangeText}
                     selectTextOnFocus={selectTextOnFocus}
                     secureTextEntry={secureTextEntry}
-                    onFocus={onFocus}
                     autoCorrect={false}
                     blurOnSubmit={blurOnSubmit}
                     onBlur={onBlur}
