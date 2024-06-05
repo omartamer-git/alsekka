@@ -311,13 +311,6 @@ function App() {
       authManager.setAccessToken(jwt.accessToken || null);
       authManager.setRefreshToken(jwt.refreshToken || null);
       authManager.setAuthenticated(jwt.accessToken !== null);
-      await userInfo();
-      await getAvailableCards();
-      await getBankAccounts();
-      await getMobileWallets();
-
-
-      setState("LoggedIn");
     } catch (error) {
       console.log(error);
       setState("Guest");
@@ -334,6 +327,14 @@ function App() {
   useEffect(function () {
     loadJWT()
   }, [loadJWT]);
+
+  useEffect(() => {
+    if (authManager.authenticated) {
+      let promises = [userInfo(), getAvailableCards(), getBankAccounts(), getMobileWallets()];
+
+      Promise.all(promises).then(() => setState("LoggedIn"))      
+    }
+  }, [authManager.authenticated]);
 
   // const errorManager = useErrorManager();
   const navigationRef = useRef();
@@ -530,10 +531,6 @@ function App() {
       <>
         <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
         <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
-          {/* <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
-        { fontSize: 75 * rem }
-        ]
-        }>{t('seaats')}</Text> */}
           <Image source={require('./assets/logo.png')} resizeMode='contain' style={{ width: '70%', height: '9.5%' }} />
         </View>
       </>
@@ -595,7 +592,7 @@ function App() {
         >
           <RootStack.Navigator>
             {
-              authManager.authenticated === false || (verified === false && !appManager.verificationsDisabled) ? (
+              (authManager.authenticated === false) || (verified === false && !appManager.verificationsDisabled) ? (
                 <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
               ) : (
                 <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
