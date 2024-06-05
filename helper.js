@@ -283,7 +283,7 @@ export const styles = StyleSheet.create({
         fontFamily: I18nManager.isRTL ? (Platform.OS === 'ios' ? 'TheSansArabic-Bold' : 'thesansarabic') : (Platform.OS === 'ios' ? 'FreeSansBold' : 'freesans'),
     },
     text: {
-        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'generalsans' : 'General Sans Variable'),
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'GeneralSans-Regular' : 'General Sans Variable'),
     },
     logoSpacing: {
         letterSpacing: I18nManager.isRTL ? 0 : -3 * rem
@@ -834,7 +834,7 @@ export const styles = StyleSheet.create({
     },
 
     bold: {
-        fontWeight: '600',
+        fontWeight: 'bold',
     },
 
     semiBold: {
@@ -1197,4 +1197,4 @@ export const mapPadding = Platform.OS === 'ios' ? { bottom: 48 * rem, top: 0, le
 
 export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
-export const SERVER_URL = "https://api.seaats.app/api";
+export const SERVER_URL = "http://192.168.1.105:3000";
