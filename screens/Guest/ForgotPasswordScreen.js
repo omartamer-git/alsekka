@@ -73,10 +73,8 @@ function ForgotPasswordScreen({ route, navigation }) {
                                     <>
                                         <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
                                         <CustomTextInput
-                                            value={"+20 " + values.phoneInput}
-                                            emojiLeft={"🇪🇬"}
+                                            value={values.phoneInput}
                                             onChangeText={(text) => {
-                                                if (text == '') return;
                                                 let sanitizedText = text.replace("+20", "").trim();
                                                 handleChange('phoneInput')(sanitizedText);
                                             }}
@@ -84,6 +82,7 @@ function ForgotPasswordScreen({ route, navigation }) {
                                             error={touched.phoneInput && errors.phoneInput}
                                             placeholder={t('enter_phone')}
                                             keyboardType="number-pad"
+                                            prefix='20'
                                         />
 
                                         <Button
