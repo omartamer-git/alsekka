@@ -22,6 +22,7 @@ import { containerStyle, customMapStyle, getDateSQL, mapContainerStyle, mapPaddi
 import { getDeviceLocation } from '../../util/location';
 import ScreenWrapper from '../ScreenWrapper';
 import { Triangle } from '../../components/Triangle';
+import analytics from '@react-native-firebase/analytics';
 const geolib = require('geolib');
 
 
@@ -156,6 +157,17 @@ function MapScreen({ route, navigation }) {
         date.setHours(0, 0, 0, 0);
         freshDate = date;
       }
+
+      console.log("search_ride analytics");
+      analytics().logEvent('search_ride', {
+        pickupLat: markerFrom.latitude,
+        pickupLng: markerFrom.longitude,
+        dropoffLat: markerTo.latitude,
+        dropoffLng: markerTo.longitude,
+        date: getDateSQL(freshDate),
+        gender: gender,
+        genderFilter: genderChoice
+      });
 
       navigation.navigate("Choose a Ride", { fromLat: markerFrom.latitude, fromLng: markerFrom.longitude, toLat: markerTo.latitude, toLng: markerTo.longitude, date: getDateSQL(freshDate), textFrom: textFrom, textTo: textTo, genderChoice: genderChoice });
     }
