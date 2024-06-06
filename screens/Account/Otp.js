@@ -16,6 +16,7 @@ import { containerStyle, palette, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
+import analytics from '@react-native-firebase/analytics';
 import FastImage from 'react-native-fast-image';
 
 function Otp({ route, navigation }) {
@@ -33,11 +34,21 @@ function Otp({ route, navigation }) {
     const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login } = useUserStore();
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
+    const { startTime, setStartTime } = useAppManager();
 
     const clockTick = function () {
         isVerified(phone).then(response => {
             if (response === true) {
                 if (onVerify === 'login') {
+                    
+                    console.log('create_account analytics');
+                    analytics().logEvent('create_account', {
+                        email: email,
+                        phone: phone,
+                        signupPeriod: new Date().getTime() - startTime
+                    });
+                    setStartTime(null);
+
                     createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
                         login(phone, password).then(function () {
                             navigation.popToTop();

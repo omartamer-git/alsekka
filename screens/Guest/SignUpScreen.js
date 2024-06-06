@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Linking,
@@ -31,6 +31,7 @@ function SignUpScreen({ route, navigation }) {
   const [emailExists, setEmailExists] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const { allowedEmails } = useAppManager();
+  const { startTime, setStartTime } = useAppManager();
 
   const userStore = useUserStore();
   const errorManager = useErrorManager();
@@ -95,7 +96,13 @@ function SignUpScreen({ route, navigation }) {
     };
   }, []);
 
-  useFocusEffect(onFocusEffect); // register callback to focus events    
+  useFocusEffect(onFocusEffect); // register callback to focus events  
+
+  useEffect(() => {
+    if (!startTime) {
+      setStartTime(new Date().getTime());
+    }
+  },[]);
 
   const refFirstName = useRef();
   const refLastName = useRef();
