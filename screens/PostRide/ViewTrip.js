@@ -19,6 +19,7 @@ import * as ridesAPI from '../../api/ridesAPI';
 import ArrowButton from '../../components/ArrowButton';
 import AvailableRide from '../../components/AvailableRide';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import analytics from '@react-native-firebase/analytics';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import CarMarker from '../../components/CarMarker';
@@ -29,10 +30,12 @@ import { decodePolyline } from '../../util/maps';
 import ScreenWrapper from '../ScreenWrapper';
 import FastImage from 'react-native-fast-image';
 import { Triangle } from '../../components/Triangle';
+import useUserStore from '../../api/accountAPI';
 
 
 function ViewTrip({ route, navigation }) {
     const { tripId } = route.params;
+    const { id } = useUserStore();
     const [tripDetails, setTripDetails] = useState(null);
     const [markerFrom, setMarkerFrom] = useState(null);
     const [markerTo, setMarkerTo] = useState(null);
@@ -96,6 +99,21 @@ function ViewTrip({ route, navigation }) {
         );
 
     }, []);
+
+    useEffect(() => {
+        const currDate = new Date();
+        const objDateTime = objDate.getTime();
+        const currTime = currDate.getTime();
+        const timeToTrip = objDateTime - currTime;
+
+        if (tripStatus==="SCHEDULED") {
+            console.log("ride_track analytics")
+            analytics().logEvent('ride_track', {
+                userId: id,
+                rideId: tripId
+            });
+        }
+    }, [])
 
     useEffect(function () {
         const currDate = new Date();
