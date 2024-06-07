@@ -37,12 +37,12 @@ function Otp({ route, navigation }) {
     const { startTime, setStartTime } = useAppManager();
 
     const clockTick = function () {
-        isVerified(phone).then(response => {
+        isVerified(phone).then( async response => {
             if (response === true) {
                 if (onVerify === 'login') {
                     
                     console.log('create_account analytics');
-                    analytics().logEvent('create_account', {
+                    await analytics().logEvent('create_account', {
                         email: email,
                         phone: phone,
                         signupPeriod: new Date().getTime() - startTime

@@ -147,7 +147,7 @@ function MapScreen({ route, navigation }) {
   }
 
 
-  function goFindRides(e) {
+  async function goFindRides(e) {
     if (markerFrom && markerTo) {
       const today = new Date();
       let freshDate;
@@ -159,7 +159,7 @@ function MapScreen({ route, navigation }) {
       }
 
       console.log("search_ride analytics");
-      analytics().logEvent('search_ride', {
+      await analytics().logEvent('search_ride', {
         pickupLat: markerFrom.latitude,
         pickupLng: markerFrom.longitude,
         dropoffLat: markerTo.latitude,
