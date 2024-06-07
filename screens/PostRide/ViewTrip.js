@@ -102,8 +102,9 @@ function ViewTrip({ route, navigation }) {
 
     useEffect(() => {
         const logRideTracking = async () => {
-            if (tripDetails?.passenger.status==="SCHEDULED") {
-                console.log("ride_track analytics")
+            if (!tripDetails || !tripStatus) return;
+            if (tripDetails.passenger.status!=="CANCELLED" && tripStatus !== "ONGOING") {
+                console.log("ride_track analytics2")
                 await analytics().logEvent('ride_track', {
                     userId: id,
                     rideId: tripId
@@ -111,7 +112,7 @@ function ViewTrip({ route, navigation }) {
             }
         };
         logRideTracking();
-    }, [tripDetails])
+    }, [tripDetails, tripStatus]);
 
     useEffect(function () {
         const currDate = new Date();
