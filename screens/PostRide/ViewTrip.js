@@ -102,12 +102,7 @@ function ViewTrip({ route, navigation }) {
 
     useEffect(() => {
         const logRideTracking = async () => {
-            const currDate = new Date();
-            const objDateTime = objDate.getTime();
-            const currTime = currDate.getTime();
-            const timeToTrip = objDateTime - currTime;
-
-            if (tripStatus === "SCHEDULED") {
+            if (tripDetails?.passenger.status==="SCHEDULED") {
                 console.log("ride_track analytics")
                 await analytics().logEvent('ride_track', {
                     userId: id,
@@ -115,9 +110,8 @@ function ViewTrip({ route, navigation }) {
                 });
             }
         };
-
         logRideTracking();
-    }, [])
+    }, [tripDetails])
 
     useEffect(function () {
         const currDate = new Date();
