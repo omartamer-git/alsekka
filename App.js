@@ -86,6 +86,7 @@ import Payment from './screens/BookRide/Payment';
 import RideBooked from './screens/BookRide/RideBooked';
 import CustomerService from './screens/Chat/CustomerService';
 import useErrorManager from './context/errorManager';
+import UserPreferences from './screens/Account/UserPreferences';
 
 
 const RootStack = createNativeStackNavigator();
@@ -359,20 +360,19 @@ function App() {
 
   const LoggedInStack = ({ route, navigation }) => {
     return (
-      <UserStack.Navigator initialRouteName="TabScreen">
-        <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
-        <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-        <UserStack.Screen name="Customer Service" component={CustomerService} options={{ headerShown: false }} />
+      <UserStack.Navigator initialRouteName="TabScreen" screenOptions={{headerShown: false}}>
+        <UserStack.Screen name="TabScreen" component={LoggedInHome} />
+        <UserStack.Screen name="Chat" component={Chat} />
+        <UserStack.Screen name="Customer Service" component={CustomerService} />
       </UserStack.Navigator>
     );
   };
 
   const LoggedInHome = ({ route, navigation }) => {
     return (
-      <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
+      <Tab.Navigator initialRouteName='Home' screenOptions={{ headerShown: false, tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
         <Tab.Screen name="Home" component={UserHomeNavigator}
           options={{
-            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="home" size={size} color={color} />
             ),
@@ -383,7 +383,6 @@ function App() {
           }} />
         <Tab.Screen name="Find Rides" component={BookRideNavigator}
           options={{
-            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="search" size={size} color={color} />
             ),
@@ -394,7 +393,6 @@ function App() {
           }} />
         <Tab.Screen name="Post Ride" component={PostRideNavigator}
           options={{
-            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               return (<MaterialIcons name="directions-car" size={size} color={color} />);
             },
@@ -406,7 +404,6 @@ function App() {
           }} />
         <Tab.Screen name="Communities" component={CommunityNavigator}
           options={{
-            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               return (<MaterialIcons name="forum" size={size} color={color} />);
             },
@@ -417,7 +414,6 @@ function App() {
           }} />
         <Tab.Screen name="Account" component={AccountNavigator}
           options={{
-            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               return (
                 <View style={{ position: 'relative' }}>
@@ -441,13 +437,13 @@ function App() {
 
   const Guest = ({ route, navigation }) => {
     return (
-      <GuestStack.Navigator>
-        <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
-        <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} options={{ headerShown: false }} />
-        <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} options={{ headerShown: false }} />
-        <GuestStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
+      <GuestStack.Navigator screenOptions={{headerShown: false}}>
+        <GuestStack.Screen name="Home" component={HomeScreen} />
+        <GuestStack.Screen name="Sign Up" component={SignUpScreen} />
+        <GuestStack.Screen name="Login" component={LoginScreen} />
+        <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
+        <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} />
+        <GuestStack.Screen name="Otp" component={Otp} />
       </GuestStack.Navigator>
     );
   }
@@ -455,13 +451,13 @@ function App() {
 
   const BookRideNavigator = ({ route, navigation }) => {
     return (
-      <BookingStack.Navigator initialRouteName='Find a Ride'>
-        <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
-        <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
-        <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
-        <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
-        <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+      <BookingStack.Navigator initialRouteName='Find a Ride' screenOptions={{headerShown: false}}>
+        <BookingStack.Screen name="Find a Ride" component={MapScreen} />
+        <BookingStack.Screen name="Choose a Ride" component={RideFinder} />
+        <BookingStack.Screen name="Book Ride" component={BookRide} />
+        <BookingStack.Screen name="Payment" component={Payment} />
+        <BookingStack.Screen name="Ride Booked" component={RideBooked} />
+        <UserHomeStack.Screen name="View Trip" component={ViewTrip} />
       </BookingStack.Navigator>
     );
   }
@@ -469,58 +465,59 @@ function App() {
 
   const PostRideNavigator = ({ route, navigation }) => {
     return (
-      <PostRideStack.Navigator initialRouteName='Post a Ride'>
-        <PostRideStack.Screen name="Post a Ride" component={PostRide} options={{ headerShown: false }} />
-        <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
-        <PostRideStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+      <PostRideStack.Navigator initialRouteName='Post a Ride' screenOptions={{headerShown: false}}>
+        <PostRideStack.Screen name="Post a Ride" component={PostRide} />
+        <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} />
+        <PostRideStack.Screen name="New Car" component={NewCar} />
       </PostRideStack.Navigator>
     );
   }
 
   const CommunityNavigator = ({ route, navigator }) => {
     return (
-      <CommunityStack.Navigator>
-        <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
-        <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
-        <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
-        <CommunityStack.Screen name="New Community" component={NewCommunity} options={{ headerShown: false }} />
-        <CommunityStack.Screen name="Community Settings" component={CommunitySettings} options={{ headerShown: false }} />
-        <CommunityStack.Screen name="Community Members" component={CommunityMembers} options={{ headerShown: false }} />
+      <CommunityStack.Navigator screenOptions={{headerShown: false}}>
+        <CommunityStack.Screen name="View Communities" component={ViewCommunities} />
+        <CommunityStack.Screen name="View Community" component={ViewCommunity} />
+        <CommunityStack.Screen name="Search Communities" component={SearchCommunities} />
+        <CommunityStack.Screen name="New Community" component={NewCommunity} />
+        <CommunityStack.Screen name="Community Settings" component={CommunitySettings} />
+        <CommunityStack.Screen name="Community Members" component={CommunityMembers} />
       </CommunityStack.Navigator>
     );
   };
 
   const AccountNavigator = ({ route, navigation }) => {
     return (
-      <AccountStack.Navigator initialRouteName='Account Home'>
-        <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
-        <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
-        <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
-        <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
+      <AccountStack.Navigator initialRouteName='Account Home' screenOptions={{headerShown: false}}>
+        <AccountStack.Screen name="Account Home" component={Account} />
+        <AccountStack.Screen name="Wallet" component={Wallet} />
+        <AccountStack.Screen name="UserPreferences" component={UserPreferences} />
+        <AccountStack.Screen name="Withdraw" component={Withdraw} />
+        <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} />
+        <AccountStack.Screen name="Debt Payment" component={DebtPayment} />
+        <AccountStack.Screen name="Add Card" component={AddCard} />
+        <AccountStack.Screen name="All Trips" component={AllTrips} />
+        <AccountStack.Screen name="Manage Cars" component={ManageCars} />
+        <AccountStack.Screen name="New Car" component={NewCar} />
+        <AccountStack.Screen name="Chats List" component={ChatsList} />
+        <AccountStack.Screen name="Add Bank" component={AddBank} />
+        <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} />
+        <AccountStack.Screen name="Referral" component={Referral} />
+        <AccountStack.Screen name="Add Referral" component={AddReferral} />
       </AccountStack.Navigator>
     );
   }
 
   const UserHomeNavigator = ({ route, navigation }) => {
     return (
-      <UserHomeStack.Navigator >
-        <UserHomeStack.Screen name="User Home" component={UserHome} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="Announcement" component={Announcement} options={{ headerShown: false }} />
-        <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+      <UserHomeStack.Navigator screenOptions={{headerShown: false}}>
+        <UserHomeStack.Screen name="User Home" component={UserHome} />
+        <UserHomeStack.Screen name="View Trip" component={ViewTrip} />
+        <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} />
+        <UserHomeStack.Screen name="Checkout" component={Checkout} />
+        <UserHomeStack.Screen name="All Trips" component={AllTrips} />
+        <UserHomeStack.Screen name="Announcement" component={Announcement} />
+        <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} />
       </UserHomeStack.Navigator>
     );
   }
@@ -593,12 +590,12 @@ function App() {
             routeNameRef.current = currentRouteName;
           }}
         >
-          <RootStack.Navigator>
+          <RootStack.Navigator screenOptions={{headerShown: false}}>
             {
               authManager.authenticated === false || (verified === false && !appManager.verificationsDisabled) ? (
-                <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
+                <RootStack.Screen name="Guest" component={Guest} />
               ) : (
-                <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+                <RootStack.Screen name="LoggedIn" component={LoggedInStack} />
               )
             }
           </RootStack.Navigator>
