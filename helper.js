@@ -46,6 +46,10 @@ export const getDateSQL = function (date) {
     return `${year}-${month}-${day} ${hour}:${minute}:00`;
 };
 
+export const capitalizeWord = (word) => {
+    return word[0].toUpperCase() + word.slice(1);
+}
+
 export const translateEnglishNumbers = function (text) {
     text = String(text);
     const x = text.length;
@@ -869,6 +873,11 @@ export const styles = StyleSheet.create({
         lineHeight: Platform.OS === 'ios' ? 20 * rem : undefined,
     },
 
+    font24: {
+        fontSize: 24 * rem,
+        lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,
+    },
+
     font28: {
         fontSize: 28 * rem,
         lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,
@@ -888,7 +897,9 @@ export const styles = StyleSheet.create({
     alignSelfCenter: {
         alignSelf: 'center',
     },
-
+    alignSelfEnd: {
+        alignSelf: 'flex-end',
+    },
     alignStart: {
         alignItems: 'flex-start'
     },
@@ -921,6 +932,13 @@ export const styles = StyleSheet.create({
     },
     textEnd: {
         textAlign: 'right',
+    },
+    breakline: {
+        height: 1,
+        backgroundColor: palette.light,
+        marginTop: 10,
+        marginBottom: 10,
+        alignSelf: 'stretch'
     },
     mapStyle: {
         height: 300 * rem,
