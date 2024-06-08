@@ -10,7 +10,7 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { containerStyle, dateDiffInDays, palette, rem, styles } from '../../helper';
+import { capitalizeWord, containerStyle, dateDiffInDays, palette, rem, styles } from '../../helper';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -142,7 +142,7 @@ function UserHome({ navigation, route }) {
                             {
                                 currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
                             }
-                            {t('comma')}&nbsp;{userStore.firstName}!
+                            {t('comma')}&nbsp;{capitalizeWord(userStore.firstName)}!
                         </Text>
 
                         {driverElement && driverMainTextTo &&
@@ -186,7 +186,6 @@ function UserHome({ navigation, route }) {
                                 seatsAvailable={nextRideData.seatsAvailable}
                                 pickupEnabled={nextRideData.pickupEnabled}
                                 gender={nextRideData.gender}
-                                duration={nextRideData.duration}
                                 date={nextRideDate}
                                 style={[styles.mv10, { minHeight: 140 * rem }]}
                                 onPress={function () { viewTrip(nextRideData.id); }} />

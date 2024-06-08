@@ -8,6 +8,7 @@ import {
     ScrollView,
     StyleSheet,
     Text,
+    TouchableHighlight,
     TouchableOpacity,
     View
 } from 'react-native';
@@ -24,11 +25,14 @@ import ErrorMessage from '../../components/ErrorMessage';
 import useAppManager from '../../context/appManager';
 import useAuthManager from '../../context/authManager';
 import useAxiosManager from '../../context/axiosManager';
-import { containerStyle, palette, rem, styles } from '../../helper';
+import { capitalizeWord, containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import AccountSections from '../../components/AccountSections';
+import AccountSectionItems from '../../components/AccountSectionItems';
 
 function Account({ route, navigation }) {
     const { t } = useTranslation();
+
     const [ratings, setRatings] = useState(null);
     const [editNameModalVisible, setEditNameModalVisible] = useState(false);
     const [editPhoneModalVisible, setEditPhoneModalVisible] = useState(false);
@@ -73,11 +77,11 @@ function Account({ route, navigation }) {
 
         let ratingsItems = [];
         for (let i = 0; i < fullStars; i++) {
-            ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" color={palette.accent} />);
+            ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" size={17} color={palette.accent} />);
         }
 
         for (let j = 0; j < halfStars; j++) {
-            ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" color={palette.accent} />);
+            ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" size={17} color={palette.accent} />);
         }
 
         setRatings(ratingsItems);
@@ -164,22 +168,49 @@ function Account({ route, navigation }) {
     return (
         <>
             <ScreenWrapper screenName={t('account')}>
-                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
-                    <View style={[styles.mt10, styles.fullCenter]}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
+                    <View style={[accountStyles.topSection, styles.w100]}>
+                        <View style={[styles.flexGrow, styles.fullCenter, styles.pr16]}>
+                            <Text style={[styles.text, styles.headerText2]}>{capitalizeWord(userFirstName)} {capitalizeWord(userLastName)}</Text>
+                            <View style={[styles.flexRow, styles.alignSelfCenter]}>
+                                {ratings}
+                            </View>
+                            <Button text={t('edit_account')} textColor={palette.white} bgColor={palette.primary} onPress={function () { navigation.navigate('UserPreferences') }} />
+                        </View>
                         <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}
 
-                            <View style={accountStyles.profilePictureOverlay}>
+                            <View style={[accountStyles.profilePictureOverlay]}>
                                 <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
                             </View>
                         </TouchableOpacity>
                     </View>
 
-                    <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
-                        <Text style={[styles.text, styles.headerText2, styles.dark]}>{userFirstName} {userLastName}</Text>
-                        <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
-                            {ratings}
-                        </View>
+                    <View style={[styles.w100, styles.mt10]}>
+                        <AccountSections title='account'>
+                            <AccountSectionItems text='ride_preferences' />
+                            <AccountSectionItems text='manage_cars' />
+                            <AccountSectionItems text='my_trips' />
+                            <AccountSectionItems text='terms_&_privacy_policy' />
+                        </AccountSections>
+
+                        <AccountSections title='communication'>
+                            <AccountSectionItems text='messages' />
+                            {!referralsDisabled && <AccountSectionItems text='refer_friend' />}
+                            <AccountSectionItems text='need_help' />
+                        </AccountSections>
+
+                        <AccountSections title='financial'>
+                            <AccountSectionItems text='wallet' />
+                            {!referralsDisabled && <AccountSectionItems text="add_referral" />}
+                        </AccountSections>
+                    </View>
+                    
+                    <Button bgColor={palette.accent} textColor={palette.white} text={t('log_out')} onPress={logout} />
+                    <Button bgColor={palette.red} textColor={palette.white} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
+                    
+                
+                    {/* <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
                         <View style={accountStyles.acctButtonsView}>
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Chats List') }}>
                                 <View style={[{ position: 'relative' }, styles.fullCenter]}>
@@ -199,6 +230,10 @@ function Account({ route, navigation }) {
                             <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('All Trips') }}>
                                 <MaterialIcons name="history" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('trips')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('UserPreferences') }}>
+                                <MaterialIcons name="history" size={40} color={palette.white} />
+                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('preferences')}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -224,9 +259,9 @@ function Account({ route, navigation }) {
                                 role="button"
                             />
                         </View>
-                    </View>
+                    </View> */}
 
-                    <View style={[styles.w100]}>
+                    {/* <View style={[styles.w100]}>
 
                         {!referralsDisabled &&
                             <>
@@ -237,10 +272,8 @@ function Account({ route, navigation }) {
                         <Button bgColor={palette.accent} textColor={palette.white} text={t('help')} onPress={() => {
                             Linking.openURL("https://wa.me/201028182577")
                         }} />
-                        <Button bgColor={palette.primary} textColor={palette.white} text={t('log_out')} onPress={logout} />
                         <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={function () { setTermsModalVisible(true) }} />
-                        <Button bgColor={palette.light} textColor={palette.dark} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
-                    </View>
+                    </View> */}
                 </ScrollView>
             </ScreenWrapper>
 
@@ -349,9 +382,9 @@ function Account({ route, navigation }) {
 }
 
 const profilePictureSizing = {
-    height: 100 * rem,
-    width: 100 * rem,
-    borderRadius: (100 * rem) / 2,
+    height: 105 * rem,
+    width: 105 * rem,
+    borderRadius: (105 * rem) / 2,
 };
 
 const accountStyles = StyleSheet.create({
@@ -362,7 +395,11 @@ const accountStyles = StyleSheet.create({
         ...styles.pv24,
         ...styles.fullCenter,
     },
-
+    topSection: {
+        ...styles.mt10,
+        ...styles.flexOne, 
+        ...styles.flexRow
+    },
     acctButtons: {
         ...styles.bgPrimary,
         height: 80 * rem,
@@ -372,7 +409,6 @@ const accountStyles = StyleSheet.create({
         ...styles.fullCenter,
         position: 'relative'
     },
-
     acctButtonsText: {
         ...styles.white,
         ...styles.bold,
@@ -380,9 +416,9 @@ const accountStyles = StyleSheet.create({
     },
 
     profilePictureView: {
-        width: 110 * rem,
-        height: 110 * rem,
-        borderRadius: 110 * rem / 2,
+        width: 115 * rem,
+        height: 115 * rem,
+        borderRadius: 115 * rem / 2,
         ...styles.borderPrimary,
         ...styles.fullCenter,
         borderWidth: 3 * rem,
