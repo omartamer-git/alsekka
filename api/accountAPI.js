@@ -2,7 +2,7 @@ import * as Keychain from 'react-native-keychain';
 import { create } from 'zustand';
 import useAuthManager from '../context/authManager';
 import useAxiosManager from '../context/axiosManager';
-import { config } from '../config';
+// import { config } from '../config';
 import useAppManager from '../context/appManager';
 import { Platform } from 'react-native';
 import axios from 'axios';

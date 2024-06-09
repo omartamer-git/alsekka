@@ -6,7 +6,7 @@ import useAuthManager from './authManager';
 import useErrorManager from './errorManager'; // Assuming this exists
 import axiosRetry from 'axios-retry';
 import { I18nManager } from 'react-native';
-import { config } from '../config';
+// import { config } from '../config';
 
 const useAxiosManager = create((set) => {
     const authAxios = axios.create({

@@ -19,7 +19,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import Treasure from '../../svgs/treasure';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { config } from '../../config';
+// import { config } from '../../config';
 // import Clipboard from '@react-native-community/clipboard';
 import { useTranslation } from 'react-i18next';
 
