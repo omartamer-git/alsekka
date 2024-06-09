@@ -2,21 +2,21 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import * as Keychain from 'react-native-keychain';
 import { create } from 'zustand';
+import { SERVER_URL } from '../helper';
 import useAuthManager from './authManager';
 import useErrorManager from './errorManager'; // Assuming this exists
 import axiosRetry from 'axios-retry';
 import { I18nManager } from 'react-native';
-// import { config } from '../config';
 
 const useAxiosManager = create((set) => {
     const authAxios = axios.create({
-        baseURL: config.SERVER_URL
+        baseURL: SERVER_URL
     });
     // Optional: Setup axiosRetry as needed
     // axiosRetry(authAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
     const publicAxios = axios.create({
-        baseURL: config.SERVER_URL
+        baseURL: SERVER_URL
     });
     // Optional: Setup axiosRetry for publicAxios as well
 

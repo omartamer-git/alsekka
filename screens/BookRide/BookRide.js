@@ -152,6 +152,9 @@ function BookRide({ route, navigation }) {
             }
 
             setServiceFee(Math.floor(data.pricePerSeat * passengerFee));
+            if (mapViewRef) {
+                mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+            }
             setDriver(data.Driver.id);
             setFirstName(data.Driver.firstName);
             setLastName(data.Driver.lastName);
@@ -174,16 +177,6 @@ function BookRide({ route, navigation }) {
             setLoading(false);
         });
     }, []);
-
-
-    useEffect(function () {
-        setTimeout(() => {
-            if (mapViewRef) {
-                mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 }, animated: true });
-            }
-        }, 1000);
-    }, [mapViewRef.current]);
-
 
     const hideRideBooked = function () {
         setRideBookedModalVisible(false);
