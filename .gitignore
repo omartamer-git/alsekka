@@ -71,3 +71,5 @@ android/app/release/
 .expo
 dist/
 web-build/
+
+config.js
