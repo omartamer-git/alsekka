@@ -71,7 +71,7 @@ function AllTrips({ navigation, route }) {
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('all_trips')} navAction={() => navigation.goBack()} navType="back">
+        <ScreenWrapper screenName={t('my_trips')} navAction={() => navigation.goBack()} navType="back">
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&

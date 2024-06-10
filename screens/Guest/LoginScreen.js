@@ -20,7 +20,7 @@ import Button from "../../components/Button";
 import CustomTextInput from "../../components/CustomTextInput";
 import ErrorMessage from "../../components/ErrorMessage";
 import HeaderView from "../../components/HeaderView";
-// import { config } from "../../config";
+import { config } from "../../config";
 import { palette, styles } from "../../helper";
 
 function LoginScreen({ route, navigation }) {

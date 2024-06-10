@@ -41,7 +41,7 @@ function AddReferral({ navigation, route }) {
     }, []);
 
     return (
-        <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('add_referral')} navType="back" navAction={() => navigation.goBack()}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100]}>
                 {!success &&
                     <>

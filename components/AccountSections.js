@@ -30,7 +30,7 @@ const sectionStyles = StyleSheet.create({
     ...styles.text,
     ...styles.headerText,
     ...styles.font24,
-    ...styles.mb15,
+    ...styles.mb10,
     color: palette.primary,
   }
 })
