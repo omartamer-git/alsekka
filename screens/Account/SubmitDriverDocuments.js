@@ -18,6 +18,7 @@ import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from '../../components/ImagePicker';
+import LottieView from 'lottie-react-native';
 
 const carsAPI = require('../../api/carsAPI');
 
@@ -133,9 +134,10 @@ function SubmitDriverDocuments({ route, navigation }) {
                             }
                             {!userStore.driver && licenseStatus === 'PENDING' &&
                                 <>
-                                    <Pending width="300" height="300" />
-                                    <Text style={[styles.text, styles.mt20, styles.font28, styles.semiBold, styles.accent, styles.textCenter]}>{t('wait_processing')}</Text>
-                                    <Text style={[styles.text, styles.mt10, styles.font14, styles.semiBold, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
+                                    {/* <Pending width="300" height="300" /> */}
+                                    <LottieView source={require('../../assets/waiting_animation.json')} loop autoPlay style={{width: 300 * rem, height: 300 * rem, marginVertical: '-15%'}} resizeMode='center' />
+                                    <Text style={[styles.text, styles.headerText, styles.textCenter]}>{t('wait_processing')}</Text>
+                                    <Text style={[styles.text, styles.mt10, styles.font14, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
                                 </>
                             }
                         </>

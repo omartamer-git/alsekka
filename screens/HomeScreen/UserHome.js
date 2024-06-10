@@ -79,7 +79,7 @@ function UserHome({ navigation, route }) {
         } catch (error) {
             // Handle errors if any API call fails
             // console.error("Error occurred during API calls:", error);
-            console.log(error.stack)
+            // console.log(error.stack)
             setRefreshing(false); // Set refreshing to false even in case of errors
         }
     };

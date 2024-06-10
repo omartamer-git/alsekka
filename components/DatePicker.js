@@ -6,7 +6,7 @@ import useRenderCounter from "./useRenderCounter";
 
 
 
-function CustomDatePicker({ date, setDate }) {
+function CustomDatePicker({ date, setDate, style }) {
     const { t } = useTranslation();
     const counter = useRenderCounter();
 
@@ -44,6 +44,15 @@ function CustomDatePicker({ date, setDate }) {
 
     function DateInstance({ i }) {
         const chosen = chosenDate === i;
+        const styleBorder = i === 0 ?
+            { borderTopLeftRadius: 8 * rem } :
+            i === 2 ?
+                { borderTopRightRadius: 8 * rem } :
+                i === 3 ?
+                    { borderBottomLeftRadius: 8 * rem } :
+                    i === 5 ?
+                        { borderBottomRightRadius: 8 * rem } :
+                        {};
         return (
             <View style={{ width: '33.3%', height: 48 * rem, padding: 1 }}>
                 <TouchableOpacity
@@ -52,7 +61,7 @@ function CustomDatePicker({ date, setDate }) {
                         setChosenDate(i);
                         setDate(dates.current[i]);
                     }}
-                    style={[chosen ? styles.bgPrimary : styles.bgGray, styles.justifyCenter, styles.alignCenter, styles.w100, styles.h100]}>
+                    style={[chosen ? styles.bgPrimary : styles.bgGray, styles.justifyCenter, styles.alignCenter, styles.w100, styles.h100, styleBorder]}>
                     <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.white, styles.bold, styles.text]}>{dateStrings.current[i]}</Text>
                 </TouchableOpacity>
             </View>
@@ -60,7 +69,7 @@ function CustomDatePicker({ date, setDate }) {
     }
 
     return (
-        <View style={[styles.fullCenter, styles.flexRow, styles.w100, styles.wrap]}>
+        <View style={[styles.fullCenter, styles.flexRow, styles.w100, styles.wrap, style]}>
             {counter}
             {
                 dates.current.map((a, i) => {

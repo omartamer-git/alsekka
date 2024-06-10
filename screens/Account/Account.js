@@ -420,7 +420,7 @@ const accountStyles = StyleSheet.create({
         height: 80 * rem,
         ...styles.flexOne,
         ...styles.mh5,
-        borderRadius: 4 * rem,
+        borderRadius: 8 * rem,
         ...styles.fullCenter,
         position: 'relative'
     },

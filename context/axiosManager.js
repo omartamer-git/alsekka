@@ -2,21 +2,22 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import * as Keychain from 'react-native-keychain';
 import { create } from 'zustand';
-import { SERVER_URL } from '../helper';
 import useAuthManager from './authManager';
 import useErrorManager from './errorManager'; // Assuming this exists
 import axiosRetry from 'axios-retry';
 import { I18nManager } from 'react-native';
+import { config } from '../config';
+import useAppStateManager from './appStateManager';
 
 const useAxiosManager = create((set) => {
     const authAxios = axios.create({
-        baseURL: SERVER_URL
+        baseURL: config.SERVER_URL
     });
     // Optional: Setup axiosRetry as needed
     // axiosRetry(authAxios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
     const publicAxios = axios.create({
-        baseURL: SERVER_URL
+        baseURL: config.SERVER_URL
     });
     // Optional: Setup axiosRetry for publicAxios as well
 
@@ -45,7 +46,6 @@ const useAxiosManager = create((set) => {
         error => {
             // Directly reject if there's no error response
             if (!error.response || !error.response.data.error.message) {
-                console.log('A')
                 useErrorManager.getState().setError('An unexpected error occurred');
                 return Promise.reject(error);
             }
@@ -100,15 +100,23 @@ const useAxiosManager = create((set) => {
 
             return Promise.resolve();
         }).catch(e => {
-            console.error(e);
             useAuthManager.getState().setAccessToken(null);
             useAuthManager.getState().setRefreshToken(null);
+            useAuthManager.getState().setAuthenticated(false);
+            useAppStateManager.getState().setLoading(false);
+            Keychain.setGenericPassword(
+                'token',
+                JSON.stringify({
+                    accessToken: null,
+                    refreshToken: null,
+                }),
+            );
             // Handle error during token refresh, extracting error message if possible
-            const errorMessage = e.response && e.response.data.error.message
-                ? (
-                    I18nManager.isRTL ? error.response.data.error.message_ar : error.response.data.error.message
-                )
-                : 'Login failed, please retry.';
+            // const errorMessage = e.response && e.response.data.error.message
+            //     ? (
+            //         I18nManager.isRTL ? error.response.data.error.message_ar : error.response.data.error.message
+            //     )
+            //     : 'Login failed, please retry.';
             // useErrorManager.getState().setError(errorMessage);
             return Promise.reject(e);
         });

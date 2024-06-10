@@ -56,9 +56,8 @@ function LoginScreen({ route, navigation }) {
             onVerify: "login",
           });
         }
-      })
-      .catch((err) => {
-        console.log(err);
+      }).catch(err => {
+        // console.log(err.stack);
         // setErrorMessage(err.response.data.error.message);
       })
       .finally(function () {

@@ -250,13 +250,13 @@ function MapScreen({ route, navigation }) {
 
           <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>
 
-          <CustomDatePicker date={date} setDate={setDate} />
+          <CustomDatePicker date={date} setDate={setDate} style={[styles.mv10]} />
 
           <Text style={[styles.text, styles.inputText]}>
             {t('gender_to_carpool')}
           </Text>
 
-          <View style={[styles.flexRow, styles.w100, styles.mv10]}>
+          <View style={[styles.flexRow, styles.w100, styles.mv10, styles.br8, { overflow: 'hidden' }]}>
             {
               gender === "FEMALE" &&
               <TouchableOpacity onPress={function () { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.gray }]}>

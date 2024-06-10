@@ -11,7 +11,7 @@ export default function Counter({ counter, setCounter, text, textPlural, min = 0
         <>
 
             <View style={[styles.flexRow, styles.flexOne, { height: 44 * rem, marginTop: 8 * rem, marginBottom: 8 * rem }]}>
-                <TouchableOpacity style={[styles.flexOne, styles.bgLight, styles.alignCenter, styles.justifyCenter, styles.br4]} onPress={() => setCounter(c => c > min ? c - 1 : min)}>
+                <TouchableOpacity style={[styles.flexOne, styles.bgLight, styles.alignCenter, styles.justifyCenter, styles.br8]} onPress={() => setCounter(c => c > min ? c - 1 : min)}>
                     <Text style={[styles.font18, styles.dark]}>
                         −
                     </Text>
@@ -23,7 +23,7 @@ export default function Counter({ counter, setCounter, text, textPlural, min = 0
                     <Text style={[styles.text, styles.dark]}>{counter <= 1 ? text : textPlural}</Text>
                 </View>
 
-                <TouchableOpacity style={[styles.flexOne, styles.bgLight, styles.alignCenter, styles.justifyCenter, styles.br4]} onPress={() => setCounter(c => c < max ? c + 1 : max)}>
+                <TouchableOpacity style={[styles.flexOne, styles.bgLight, styles.alignCenter, styles.justifyCenter, styles.br8]} onPress={() => setCounter(c => c < max ? c + 1 : max)}>
                     <Text style={[styles.font18, styles.dark]}>
                         +
                     </Text>
