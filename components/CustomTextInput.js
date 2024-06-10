@@ -9,19 +9,23 @@ function CustomTextInput({ value,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing, textContentType,
-    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit=true }) {
+    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true }) {
 
     const styles2 = StyleSheet.create({
         container: {
             height: 48 * rem,
             alignItems: 'center',
             justifyContent: 'flex-start',
-            borderRadius: 4 * rem,
+            borderRadius: 8 * rem,
             ...styles.flexRow,
             paddingStart: 24 * rem,
             paddingEnd: 24 * rem,
             marginTop: 8 * rem,
             marginBottom: 8 * rem,
+            // shadowRadius: 8,
+            // shadowColor: '#000',
+            // shadowOpacity: 0.05,
+            // shadowOffset: { width: 5, height: 5 },
             backgroundColor: disabled ? palette.light : palette.white
         },
         input: {
@@ -48,7 +52,7 @@ function CustomTextInput({ value,
         }
     });
 
-    
+
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
 
@@ -74,7 +78,7 @@ function CustomTextInput({ value,
 
     return (
         <>
-            <TouchableOpacity activeOpacity={1} onPress={onPressIn_} style={[styles2.container, validationStyles, style]}>
+            <TouchableOpacity activeOpacity={1} onPress={onPressIn_} style={[styles2.container, validationStyles, styles.shadow, style]}>
                 {
                     iconLeft && !emojiLeft &&
                     <MaterialIcons name={iconLeft} size={18} color={palette.primary} />

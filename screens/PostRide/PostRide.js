@@ -36,6 +36,7 @@ import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
+import LottieView from 'lottie-react-native';
 
 function PostRide({ route, navigation }) {
     const { t } = useTranslation();
@@ -331,10 +332,11 @@ function PostRide({ route, navigation }) {
                 <View style={[styles.bgLightGray, styles.w100, styles.flexGrow, styles.defaultPadding]}>
                     {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
-                            <PiggyBank width={300} height={300} />
+                            {/* <PiggyBank width={300} height={300} /> */}
+                            <LottieView source={require('../../assets/verified_badge_animation.json')}  style={{width: 250 * rem, height: 250 * rem}} renderMode='SOFTWARE' autoPlay loop />
                             <Text style={[styles.text, styles.headerText, styles.textCenter]}>{t('get_paid')}</Text>
                             <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10]}>{t('submit_license')}</Text>
-                            <Button bgColor={palette.primary} textColor={palette.white} text={t('cta_submit_driver')} onPress={navigateDocuments} />
+                            <Button bgColor={palette.accent} textColor={palette.white} text={t('cta_submit_driver')} onPress={navigateDocuments} />
                         </View>
                     }
                     {!loading && usableCars && usableCars.length > 0 && userStore.driver &&
@@ -388,7 +390,7 @@ function PostRide({ route, navigation }) {
 
                                             <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>
 
-                                            <CustomDatePicker date={values.dateInput} setDate={(newDate) => { setFieldValue('dateInput', newDate) }} />
+                                            <CustomDatePicker style={[styles.mv10]} date={values.dateInput} setDate={(newDate) => { setFieldValue('dateInput', newDate) }} />
 
                                             <Text style={[styles.text, styles.inputText]}>{t('time')}</Text>
 
@@ -457,7 +459,7 @@ function PostRide({ route, navigation }) {
                                                 <TouchableOpacity
                                                     onPress={() => setFieldValue('priceInput', suggestedPrice.toString())}
                                                     activeOpacity={0.9}
-                                                    style={[styles.flexOne, styles.bgPrimary, { height: 48 * rem, marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 4 * rem, borderBottomEndRadius: 4 * rem }]}>
+                                                    style={[styles.flexOne, styles.bgPrimary, { height: 48 * rem, marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 8 * rem, borderBottomEndRadius: 4 * rem }]}>
                                                     <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.white, styles.bold, { fontSize: 10 * rem }]}>{t('suggested_price')}</Text>
                                                     <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.white, styles.bold, styles.font18, styles.mt5]}>{suggestedPrice} {t('EGP')}</Text>
                                                 </TouchableOpacity>

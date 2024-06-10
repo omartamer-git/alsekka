@@ -44,7 +44,7 @@ const styles2 = StyleSheet.create({
         height: 44 * rem,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 6 * rem,
+        borderRadius: 8 * rem,
         paddingStart: 24 * rem,
         ...styles.flexRow,
         paddingEnd: 24 * rem,

@@ -29,7 +29,7 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
 
 
     return (
-        <TouchableOpacity onPress={function () { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={[styles.w100, styles.p24, styles.br16, styles.bgWhite, styles.border1, styles.borderLight, style]}>
+        <TouchableOpacity onPress={function () { onPress(rid, DriverId === id) }} activeOpacity={0.65} style={[styles.w100, styles.p24, styles.br16, styles.bgWhite, styles.border1, styles.borderLight, styles.shadow, style]}>
             <View style={[styles.flexRow, styles.w100]}>
                 <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                     <View style={styles.flexRow}>
@@ -90,33 +90,5 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
 
     );
 }
-
-const styles2 = StyleSheet.create(
-    {
-        rideView: {
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 8,
-            borderColor: '#d9d9d9',
-            borderWidth: 1,
-            backgroundColor: '#F6F5F5',
-            minHeight: 165 * rem
-        },
-
-        subViews: {
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderColor: palette.light,
-            ...styles.flexRow,
-        },
-
-        textIcon: {
-            fontSize: 12 * rem,
-            fontWeight: '500',
-            marginStart: 2
-        }
-    }
-);
 
 export default memo(AvailableRide);

@@ -12,6 +12,7 @@ const useAppManager = create((set) => ({
     minVersion: "1.0.0",
     latestVersion: "1.0.0",
     cities: {},
+    loading: true,
 
     getVersionData: async function () {
         try {
@@ -42,6 +43,7 @@ const useAppManager = create((set) => ({
         }
     },
 
+    setLoading: (loading) => set((state) => ({loading: loading})),
     setPassengerFee: (passengerFee) => set((state) => ({ passengerFee: passengerFee })),
     setDriverFee: (driverFee) => set((state) => ({ driverFee: driverFee })),
     setCardsEnabled: (cardsEnabled) => set((state) => ({ cardsEnabled: cardsEnabled })),

@@ -479,9 +479,9 @@ export const styles = StyleSheet.create({
     shadow: {
         shadowColor: palette.dark,
         elevation: 5,
-        shadowOpacity: 1,
-        shadowRadius: 5 * rem,
-        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.075,
+        shadowRadius: 8 * rem,
+        shadowOffset: { width: 5, height: 5 },
     },
 
     flexOne: {

@@ -9,7 +9,8 @@ const useAuthManager = create((set) => ({
     setAccessToken: (accessToken) => set((state) => ({ accessToken: accessToken })),
     setRefreshToken: (refreshToken) => set((state) => ({ refreshToken: refreshToken })),
     setAuthenticated: (authenticated) => set((state) => ({ authenticated: authenticated })),
-    
+    setState: (newState) => set(newState),
+
     logout: async  function () {
         await Keychain.setGenericPassword(
             'token',
