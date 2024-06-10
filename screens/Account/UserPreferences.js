@@ -56,16 +56,19 @@ const UserPreferences = ({ route, navigation }) => {
           <View style={buttonStyles.preference}>
             <Text style={buttonStyles.label}>Chattiness</Text>
             <RadioButton
+              iconName='chat'
               value="I prefer talking during the ride"
               selectedValue={preferences.chattiness}
               onSelect={(value) => handlePreferenceChange('chattiness', value)}
             />
             <RadioButton
+              iconName='chat-bubble'
               value="I prefer a quiet ride"
               selectedValue={preferences.chattiness}
               onSelect={(value) => handlePreferenceChange('chattiness', value)}
             />
             <RadioButton
+              iconName='textsms'
               value="I am flexible about talking"
               selectedValue={preferences.chattiness}
               onSelect={(value) => handlePreferenceChange('chattiness', value)}
@@ -75,16 +78,19 @@ const UserPreferences = ({ route, navigation }) => {
           <View style={buttonStyles.preference}>
             <Text style={buttonStyles.label}>Rest-Stop</Text>
             <RadioButton
-              value="I prefer frequent rest stops during the ride"
+              iconName='multiple-stop'
+              value="I prefer frequent stops during the ride"
               selectedValue={preferences.rest_stop}
               onSelect={(value) => handlePreferenceChange('rest_stop', value)}
             />
             <RadioButton
+              iconName='airline-stops'
               value="I prefer rest stops only when necessary"
               selectedValue={preferences.rest_stop}
               onSelect={(value) => handlePreferenceChange('rest_stop', value)}
             />
             <RadioButton
+              iconName='location-pin'
               value="I don't mind as long as we get there!"
               selectedValue={preferences.rest_stop}
               onSelect={(value) => handlePreferenceChange('rest_stop', value)}
@@ -94,16 +100,19 @@ const UserPreferences = ({ route, navigation }) => {
           <View style={buttonStyles.preference}>
             <Text style={buttonStyles.label}>Music</Text>
             <RadioButton
+              iconName='music-note'
               value="I prefer music during the ride"
               selectedValue={preferences.music}
               onSelect={(value) => handlePreferenceChange('music', value)}
             />
             <RadioButton
+              iconName='music-off'
               value="I prefer no music during the ride"
               selectedValue={preferences.music}
               onSelect={(value) => handlePreferenceChange('music', value)}
             />
             <RadioButton
+              iconName='music-note'
               value="I am flexible about music"
               selectedValue={preferences.music}
               onSelect={(value) => handlePreferenceChange('music', value)}
@@ -113,16 +122,19 @@ const UserPreferences = ({ route, navigation }) => {
           <View style={buttonStyles.preference}>
             <Text style={buttonStyles.label}>Smoking</Text>
             <RadioButton
+              iconName='smoking-rooms'
               value="I prefer smoking during the ride"
               selectedValue={preferences.smoking}
               onSelect={(value) => handlePreferenceChange('smoking', value)}
             />
             <RadioButton
+              iconName='smoke-free'
               value="I prefer a smoke-free ride"
               selectedValue={preferences.smoking}
               onSelect={(value) => handlePreferenceChange('smoking', value)}
             />
             <RadioButton
+              iconName='smoking-rooms'
               value="Cigarette breaks outside the car are ok"
               selectedValue={preferences.smoking}
               onSelect={(value) => handlePreferenceChange('smoking', value)}

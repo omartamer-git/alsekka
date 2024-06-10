@@ -1,14 +1,29 @@
+import React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { styles, palette } from "../helper";
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-
-const RadioButton = ({ value, selectedValue, onSelect }) => {
+const RadioButton = ({ value, selectedValue, onSelect, iconName, iconSize = 26, iconColor }) => {
   return (
     <TouchableOpacity onPress={() => onSelect(value)} style={buttonStyles.radioContainer}>
-      <View style={[buttonStyles.radioButton]}>
-        {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
-      </View>
-      <Text style={buttonStyles.buttonLabel}>{value}</Text>
+        {iconName ? (
+          <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween]}>
+            <View style={[styles.flexRow, styles.fullCenter]}>
+              <MaterialIcon name={iconName} size={iconSize} color={iconColor ? iconColor : palette.primary} />
+              <Text style={[buttonStyles.buttonLabel, styles.mh5]}>{value}</Text>
+            </View>
+            <View style={[buttonStyles.radioButton]}>
+              {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
+            </View>
+          </View>
+        ) : (
+          <>
+            <View style={[buttonStyles.radioButton]}>
+              {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
+            </View>
+            <Text style={buttonStyles.buttonLabel}>{value}</Text>
+          </>
+        )}
     </TouchableOpacity>
   );
 };
