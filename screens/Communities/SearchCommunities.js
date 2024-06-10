@@ -56,7 +56,7 @@ function SearchCommunities({ navigation, route }) {
 
     return (
         <ScreenWrapper screenName={t('search')} navType="back" navAction={() => navigation.goBack()}>
-            <View style={[styles.defaultPadding]}>
+            <View style={[styles.defaultPadding, styles.pb8]}>
                 <CustomTextInput placeholder={t('search_for_community')} iconLeft="search" value={searchText} onChangeText={onChangeText} keyboardType="web-search" />
             </View>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>

@@ -923,6 +923,9 @@ export const styles = StyleSheet.create({
     textEnd: {
         textAlign: 'right',
     },
+    overflowHidden: {
+        overflow: 'hidden'
+    },
     mapStyle: {
         height: 300 * rem,
         width: '100%',

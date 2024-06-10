@@ -113,12 +113,12 @@ function LoginScreen({ route, navigation }) {
                   <>
                     <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
                     <CustomTextInput
-                      value={"+20 " + values.phoneInput}
+                      value={values.phoneInput}
+                      prefix={"+20"}
+                      overrideRTL
                       emojiLeft={"🇪🇬"}
                       onChangeText={(text) => {
-                        if (text == '') return;
-                        let sanitizedText = text.replace("+20", "").trim();
-                        handleChange('phoneInput')(sanitizedText);
+                        handleChange('phoneInput')(text);
                       }}
                       onBlur={handleBlur('phoneInput')}
                       placeholder={t('enter_phone')}

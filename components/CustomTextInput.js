@@ -1,23 +1,25 @@
-import React, { memo, useEffect, useRef } from 'react';
-import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import React, { memo, useRef } from 'react';
+import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, rem, styles } from '../helper';
+import { palette, rem, styles, translateEnglishNumbers } from '../helper';
+import useLocale from '../locale/localeContext';
 
-function CustomTextInput({ value,
+function CustomTextInput({ value, prefix,
     onChangeText, placeholder, style,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing, textContentType,
-    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true }) {
+    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true, overrideRTL = false }) {
 
+    const { language } = useLocale();
     const styles2 = StyleSheet.create({
         container: {
             height: 48 * rem,
             alignItems: 'center',
             justifyContent: 'flex-start',
             borderRadius: 8 * rem,
-            ...styles.flexRow,
+            flexDirection: (overrideRTL && I18nManager.isRTL) ? 'row-reverse' : 'row',
             paddingStart: 24 * rem,
             paddingEnd: 24 * rem,
             marginTop: 8 * rem,
@@ -31,7 +33,7 @@ function CustomTextInput({ value,
         input: {
             height: 24 * rem,
             lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
-            textAlign: I18nManager.isRTL ? 'right' : 'left',
+            textAlign: (I18nManager.isRTL && !overrideRTL) ? 'right' : 'left',
             paddingTop: Platform.OS === 'android' ? 0 : undefined,
             paddingBottom: Platform.OS === 'android' ? 0 : undefined,
             fontWeight: '500',
@@ -75,6 +77,7 @@ function CustomTextInput({ value,
 
         inputRef.current.focus();
     }
+    const myStyle = I18nManager.isRTL ? styles.mr5 : styles.ml5;
 
     return (
         <>
@@ -87,6 +90,14 @@ function CustomTextInput({ value,
                     emojiLeft &&
                     <Text style={[styles.font14, styles.dark]}>{emojiLeft}</Text>
                 }
+                {
+                    (prefix) &&
+                    <View style={[{height: 24 * rem}, myStyle, styles.fullCenter, styles.flexRow]}>
+                        <Text style={[styles.bgWhite, styles.text, { fontWeight: '500', textAlignVertical: 'bottom', paddingVertical: Platform.OS === 'android' ? 0 : undefined, lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined }]}>
+                            {prefix}
+                        </Text>
+                    </View>
+                }
                 <TextInput
                     style={[styles2.input, textStyles]}
                     placeholder={placeholder}
@@ -96,7 +107,6 @@ function CustomTextInput({ value,
                     onChangeText={onChangeText}
                     selectTextOnFocus={selectTextOnFocus}
                     secureTextEntry={secureTextEntry}
-                    onFocus={onFocus}
                     autoCorrect={false}
                     blurOnSubmit={blurOnSubmit}
                     onBlur={onBlur}

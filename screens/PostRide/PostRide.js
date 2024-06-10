@@ -459,7 +459,7 @@ function PostRide({ route, navigation }) {
                                                 <TouchableOpacity
                                                     onPress={() => setFieldValue('priceInput', suggestedPrice.toString())}
                                                     activeOpacity={0.9}
-                                                    style={[styles.flexOne, styles.bgPrimary, { height: 48 * rem, marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 8 * rem, borderBottomEndRadius: 4 * rem }]}>
+                                                    style={[styles.flexOne, styles.bgPrimary, { height: 48 * rem, marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 8 * rem, borderBottomEndRadius: 8 * rem }]}>
                                                     <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.white, styles.bold, { fontSize: 10 * rem }]}>{t('suggested_price')}</Text>
                                                     <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.white, styles.bold, styles.font18, styles.mt5]}>{suggestedPrice} {t('EGP')}</Text>
                                                 </TouchableOpacity>
@@ -538,7 +538,7 @@ function PostRide({ route, navigation }) {
 
                                                     <Text style={[styles.text, styles.inputText]}>{t('gender_to_carpool')}</Text>
 
-                                                    <View style={[styles.flexRow, styles.w100, styles.mv10]}>
+                                                    <View style={[styles.flexRow, styles.w100, styles.mv10, styles.br8, styles.overflowHidden]}>
                                                         {
                                                             userStore.gender === "FEMALE" &&
                                                             <TouchableOpacity onPress={function () { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.gray }]}>
