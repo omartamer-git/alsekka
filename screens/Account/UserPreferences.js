@@ -8,14 +8,14 @@ import Button from '../../components/Button';
 
 const UserPreferences = ({ route, navigation }) => {
   const {userId} = route.params;
-
+   
   const [preferences, setPreferences] = useState({
     smoking: "I prefer a smoke-free ride",
     chattiness: "I prefer a quiet ride",
     music: 'I prefer no music during the ride',
     rest_stop: 'I prefer rest stops only when necessary'
   });
-  
+
   const { t } = useTranslation();
   // useEffect(() => {
   //   fetchPreferences();

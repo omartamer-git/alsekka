@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+    I18nManager,
     Linking,
     Platform,
     ScrollView,
@@ -40,8 +41,12 @@ function Account({ route, navigation }) {
     const [deletePassword, setDeletePassword] = useState('');
     const [deleteError, setDeleteError] = useState('');
     const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
+    const [editProfile, setEditProfile] = useState(false);
+    const [preferences, setPreferences] = useState({});
+    const [preferencesVisible, setPreferencesVisible] = useState(false);
 
     // const userStore = useUserStore();
+    const userId = useUserStore((state) => state.id);
     const userPhone = useUserStore((state) => state.phone);
     const userReset = useUserStore((state) => state.reset);
     const userRating = useUserStore((state) => state.rating);
@@ -56,7 +61,6 @@ function Account({ route, navigation }) {
     const userUnreadMessages = useUserStore((state) => state.unreadMessages);
     const userDriver = useUserStore((state) => state.driver)
     const userEmail = useUserStore((state) => state.email);
-
 
     const [editPhoneText, setEditPhoneText] = useState(userPhone);
     const [emailError, setEmailError] = useState(null);
@@ -170,12 +174,15 @@ function Account({ route, navigation }) {
             <ScreenWrapper screenName={t('account')}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                     <View style={[accountStyles.topSection, styles.w100]}>
-                        <View style={[styles.flexGrow, styles.fullCenter, styles.pr16]}>
+                        <View style={[styles.flexOne, styles.alignStart, styles.justifyCenter ,styles.pr16]}>
                             <Text style={[styles.text, styles.headerText2]}>{capitalizeWord(userFirstName)} {capitalizeWord(userLastName)}</Text>
-                            <View style={[styles.flexRow, styles.alignSelfCenter]}>
+                            <View style={[styles.flexRow, styles.mt5]}>
                                 {ratings}
                             </View>
-                            <Button text={t('edit_account')} textColor={palette.white} bgColor={palette.primary} onPress={function () { navigation.navigate('UserPreferences') }} />
+                            {/* <View style={[styles.flexRow, styles.w100]}>
+                                <Button text='Edit' icon='user-edit' iconSize={15} iconColor={palette.white} style={accountStyles.mainButton} textColor={palette.white} bgColor={palette.primary} onPress={function () { setEditProfile(true) }} />
+                                <Button text='View' icon='eye' iconSize={15} style={accountStyles.mainButton} textColor={palette.dark} iconColor={palette.dark} bgColor={palette.accent} onPress={function () { setEditProfile(true) }} />
+                            </View> */}
                         </View>
                         <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}
@@ -185,97 +192,99 @@ function Account({ route, navigation }) {
                             </View>
                         </TouchableOpacity>
                     </View>
+                    
+                    {/* <View style={styles.breakline} /> */}
 
-                    <View style={[styles.w100, styles.mt10]}>
+                    <View style={[styles.w100]}>
                         <AccountSections title='account'>
-                            <AccountSectionItems text='ride_preferences' />
-                            <AccountSectionItems text='manage_cars' />
-                            <AccountSectionItems text='my_trips' />
-                            <AccountSectionItems text='terms_&_privacy_policy' />
+                            <AccountSectionItems icon='settings' text='Profile settings' onPress={() => setEditProfile(true)}/>
+                            <AccountSectionItems icon='groups' text='ride_preferences' onPress={() => navigation.navigate('UserPreferences', {userId})}/>
+                            <AccountSectionItems icon='directions-car' text='manage_cars' onPress={() => navigation.navigate('Manage Cars')}/>
+                            <AccountSectionItems icon='route' text='my_trips' onPress={() => navigation.navigate('All Trips')}/>
+                            <AccountSectionItems icon='lock' text='terms_&_privacy_policy' onPress={() => setTermsModalVisible(true)}/>
                         </AccountSections>
 
                         <AccountSections title='communication'>
-                            <AccountSectionItems text='messages' />
-                            {!referralsDisabled && <AccountSectionItems text='refer_friend' />}
-                            <AccountSectionItems text='need_help' />
+                            <AccountSectionItems icon='chat-bubble' text='messages' onPress={() => navigation.navigate('Chats List')}/>
+                            {!referralsDisabled && <AccountSectionItems icon={I18nManager.isRTL ? 'person-add' : 'person-add-alt-1'} text='refer_friend' onPress={() => navigation.navigate('Referral')}/>}
+                            <AccountSectionItems icon='help' text='need_help' onPress={() => Linking.openURL("https://wa.me/201028182577")}/>
                         </AccountSections>
 
                         <AccountSections title='financial'>
-                            <AccountSectionItems text='wallet' />
-                            {!referralsDisabled && <AccountSectionItems text="add_referral" />}
+                            <AccountSectionItems icon='wallet' text='wallet' onPress={() => navigation.navigate('Wallet')}/>
+                            {!referralsDisabled && <AccountSectionItems icon='redeem' text="add_referral" onPress={() => navigation.navigate('Add Referral')}/>}
                         </AccountSections>
                     </View>
                     
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('log_out')} onPress={logout} />
                     <Button bgColor={palette.red} textColor={palette.white} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
                     
-                
-                    {/* <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
-                        <View style={accountStyles.acctButtonsView}>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Chats List') }}>
-                                <View style={[{ position: 'relative' }, styles.fullCenter]}>
-                                    <MaterialIcons name="message" size={40} color={palette.white} />
-                                    {userUnreadMessages > 0 &&
-                                        <View style={[styles.positionAbsolute, styles.bgRed, styles.br24, styles.fullCenter, { top: -5, right: -5, width: 20 * rem, height: 20 * rem }]}>
-                                            <Text style={[styles.text, styles.white]}>{userUnreadMessages > 9 ? '9+' : userUnreadMessages}</Text>
-                                        </View>
-                                    }
-                                </View>
-                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet') }}>
-                                <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
-                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('wallet')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('All Trips') }}>
-                                <MaterialIcons name="history" size={40} color={palette.white} />
-                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('trips')}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('UserPreferences') }}>
-                                <MaterialIcons name="history" size={40} color={palette.white} />
-                                <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('preferences')}</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.w100}>
-                            <Button text={t('manage_cars')} textColor={palette.white} bgColor={palette.primary} onPress={function () { navigation.navigate('Manage Cars') }} />
-                            <CustomTextInput
-                                value={userFirstName + " " + userLastName}
-                                iconLeft="badge"
-                                iconRight="edit"
-                                editable={false}
-                                style={accountStyles.editInput}
-                                onPressIn={() => !userDriver ? setEditNameModalVisible(true) : ""}
-                                role="button"
-                                disabled={userDriver}
-                            />
-                            <CustomTextInput
-                                value={userEmail}
-                                iconLeft="mail"
-                                iconRight="edit"
-                                editable={false}
-                                style={accountStyles.editInput}
-                                onPressIn={() => setEditEmailModalVisible(true)}
-                                role="button"
-                            />
-                        </View>
-                    </View> */}
-
-                    {/* <View style={[styles.w100]}>
-
-                        {!referralsDisabled &&
-                            <>
-                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={function () { navigation.navigate('Referral') }} />
-                                <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={function () { navigation.navigate('Add Referral') }} />
-                            </>
-                        }
-                        <Button bgColor={palette.accent} textColor={palette.white} text={t('help')} onPress={() => {
-                            Linking.openURL("https://wa.me/201028182577")
-                        }} />
-                        <Button bgColor={palette.accent} textColor={palette.white} text={`${t('terms')} ${t('and')} ${t('privacy_policy')}`} onPress={function () { setTermsModalVisible(true) }} />
-                    </View> */}
                 </ScrollView>
             </ScreenWrapper>
+
+
+            <BottomModal onHide={() => setEditProfile(false)} modalVisible={editProfile}>
+                <CustomTextInput
+                    value={userFirstName + " " + userLastName}
+                    iconLeft="badge"
+                    iconRight="edit"
+                    editable={false}
+                    style={accountStyles.editInput}
+                    onPressIn={() => !userDriver ? setEditNameModalVisible(true) : ""}
+                    role="button"
+                    disabled={userDriver}
+                />
+                <CustomTextInput
+                    value={userEmail}
+                    iconLeft="mail"
+                    iconRight="edit"
+                    editable={false}
+                    style={accountStyles.editInput}
+                    onPressIn={() => setEditEmailModalVisible(true)}
+                    role="button"
+                />
+            </BottomModal>
+
+            <BottomModal onHide={() => setPreferencesVisible(false)} modalVisible={preferencesVisible}>
+                <CustomTextInput
+                    value={userFirstName + " " + userLastName}
+                    iconLeft="badge"
+                    iconRight="edit"
+                    editable={false}
+                    style={accountStyles.editInput}
+                    onPressIn={() => !userDriver ? setEditNameModalVisible(true) : ""}
+                    role="button"
+                    disabled={userDriver}
+                />
+                <CustomTextInput
+                    value={userEmail}
+                    iconLeft="mail"
+                    iconRight="edit"
+                    editable={false}
+                    style={accountStyles.editInput}
+                    onPressIn={() => setEditEmailModalVisible(true)}
+                    role="button"
+                />
+                <CustomTextInput
+                    value={userEmail}
+                    iconLeft="mail"
+                    iconRight="edit"
+                    editable={false}
+                    style={accountStyles.editInput}
+                    onPressIn={() => setEditEmailModalVisible(true)}
+                    role="button"
+                />
+                <CustomTextInput
+                    value={userEmail}
+                    iconLeft="mail"
+                    iconRight="edit"
+                    editable={false}
+                    style={accountStyles.editInput}
+                    onPressIn={() => setEditEmailModalVisible(true)}
+                    role="button"
+                />
+            </BottomModal>
+
 
             <BottomModal onHide={() => setEditNameModalVisible(false)} modalVisible={editNameModalVisible}>
                 <View style={[styles.w100]}>
@@ -382,9 +391,9 @@ function Account({ route, navigation }) {
 }
 
 const profilePictureSizing = {
-    height: 105 * rem,
-    width: 105 * rem,
-    borderRadius: (105 * rem) / 2,
+    height: 90 * rem,
+    width: 90 * rem,
+    borderRadius: (90 * rem) / 2,
 };
 
 const accountStyles = StyleSheet.create({
@@ -399,6 +408,12 @@ const accountStyles = StyleSheet.create({
         ...styles.mt10,
         ...styles.flexOne, 
         ...styles.flexRow
+    },
+    mainButton: {
+        ...styles.flexOne,
+        ...styles.mh5,
+        paddingStart: 15 * rem,
+        paddingEnd: 0,
     },
     acctButtons: {
         ...styles.bgPrimary,
@@ -416,9 +431,9 @@ const accountStyles = StyleSheet.create({
     },
 
     profilePictureView: {
-        width: 115 * rem,
-        height: 115 * rem,
-        borderRadius: 115 * rem / 2,
+        width: 100 * rem,
+        height: 100 * rem,
+        borderRadius: 100 * rem / 2,
         ...styles.borderPrimary,
         ...styles.fullCenter,
         borderWidth: 3 * rem,
