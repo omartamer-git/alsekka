@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
 import { rem, styles, translateDate } from "../helper";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import useRenderCounter from "./useRenderCounter";
 
 
