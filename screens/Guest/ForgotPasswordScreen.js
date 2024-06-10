@@ -82,7 +82,9 @@ function ForgotPasswordScreen({ route, navigation }) {
                                             error={touched.phoneInput && errors.phoneInput}
                                             placeholder={t('enter_phone')}
                                             keyboardType="number-pad"
-                                            prefix='20'
+                                            prefix='+20'
+                                            emojiLeft={'🇪🇬'}
+                                            overrideRTL
                                         />
 
                                         <Button

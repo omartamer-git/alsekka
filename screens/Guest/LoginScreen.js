@@ -184,7 +184,9 @@ function LoginScreen({ route, navigation }) {
                       placeholder={t("enter_phone")}
                       error={touched.phoneInput && errors.phoneInput}
                       keyboardType="number-pad"
-                      prefix='20'
+                      prefix='+20'
+                      emojiLeft='🇪🇬'
+                      overrideRTL
                     />
 
                     <Text style={[styles.text, styles.inputText]}>

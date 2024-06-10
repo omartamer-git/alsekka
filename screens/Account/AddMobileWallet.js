@@ -79,7 +79,9 @@ const AddMobileWallet = ({ navigation, route }) => {
                                     handleChange('phoneInput')(sanitizedText);
                                 }}
                                 error={touched.phoneInput && errors.phoneInput}
-                                prefix='20'
+                                prefix='+20'
+                                emojiLeft={'🇪🇬'}
+                                overrideRTL
                             />
 
                             <View style={styles.flexOne} />

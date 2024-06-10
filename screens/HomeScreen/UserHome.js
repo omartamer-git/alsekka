@@ -10,21 +10,20 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { capitalizeWord, containerStyle, dateDiffInDays, palette, rem, styles } from '../../helper';
+import { containerStyle, dateDiffInDays, palette, rem, styles } from '../../helper';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from 'lottie-react-native';
 import { useTranslation } from 'react-i18next';
-import Carousel from 'react-native-reanimated-carousel';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as announcementsAPI from '../../api/announcementsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
+import BottomModal from '../../components/BottomModal';
+import Button from '../../components/Button';
 import { DriverPopUp } from '../../components/DriverPopUp';
 import ScreenWrapper from '../ScreenWrapper';
-import LottieView from 'lottie-react-native';
-import Button from '../../components/Button';
-import BottomModal from '../../components/BottomModal';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -142,7 +141,7 @@ function UserHome({ navigation, route }) {
                             {
                                 currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
                             }
-                            {t('comma')}&nbsp;{capitalizeWord(userStore.firstName)}!
+                            {t('comma')}&nbsp;<Text style={[styles.capitalize]}>{userStore.firstName}</Text>!
                         </Text>
 
                         {driverElement && driverMainTextTo &&

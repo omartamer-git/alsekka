@@ -5,11 +5,9 @@ import { useTranslation } from 'react-i18next';
 import {
     I18nManager,
     Linking,
-    Platform,
     ScrollView,
     StyleSheet,
     Text,
-    TouchableHighlight,
     TouchableOpacity,
     View
 } from 'react-native';
@@ -19,6 +17,8 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
 import useUserStore from '../../api/accountAPI';
+import AccountSectionItems from '../../components/AccountSectionItems';
+import AccountSections from '../../components/AccountSections';
 import BottomModal from '../../components/BottomModal';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/CustomTextInput';
@@ -26,10 +26,8 @@ import ErrorMessage from '../../components/ErrorMessage';
 import useAppManager from '../../context/appManager';
 import useAuthManager from '../../context/authManager';
 import useAxiosManager from '../../context/axiosManager';
-import { capitalizeWord, containerStyle, palette, rem, styles } from '../../helper';
+import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
-import AccountSections from '../../components/AccountSections';
-import AccountSectionItems from '../../components/AccountSectionItems';
 
 function Account({ route, navigation }) {
     const { t } = useTranslation();
@@ -174,16 +172,6 @@ function Account({ route, navigation }) {
             <ScreenWrapper screenName={t('account')}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                     <View style={[accountStyles.topSection, styles.w100]}>
-                        <View style={[styles.flexOne, styles.alignStart, styles.justifyCenter ,styles.pr16]}>
-                            <Text style={[styles.text, styles.headerText2]}>{capitalizeWord(userFirstName)} {capitalizeWord(userLastName)}</Text>
-                            <View style={[styles.flexRow, styles.mt5]}>
-                                {ratings}
-                            </View>
-                            {/* <View style={[styles.flexRow, styles.w100]}>
-                                <Button text='Edit' icon='user-edit' iconSize={15} iconColor={palette.white} style={accountStyles.mainButton} textColor={palette.white} bgColor={palette.primary} onPress={function () { setEditProfile(true) }} />
-                                <Button text='View' icon='eye' iconSize={15} style={accountStyles.mainButton} textColor={palette.dark} iconColor={palette.dark} bgColor={palette.accent} onPress={function () { setEditProfile(true) }} />
-                            </View> */}
-                        </View>
                         <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}
 
@@ -191,34 +179,40 @@ function Account({ route, navigation }) {
                                 <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
                             </View>
                         </TouchableOpacity>
+                        <View style={[styles.flexOne, styles.fullCenter]}>
+                            <Text style={[styles.text, styles.headerText2, styles.capitalize]}>{userFirstName} {userLastName}</Text>
+                            <View style={[styles.flexRow, styles.mt5]}>
+                                {ratings}
+                            </View>
+                        </View>
                     </View>
-                    
-                    {/* <View style={styles.breakline} /> */}
+
+                    <View style={styles.breakline} />
 
                     <View style={[styles.w100]}>
                         <AccountSections title='account'>
-                            <AccountSectionItems icon='settings' text='Profile settings' onPress={() => setEditProfile(true)}/>
-                            <AccountSectionItems icon='groups' text='ride_preferences' onPress={() => navigation.navigate('UserPreferences', {userId})}/>
-                            <AccountSectionItems icon='directions-car' text='manage_cars' onPress={() => navigation.navigate('Manage Cars')}/>
-                            <AccountSectionItems icon='route' text='my_trips' onPress={() => navigation.navigate('All Trips')}/>
-                            <AccountSectionItems icon='lock' text='terms_&_privacy_policy' onPress={() => setTermsModalVisible(true)}/>
+                            <AccountSectionItems icon='settings' text='profile_settings' onPress={() => setEditProfile(true)} />
+                            <AccountSectionItems icon='groups' text='ride_preferences' onPress={() => navigation.navigate('UserPreferences', { userId })} />
+                            <AccountSectionItems icon='directions-car' text='manage_cars' onPress={() => navigation.navigate('Manage Cars')} />
+                            <AccountSectionItems icon='route' text='my_trips' onPress={() => navigation.navigate('All Trips')} />
+                            <AccountSectionItems icon='lock' text='terms_&_privacy_policy' onPress={() => setTermsModalVisible(true)} />
                         </AccountSections>
 
                         <AccountSections title='communication'>
-                            <AccountSectionItems icon='chat-bubble' text='messages' onPress={() => navigation.navigate('Chats List')}/>
-                            {!referralsDisabled && <AccountSectionItems icon={I18nManager.isRTL ? 'person-add' : 'person-add-alt-1'} text='refer_friend' onPress={() => navigation.navigate('Referral')}/>}
-                            <AccountSectionItems icon='help' text='need_help' onPress={() => Linking.openURL("https://wa.me/201028182577")}/>
+                            <AccountSectionItems icon='chat-bubble' text='messages' onPress={() => navigation.navigate('Chats List')} />
+                            {!referralsDisabled && <AccountSectionItems icon={I18nManager.isRTL ? 'person-add' : 'person-add-alt-1'} text='refer_friend' onPress={() => navigation.navigate('Referral')} />}
+                            <AccountSectionItems icon='help' text='need_help' onPress={() => Linking.openURL("https://wa.me/201028182577")} />
                         </AccountSections>
 
                         <AccountSections title='financial'>
-                            <AccountSectionItems icon='wallet' text='wallet' onPress={() => navigation.navigate('Wallet')}/>
-                            {!referralsDisabled && <AccountSectionItems icon='redeem' text="add_referral" onPress={() => navigation.navigate('Add Referral')}/>}
+                            <AccountSectionItems icon='wallet' text='wallet' onPress={() => navigation.navigate('Wallet')} />
+                            {!referralsDisabled && <AccountSectionItems icon='redeem' text="add_referral" onPress={() => navigation.navigate('Add Referral')} />}
                         </AccountSections>
                     </View>
-                    
+
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('log_out')} onPress={logout} />
                     <Button bgColor={palette.red} textColor={palette.white} text={`${t('delete_account')}`} onPress={function () { setDeleteAccountModalVisible(true) }} />
-                    
+
                 </ScrollView>
             </ScreenWrapper>
 
@@ -406,8 +400,9 @@ const accountStyles = StyleSheet.create({
     },
     topSection: {
         ...styles.mt10,
-        ...styles.flexOne, 
-        ...styles.flexRow
+        ...styles.flexOne,
+        ...styles.flexCol,
+        ...styles.fullCenter
     },
     mainButton: {
         ...styles.flexOne,

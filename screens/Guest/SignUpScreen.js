@@ -171,7 +171,9 @@ function SignUpScreen({ route, navigation }) {
                         let sanitizedText = text.replace("+20", "").trim();
                         handleChange('phoneInput')(sanitizedText);
                       }}
-                      prefix='20'
+                      prefix='+20'
+                      emojiLeft={'🇪🇬'}
+                      overrideRTL
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
                       placeholder={t('enter_phone')}
