@@ -89,6 +89,8 @@ import useErrorManager from './context/errorManager';
 import useAppStateManager from './context/appStateManager';
 import LottieView from 'lottie-react-native';
 import { AppState } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 
 const RootStack = createNativeStackNavigator();
@@ -602,72 +604,78 @@ function App() {
     );
   } else {
     return (
-      <React.Fragment>
-        {
-          modalFineLocation &&
-          <BottomModal modalVisible={modalFineLocation} onHide={() => setModalFineLocation(false)}>
-            <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
-              <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('location_perm')}</Text>
-              <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
-                {t('location_perm_desc')}
-              </Text>
-              <Button text={t('allow')} onPress={requestLocationPermissions} bgColor={palette.primary} textColor={palette.lightGray} />
-              <Button text={t('cancel')} onPress={() => setModalFineLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
-            </View>
-          </BottomModal>
-        }
+      <GestureHandlerRootView>
+        <BottomSheetModalProvider>
 
-        {
-          modalBackgroundLocation &&
-          <BottomModal modalVisible={modalBackgroundLocation} onHide={() => setModalBackgroundLocation(false)}>
-            <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
-              <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('bg_location_perm')}</Text>
-              <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
-                {t('bg_location_perm_desc')}
-              </Text>
-              <Button text={t('allow')} onPress={requestBgLocationPermissions} bgColor={palette.primary} textColor={palette.lightGray} />
-              <Button text={t('cancel')} onPress={() => setModalBackgroundLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
-            </View>
-          </BottomModal>
-        }
-
-        {
-          pendingRatings &&
-          <PendingRatingsModal pendingRatings={pendingRatings} />
-        }
-        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
-        <NavigationContainer
-          ref={navigationRef}
-          linking={linking}
-          onReady={() => {
-            routeNameRef.current = navigationRef.current.getCurrentRoute().name;
-          }}
-          onStateChange={async () => {
-            const previousRouteName = routeNameRef.current;
-            const currentRouteName = navigationRef.current.getCurrentRoute().name;
-
-            if (previousRouteName !== currentRouteName) {
-              await analytics().logScreenView({
-                screen_name: currentRouteName,
-                screen_class: currentRouteName,
-              });
-            }
-            routeNameRef.current = currentRouteName;
-          }}
-        >
-          <RootStack.Navigator>
+          <React.Fragment>
             {
-              authAuthenticated === false || (verified === false && !verificationsDisabled) ? (
-                <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
-              ) : (
-                <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
-              )
+              modalFineLocation &&
+              <BottomModal modalVisible={modalFineLocation} onHide={() => setModalFineLocation(false)}>
+                <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
+                  <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('location_perm')}</Text>
+                  <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
+                    {t('location_perm_desc')}
+                  </Text>
+                  <Button text={t('allow')} onPress={requestLocationPermissions} bgColor={palette.primary} textColor={palette.lightGray} />
+                  <Button text={t('cancel')} onPress={() => setModalFineLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
+                </View>
+              </BottomModal>
             }
-          </RootStack.Navigator>
-        </NavigationContainer>
 
-        <DismissableError />
-      </React.Fragment>
+            {
+              modalBackgroundLocation &&
+              <BottomModal modalVisible={modalBackgroundLocation} onHide={() => setModalBackgroundLocation(false)}>
+                <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
+                  <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('bg_location_perm')}</Text>
+                  <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
+                    {t('bg_location_perm_desc')}
+                  </Text>
+                  <Button text={t('allow')} onPress={requestBgLocationPermissions} bgColor={palette.primary} textColor={palette.lightGray} />
+                  <Button text={t('cancel')} onPress={() => setModalBackgroundLocation(false)} bgColor={palette.dark} textColor={palette.lightGray} />
+                </View>
+              </BottomModal>
+            }
+
+            {
+              pendingRatings &&
+              <PendingRatingsModal pendingRatings={pendingRatings} />
+            }
+            <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
+            <NavigationContainer
+              ref={navigationRef}
+              linking={linking}
+              onReady={() => {
+                routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+              }}
+              onStateChange={async () => {
+                const previousRouteName = routeNameRef.current;
+                const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+                if (previousRouteName !== currentRouteName) {
+                  await analytics().logScreenView({
+                    screen_name: currentRouteName,
+                    screen_class: currentRouteName,
+                  });
+                }
+                routeNameRef.current = currentRouteName;
+              }}
+            >
+              <RootStack.Navigator>
+                {
+                  authAuthenticated === false || (verified === false && !verificationsDisabled) ? (
+                    <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
+                  ) : (
+                    <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
+                  )
+                }
+              </RootStack.Navigator>
+            </NavigationContainer>
+
+            <DismissableError />
+          </React.Fragment>
+
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     );
   }
 

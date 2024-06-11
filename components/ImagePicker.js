@@ -5,9 +5,10 @@ import Button from "./Button";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useTranslation } from "react-i18next";
+import BottomModalSheet from "./ModalSheet";
 
 
-export default function ImagePicker({ onChoose, visible, onHide }) {
+export default function ImagePicker({ onChoose, visible, setVisible }) {
     async function getImageFromCamera() {
         const response = await launchCamera();
         onChoose(response);
@@ -24,7 +25,7 @@ export default function ImagePicker({ onChoose, visible, onHide }) {
 
 
     return (
-        <BottomModal modalVisible={visible} onHide={onHide}>
+        <BottomModalSheet modalVisible={visible} setModalVisible={setVisible} snapPoints={['30%', '50%']}>
             <View style={[styles.w100, styles.flexOne, styles.fullCenter]}>
                 <Button
                     onPress={getImageFromGallery}
@@ -33,6 +34,6 @@ export default function ImagePicker({ onChoose, visible, onHide }) {
                     onPress={getImageFromCamera}
                     bgColor={palette.primary} textColor={palette.white} iconColor={palette.white} icon={'camera'} text={t('choose_from_camera')} />
             </View>
-        </BottomModal>
+        </BottomModalSheet>
     )
 }

@@ -121,12 +121,12 @@ function SubmitDriverDocuments({ route, navigation }) {
                                     <Text style={[styles.text, styles.inputText]}>{t('front_side_drivers_license')}</Text>
                                     <ErrorMessage condition={frontSideTouched && !licenseFront} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={frontPhotoButtonText} onPress={onClickUploadFront} />
-                                    <ImagePicker visible={imageFrontModal} onChoose={setImageFront} onHide={() => setImageFrontModal(false)} />
+                                    <ImagePicker visible={imageFrontModal} onChoose={setImageFront} setVisible={setImageFrontModal} />
 
                                     <Text style={[[styles.text, styles.inputText]]}>{t('back_side_drivers_license')}</Text>
                                     <ErrorMessage condition={backSideTouched && !licenseBack} message={t('error_required')} />
                                     <Button bgColor={palette.accent} textColor={palette.white} text={backPhotoButtonText} onPress={onClickUploadBack} />
-                                    <ImagePicker visible={imageBackModal} onChoose={setImageBack} onHide={() => setImageBackModal(false)} />
+                                    <ImagePicker visible={imageBackModal} onChoose={setImageBack} setVisible={setImageBackModal} />
 
 
                                     <Button bgColor={palette.primary} textColor={palette.white} text={t('next_new_car')} onPress={uploadLicense} disabled={!licenseFront || !licenseBack || submitDisabled} />
