@@ -4,7 +4,7 @@ import {
 import * as React from "react";
 
 
-function BottomModalSheet({ children, modalVisible, setModalVisible, snapPoints, bgColor, enableDismissOnClose = true, enablePanDownToClose = true }) {
+function BottomModalSheet({ children, modalVisible, setModalVisible, snapPoints, bgColor, enableDismissOnClose = true, enablePanDownToClose = true, onDismiss }) {
     React.useEffect(() => {
         if (modalVisible) {
             bottomSheetModalRef.current?.present();
@@ -30,7 +30,7 @@ function BottomModalSheet({ children, modalVisible, setModalVisible, snapPoints,
                 enableDismissOnClose={enableDismissOnClose}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
-                onDismiss={() => { if (setModalVisible) { setModalVisible(false) } }}
+                onDismiss={() => { if (setModalVisible) { setModalVisible(false) } if (onDismiss) { onDismiss() } }}
                 style={{
                     shadowColor: "#000",
                     shadowOffset: {

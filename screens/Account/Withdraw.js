@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, Text } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import * as StoreReview from 'react-native-store-review';
 import useUserStore from "../../api/accountAPI";
 import ArrowButton from "../../components/ArrowButton";
@@ -9,12 +9,15 @@ import Button from "../../components/Button";
 import WithdrawalMethod from "../../components/WithdrawalMethod";
 import { abbreviate, containerStyle, getPhoneCarrier, palette, styles } from "../../helper";
 import ScreenWrapper from "../ScreenWrapper";
+import BottomModalSheet from "../../components/ModalSheet";
+import { useBottomSheetModal } from "@gorhom/bottom-sheet";
 
 function Withdraw({ route, navigation }) {
     const { t } = useTranslation();
     const { bankAccounts, mobileWallets, balance, sendWithdrawalRequest } = useUserStore();
     const [modalVisible, setModalVisible] = useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
+    const {dismiss} = useBottomSheetModal();
 
     const withdrawalType = useRef("BANK");
     const withdrawalId = useRef(null);
@@ -28,7 +31,7 @@ function Withdraw({ route, navigation }) {
         } else {
             setWithdrawalMethodChosen(`WALLET - ${data.phone} (${getPhoneCarrier(data.phone)})`);
         }
-
+        dismiss();
         setModalVisible(false);
     }
 
@@ -65,26 +68,29 @@ function Withdraw({ route, navigation }) {
                 </ScrollView>
             </ScreenWrapper>
 
-            <BottomModal onHide={() => setModalVisible(false)} modalVisible={modalVisible}>
-                {bankAccounts.length > 0 && <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('bank_accounts')}</Text>}
-                {
-                    bankAccounts.map((data, index) => {
-                        return (
-                            <WithdrawalMethod key={"bankacc" + index} type={abbreviate(data.bankName)} number={data.accNumber} onPress={() => changeMethod(data, "BANK")} />
-                        );
-                    })
-                }
+            <BottomModalSheet snapPoints={['40%']} setModalVisible={setModalVisible} modalVisible={modalVisible}>
+                <ScrollView style={[styles.ph24, styles.flexOne]} contentContainerStyle={[styles.flexGrow]}>
+                    {bankAccounts.length > 0 && <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('bank_accounts')}</Text>}
+                    {
+                        bankAccounts.map((data, index) => {
+                            return (
+                                <WithdrawalMethod key={"bankacc" + index} type={abbreviate(data.bankName)} number={data.accNumber} onPress={() => changeMethod(data, "BANK")} />
+                            );
+                        })
+                    }
 
-                {mobileWallets.length > 0 && <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('mobile_wallets')}</Text>}
+                    {mobileWallets.length > 0 && <Text style={[styles.text, styles.headerText3, styles.mt10]}>{t('mobile_wallets')}</Text>}
 
-                {
-                    mobileWallets.map((data, index) => {
-                        return (
-                            <WithdrawalMethod key={"wallet" + index} type={getPhoneCarrier(data.phone)} number={data.phone} onPress={() => changeMethod(data, "WALLET")} />
-                        );
-                    })
-                }
-            </BottomModal>
+                    {
+                        mobileWallets.map((data, index) => {
+                            return (
+                                <WithdrawalMethod key={"wallet" + index} type={getPhoneCarrier(data.phone)} number={data.phone} onPress={() => changeMethod(data, "WALLET")} />
+                            );
+                        })
+                    }
+
+                </ScrollView>
+            </BottomModalSheet>
         </>
     );
 };

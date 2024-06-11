@@ -37,6 +37,8 @@ import { palette, rem, styles } from '../../helper';
 import PiggyBank from '../../svgs/piggybank';
 import ScreenWrapper from '../ScreenWrapper';
 import LottieView from 'lottie-react-native';
+import BottomModalSheet from '../../components/ModalSheet';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 function PostRide({ route, navigation }) {
     const { t } = useTranslation();
@@ -315,9 +317,12 @@ function PostRide({ route, navigation }) {
         navigation.navigate("Driver Documents");
     }
 
+    const { dismiss, dismissAll } = useBottomSheetModal();
+
     function navigateNewCar() {
         setCarSelectorOpen(false);
         navigation.navigate('New Car')
+        dismissAll();
     }
 
 
@@ -333,7 +338,7 @@ function PostRide({ route, navigation }) {
                     {!userStore.driver &&
                         <View style={[styles.defaultContainer, styles.bgLightGray, styles.w100, styles.fullCenter, { zIndex: 5 }]}>
                             {/* <PiggyBank width={300} height={300} /> */}
-                            <LottieView source={require('../../assets/verified_badge_animation.json')}  style={{width: 250 * rem, height: 250 * rem}} renderMode='SOFTWARE' autoPlay loop />
+                            <LottieView source={require('../../assets/verified_badge_animation.json')} style={{ width: 250 * rem, height: 250 * rem }} renderMode='SOFTWARE' autoPlay loop />
                             <Text style={[styles.text, styles.headerText, styles.textCenter]}>{t('get_paid')}</Text>
                             <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10]}>{t('submit_license')}</Text>
                             <Button bgColor={palette.accent} textColor={palette.white} text={t('cta_submit_driver')} onPress={navigateDocuments} />
@@ -477,7 +482,7 @@ function PostRide({ route, navigation }) {
                                             }
 
 
-                                            
+
                                             { /* TEMPORARILY DISABLED, TODO: RE-ENABLE PROPERLY */}
 
                                             {/* <Text style={[styles.text, styles.inputText]}>{t('allow_pickup')}</Text>
@@ -573,60 +578,66 @@ function PostRide({ route, navigation }) {
                                                 </>
                                             }
 
-                                            <BottomModal onHide={() => setCommunitySelectorOpen(false)} modalVisible={communitySelectorOpen}>
-                                                {communities && communities.map((data, index) => {
-                                                    return (
-                                                        <CommunityCard
-                                                            key={"community" + index}
-                                                            name={data.name}
-                                                            picture={data.picture}
-                                                            minified={true}
-                                                            onPress={function () {
-                                                                setFieldValue('communityInput', data);
-                                                                handleBlur('communityInput');
-                                                                selectCommunity(data);
-                                                            }}
-                                                            style={[styles.mv5]}
-                                                        />
-                                                    );
-                                                })}
-                                            </BottomModal>
+                                            <BottomModalSheet snapPoints={['50%', '75%']} setModalVisible={setCommunitySelectorOpen} modalVisible={communitySelectorOpen}>
+                                                <ScrollView style={[styles.flexOne, styles.w100]} contentContainerStyle={[styles.flexGrow, styles.ph24, styles.pb24]}>
+                                                    {communities && communities.map((data, index) => {
+                                                        return (
+                                                            <CommunityCard
+                                                                key={"community" + index}
+                                                                name={data.name}
+                                                                picture={data.picture}
+                                                                minified={true}
+                                                                onPress={function () {
+                                                                    setFieldValue('communityInput', data);
+                                                                    handleBlur('communityInput');
+                                                                    selectCommunity(data);
+                                                                    dismissAll();
+                                                                }}
+                                                                style={[styles.mv5]}
+                                                            />
+                                                        );
+                                                    })}
+                                                </ScrollView>
+                                            </BottomModalSheet>
 
-                                            <BottomModal onHide={function () { setRidePosted(false); navigation.goBack(); }} modalVisible={ridePosted}>
-                                                <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
+                                            <BottomModalSheet snapPoints={['40%']} onDismiss={function () { navigation.goBack(); }} modalVisible={ridePosted} setModalVisible={setRidePosted}>
+                                                <View style={[styles.flexOne, styles.w100, styles.fullCenter, styles.ph24]}>
                                                     <SuccessCheck width={100} height={100} />
                                                     <Text style={[styles.text, styles.headerText3, styles.primary, styles.freeSans]}>{t('ride_posted')}</Text>
                                                     <Text style={[styles.text, styles.smallText, styles.dark]}>{t('ride_post_thanks')}</Text>
                                                     <Button onPress={onShare} bgColor={palette.accent} textColor={palette.white} text={t('share_ride_link')} />
                                                 </View>
-                                            </BottomModal>
+                                            </BottomModalSheet>
 
-                                            <BottomModal onHide={() => setCarSelectorOpen(false)} modalVisible={carSelectorOpen}>
+                                            <BottomModalSheet snapPoints={['50%', '75%']} setModalVisible={setCarSelectorOpen} modalVisible={carSelectorOpen}>
+                                                <ScrollView style={[styles.flexOne, styles.w100]} contentContainerStyle={[styles.flexGrow, styles.ph24, styles.pb24]}>
 
-                                                {usableCars && usableCars.map((data, index) => {
-                                                    return (
-                                                        <CarCard
-                                                            approved={data.status}
-                                                            brand={data.brand}
-                                                            model={data.model}
-                                                            year={data.year}
-                                                            color={data.color}
-                                                            licensePlateLetters={data.licensePlateLetters}
-                                                            licensePlateNumbers={data.licensePlateNumbers}
-                                                            onPress={function () {
-                                                                setCarInput(data);
-                                                                handleBlur('carInput');
-                                                                selectCar(data);
-                                                            }}
-                                                            key={"car" + index} />
-                                                    );
-                                                })}
+                                                    {usableCars && usableCars.map((data, index) => {
+                                                        return (
+                                                            <CarCard
+                                                                approved={data.status}
+                                                                brand={data.brand}
+                                                                model={data.model}
+                                                                year={data.year}
+                                                                color={data.color}
+                                                                licensePlateLetters={data.licensePlateLetters}
+                                                                licensePlateNumbers={data.licensePlateNumbers}
+                                                                onPress={function () {
+                                                                    setCarInput(data);
+                                                                    handleBlur('carInput');
+                                                                    selectCar(data);
+                                                                    dismissAll();
+                                                                }}
+                                                                key={"car" + index} />
+                                                        );
+                                                    })}
 
-                                                <TouchableOpacity onPress={navigateNewCar} style={[styles.w100, styles.p16, styles.flexRow, styles.alignCenter, { height: 60 * rem }]}>
-                                                    <MaterialIcons name="add" size={18} color={palette.black} />
-                                                    <Text style={[styles.text, { fontSize: 14, fontWeight: '600' }]}>{t('add_new_car')}</Text>
-                                                </TouchableOpacity>
-                                            </BottomModal>
+                                                    <TouchableOpacity onPress={navigateNewCar} style={[styles.w100, styles.p16, styles.flexRow, styles.alignCenter, { height: 60 * rem }]}>
+                                                        <MaterialIcons name="add" size={18} color={palette.black} />
+                                                        <Text style={[styles.text, { fontSize: 14, fontWeight: '600' }]}>{t('add_new_car')}</Text>
+                                                    </TouchableOpacity>
+                                                </ScrollView>
+                                            </BottomModalSheet>
 
 
 

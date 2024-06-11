@@ -26,6 +26,8 @@ import useAuthManager from '../../context/authManager';
 import useAxiosManager from '../../context/axiosManager';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import BottomModalSheet from '../../components/ModalSheet';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 function Account({ route, navigation }) {
     const { t } = useTranslation();
@@ -52,6 +54,7 @@ function Account({ route, navigation }) {
     const userUnreadMessages = useUserStore((state) => state.unreadMessages);
     const userDriver = useUserStore((state) => state.driver)
     const userEmail = useUserStore((state) => state.email);
+    const { dismiss, dismissAll } = useBottomSheetModal();
 
 
     const [editPhoneText, setEditPhoneText] = useState(userPhone);
@@ -145,6 +148,7 @@ function Account({ route, navigation }) {
     }
 
     function hideDeleteConfirmation() {
+        dismissAll();
         setDeleteConfirmationVisible(false);
         logout();
     }
@@ -244,8 +248,8 @@ function Account({ route, navigation }) {
                 </ScrollView>
             </ScreenWrapper>
 
-            <BottomModal onHide={() => setEditNameModalVisible(false)} modalVisible={editNameModalVisible}>
-                <View style={[styles.w100]}>
+            <BottomModalSheet snapPoints={['50%']} bgColor={palette.lightGray} setModalVisible={setEditNameModalVisible} modalVisible={editNameModalVisible}>
+                <View style={[styles.w100, styles.p24]}>
                     <Formik
                         initialValues={{ firstNameInput: userFirstName, lastNameInput: userLastName }}
                         validationSchema={editNameSchema}
@@ -278,10 +282,10 @@ function Account({ route, navigation }) {
                         )}
                     </Formik>
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
 
-            <BottomModal onHide={() => setEditEmailModalVisible(false)} modalVisible={editEmailModalVisible}>
-                <View style={[styles.w100]}>
+            <BottomModalSheet snapPoints={['50%']} setModalVisible={setEditEmailModalVisible} modalVisible={editEmailModalVisible}>
+                <View style={[styles.w100, styles.ph24]}>
                     <ErrorMessage message={emailError} condition={emailError} />
                     <Formik
                         initialValues={{ emailInput: userEmail }}
@@ -305,17 +309,17 @@ function Account({ route, navigation }) {
                         )}
                     </Formik>
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
 
-            <BottomModal onHide={() => setTermsModalVisible(false)} modalVisible={termsModalVisible}>
-                <View style={[styles.w100, styles.mt10]}>
+            <BottomModalSheet snapPoints={['25%']} setModalVisible={setTermsModalVisible} modalVisible={termsModalVisible}>
+                <View style={[styles.w100, styles.mt10, styles.ph24]}>
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('terms')} onPress={function () { Linking.openURL('https://seaats.app/terms.html') }} />
                     <Button bgColor={palette.accent} textColor={palette.white} text={t('privacy_policy')} onPress={function () { Linking.openURL('https://seaats.app/privacy.html') }} />
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
 
-            <BottomModal onHide={() => setDeleteAccountModalVisible(false)} modalVisible={deleteAccountModalVisible}>
-                <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
+            <BottomModalSheet bgColor={palette.lightGray} snapPoints={['40%']} setModalVisible={setDeleteAccountModalVisible} modalVisible={deleteAccountModalVisible}>
+                <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter, styles.ph24]}>
                     <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter, styles.dark]}>{t('sure_delete')}</Text>
                     <Text style={[styles.text, styles.inputText, styles.dark]}>{t('enter_password')}</Text>
                     <CustomTextInput
@@ -329,10 +333,10 @@ function Account({ route, navigation }) {
                     <Button text={t('confirm')} bgColor={palette.light} textColor={palette.dark} onPress={confirmDelete} />
                     <Button text={t('cancel')} bgColor={palette.accent} textColor={palette.white} onPress={() => setDeleteAccountModalVisible(false)} />
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
 
-            <BottomModal onHide={hideDeleteConfirmation} modalVisible={deleteConfirmationVisible}>
-                <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
+            <BottomModalSheet snapPoints={['30%']} setModalVisible={setDeleteConfirmationVisible} modalVisible={deleteConfirmationVisible}>
+                <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter, styles.ph24]}>
 
                     <Text style={[styles.text, styles.font14, styles.textCenter, styles.mt5, styles.dark]}>
                         {t('deletion_confirmation')}
@@ -343,7 +347,7 @@ function Account({ route, navigation }) {
 
                     <Button text={t('ok')} onPress={hideDeleteConfirmation} bgColor={palette.primary} textColor={palette.white} />
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
         </>
     );
 }
