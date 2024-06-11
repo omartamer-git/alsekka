@@ -1,53 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import ScreenWrapper from '../ScreenWrapper';
 import { styles, palette } from '../../helper';
 import { useTranslation } from 'react-i18next';
 import RadioButton from '../../components/RadioButton';
 import Button from '../../components/Button';
+import useAxiosManager from '../../context/axiosManager';
+import useUserStore from '../../api/accountAPI';
 
 const UserPreferences = ({ route, navigation }) => {
   const {userId} = route.params;
-   
-  const [preferences, setPreferences] = useState({
-    smoking: "I prefer a smoke-free ride",
-    chattiness: "I prefer a quiet ride",
-    music: 'I prefer no music during the ride',
-    rest_stop: 'I prefer rest stops only when necessary'
-  });
+  console.log(userId);
+  const { authAxios } = useAxiosManager();
+  const preferences = useUserStore(state => state.preferences);
+  console.log("initial values here", preferences)
+  const setPreferences = useUserStore(state => state.setPreferences);
+  // const [preferences, setPreferences] = useState({
+  //   smoking: "I prefer a smoke-free ride",
+  //   chattiness: "I prefer a quiet ride",
+  //   music: 'I prefer no music during the ride',
+  //   rest_stop: 'I prefer rest stops only when necessary'
+  // });
 
   const { t } = useTranslation();
-  // useEffect(() => {
-  //   fetchPreferences();
-  // }, []);
 
-  // const fetchPreferences = async () => {
-  //   try {
-  //     const response = await fetch(`/api/preferences/${userId}`);
-  //     const data = await response.json();
-  //     setPreferences(data);
-  //   } catch (error) {
-  //     console.error('Error fetching preferences:', error);
-  //   }
-  // };
-
+  
+  
   const handleSavePreferences = async () => {
     try {
-      await fetch(`/api/preferences/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(preferences),
-      });
+      await authAxios.post(`/v1/preferences/${userId}`, preferences);
+      navigation.navigate('Account Home');
     } catch (error) {
       console.error('Error saving preferences:', error);
     }
   };
-
+  
   const handlePreferenceChange = (key, value) => {
     setPreferences({ ...preferences, [key]: value });
   };
+  
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await authAxios.get(`/v1/preferences/${userId}`);
+        console.log(response.data);
+        
+        if (Object.keys(response.data).length === 0) {
+          return;
+        }
+
+        const {chattiness, rest_stop, music, smoking} = response.data;
+        setPreferences({
+          chattiness,
+          rest_stop,
+          music,
+          smoking
+        });
+      } catch (error) {
+        console.error('Error fetching preferences:', error);
+      }
+    })()
+  }, []);
 
   return (
     <ScreenWrapper screenName={t('preferences')} navType='back' navAction={() => navigation.goBack()}>
