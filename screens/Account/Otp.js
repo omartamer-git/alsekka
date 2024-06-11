@@ -17,6 +17,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
 import FastImage from 'react-native-fast-image';
+import useAxiosManager from '../../context/axiosManager';
 
 function Otp({ route, navigation }) {
     const firstName = route.params?.firstName;
@@ -30,9 +31,10 @@ function Otp({ route, navigation }) {
     const numDigits = 4;
     const [error, setError] = useState(null);
     let countdownInterval = null;
-    const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login } = useUserStore();
+    const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login, preferences } = useUserStore();
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
+    const { publicAxios } = useAxiosManager();
 
     const clockTick = function () {
         isVerified(phone).then(response => {
@@ -49,6 +51,12 @@ function Otp({ route, navigation }) {
                             });
                             clearInterval(countdownInterval);
                         })
+                        publicAxios.post(`v1/preferences/${data.id}`, preferences)
+                        .then((response) => console.log('default user preferences stored successfully', response))
+                        .catch(err => {
+                            const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
+                            setError(errorMessage);
+                        });
                     }).catch(err => {
                         const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
                         setError(errorMessage);
