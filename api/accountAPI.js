@@ -25,10 +25,10 @@ const useUserStore = create((set) => ({
     mobileWallets: [],
     unreadMessages: 0,
     preferences: {
-        smoking: "I prefer a smoke-free ride",
-        chattiness: "I prefer a quiet ride",
-        music: 'I prefer no music during the ride',
-        rest_stop: 'I prefer rest stops only when necessary'
+        smoking: '',
+        chattiness: '',
+        music: '',
+        rest_stop: ''
     },
 
     setId: (id) => set((state) => ({ id: id })),
@@ -66,7 +66,13 @@ const useUserStore = create((set) => ({
                     availableCards: [],
                     bankAccounts: [],
                     mobileWallets: [],
-                    unreadMessages: 0
+                    unreadMessages: 0,
+                    preferences: {
+                        smoking: '',
+                        chattiness: '',
+                        music: '',
+                        rest_stop: ''
+                    },
                 }
             )
         )

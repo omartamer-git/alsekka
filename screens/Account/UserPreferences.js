@@ -10,7 +10,6 @@ import useUserStore from '../../api/accountAPI';
 
 const UserPreferences = ({ route, navigation }) => {
   const {userId} = route.params;
-  console.log(userId);
   const { authAxios } = useAxiosManager();
   const preferences = useUserStore(state => state.preferences);
   console.log("initial values here", preferences)
@@ -42,13 +41,8 @@ const UserPreferences = ({ route, navigation }) => {
   useEffect(() => {
     (async () => {
       try {
+        console.log('user id here:', userId);
         const response = await authAxios.get(`/v1/preferences/${userId}`);
-        console.log(response.data);
-        
-        if (Object.keys(response.data).length === 0) {
-          return;
-        }
-
         const {chattiness, rest_stop, music, smoking} = response.data;
         setPreferences({
           chattiness,
