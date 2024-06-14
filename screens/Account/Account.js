@@ -12,7 +12,6 @@ import {
     View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
-import FastImage from 'react-native-fast-image';
 import { launchImageLibrary } from 'react-native-image-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Yup from 'yup';
@@ -26,6 +25,7 @@ import useAuthManager from '../../context/authManager';
 import useAxiosManager from '../../context/axiosManager';
 import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
+import AccountImage from '../../components/AccountImage';
 
 function Account({ route, navigation }) {
     const { t } = useTranslation();
@@ -166,13 +166,14 @@ function Account({ route, navigation }) {
             <ScreenWrapper screenName={t('account')}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={[containerStyle, styles.alignCenter]}>
                     <View style={[styles.mt10, styles.fullCenter]}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
-                            {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}
-
-                            <View style={accountStyles.profilePictureOverlay}>
-                                <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
-                            </View>
-                        </TouchableOpacity>
+                        <AccountImage 
+                            source={userProfilePicture}
+                            onPress={onClickUpload}
+                            containerStyle={accountStyles.profilePictureView}
+                            imageStyle={accountStyles.profilePicture}
+                            innerStyle={accountStyles.profilePictureOverlay}
+                            iconStyle={accountStyles.cameraOverlay}
+                        />
                     </View>
 
                     <View style={[styles.mt10, styles.fullCenter, styles.w100]}>
@@ -380,9 +381,9 @@ const accountStyles = StyleSheet.create({
     },
 
     profilePictureView: {
-        width: 110 * rem,
-        height: 110 * rem,
-        borderRadius: 110 * rem / 2,
+        width: 107 * rem,
+        height: 107 * rem,
+        borderRadius: 107 * rem / 2,
         ...styles.borderPrimary,
         ...styles.fullCenter,
         borderWidth: 3 * rem,
