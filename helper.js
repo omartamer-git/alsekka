@@ -283,6 +283,7 @@ export const styles = StyleSheet.create({
     },
     text: {
         fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'GeneralSans-Regular' : 'General Sans Variable'),
+        textAlign: 'left'
     },
     logoSpacing: {
         letterSpacing: I18nManager.isRTL ? 0 : -3 * rem
@@ -939,6 +940,9 @@ export const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         alignSelf: 'stretch'
+    },
+    overflowHidden: {
+        overflow: 'hidden'
     },
     mapStyle: {
         height: 300 * rem,

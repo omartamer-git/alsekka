@@ -11,7 +11,9 @@ function CustomTextInput({ value, prefix,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing, textContentType,
     onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true, overrideRTL = false }) {
+    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true, overrideRTL = false }) {
 
+    const { language } = useLocale();
     const { language } = useLocale();
     const styles2 = StyleSheet.create({
         container: {
@@ -19,6 +21,7 @@ function CustomTextInput({ value, prefix,
             alignItems: 'center',
             justifyContent: 'flex-start',
             borderRadius: 8 * rem,
+            flexDirection: (overrideRTL && I18nManager.isRTL) ? 'row-reverse' : 'row',
             flexDirection: (overrideRTL && I18nManager.isRTL) ? 'row-reverse' : 'row',
             paddingStart: 24 * rem,
             paddingEnd: 24 * rem,
@@ -33,6 +36,7 @@ function CustomTextInput({ value, prefix,
         input: {
             height: 24 * rem,
             lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
+            textAlign: (I18nManager.isRTL && !overrideRTL) ? 'right' : 'left',
             textAlign: (I18nManager.isRTL && !overrideRTL) ? 'right' : 'left',
             paddingTop: Platform.OS === 'android' ? 0 : undefined,
             paddingBottom: Platform.OS === 'android' ? 0 : undefined,
@@ -77,6 +81,7 @@ function CustomTextInput({ value, prefix,
 
         inputRef.current.focus();
     }
+    const myStyle = I18nManager.isRTL ? styles.mr5 : styles.ml5;
 
     return (
         <>
