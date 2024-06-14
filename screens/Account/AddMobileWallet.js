@@ -77,13 +77,9 @@ const AddMobileWallet = ({ navigation, route }) => {
                                 onChangeText={(text) => {
                                     handleChange('phoneInput')(text);
                                 }}
-                                value={values.phoneInput}
                                 onBlur={handleBlur('phoneInput')}
                                 keyboardType="number-pad"
                                 error={touched.phoneInput && errors.phoneInput}
-                                prefix='+20'
-                                emojiLeft={'🇪🇬'}
-                                overrideRTL
                             />
 
                             <View style={styles.flexOne} />

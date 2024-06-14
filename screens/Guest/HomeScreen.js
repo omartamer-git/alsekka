@@ -57,7 +57,7 @@ function HomeScreen({ navigation }) {
           />
 
           <View style={styles.footer}>
-            <Text style={[styles.text, styles.smallText]} onPress={handleLoginClick}>{t('account_exists')} <Text style={[styles.text, styles.white, styles.bold]}>{t('sign_in')}</Text></Text>
+            <Text style={[styles.text, styles.smallText]} onPress={handleLoginClick}>{t('account_exists')} <Text style={[styles.boldText, styles.white]}>{t('sign_in')}</Text></Text>
           </View>
         </View>
       </SafeAreaView >

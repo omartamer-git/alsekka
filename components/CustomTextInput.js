@@ -11,9 +11,7 @@ function CustomTextInput({ value, prefix,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing, textContentType,
     onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true, overrideRTL = false }) {
-    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true, overrideRTL = false }) {
 
-    const { language } = useLocale();
     const { language } = useLocale();
     const styles2 = StyleSheet.create({
         container: {
