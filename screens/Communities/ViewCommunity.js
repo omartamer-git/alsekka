@@ -172,7 +172,7 @@ function ViewCommunity({ navigation, route }) {
                                         <MaterialIcons name="settings" size={25} color={palette.dark} />
                                     </TouchableOpacity>
                                     {owner && (
-                                        <TouchableOpacity style={[styles.mh5]} activeOpacity={0.75} style={[styles.ml5]} onPress={() => navigation.navigate('Community Members', { communityId })}>
+                                        <TouchableOpacity style={[styles.mh5]} activeOpacity={0.75} onPress={() => navigation.navigate('Community Members', { communityId })}>
                                             <MaterialIcons name="people" size={25} color={palette.dark} />
                                         </TouchableOpacity>
                                     )}

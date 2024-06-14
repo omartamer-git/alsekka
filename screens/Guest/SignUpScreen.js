@@ -128,7 +128,7 @@ function SignUpScreen({ route, navigation }) {
                   <>
                     <View style={styles.flexRow}>
                       <View style={[styles.flexOne, styles.pr8]}>
-                        <Text style={[styles.text, styles.inputText]}>{t('first_name')}</Text>
+                        <Text style={[styles.inputText, styles.boldText]}>{t('first_name')}</Text>
                         <CustomTextInput
                           value={values.firstNameInput}
                           onChangeText={handleChange('firstNameInput')}
@@ -142,7 +142,7 @@ function SignUpScreen({ route, navigation }) {
                       </View>
 
                       <View style={[styles.flexOne, styles.pl8]}>
-                        <Text style={[styles.text, styles.inputText]}>{t('last_name')}</Text>
+                        <Text style={[styles.boldText, styles.inputText]}>{t('last_name')}</Text>
                         <CustomTextInput
                           value={values.lastNameInput}
                           onChangeText={handleChange('lastNameInput')}
@@ -159,7 +159,7 @@ function SignUpScreen({ route, navigation }) {
                     </View>
 
 
-                    <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
+                    <Text style={[styles.boldText, styles.inputText]}>{t('phone_number')}</Text>
                     <CustomTextInput
                       value={values.phoneInput}
                       prefix={"+20"}
@@ -168,9 +168,6 @@ function SignUpScreen({ route, navigation }) {
                       onChangeText={(text) => {
                           handleChange('phoneInput')(text);
                       }}
-                      prefix='+20'
-                      emojiLeft={'🇪🇬'}
-                      overrideRTL
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
                       placeholder={t('enter_phone')}
@@ -181,7 +178,7 @@ function SignUpScreen({ route, navigation }) {
                       onSubmitEditing={() => refEmail.current.focus()}
                     />
 
-                    <Text style={[styles.text, styles.inputText]}>
+                    <Text style={[styles.boldText, styles.inputText]}>
                       {t('email')}
                     </Text>
                     <CustomTextInput
@@ -197,7 +194,7 @@ function SignUpScreen({ route, navigation }) {
                       onSubmitEditing={() => refPassword.current.focus()}
                     />
 
-                    <Text style={[styles.text, styles.inputText]}>{t('password')}</Text>
+                    <Text style={[styles.boldText, styles.inputText]}>{t('password')}</Text>
                     <CustomTextInput
                       value={values.passwordInput}
                       onChangeText={handleChange('passwordInput')}
@@ -214,11 +211,11 @@ function SignUpScreen({ route, navigation }) {
                     <View style={[styles.flexRow, styles.w100, styles.mt20, styles.br8, styles.overflowHidden]}>
                       <TouchableOpacity activeOpacity={0.9} style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'MALE') ? palette.primary : palette.white }]}
                         onPress={() => toggleGender('MALE')}>
-                        <Text style={[styles.text, signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>{t('male')}</Text>
+                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'MALE') ? palette.white : palette.black }]}>{t('male')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity activeOpacity={0.9} style={[signupScreenStyles.genderButton, { backgroundColor: (gender === 'FEMALE') ? palette.primary : palette.white }]}
                         onPress={() => toggleGender('FEMALE')}>
-                        <Text style={[styles.text, signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>{t('female')}</Text>
+                        <Text style={[signupScreenStyles.genderText, { color: (gender === 'FEMALE') ? palette.white : palette.black }]}>{t('female')}</Text>
                       </TouchableOpacity>
                     </View>
 
@@ -241,7 +238,7 @@ function SignUpScreen({ route, navigation }) {
 
 
               <TouchableOpacity style={[styles.justifyEnd, styles.alignCenter, styles.flexOne]} onPress={() => navigation.navigate('Login')} activeOpacity={0.7}>
-                <Text style={[styles.text, styles.dark]}>{t('account_exists')} <Text style={[styles.primary, styles.bold]}>{t('sign_in')}</Text></Text>
+                <Text style={[styles.text, styles.dark]}>{t('account_exists')} <Text style={[styles.primary, styles.boldText]}>{t('sign_in')}</Text></Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -259,7 +256,7 @@ const signupScreenStyles = StyleSheet.create({
   },
 
   genderText: {
-    ...styles.bold
+    ...styles.boldText
   }
 });
 

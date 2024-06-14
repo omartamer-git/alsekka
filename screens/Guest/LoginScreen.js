@@ -166,10 +166,9 @@ function LoginScreen({ route, navigation }) {
                   <>
                     <Text
                       style={[
-                        styles.text,
+                        styles.boldText,
                         styles.inputText,
                         { fontFamily: "GeneralSans-Bold" },
-                        styles.bold,
                       ]}
                     >
                       {t("phone_number")}
@@ -189,7 +188,7 @@ function LoginScreen({ route, navigation }) {
                       overrideRTL
                     />
 
-                    <Text style={[styles.text, styles.inputText]}>
+                    <Text style={[styles.boldText, styles.inputText]}>
                       {t("password")}
                     </Text>
                     <CustomTextInput

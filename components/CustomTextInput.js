@@ -42,9 +42,18 @@ function CustomTextInput({ value, prefix,
             textAlignVertical: 'center',
             marginHorizontal: 8 * rem,
             color: palette.dark,
-            flex: 1
+            flex: 1,
         },
-
+        prefix: {
+            height: 24 * rem,
+            lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
+            textAlign: (I18nManager.isRTL && !overrideRTL) ? 'right' : 'left',
+            textAlign: (I18nManager.isRTL && !overrideRTL) ? 'right' : 'left',
+            paddingTop: Platform.OS === 'android' ? 0 : undefined,
+            paddingBottom: Platform.OS === 'android' ? 0 : undefined,
+            fontWeight: '500',
+            textAlignVertical: 'center',  
+        },
         warningBorder: {
             borderColor: palette.red,
             borderWidth: 1,
@@ -94,8 +103,8 @@ function CustomTextInput({ value, prefix,
                 }
                 {
                     (prefix) &&
-                    <View style={[{height: 24 * rem}, styles.fullCenter, styles.flexRow]}>
-                        <Text style={[styles.bgWhite, styles.text, styles.ml5, { fontWeight: '500', textAlignVertical: 'bottom', paddingVertical: Platform.OS === 'android' ? 0 : undefined, lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined }]}>
+                    <View style={[styles.fullCenter, styles.flexRow]}>
+                        <Text style={[styles.bgWhite, styles.ml5, styles2.prefix]}>
                             {prefix}
                         </Text>
                     </View>
@@ -122,6 +131,7 @@ function CustomTextInput({ value, prefix,
                     ellipsizeMode='tail'
                     autoCapitalize={autoCapitalize || 'sentences'}
                     onSubmitEditing={onSubmitEditing}
+                    cursorColor={palette.secondary}
                 />
                 {
                     iconRight &&
