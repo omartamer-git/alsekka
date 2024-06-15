@@ -224,7 +224,7 @@ function AddCard({ navigation, route }) {
                                 textColor={palette.white}
                                 text={t("add_card")}
                                 onPress={handleSubmit}
-                                disabled={!isValid || submitDisabled}
+                                disabled={!isValid || !Object.keys(touched).length}
                             />
                         </>
                     )}

@@ -92,7 +92,7 @@ function ForgotPasswordScreen({ route, navigation }) {
                                             bgColor={palette.primary}
                                             textColor={palette.white}
                                             onPress={handleSubmit}
-                                            disabled={!isValid}
+                                            disabled={!isValid || !values.phoneInput.trim()}
                                         />
                                     </>
                                 )}

@@ -27,8 +27,8 @@ function ChangePasswordScreen({ route, navigation }) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const changePasswordSchema = Yup.object().shape({
-        passwordInput: Yup.string().min(8, t('error_password')).required(t('error_required')),
-        password2Input: Yup.string().min(8, t('error_password')).oneOf([Yup.ref('passwordInput'), null], t('error_confirm_password')).required(t('error_required')),
+        passwordInput: Yup.string().min(8, t('error_invalid_password')).required(t('error_required')),
+        password2Input: Yup.string().min(8, t('error_invalid_password')).oneOf([Yup.ref('passwordInput'), null], t('error_confirm_password')).required(t('error_required')),
     });
 
 
@@ -105,7 +105,7 @@ function ChangePasswordScreen({ route, navigation }) {
                                             bgColor={palette.primary}
                                             textColor={palette.white}
                                             onPress={handleSubmit}
-                                            disabled={!isValid || submitDisabled}
+                                            disabled={!isValid || !Object.keys(touched).length}
                                         />
                                     </>
                                 )}

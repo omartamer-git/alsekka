@@ -132,7 +132,7 @@ function NewCommunity({ navigation, route }) {
                                 textColor={palette.white}
                                 text={t('create_community')}
                                 onPress={handleSubmit}
-                                disabled={!isValid || submitDisabled}
+                                disabled={!isValid || !Object.keys(touched).length}
                             />
                         </>
                     )}

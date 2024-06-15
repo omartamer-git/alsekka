@@ -111,7 +111,7 @@ function AddBank({ navigation, route }) {
                             /> */}
 
                             <View style={styles.flexOne} />
-                            <Button text={t('add_account')} bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} disabled={submitDisabled} />
+                            <Button text={t('add_account')} bgColor={palette.primary} textColor={palette.white} onPress={handleSubmit} disabled={!isValid || !Object.keys(touched).length} />
                         </>
                     )}
                 </Formik>

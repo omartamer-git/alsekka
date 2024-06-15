@@ -84,7 +84,7 @@ const AddMobileWallet = ({ navigation, route }) => {
                             />
 
                             <View style={styles.flexOne} />
-                            <Button text={t('add_wallet')} bgColor={palette.secondary} textColor={palette.white} onPress={handleSubmit} disabled={submitDisabled} />
+                            <Button text={t('add_wallet')} bgColor={palette.secondary} textColor={palette.white} onPress={handleSubmit} disabled={!isValid || !values.phoneInput.trim()} />
                         </>
                     )}
                 </Formik>
