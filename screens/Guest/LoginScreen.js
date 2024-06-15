@@ -24,8 +24,6 @@ import { palette, styles } from '../../helper';
 function LoginScreen({ route, navigation }) {
   const { t } = useTranslation();
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [submitDisabled, setSubmitDisabled] = useState(false);
   const userStore = useUserStore();
   const formRef = useRef(null);
   // const objForm = new Form();
@@ -138,14 +136,14 @@ function LoginScreen({ route, navigation }) {
                       error={touched.passwordInput && errors.passwordInput}
                     />
 
-
+                    {console.log(Object.keys(touched).length)}
                     <Button
                       style={[styles.continueBtn, styles.mt20]}
                       text={t('sign_in')}
                       bgColor={palette.primary}
                       textColor={palette.white}
                       onPress={handleSubmit}
-                      disabled={!isValid || submitDisabled}
+                      disabled={!isValid || !Object.keys(touched).length}
                     />
                   </>
                 )}

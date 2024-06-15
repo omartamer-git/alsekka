@@ -29,7 +29,7 @@ function SignUpScreen({ route, navigation }) {
 
   const [phoneNumExists, setPhoneNumExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
-  const [submitDisabled, setSubmitDisabled] = useState(false);
+  // const [submitDisabled, setSubmitDisabled] = useState(true);
   const { allowedEmails } = useAppManager();
 
   const userStore = useUserStore();
@@ -234,7 +234,7 @@ function SignUpScreen({ route, navigation }) {
                       bgColor={palette.primary}
                       textColor={palette.white}
                       onPress={handleSubmit}
-                      disabled={!isValid || submitDisabled}
+                      disabled={!isValid || !Object.keys(touched).length}
                     />
                   </>
                 )}
