@@ -283,7 +283,7 @@ function ViewTrip({ route, navigation }) {
                                         <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
                                             <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.headerText3]}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName}</Text>
                                             <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
-                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.dark, styles.bold]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.boldText, styles.dark]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
                                             <View style={styles.flexRow}>
                                                 {ratings}
                                             </View>
@@ -358,7 +358,7 @@ function ViewTrip({ route, navigation }) {
 
                                                 <TouchableOpacity onPress={() => setCostBreakdownModalVisible(true)} style={[styles.w100, styles.mt5, styles.alignEnd]}>
                                                     <Text style={[styles.text, styles.font14]}>
-                                                        {t('total')}: <Text style={[styles.bold]}>{(tripDetails.passenger.Invoice.grandTotal / 100).toFixed(2)} {t('EGP')}</Text>
+                                                        {t('total')}: <Text style={[styles.boldText]}>{(tripDetails.passenger.Invoice.grandTotal / 100).toFixed(2)} {t('EGP')}</Text>
                                                     </Text>
                                                     <Text style={[styles.text, styles.primary, styles.font12]}>{t('view_cost_breakdown')}</Text>
                                                 </TouchableOpacity>
@@ -401,7 +401,7 @@ function ViewTrip({ route, navigation }) {
 
                             <BottomModal modalVisible={cancelRideModalVisible} onHide={() => setCancelRideModalVisible(false)}>
                                 <View style={[styles.w100, styles.alignCenter, styles.justifyCenter, styles.pv16]}>
-                                    <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter]}>
+                                    <Text style={[styles.boldText, styles.font18, styles.textCenter]}>
                                         {t('cancel_confirm')}
                                     </Text>
 
@@ -416,11 +416,11 @@ function ViewTrip({ route, navigation }) {
 
                                     {objDate && tripDetails &&
                                         (addSecondsToDate(objDate, -(48 * 60 * 60)) <= new Date() && tripDetails.seatsOccupied && addSecondsToDate(new Date(tripDetails.createdAt), (60 * 30)) <= new Date()) ?
-                                        <Text style={[styles.error, styles.bold, styles.text, styles.mv5]}>
+                                        <Text style={[styles.error, styles.boldText, styles.mv5]}>
                                             {t('penalty_cancel')}
                                         </Text>
                                         :
-                                        <Text style={[styles.success, styles.bold, styles.text, styles.mv5]}>
+                                        <Text style={[styles.success, styles.boldText, styles.mv5]}>
                                             {t('free_cancel')}
                                         </Text>
                                     }
@@ -433,7 +433,7 @@ function ViewTrip({ route, navigation }) {
                             {costBreakdownModalVisible &&
                                 <BottomModal modalVisible={costBreakdownModalVisible} onHide={() => setCostBreakdownModalVisible(false)}>
                                     <View style={[styles.w100, styles.pv16]}>
-                                        <Text style={[styles.bold, styles.font28, styles.text, styles.primary, styles.mb10]}>{t('bill_summary')}</Text>
+                                        <Text style={[styles.boldText, styles.font28, styles.primary, styles.mb10]}>{t('bill_summary')}</Text>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
                                             <Text style={[styles.text, styles.semiBold]}>{t('fare')}:</Text>
@@ -503,11 +503,11 @@ function ViewTrip({ route, navigation }) {
                         <Text style={[styles.text, styles.textCenter]}>{translatedFormat(t('cancel_disclaimer'), [translateDate(addSecondsToDate(objDate, -(24 * 60 * 60)), t).join(" ")])}</Text>
                         {tripDetails && tripDetails.passenger &&
                             (addSecondsToDate(objDate, -(24 * 60 * 60)) <= new Date() && addSecondsToDate(new Date(tripDetails.passenger.createdAt), (60 * 15)) <= new Date()) ?
-                            <Text style={[styles.error, styles.bold, styles.text, styles.mv5]}>
+                            <Text style={[styles.error, styles.boldText, styles.mv5]}>
                                 {t('penalty_cancel')}
                             </Text>
                             :
-                            <Text style={[styles.success, styles.bold, styles.text, styles.mv5]}>
+                            <Text style={[styles.success, styles.boldText, styles.mv5]}>
                                 {t('free_cancel')}
                             </Text>
                         }

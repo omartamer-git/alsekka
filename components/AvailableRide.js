@@ -57,7 +57,7 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 <View style={[{ flexWrap: 'wrap' }, styles.flexOne, styles.flexRow, styles.alignEnd]}>
                     {gender !== "ANY" &&
                         <View style={[styles.fullCenter, { width: 32, height: 24, borderRadius: 12, margin: 1 * rem, backgroundColor: gender === "MALE" ? "#1d74c6" : "pink" }]}>
-                            <Text style={[styles.bold, styles.text, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
+                            <Text style={[styles.boldText, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
                         </View>
                     }
 

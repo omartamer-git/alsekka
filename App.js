@@ -390,7 +390,7 @@ function App() {
           <LottieView source={require('./assets/loading_animation.json')} style={{ width: 75, height: 75 }} loop autoPlay />
           {takingTooLong &&
             <TouchableOpacity onPress={() => appStateSetLoading(false)} style={[styles.w100, styles.p16, styles.fullCenter]}>
-              <Text style={[styles.text, styles.white, styles.textCenter, styles.bold]}>{t('splashscreen_failsafe')}</Text>
+              <Text style={[styles.boldText, styles.white, styles.textCenter]}>{t('splashscreen_failsafe')}</Text>
             </TouchableOpacity>
           }
         </View>
@@ -604,7 +604,7 @@ function App() {
           modalFineLocation &&
           <BottomModal modalVisible={modalFineLocation} onHide={() => setModalFineLocation(false)}>
             <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
-              <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('location_perm')}</Text>
+              <Text style={[styles.boldText, styles.textCenter, styles.w100, styles.font28, styles.dark]}>{t('location_perm')}</Text>
               <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
                 {t('location_perm_desc')}
               </Text>
@@ -618,7 +618,7 @@ function App() {
           modalBackgroundLocation &&
           <BottomModal modalVisible={modalBackgroundLocation} onHide={() => setModalBackgroundLocation(false)}>
             <View style={[styles.w100, styles.flexGrow, styles.flexOne, styles.fullCenter]}>
-              <Text style={[styles.text, styles.textCenter, styles.w100, styles.font28, styles.bold, styles.dark]}>{t('bg_location_perm')}</Text>
+              <Text style={[styles.boldText, styles.textCenter, styles.w100, styles.font28, styles.dark]}>{t('bg_location_perm')}</Text>
               <Text style={[styles.text, styles.textCenter, styles.font18, styles.mt10, styles.dark]}>
                 {t('bg_location_perm_desc')}
               </Text>

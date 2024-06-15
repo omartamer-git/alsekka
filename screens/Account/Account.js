@@ -352,7 +352,7 @@ function Account({ route, navigation }) {
 
             <BottomModal onHide={() => setDeleteAccountModalVisible(false)} modalVisible={deleteAccountModalVisible}>
                 <View style={[styles.w100, styles.mt10, styles.justifyCenter, styles.alignCenter]}>
-                    <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter, styles.dark]}>{t('sure_delete')}</Text>
+                    <Text style={[styles.boldText, styles.font18, styles.textCenter, styles.dark]}>{t('sure_delete')}</Text>
                     <Text style={[styles.text, styles.inputText, styles.dark]}>{t('enter_password')}</Text>
                     <CustomTextInput
                         value={deletePassword}
@@ -391,40 +391,12 @@ const profilePictureSizing = {
 };
 
 const accountStyles = StyleSheet.create({
-    acctButtonsView: {
-        ...styles.flexRow,
-        ...styles.w100,
-        height: 100 * rem,
-        ...styles.pv24,
-        ...styles.fullCenter,
-    },
     topSection: {
         ...styles.mt10,
         ...styles.flexOne,
         ...styles.flexCol,
         ...styles.fullCenter
     },
-    mainButton: {
-        ...styles.flexOne,
-        ...styles.mh5,
-        paddingStart: 15 * rem,
-        paddingEnd: 0,
-    },
-    acctButtons: {
-        ...styles.bgPrimary,
-        height: 80 * rem,
-        ...styles.flexOne,
-        ...styles.mh5,
-        borderRadius: 8 * rem,
-        ...styles.fullCenter,
-        position: 'relative'
-    },
-    acctButtonsText: {
-        ...styles.white,
-        ...styles.bold,
-        ...styles.mt5,
-    },
-
     profilePictureView: {
         width: 100 * rem,
         height: 100 * rem,
@@ -433,20 +405,17 @@ const accountStyles = StyleSheet.create({
         ...styles.fullCenter,
         borderWidth: 3 * rem,
     },
-
     profilePicture: {
         borderWidth: 2 * rem,
         ...profilePictureSizing,
         ...styles.borderWhite,
     },
-
     profilePictureOverlay: {
         ...styles.positionAbsolute,
         ...profilePictureSizing,
         ...styles.fullCenter,
         backgroundColor: 'rgba(125,125,125,0.5)'
     },
-
     cameraOverlay: {
         borderRadius: 50 * rem,
         ...styles.positionAbsolute,

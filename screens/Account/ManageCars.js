@@ -52,7 +52,7 @@ function ManageCars({ route, navigation }) {
                                 <View style={[styles.alignEnd, styles.w100, styles.mt10]}>
                                     <TouchableOpacity onPress={() => navigation.navigate('New Car')} style={[styles.bgLightGray, styles.borderSecondary, styles.border2, styles.p24, styles.pv8, styles.br24, styles.flexRow, styles.fullCenter]}>
                                         <MaterialIcons name="add" size={22} color={palette.black} />
-                                        <Text style={[styles.text, styles.black, styles.bold]}>{t('add_car')}</Text>
+                                        <Text style={[styles.boldText, styles.black]}>{t('add_car')}</Text>
                                     </TouchableOpacity>
                                 </View>
 
@@ -78,7 +78,7 @@ function ManageCars({ route, navigation }) {
                         {cars && cars.length === 0 &&
                             <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
                                 <CarImage width={300} height={300} />
-                                <Text style={[styles.text, styles.textCenter, styles.font28, styles.bold]}>{t('cta_add_car')}</Text>
+                                <Text style={[styles.boldText, styles.textCenter, styles.font28]}>{t('cta_add_car')}</Text>
                                 <Text style={[styles.text, styles.font14, styles.mt5]}>{t('cta_add_car2')}</Text>
                                 <Button onPress={() => navigation.navigate('New Car')} bgColor={palette.primary} textColor={palette.white} text={t('add_car')} />
                             </View>

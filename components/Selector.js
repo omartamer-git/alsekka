@@ -8,7 +8,7 @@ export default function Selector({ options, value, setValue }) {
                 {
                     options.map((option, index) => (
                         <TouchableOpacity key={"option" + index} onPress={ function () { setValue(option.value) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: value === option.value ? palette.accent : palette.dark }]}>
-                            <Text style={[styles.text, styles.white, styles.bold]}>{option.text}</Text>
+                            <Text style={[styles.white, styles.boldText]}>{option.text}</Text>
                         </TouchableOpacity>
                     ))
                 }

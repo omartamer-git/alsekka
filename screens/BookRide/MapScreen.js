@@ -260,16 +260,16 @@ function MapScreen({ route, navigation }) {
             {
               gender === "FEMALE" &&
               <TouchableOpacity onPress={function () { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.gray }]}>
-                <Text style={[styles.text, mapScreenStyles.genderText]}>{t('female_only')}</Text>
+                <Text style={[mapScreenStyles.genderText]}>{t('female_only')}</Text>
               </TouchableOpacity>
             }
             <TouchableOpacity onPress={function () { setGenderChoice('ANY') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.gray }]}>
-              <Text style={[styles.text, mapScreenStyles.genderText]}>{t('any')}</Text>
+              <Text style={[mapScreenStyles.genderText]}>{t('any')}</Text>
             </TouchableOpacity>
             {
               gender === "MALE" &&
               <TouchableOpacity onPress={function () { setGenderChoice('MALE') }} activeOpacity={0.9} style={[mapScreenStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.gray }]}>
-                <Text style={[styles.text, mapScreenStyles.genderText]}>{t('male_only')}</Text>
+                <Text style={[mapScreenStyles.genderText]}>{t('male_only')}</Text>
               </TouchableOpacity>
             }
           </View>
@@ -328,7 +328,7 @@ const mapScreenStyles = StyleSheet.create({
 
   genderText: {
     ...styles.white,
-    ...styles.bold
+    ...styles.boldText
   }
 });
 

@@ -313,7 +313,7 @@ function NewCar({ route, navigation }) {
                 </SafeAreaView>
                 <View style={[styles.defaultContainer, styles.defaultPadding, styles.justifyCenter, styles.alignCenter]}>
                     <CoffeeIcon width={250} height={250} />
-                    <Text style={[styles.text, styles.font28, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
+                    <Text style={[styles.boldText, styles.font28, styles.mt10]}>{t('wait_processing')}</Text>
                     <Text style={[styles.text, styles.font18, styles.mt5, styles.textCenter]}>{t('wait_processing2')}</Text>
                     <Button bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={function () { navigation.goBack(); }}></Button>
                 </View>

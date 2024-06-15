@@ -29,17 +29,17 @@ function ViewWithdrawals({ route, navigation }) {
                             withdrawals.map((withdrawal, index) => {
                                 return (
                                     <View key={`with-${index}`} style={[styles.w100, styles.p16, styles.bgLight, styles.mv5]}>
-                                        <Text style={[styles.text, styles.dark, styles.bold, styles.font12]}>{t('withdrawal_ref')}{withdrawal.id}</Text>
+                                        <Text style={[styles.boldText, styles.dark, styles.font12]}>{t('withdrawal_ref')}{withdrawal.id}</Text>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow, styles.alignCenter]}>
-                                            <Text style={[styles.text, styles.black, styles.bold, styles.font14]}>{(withdrawal.amount / 100).toFixed(2)} {t('EGP')}</Text>
+                                            <Text style={[styles.boldText, styles.black, styles.font14]}>{(withdrawal.amount / 100).toFixed(2)} {t('EGP')}</Text>
                                             <View style={[
                                                 styles.pv8,
                                                 styles.ph16,
                                                 styles.br24,
                                                 withdrawal.status === 'PROCESSING' ? styles.bgPrimary : styles.bgSuccess
                                             ]}>
-                                                <Text style={[styles.text, styles.bold, styles.font10, styles.white]}>{withdrawal.status}</Text>
+                                                <Text style={[styles.boldText, styles.font10, styles.white]}>{withdrawal.status}</Text>
                                             </View>
                                         </View>
                                     </View>

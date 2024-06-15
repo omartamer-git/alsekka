@@ -35,7 +35,7 @@ function Wallet({ navigation, route }) {
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.secondary, palette.primary]} style={walletStyles.card}>
-                    <Text style={[styles.text, styles.white, styles.bold]}>{t('balance')}</Text>
+                    <Text style={[styles.boldText, styles.white]}>{t('balance')}</Text>
                     <Text style={[styles.text, styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(Math.ceil(balance / 100)) : Math.ceil(balance / 100)}</Text>
                     <View style={[styles.justifyEnd, styles.mb5, styles.flexOne]}>
                         {
@@ -123,7 +123,7 @@ const walletStyles = StyleSheet.create({
 
     paymentMethodButtonText: {
         ...styles.dark,
-        ...styles.bold,
+        ...styles.boldText,
         ...styles.ml15,
     },
 

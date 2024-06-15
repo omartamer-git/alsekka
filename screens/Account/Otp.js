@@ -117,10 +117,10 @@ function Otp({ route, navigation }) {
     return (
         <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={function () { navigation.goBack() }} lip={false}>
             <View style={[styles.bgPrimary, styles.w100, styles.p24]}>
-                <Text style={[styles.text, styles.white, styles.bold, styles.font28]}>
+                <Text style={[styles.boldText, styles.white, styles.font28]}>
                     {t('verification_code')}
                 </Text>
-                <Text style={[styles.text, styles.white, styles.bold, styles.font12, styles.mt5]}>
+                <Text style={[styles.boldText, styles.white, styles.font12, styles.mt5]}>
                     +2{phone}
                 </Text>
                 <Text style={[styles.text, styles.white, styles.font12, styles.mt5]}>

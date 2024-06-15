@@ -31,7 +31,7 @@ function DriverPopUp({ modalVisible, onHide, navigateToDriver }) {
                         </TouchableOpacity>
 
                         <View style={[styles.w100, styles.mt20]}>
-                            <Text style={[styles.text, styles.font28, styles.textCenter, styles.bold, styles.dark]}>
+                            <Text style={[styles.boldText, styles.font28, styles.textCenter, styles.dark]}>
                                 {t('driver_popup_title')}
                             </Text>
 
@@ -44,7 +44,7 @@ function DriverPopUp({ modalVisible, onHide, navigateToDriver }) {
                                 onHide();
                                 navigateToDriver();
                             }} bgColor={palette.primary} textColor={palette.white} text={t('driver_popup_cta')} />
-                            <Text style={[styles.bold, styles.text, styles.textCenter, styles.dark, styles.font12]}>{t('driver_popup_d1')}{"\n"}{t('driver_popup_d2')}</Text>
+                            <Text style={[styles.boldText, styles.textCenter, styles.dark, styles.font12]}>{t('driver_popup_d1')}{"\n"}{t('driver_popup_d2')}</Text>
                         </View>
 
 

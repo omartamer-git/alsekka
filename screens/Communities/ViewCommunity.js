@@ -159,7 +159,7 @@ function ViewCommunity({ navigation, route }) {
                                 <View style={[styles.flexRow, styles.justifyCenter, styles.alignCenter]}>
                                     <FastImage style={{ borderRadius: 44 / 2, width: 44, height: 44 }} source={{ uri: picture }} />
                                     <View style={[styles.ml10]}>
-                                        <Text style={[styles.text, styles.font14, styles.dark, styles.bold]}>{name}</Text>
+                                        <Text style={[styles.boldText, styles.font14, styles.dark]}>{name}</Text>
                                         <View style={[styles.flexRow, styles.alignCenter]}>
                                             {privacy === true ? <MaterialIcons name="lock" /> : <MaterialIcons name="lock-open" />}
                                             <Text style={[styles.text, styles.font12, styles.dark, styles.ml5]}>
@@ -213,7 +213,7 @@ function ViewCommunity({ navigation, route }) {
                                 })}
                                 {feed.length > 0 &&
                                     <TouchableOpacity activeOpacity={0.7} style={[styles.w100, styles.alignCenter, styles.mt10]} onPress={loadMore}>
-                                        <Text style={[styles.text, styles.primary, styles.bold, styles.font14]}>{t('see_more')}</Text>
+                                        <Text style={[styles.boldText, styles.primary, styles.font14]}>{t('see_more')}</Text>
                                     </TouchableOpacity>
                                 }
                                 {feed.length === 0 && (
@@ -230,7 +230,7 @@ function ViewCommunity({ navigation, route }) {
                             <>
                                 <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
                                     <FastImage style={{ borderRadius: 100 / 2, width: 100, height: 100 }} source={{ uri: picture }} />
-                                    <Text style={[styles.text, styles.font18, styles.bold, styles.mt10]}>{name}</Text>
+                                    <Text style={[styles.boldText, styles.font18, styles.mt10]}>{name}</Text>
                                     <View style={[styles.flexRow, styles.alignCenter, styles.justifyCenter]}>
                                         <Text style={[styles.text, styles.font12, styles.dark, styles.mr5]}>
                                             {privacy === true ? t('private') : t('public')}
@@ -254,7 +254,7 @@ function ViewCommunity({ navigation, route }) {
                         {sentJoinRequest && (
                             <View style={[styles.justifyCenter, styles.alignCenter, styles.w100, styles.flexOne]}>
                                 <CoffeeIcon width={200} height={200} />
-                                <Text style={[styles.text, styles.font28, styles.primary, styles.bold, styles.mt10]}>{t('wait_processing')}</Text>
+                                <Text style={[styles.boldText, styles.font28, styles.primary, styles.mt10]}>{t('wait_processing')}</Text>
                                 <Text
                                     style={[styles.text, styles.font14, styles.mt10, styles.textCenter, styles.ph8]}>
                                     {t('community_request_sent')}

@@ -193,11 +193,11 @@ function UserHome({ navigation, route }) {
                             !nextRideData &&
                             <View style={userHomeStyles.noRides} >
                                 <MaterialIcons name="sentiment-very-satisfied" size={48} color={palette.dark} />
-                                <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
+                                <Text style={[styles.boldText, styles.mt5, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
                         <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={function () { navigation.navigate('All Trips') }}>
-                            <Text style={[styles.text, styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
+                            <Text style={[styles.boldText, styles.primary]}>{t('view_all_trips')}</Text>
                         </TouchableOpacity>
 
                         <View style={[styles.w100, styles.mt10]}>
@@ -260,15 +260,15 @@ function UserHome({ navigation, route }) {
                         <View style={[styles.w100, styles.br8, styles.p8, styles.bgAccent, styles.mt10, styles.flexRow, styles.spaceBetween, styles.gap15]}>
                             <View style={[styles.spaceBetween, styles.flexOne, styles.gap10]}>
                                 <View>
-                                    <Text style={[styles.text, styles.white, styles.bold, styles.headerText3]}>
+                                    <Text style={[styles.boldText, styles.white, styles.headerText3]}>
                                         {t('safety_tips')}
                                     </Text>
-                                    <Text style={[styles.text, styles.dark, styles.semibold, styles.black]}>
+                                    <Text style={[styles.text, styles.dark, styles.semiBold, styles.black]}>
                                         {t('ensure_safety')}
                                     </Text>
                                 </View>
                                 <TouchableOpacity onPress={() => setSafetyTipsVisible(true)} activeOpacity={0.9} style={[styles.bgWhite, styles.p8, styles.br8, styles.fullCenter, styles.mt5]}>
-                                    <Text style={[styles.text, styles.bold]}>
+                                    <Text style={[styles.boldText]}>
                                         {t('learn_more')}
                                     </Text>
                                 </TouchableOpacity>
@@ -285,7 +285,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_verify_driver')}
                                             </Text>
 
@@ -302,7 +302,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_route')}
                                             </Text>
 
@@ -319,7 +319,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_ratings')}
                                             </Text>
 
@@ -335,7 +335,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_emergency')}
                                             </Text>
 

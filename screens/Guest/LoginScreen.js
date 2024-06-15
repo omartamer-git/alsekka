@@ -241,7 +241,7 @@ function LoginScreen({ route, navigation }) {
                       style={[
                         styles.text,
                         styles.primary,
-                        styles.bold,
+                        styles.boldText,
                         styles.ml10,
                       ]}
                     >
