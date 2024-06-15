@@ -79,11 +79,11 @@ function Account({ route, navigation }) {
 
         let ratingsItems = [];
         for (let i = 0; i < fullStars; i++) {
-            ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" size={17} color={palette.accent} />);
+            ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" size={16} color={palette.accent} />);
         }
 
         for (let j = 0; j < halfStars; j++) {
-            ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" size={17} color={palette.accent} />);
+            ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" size={16} color={palette.accent} />);
         }
 
         setRatings(ratingsItems);
@@ -179,9 +179,9 @@ function Account({ route, navigation }) {
                                 <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
                             </View>
                         </TouchableOpacity>
-                        <View style={[styles.flexOne, styles.fullCenter]}>
-                            <Text style={[styles.text, styles.headerText2, styles.capitalize]}>{userFirstName} {userLastName}</Text>
-                            <View style={[styles.flexRow, styles.mt5]}>
+                        <View style={[styles.flexOne, styles.fullCenter, styles.mt10]}>
+                            <Text style={[styles.headerText2, styles.boldText, styles.capitalize]}>{userFirstName} {userLastName}</Text>
+                            <View style={[styles.flexRow]}>
                                 {ratings}
                             </View>
                         </View>
@@ -392,7 +392,7 @@ const profilePictureSizing = {
 
 const accountStyles = StyleSheet.create({
     topSection: {
-        ...styles.mt10,
+        ...styles.mt5,
         ...styles.flexOne,
         ...styles.flexCol,
         ...styles.fullCenter

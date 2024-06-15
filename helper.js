@@ -877,12 +877,14 @@ export const styles = StyleSheet.create({
         fontSize: 18 * rem,
         lineHeight: Platform.OS === 'ios' ? 20 * rem : undefined,
     },
-
+    font22: {
+        fontSize: 22 * rem,
+        lineHeight: Platform.OS === 'ios' ? 24 * rem : undefined,
+    },
     font24: {
         fontSize: 24 * rem,
-        lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,
+        lineHeight: Platform.OS === 'ios' ? 26 * rem : undefined,
     },
-
     font28: {
         fontSize: 28 * rem,
         lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,

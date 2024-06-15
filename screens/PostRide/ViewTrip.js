@@ -281,7 +281,7 @@ function ViewTrip({ route, navigation }) {
                                             }
                                         </View>
                                         <View style={[styles.alignStart, styles.justifyStart, styles.ml10, styles.flexOne]}>
-                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.headerText3]}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName}</Text>
+                                            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.boldText, styles.headerText3]}>{isDriver ? t('youre_driving') : tripDetails.Driver.firstName}</Text>
                                             <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.dark, styles.semiBold]}>{tripDetails.Car.color} {tripDetails.Car.brand} {tripDetails.Car.model} ({tripDetails.Car.year})</Text>
                                             <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.boldText, styles.dark]}>{tripDetails.Car.licensePlateLetters.split('').join(' ')} - {tripDetails.Car.licensePlateNumbers}</Text>
                                             <View style={styles.flexRow}>
@@ -436,35 +436,35 @@ function ViewTrip({ route, navigation }) {
                                         <Text style={[styles.boldText, styles.font28, styles.primary, styles.mb10]}>{t('bill_summary')}</Text>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
-                                            <Text style={[styles.text, styles.semiBold]}>{t('fare')}:</Text>
+                                            <Text style={[styles.boldText, styles.semiBold]}>{t('fare')}:</Text>
                                             <Text style={[styles.text]}>{(tripDetails.passenger.Invoice.totalAmount / 100).toFixed(2)} {t('EGP')} ({(tripDetails.pricePerSeat / 100).toFixed(2)} {t('EGP')} x {tripDetails.passenger.seats})</Text>
                                         </View>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
-                                            <Text style={[styles.text, styles.semiBold]}>{t('service_fees')}:</Text>
+                                            <Text style={[styles.boldText, styles.semiBold]}>{t('service_fees')}:</Text>
                                             <Text style={[styles.text]}>{(tripDetails.passenger.Invoice.passengerFeeTotal / 100).toFixed(2)} {t('EGP')}</Text>
                                         </View>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
-                                            <Text style={[styles.text, styles.semiBold]}>{t('voucher')}:</Text>
+                                            <Text style={styles.boldText}>{t('voucher')}:</Text>
                                             <Text style={[styles.text]}>- {(tripDetails.passenger.Invoice.discountAmount / 100).toFixed(2)} {t('EGP')}</Text>
                                         </View>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
-                                            <Text style={[styles.text, styles.semiBold]}>{t('balance')}:</Text>
+                                            <Text style={styles.boldText}>{t('balance')}:</Text>
                                             <Text style={[styles.text]}>{(tripDetails.passenger.Invoice.balanceDue / 100).toFixed(2)} {t('EGP')}</Text>
                                         </View>
 
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
-                                            <Text style={[styles.text, styles.semiBold]}>{t('pickup_fee')}:</Text>
+                                            <Text style={styles.boldText}>{t('pickup_fee')}:</Text>
                                             <Text style={[styles.text]}>{(tripDetails.passenger.Invoice.pickupAddition / 100).toFixed(2)} {t('EGP')}</Text>
                                         </View>
 
                                         <View style={[styles.w100, styles.mv10, { borderWidth: 0.5 }, styles.borderLight]}></View>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
-                                            <Text style={[styles.text, styles.semiBold]}>{t('total')}:</Text>
+                                            <Text style={styles.boldText}>{t('total')}:</Text>
                                             <Text style={[styles.text]}>{(tripDetails.passenger.Invoice.grandTotal / 100).toFixed(2)} {t('EGP')}</Text>
                                         </View>
                                     </View>

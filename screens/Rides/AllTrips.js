@@ -76,7 +76,7 @@ function AllTrips({ navigation, route }) {
                 {
                     !loading &&
                     <>
-                        <Text style={[styles.text, styles.headerText2, { marginTop: 20 }]}>
+                        <Text style={[styles.boldText, styles.headerText2, { marginTop: 20 }]}>
                             {t('trips')}
                         </Text>
 

@@ -347,7 +347,7 @@ function BookRide({ route, navigation }) {
                             <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                                 <View style={styles.flexRow}>
                                     <View>
-                                        <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(new Date(datetime))[0]}
+                                        <Text style={[styles.boldText, styles.light, styles.font16]}>{getTime(new Date(datetime))[0]}
                                             <Text style={[styles.font12]}>&nbsp;{t(getTime(new Date(datetime))[1])}</Text>
                                         </Text>
                                     </View>
@@ -361,7 +361,7 @@ function BookRide({ route, navigation }) {
                             </View>
 
                             <View style={[styles.flexOne, styles.alignStart]}>
-                                <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
+                                <Text style={[styles.boldText, styles.light, styles.font16]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
                                 <Text style={[styles.text, styles.light]} numberOfLines={2} ellipsizeMode='tail'>{mainTextTo.split(',')[0].split('،')[0]}</Text>
                             </View>
                         </View>

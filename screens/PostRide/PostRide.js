@@ -364,7 +364,7 @@ function PostRide({ route, navigation }) {
                                 >
                                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
                                         <>
-                                            <Text style={[styles.text, styles.inputText]}>{t('pickup_point')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('pickup_point')}</Text>
                                             <AutoComplete
                                                 key={"autoCompleteFrom" + rideId}
                                                 type="my-location"
@@ -376,7 +376,7 @@ function PostRide({ route, navigation }) {
                                                 handleCancelLocationSelect={cancelLocationFrom}
                                             />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('destination')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('destination')}</Text>
                                             <AutoComplete
                                                 key={"autoCompleteTo" + rideId}
                                                 type="place"
@@ -388,11 +388,11 @@ function PostRide({ route, navigation }) {
                                                 handleCancelLocationSelect={cancelLocationTo}
                                             />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('date')}</Text>
 
                                             <CustomDatePicker style={[styles.mv10]} date={values.dateInput} setDate={(newDate) => { setFieldValue('dateInput', newDate) }} />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('time')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('time')}</Text>
 
                                             <CustomTextInput
                                                 placeholder={t('time')}
@@ -426,7 +426,7 @@ function PostRide({ route, navigation }) {
                                             />
 
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('seats_available')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('seats_available')}</Text>
 
                                             <Counter
                                                 counter={values.seatsInput}
@@ -439,7 +439,7 @@ function PostRide({ route, navigation }) {
                                                 max={4}
                                             />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('price_per_seat')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('price_per_seat')}</Text>
 
                                             <View style={[styles.flexRow, styles.w100]}>
 
@@ -480,7 +480,7 @@ function PostRide({ route, navigation }) {
                                             
                                             { /* TEMPORARILY DISABLED, TODO: RE-ENABLE PROPERLY */}
 
-                                            {/* <Text style={[styles.text, styles.inputText]}>{t('allow_pickup')}</Text>
+                                            {/* <Text style={[styles.boldText, styles.inputText]}>{t('allow_pickup')}</Text>
 
                                             <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                                 <TouchableOpacity onPress={function () { setPickupEnabled(true) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: pickupEnabled ? palette.secondary : palette.dark }]}>
@@ -496,7 +496,7 @@ function PostRide({ route, navigation }) {
                                                 <>
                                                     <Text style={[styles.text, styles.dark, { textAlign: 'left' }]}>{t('pickup_range')}</Text>
 
-                                                    <Text style={[styles.text, styles.inputText]}>{t('pickup_price')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('pickup_price')}</Text>
                                                     <CustomTextInput
                                                         value={values.pickupPriceInput}
                                                         iconLeft="attach-money"
@@ -521,7 +521,7 @@ function PostRide({ route, navigation }) {
                                             {
                                                 (advancedOptions || !carInput || errors.communityInput) &&
                                                 <>
-                                                    <Text style={[styles.text, styles.inputText]}>{t('select_car')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('select_car')}</Text>
 
                                                     <CustomTextInput
                                                         placeholder={t('select_car')}
@@ -536,7 +536,7 @@ function PostRide({ route, navigation }) {
                                                     />
 
 
-                                                    <Text style={[styles.text, styles.inputText]}>{t('gender_to_carpool')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('gender_to_carpool')}</Text>
 
                                                     <View style={[styles.flexRow, styles.w100, styles.mv10, styles.br8, styles.overflowHidden]}>
                                                         {
@@ -557,7 +557,7 @@ function PostRide({ route, navigation }) {
                                                     </View>
 
 
-                                                    <Text style={[styles.text, styles.inputText]}>{t('post_to_community')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('post_to_community')}</Text>
                                                     <CustomTextInput
                                                         placeholder={t('select_community')}
                                                         value={communitySelectorText}

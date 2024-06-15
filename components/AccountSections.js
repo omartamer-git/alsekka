@@ -27,9 +27,9 @@ const sectionStyles = StyleSheet.create({
     borderColor: palette.light
   },
   text: {
-    ...styles.text,
-    ...styles.headerText,
-    ...styles.font24,
+    // ...styles.headerText,
+    ...styles.boldText,
+    ...styles.font22,
     ...styles.mb10,
     color: palette.primary,
   }
