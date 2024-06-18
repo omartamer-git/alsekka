@@ -230,7 +230,7 @@ function Account({ route, navigation }) {
 
                         {!referralsDisabled &&
                             <>
-                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={function () { navigation.navigate('Referral') }} />
+                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={function () { navigation.navigate('Referral', {comeFrom: 'Account Home'}) }} />
                                 <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={function () { navigation.navigate('Add Referral') }} />
                             </>
                         }

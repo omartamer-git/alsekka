@@ -206,7 +206,7 @@ function UserHome({ navigation, route }) {
                             <Text style={[styles.text, styles.headerText3]}>{t('shortcuts')}</Text>
 
                             <View style={[styles.w100, styles.flexRow, styles.gap10, styles.mt10]}>
-                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Referral' }) }} style={[styles.flexOne, styles.bgPrimary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Referral', params: {comeFrom: 'User Home'} }) }} style={[styles.flexOne, styles.bgPrimary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.p8, styles.w100, styles.h100, { overflow: 'hidden' }]}>
                                         <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
                                             {t('refer_shortcut')}

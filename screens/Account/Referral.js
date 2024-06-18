@@ -22,6 +22,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { config } from '../../config';
 // import Clipboard from '@react-native-community/clipboard';
 import { useTranslation } from 'react-i18next';
+import { CommonActions } from '@react-navigation/native';
 
 function List({ icon, headline, text }) {
     return (
@@ -39,6 +40,7 @@ function List({ icon, headline, text }) {
 
 function Referral({ navigation, route }) {
 
+    const goBackDestination = route.params.comeFrom;
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
     const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 60 EGP added to your wallet using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
@@ -62,10 +64,27 @@ function Referral({ navigation, route }) {
         }
     };
 
+    const replaceScreen = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    { name: goBackDestination=='Account Home'?"Account":"Home", 
+                      state: {
+                        routes: [
+                            { name: goBackDestination }
+                        ]
+                      } 
+                    },
+                ],
+            })
+        );
+    };
+
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper screenName={t('refer_friend')} navType="back" navAction={replaceScreen}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={[styles.flexOne]} contentContainerStyle={[containerStyle, styles.w100, styles.alignCenter]}>
                 <Treasure width={250} height={250} />
                 <View style={[styles.w100, styles.mt5]}>
