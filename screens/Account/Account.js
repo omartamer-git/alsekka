@@ -192,7 +192,7 @@ function Account({ route, navigation }) {
                                 </View>
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet') }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet', {comeFrom: 'Account Home'}) }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('wallet')}</Text>
                             </TouchableOpacity>

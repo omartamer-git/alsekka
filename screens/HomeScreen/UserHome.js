@@ -220,7 +220,7 @@ function UserHome({ navigation, route }) {
                                     </View>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Wallet' }) }} style={[styles.flexOne, styles.bgGray, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Wallet', params: {comeFrom: 'User Home'} }) }} style={[styles.flexOne, styles.bgGray, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
                                         <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
                                             {t('earnings_shortcut')}

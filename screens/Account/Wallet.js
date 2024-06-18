@@ -18,9 +18,28 @@ import useAppManager from '../../context/appManager';
 import { abbreviate, containerStyle, getPhoneCarrier, palette, rem, styles, translateEnglishNumbers } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import ArrowButton from '../../components/ArrowButton';
+import { CommonActions } from '@react-navigation/native';
 
 function Wallet({ navigation, route }) {
     const { availableCards, bankAccounts, mobileWallets, balance } = useUserStore();
+    const goBackDestination = route.params.comeFrom;
+
+    const replaceScreen = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    { name: goBackDestination=='Account Home'?"Account":"Home", 
+                      state: {
+                        routes: [
+                            { name: goBackDestination }
+                        ]
+                      } 
+                    },
+                ],
+            })
+        );
+    };
 
 
     function viewTrip(id) {
@@ -31,7 +50,7 @@ function Wallet({ navigation, route }) {
     const { cardsEnabled } = useAppManager();
 
     return (
-        <ScreenWrapper screenName={t('wallet')} navType="back" navAction={function () { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('wallet')} navType="back" navAction={replaceScreen}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.secondary, palette.primary]} style={walletStyles.card}>
