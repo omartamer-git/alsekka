@@ -5,7 +5,7 @@
  * @format
  * @flow strict-local
  */
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import 'react-native-gesture-handler';
 
 
@@ -14,7 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, PermissionsAndroid, TouchableOpacity } from 'react-native';
+import { Image, PermissionsAndroid } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 import * as TaskManager from 'expo-task-manager';
@@ -86,10 +86,6 @@ import Payment from './screens/BookRide/Payment';
 import RideBooked from './screens/BookRide/RideBooked';
 import CustomerService from './screens/Chat/CustomerService';
 import useErrorManager from './context/errorManager';
-import UserPreferences from './screens/Account/UserPreferences';
-import useAppStateManager from './context/appStateManager';
-import LottieView from 'lottie-react-native';
-import { AppState } from 'react-native';
 
 
 const RootStack = createNativeStackNavigator();
@@ -106,15 +102,10 @@ const CommunityStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-
 function App() {
   const { t, i18n } = useTranslation();
 
-  // const authManager = useAuthManager();
-  const authAccessToken = useAuthManager((state) => state.accessToken);
-  const authRefreshToken = useAuthManager((state) => state.refreshToken);
-  const authAuthenticated = useAuthManager((state) => state.authenticated);
-  const authSetState = useAuthManager((state) => state.setState);
+  const authManager = useAuthManager();
 
   const postDriverLocation = useUserStore((state) => state.postDriverLocation);
   const userInfo = useUserStore((state) => state.userInfo);
@@ -126,20 +117,12 @@ function App() {
   const verified = useUserStore((state) => state.verified);
   const linkDevice = useUserStore((state) => state.linkDevice);
 
-  // const appManager = useAppManager();
-  const setDeviceToken = useAppManager((state) => state.setDeviceToken);
-  const deviceToken = useAppManager((state) => state.deviceToken);
-  const verificationsDisabled = useAppManager((state) => state.verificationsDisabled);
-
-  // const appStateManager = useAppStateManager();
-  const appStateLoading = useAppStateManager((state) => state.loading);
-  const appStateSetLoading = useAppStateManager((state) => state.setLoading);
-
-  // const [state, setState] = useState('LOADING');
+  const appManager = useAppManager();
+  const [state, setState] = useState('LOADING');
   I18nManager.allowRTL(true);
   // const { t } = useTranslation();
 
-  const config = useMemo(() => ({
+  const config = {
     screens: {
       LoggedIn: {
         screens: {
@@ -165,19 +148,19 @@ function App() {
         },
       },
     },
-  }), []);
+  };
 
-  const linking = useMemo(() => ({
+  const linking = {
     prefixes: ['seaats://', 'https://seaats.app/share/', 'https://www.seaats.app/share/'],
     config
-  }), [])
+  };
 
   const localeContext = useLocale();
   Text.defaultProps = {};
-  Text.defaultProps.maxFontSizeMultiplier = 1.15;
+  Text.defaultProps.maxFontSizeMultiplier = 1.3;
 
   TextInput.defaultProps = {};
-  TextInput.defaultProps.maxFontSizeMultiplier = 1.15;
+  TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
 
 
   useEffect(function () {
@@ -226,7 +209,7 @@ function App() {
     }
   }, []);
 
-  const requestLocationPermissions = useCallback(() => {
+  function requestLocationPermissions() {
     setModalFineLocation(false);
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -242,9 +225,9 @@ function App() {
         setModalBackgroundLocation(true);
       }
     })
-  }, [t]);
+  }
 
-  const requestBgLocationPermissions = useCallback(() => {
+  function requestBgLocationPermissions() {
     setModalBackgroundLocation(false);
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
@@ -256,7 +239,7 @@ function App() {
         buttonPositive: t('allow'),
       },
     );
-  }, [t])
+  }
 
   useEffect(
     function () {
@@ -265,7 +248,7 @@ function App() {
 
         PushNotificationIOS.addEventListener("register", (deviceToken) => {
           registerDevice(deviceToken);
-          setDeviceToken(deviceToken);
+          appManager.setDeviceToken(deviceToken);
         });
 
         PushNotificationIOS.requestPermissions();
@@ -279,7 +262,7 @@ function App() {
             .getToken()
             .then(token => {
               registerDevice(token);
-              setDeviceToken(token);
+              appManager.setDeviceToken(token);
             })
             .catch(error => {
               console.error('Error getting device token:', error);
@@ -298,7 +281,7 @@ function App() {
       const lat = locations[0].coords.latitude;
       const lng = locations[0].coords.longitude;
       const timestamp = locations[0].timestamp;
-      if (authAuthenticated) {
+      if (authManager.authenticated) {
         postDriverLocation(lat, lng, timestamp);
       } else {
         stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
@@ -313,34 +296,40 @@ function App() {
       const value = await Keychain.getGenericPassword();
 
       if (!value || JSON.parse(value.password).accessToken === null) {
-        authSetState({
-          accessToken: null,
-          refreshToken: null,
-          authenticated: false
-        });
+        console.log("VALUE FALSE")
 
-        return appStateSetLoading(false);
+        authManager.setAccessToken(null);
+        authManager.setRefreshToken(null);
+        authManager.setAuthenticated(false);
+        return setState("Guest");
+      } else {
+        console.log("VALUE TRUE")
+        console.log(value);
       }
-
       const jwt = JSON.parse(value.password);
 
-      authSetState({
-        accessToken: jwt.accessToken || null,
-        refreshToken: jwt.refreshToken || null,
-        authenticated: jwt.accessToken !== null
-      })
+      authManager.setAccessToken(jwt.accessToken || null);
+      authManager.setRefreshToken(jwt.refreshToken || null);
+      authManager.setAuthenticated(jwt.accessToken !== null);
+      await userInfo();
+      await getAvailableCards();
+      await getBankAccounts();
+      await getMobileWallets();
 
-      try {
-        await Promise.all([userInfo(), getAvailableCards(), getBankAccounts(), getMobileWallets()]);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        appStateSetLoading(false);
-      }
+
+      setState("LoggedIn");
     } catch (error) {
-      appStateSetLoading(false);
+      console.log(error);
+      setState("Guest");
+      authManager.setAccessToken(null);
+      authManager.setRefreshToken(null);
+      authManager.setAuthenticated(false);
     }
   }, []);
+
+  useEffect(function () {
+    appManager.getAllowedEmails();
+  }, [])
 
   useEffect(function () {
     loadJWT()
@@ -352,97 +341,38 @@ function App() {
   const [pendingRatings, setPendingRatings] = useState();
 
   useEffect(function () {
-    if (deviceToken && userId) {
-      linkDevice(deviceToken);
+    if (appManager.deviceToken && userId) {
+      linkDevice(appManager.deviceToken);
     }
-  }, [deviceToken, userId]);
+  }, [appManager.deviceToken, userId]);
 
   useEffect(() => {
-    if (authAuthenticated) {
+    console.log(authManager.authenticated);
+    if (authManager.authenticated) {
       const pending = passengerPendingRatings().then(pending => {
         if (!pending.complete) {
-          setPendingRatings(pending)
+          setPendingRatings(pending);
         }
       });
     }
-  }, [authAuthenticated])
-
-  const LoadingSplashScreen = memo((props) => {
-    const [takingTooLong, setTakingTooLong] = useState(false);
-    const timerRef = useRef(null);
-
-    useEffect(() => {
-      setTimeout(() => {
-        setTakingTooLong(true);
-      }, 5000);
-
-      return () => clearTimeout(timerRef.current);
-    }, []);
-
-
-    return (
-      <>
-        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
-        <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
-          <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
-            <Image source={require('./assets/logo.png')} resizeMode='contain' style={{ width: '70%', height: '9.5%' }} />
-          </View>
-          <LottieView source={require('./assets/loading_animation.json')} style={{ width: 75, height: 75 }} loop autoPlay />
-          {takingTooLong &&
-            <TouchableOpacity onPress={() => appStateSetLoading(false)} style={[styles.w100, styles.p16, styles.fullCenter]}>
-              <Text style={[styles.text, styles.white, styles.textCenter, styles.bold]}>{t('splashscreen_failsafe')}</Text>
-            </TouchableOpacity>
-          }
-        </View>
-      </>
-    )
-  });
-
-  const appState = useRef(AppState.currentState)
-  const stateRef = useRef(appStateLoading);
-
-  useEffect(() => {
-    stateRef.current = appStateLoading;
-  }, [appStateLoading]);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  const handleAppStateChange = useCallback((nextAppState) => {
-    if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-      if (stateRef.current === true) {
-        // console.log(stateRef.current);
-        authSetState({
-          accessToken: null,
-          refreshToken: null,
-          authenticated: false
-        });
-        loadJWT(); // Re-run the JWT loading function
-      }
-    }
-    appState.current = nextAppState
-  }, [authSetState, loadJWT])
+  }, [authManager.authenticated]);
 
   const LoggedInStack = ({ route, navigation }) => {
     return (
-      <UserStack.Navigator initialRouteName="TabScreen" screenOptions={{headerShown: false}}>
-        <UserStack.Screen name="TabScreen" component={LoggedInHome} />
-        <UserStack.Screen name="Chat" component={Chat} />
-        <UserStack.Screen name="Customer Service" component={CustomerService} />
+      <UserStack.Navigator initialRouteName="TabScreen">
+        <UserStack.Screen name="TabScreen" component={LoggedInHome} options={{ headerShown: false }} />
+        <UserStack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+        <UserStack.Screen name="Customer Service" component={CustomerService} options={{ headerShown: false }} />
       </UserStack.Navigator>
     );
   };
 
   const LoggedInHome = ({ route, navigation }) => {
     return (
-      <Tab.Navigator initialRouteName='Home' screenOptions={{ headerShown: false, tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
+      <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: palette.primary, tabBarInactiveTintColor: palette.gray }}>
         <Tab.Screen name="Home" component={UserHomeNavigator}
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="home" size={size} color={color} />
             ),
@@ -453,6 +383,7 @@ function App() {
           }} />
         <Tab.Screen name="Find Rides" component={BookRideNavigator}
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="search" size={size} color={color} />
             ),
@@ -463,6 +394,7 @@ function App() {
           }} />
         <Tab.Screen name="Post Ride" component={PostRideNavigator}
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               return (<MaterialIcons name="directions-car" size={size} color={color} />);
             },
@@ -474,6 +406,7 @@ function App() {
           }} />
         <Tab.Screen name="Communities" component={CommunityNavigator}
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               return (<MaterialIcons name="forum" size={size} color={color} />);
             },
@@ -484,6 +417,7 @@ function App() {
           }} />
         <Tab.Screen name="Account" component={AccountNavigator}
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               return (
                 <View style={{ position: 'relative' }}>
@@ -507,13 +441,13 @@ function App() {
 
   const Guest = ({ route, navigation }) => {
     return (
-      <GuestStack.Navigator screenOptions={{headerShown: false}}>
-        <GuestStack.Screen name="Home" component={HomeScreen} />
-        <GuestStack.Screen name="Sign Up" component={SignUpScreen} />
-        <GuestStack.Screen name="Login" component={LoginScreen} />
-        <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} />
-        <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} />
-        <GuestStack.Screen name="Otp" component={Otp} />
+      <GuestStack.Navigator>
+        <GuestStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Forgot Password" component={ForgotPasswordScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Change Password" component={ChangePasswordScreen} options={{ headerShown: false }} />
+        <GuestStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
       </GuestStack.Navigator>
     );
   }
@@ -521,13 +455,13 @@ function App() {
 
   const BookRideNavigator = ({ route, navigation }) => {
     return (
-      <BookingStack.Navigator initialRouteName='Find a Ride' screenOptions={{headerShown: false}}>
-        <BookingStack.Screen name="Find a Ride" component={MapScreen} />
-        <BookingStack.Screen name="Choose a Ride" component={RideFinder} />
-        <BookingStack.Screen name="Book Ride" component={BookRide} />
-        <BookingStack.Screen name="Payment" component={Payment} />
-        <BookingStack.Screen name="Ride Booked" component={RideBooked} />
-        <UserHomeStack.Screen name="View Trip" component={ViewTrip} />
+      <BookingStack.Navigator initialRouteName='Find a Ride'>
+        <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
+        <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
       </BookingStack.Navigator>
     );
   }
@@ -535,67 +469,74 @@ function App() {
 
   const PostRideNavigator = ({ route, navigation }) => {
     return (
-      <PostRideStack.Navigator initialRouteName='Post a Ride' screenOptions={{headerShown: false}}>
-        <PostRideStack.Screen name="Post a Ride" component={PostRide} />
-        <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} />
-        <PostRideStack.Screen name="New Car" component={NewCar} />
+      <PostRideStack.Navigator initialRouteName='Post a Ride'>
+        <PostRideStack.Screen name="Post a Ride" component={PostRide} options={{ headerShown: false }} />
+        <PostRideStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
+        <PostRideStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
       </PostRideStack.Navigator>
     );
   }
 
   const CommunityNavigator = ({ route, navigator }) => {
     return (
-      <CommunityStack.Navigator screenOptions={{headerShown: false}}>
-        <CommunityStack.Screen name="View Communities" component={ViewCommunities} />
-        <CommunityStack.Screen name="View Community" component={ViewCommunity} />
-        <CommunityStack.Screen name="Search Communities" component={SearchCommunities} />
-        <CommunityStack.Screen name="New Community" component={NewCommunity} />
-        <CommunityStack.Screen name="Community Settings" component={CommunitySettings} />
-        <CommunityStack.Screen name="Community Members" component={CommunityMembers} />
+      <CommunityStack.Navigator>
+        <CommunityStack.Screen name="View Communities" component={ViewCommunities} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="View Community" component={ViewCommunity} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="Search Communities" component={SearchCommunities} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="New Community" component={NewCommunity} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="Community Settings" component={CommunitySettings} options={{ headerShown: false }} />
+        <CommunityStack.Screen name="Community Members" component={CommunityMembers} options={{ headerShown: false }} />
       </CommunityStack.Navigator>
     );
   };
 
   const AccountNavigator = ({ route, navigation }) => {
     return (
-      <AccountStack.Navigator initialRouteName='Account Home' screenOptions={{headerShown: false}}>
-        <AccountStack.Screen name="Account Home" component={Account} />
-        <AccountStack.Screen name="Wallet" component={Wallet} />
-        <AccountStack.Screen name="UserPreferences" component={UserPreferences} />
-        <AccountStack.Screen name="Withdraw" component={Withdraw} />
-        <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} />
-        <AccountStack.Screen name="Debt Payment" component={DebtPayment} />
-        <AccountStack.Screen name="Add Card" component={AddCard} />
-        <AccountStack.Screen name="All Trips" component={AllTrips} />
-        <AccountStack.Screen name="Manage Cars" component={ManageCars} />
-        <AccountStack.Screen name="New Car" component={NewCar} />
-        <AccountStack.Screen name="Chats List" component={ChatsList} />
-        <AccountStack.Screen name="Add Bank" component={AddBank} />
-        <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} />
-        <AccountStack.Screen name="Referral" component={Referral} />
-        <AccountStack.Screen name="Add Referral" component={AddReferral} />
+      <AccountStack.Navigator initialRouteName='Account Home'>
+        <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
+        <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
+        <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
+        <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
       </AccountStack.Navigator>
     );
   }
 
   const UserHomeNavigator = ({ route, navigation }) => {
     return (
-      <UserHomeStack.Navigator screenOptions={{headerShown: false}}>
-        <UserHomeStack.Screen name="User Home" component={UserHome} />
-        <UserHomeStack.Screen name="View Trip" component={ViewTrip} />
-        <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} />
-        <UserHomeStack.Screen name="Checkout" component={Checkout} />
-        <UserHomeStack.Screen name="All Trips" component={AllTrips} />
-        <UserHomeStack.Screen name="Announcement" component={Announcement} />
-        <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} />
+      <UserHomeStack.Navigator >
+        <UserHomeStack.Screen name="User Home" component={UserHome} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Manage Trip" component={ManageTrip} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Announcement" component={Announcement} options={{ headerShown: false }} />
+        <UserHomeStack.Screen name="Driver Documents" component={SubmitDriverDocuments} options={{ headerShown: false }} />
       </UserHomeStack.Navigator>
     );
   }
 
-
-  if (appStateLoading) {
+  if (state === 'LOADING') {
     return (
-      <LoadingSplashScreen />
+      <>
+        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
+        <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
+          {/* <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
+        { fontSize: 75 * rem }
+        ]
+        }>{t('seaats')}</Text> */}
+          <Image source={require('./assets/logo.png')} resizeMode='contain' style={{ width: '70%', height: '9.5%' }} />
+        </View>
+      </>
     );
   } else {
     return (
@@ -652,12 +593,12 @@ function App() {
             routeNameRef.current = currentRouteName;
           }}
         >
-          <RootStack.Navigator screenOptions={{headerShown: false}}>
+          <RootStack.Navigator>
             {
-              authAuthenticated === false ? (
+              authManager.authenticated === false || (verified === false && !appManager.verificationsDisabled) ? (
                 <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
               ) : (
-                <RootStack.Screen name="LoggedIn" component={LoggedInStack} />
+                <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
               )
             }
           </RootStack.Navigator>
@@ -669,8 +610,5 @@ function App() {
   }
 
 }
-
-App.whyDidYouRender = true;
-
 
 export default codePush(App);
