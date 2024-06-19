@@ -50,7 +50,7 @@ const useAppManager = create((set) => ({
     setVerificationsDisabled: (verificationsDisabled) => set((state) => ({ verificationsDisabled: verificationsDisabled })),
     setDeviceToken: (deviceToken) => set((state) => ({ deviceToken: deviceToken })),
     setReferralsDisabled: (referralsDisabled) => set((state) => ({ referralsDisabled: referralsDisabled })),
-    setCities: (cities) => set((state) => ({ cities: cities }))
+    setCities: (cities) => set((state) => ({ cities: cities })),
 }));
 
 export default useAppManager;

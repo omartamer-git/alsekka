@@ -391,7 +391,7 @@ function BookRide({ route, navigation }) {
                                         </View>
                                     </View>
                                     <View style={styles.alignEnd}>
-                                        <TouchableOpacity onPress={function () { navigation.navigate('Chat', { receiver: driver }) }} active={0.9} style={bookRideStyles.chatButton}>
+                                        <TouchableOpacity onPress={function () { navigation.navigate('Chat', { receiver: driver, rideDate: objDate}) }} active={0.9} style={bookRideStyles.chatButton}>
                                             <MaterialIcons name="chat-bubble" size={30} color={palette.primary} />
                                         </TouchableOpacity>
                                     </View>

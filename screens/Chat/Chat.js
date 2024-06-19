@@ -21,7 +21,7 @@ import ScreenWrapper from '../ScreenWrapper';
 
 
 function Chat({ navigation, route }) {
-    const { receiver } = route.params;
+    const { receiver, rideDate } = route.params;
     const [receiverData, setReceiverData] = useState(null);
     const [chatMessages, setChatMessages] = useState([]);
     const [messageText, setMessageText] = useState('');
@@ -83,6 +83,21 @@ function Chat({ navigation, route }) {
         // Cleanup function to clear the interval when the component unmounts
         return () => clearInterval(intervalId);
     }, [chatMessages]);
+
+
+    useEffect(() => {
+        const logChatTracking = async () => {
+            const currDate = new Date();
+            if (!rideDate || currDate > rideDate)
+                return;
+            console.log('Chat tracking analytics');
+            await analytics().logEvent('chat_user', {
+                isDriver: userStore.driver,
+                timeBeforeRide: (rideDate - currDate) / 1000 / 60  // time in minutes
+                });
+        };
+        logChatTracking();
+    }, [rideDate]);
 
 
     const { t } = useTranslation();
