@@ -18,6 +18,7 @@ import ScreenWrapper from '../ScreenWrapper';
 
 function AllTrips({ navigation, route }) {
     const [nextRides, setNextRides] = useState([]);
+    const [hasMoreTrips, setHasMoreTrips] = useState(true);
     const currentTime = new Date();
 
     const [driverElement, setDriverElement] = useState(false);
@@ -59,6 +60,10 @@ function AllTrips({ navigation, route }) {
                 setNextRides(newNextRides);
                 if (data.length != 0) {
                     setPage(p => p + 1);
+                }
+
+                if (data.length < 3) {
+                    setHasMoreTrips(false);
                 }
             }
         );
@@ -136,7 +141,7 @@ function AllTrips({ navigation, route }) {
                             </View>
                         }
                         {
-                            (nextRides && nextRides.length > 0) &&
+                            (hasMoreTrips && nextRides && nextRides.length > 0) &&
                             <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
                                 <Text style={[styles.text, styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
                             </TouchableOpacity>
