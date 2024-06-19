@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
 import analytics from '@react-native-firebase/analytics';
 import FastImage from 'react-native-fast-image';
+import useAnalyticsManager from '../../context/analyticsManager';
 
 function Otp({ route, navigation }) {
     const firstName = route.params?.firstName;
@@ -34,7 +35,7 @@ function Otp({ route, navigation }) {
     const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login } = useUserStore();
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
-    const { startTime, setStartTime } = useAppManager();
+    const { startTime, setStartTime } = useAnalyticsManager();
 
     const clockTick = function () {
         isVerified(phone).then( async response => {

@@ -12,7 +12,6 @@ const useAppManager = create((set) => ({
     minVersion: "1.0.0",
     latestVersion: "1.0.0",
     cities: {},
-    startTime: null,
 
     getVersionData: async function () {
         try {
@@ -50,7 +49,6 @@ const useAppManager = create((set) => ({
     setDeviceToken: (deviceToken) => set((state) => ({ deviceToken: deviceToken })),
     setReferralsDisabled: (referralsDisabled) => set((state) => ({ referralsDisabled: referralsDisabled })),
     setCities: (cities) => set((state) => ({ cities: cities })),
-    setStartTime: (time) => set(() => ({ startTime: time }))
 }));
 
 export default useAppManager;

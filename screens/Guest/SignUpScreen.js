@@ -22,6 +22,7 @@ import HeaderView from '../../components/HeaderView';
 import useAppManager from '../../context/appManager';
 import { palette, rem, styles } from '../../helper';
 import useErrorManager from '../../context/errorManager';
+import useAnalyticsManager from '../../context/analyticsManager';
 
 function SignUpScreen({ route, navigation }) {
   const { t } = useTranslation();
@@ -31,7 +32,7 @@ function SignUpScreen({ route, navigation }) {
   const [emailExists, setEmailExists] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const { allowedEmails } = useAppManager();
-  const { startTime, setStartTime } = useAppManager();
+  const { startTime, setStartTime } = useAnalyticsManager();
 
   const userStore = useUserStore();
   const errorManager = useErrorManager();
