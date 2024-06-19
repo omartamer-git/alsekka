@@ -391,8 +391,8 @@ function BookRide({ route, navigation }) {
                                 </View>
 
                                 <View style={[styles.flexRow]}>
-                                    <ArrowButton disabled={prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : paymentMethod.type === 'newcard' ? 'Card' : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money" : 'add-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
-                                    <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={prevPassenger ? prevPassenger.seats : 1} max={prevPassenger ? prevPassenger.seats + (seatsAvailable - seatsOccupied) : seatsAvailable - seatsOccupied} />
+                                <ArrowButton disabled={!!prevPassenger} style={[styles.flexOne, styles.mr5]} bgColor={palette.light} text={paymentMethod.type === 'cash' ? "Cash" : paymentMethod.type === 'newcard' ? 'Card' : '•••• ' + paymentMethod.number} icon={paymentMethod.type === 'cash' ? "money" : 'add-card'} iconColor={paymentMethod.type === 'card' ? palette.success : palette.success} onPress={() => setPaymentMethodModalVisible(true)} />
+                                <Counter text={t("seat")} textPlural={t("seats")} setCounter={setNumSeats} counter={numSeats} min={prevPassenger ? prevPassenger.seats : 1} max={prevPassenger ? prevPassenger.seats + (seatsAvailable - seatsOccupied) : seatsAvailable - seatsOccupied} />
                                 </View>
                                 {!prevPassenger &&
                                     <ArrowButton
