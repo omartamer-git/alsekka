@@ -325,7 +325,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
             <CustomTextInput inputRef={outRef} onFocus={enableModal} disabled={!modalMap} placeholder={placeholder} value={text} style={inputStyles} iconLeft={type} error={error} />
             {modalVisible &&
                 <Modal animationType="slide" visible={modalVisible}>
-                    <SafeAreaView style={[styles2.bgPrimary, styles2.AndroidSafeArea]}>
+                    <SafeAreaView style={[styles2.bgPrimary]}>
                         <HeaderView navType="back" screenName={t('enter_location')} borderVisible={false} style={styles2.bgPrimary} action={cancelAutoComplete} >
                             <View style={styles2.localeWrapper}>
                                 <MaterialIcons style={styles2.icon} name="language" size={18} color="rgba(255,255,255,255)" />
