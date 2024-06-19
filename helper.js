@@ -282,7 +282,8 @@ export const styles = StyleSheet.create({
         fontFamily: I18nManager.isRTL ? (Platform.OS === 'ios' ? 'TheSansArabic-Bold' : 'thesansarabic') : (Platform.OS === 'ios' ? 'FreeSansBold' : 'freesans'),
     },
     text: {
-        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'General Sans Android' : 'General Sans Variable'),
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'generalsans' : 'General Sans Variable'),
+        textAlign: 'left'
     },
     logoSpacing: {
         letterSpacing: I18nManager.isRTL ? 0 : -3 * rem
