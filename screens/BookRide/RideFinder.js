@@ -144,7 +144,7 @@ function RideFinder({ route, navigation }) {
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper navType="back" navAction={() => navigation.goBack()}>
+        <ScreenWrapper navType="back" screenName={t('find_rides')} navAction={() => navigation.goBack()}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <View style={rideFinderStyles.autoCompletePair}>
                     <AutoComplete
