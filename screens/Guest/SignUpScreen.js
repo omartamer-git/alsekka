@@ -165,15 +165,13 @@ function SignUpScreen({ route, navigation }) {
 
                     <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
                     <CustomTextInput
-                      value={values.phoneInput}
+                      value={"+20 " + values.phoneInput}
+                      emojiLeft={"🇪🇬"}
                       onChangeText={(text) => {
                         if (text == '') return;
                         let sanitizedText = text.replace("+20", "").trim();
                         handleChange('phoneInput')(sanitizedText);
                       }}
-                      prefix='+20'
-                      emojiLeft={'🇪🇬'}
-                      overrideRTL
                       onBlur={handleBlur('phoneInput')}
                       error={touched.phoneInput && errors.phoneInput}
                       placeholder={t('enter_phone')}

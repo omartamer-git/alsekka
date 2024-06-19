@@ -69,8 +69,9 @@ const AddMobileWallet = ({ navigation, route }) => {
                             <Text style={[styles.text, styles.inputText]}>{t('phone_number')}</Text>
 
                             <CustomTextInput
-                                placeholder={t('phone_number') + " (i.e 1010408911)"}
-                                value={values.phoneInput}
+                                placeholder={t('phone_number') + " (i.e 01234567890)"}
+                                value={"+20 " + values.phoneInput}
+                                emojiLeft={"🇪🇬"}
                                 onBlur={handleBlur('phoneInput')}
                                 keyboardType="number-pad"
                                 onChangeText={(text) => {
@@ -79,9 +80,7 @@ const AddMobileWallet = ({ navigation, route }) => {
                                     handleChange('phoneInput')(sanitizedText);
                                 }}
                                 error={touched.phoneInput && errors.phoneInput}
-                                prefix='+20'
-                                emojiLeft={'🇪🇬'}
-                                overrideRTL
+                                iconLeft="badge"
                             />
 
                             <View style={styles.flexOne} />

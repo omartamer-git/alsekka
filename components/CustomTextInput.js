@@ -1,39 +1,33 @@
-import React, { memo, useRef } from 'react';
-import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { memo, useEffect, useRef } from 'react';
+import { I18nManager, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { palette, rem, styles, translateEnglishNumbers } from '../helper';
-import useLocale from '../locale/localeContext';
+import { palette, rem, styles } from '../helper';
 
-function CustomTextInput({ value, prefix,
+function CustomTextInput({ value,
     onChangeText, placeholder, style,
     editable, keyboardType, selectTextOnFocus,
     secureTextEntry, onFocus, onPressIn, role,
     iconLeft, emojiLeft, iconRight, inputRef,
     returnKeyType, onSubmitEditing, textContentType,
-    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit = true, overrideRTL = false }) {
+    onKeyPress, textStyles, onBlur, error, autoCapitalize, disabled = false, blurOnSubmit=true }) {
 
-    const { language } = useLocale();
     const styles2 = StyleSheet.create({
         container: {
             height: 48 * rem,
             alignItems: 'center',
             justifyContent: 'flex-start',
-            borderRadius: 8 * rem,
-            flexDirection: (overrideRTL && I18nManager.isRTL) ? 'row-reverse' : 'row',
+            borderRadius: 4 * rem,
+            ...styles.flexRow,
             paddingStart: 24 * rem,
             paddingEnd: 24 * rem,
             marginTop: 8 * rem,
             marginBottom: 8 * rem,
-            // shadowRadius: 8,
-            // shadowColor: '#000',
-            // shadowOpacity: 0.05,
-            // shadowOffset: { width: 5, height: 5 },
             backgroundColor: disabled ? palette.light : palette.white
         },
         input: {
             height: 24 * rem,
             lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
-            textAlign: (I18nManager.isRTL && !overrideRTL) ? 'right' : 'left',
+            textAlign: I18nManager.isRTL ? 'right' : 'left',
             paddingTop: Platform.OS === 'android' ? 0 : undefined,
             paddingBottom: Platform.OS === 'android' ? 0 : undefined,
             fontWeight: '500',
@@ -54,7 +48,7 @@ function CustomTextInput({ value, prefix,
         }
     });
 
-
+    
     const validationStyles = error ? styles2.warningBorder : null;
     let key;
 
@@ -80,7 +74,7 @@ function CustomTextInput({ value, prefix,
 
     return (
         <>
-            <TouchableOpacity activeOpacity={1} onPress={onPressIn_} style={[styles2.container, validationStyles, styles.shadow, style]}>
+            <TouchableOpacity activeOpacity={1} onPress={onPressIn_} style={[styles2.container, validationStyles, style]}>
                 {
                     iconLeft && !emojiLeft &&
                     <MaterialIcons name={iconLeft} size={18} color={palette.primary} />
@@ -88,14 +82,6 @@ function CustomTextInput({ value, prefix,
                 {
                     emojiLeft &&
                     <Text style={[styles.font14, styles.dark]}>{emojiLeft}</Text>
-                }
-                {
-                    (prefix) &&
-                    <View style={[{height: 24 * rem}, styles.fullCenter, styles.flexRow]}>
-                        <Text style={[styles.bgWhite, styles.text, styles.ml5, { fontWeight: '500', textAlignVertical: 'bottom', paddingVertical: Platform.OS === 'android' ? 0 : undefined, lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined }]}>
-                            {prefix}
-                        </Text>
-                    </View>
                 }
                 <TextInput
                     style={[styles2.input, textStyles]}
@@ -106,6 +92,7 @@ function CustomTextInput({ value, prefix,
                     onChangeText={onChangeText}
                     selectTextOnFocus={selectTextOnFocus}
                     secureTextEntry={secureTextEntry}
+                    onFocus={onFocus}
                     autoCorrect={false}
                     blurOnSubmit={blurOnSubmit}
                     onBlur={onBlur}
