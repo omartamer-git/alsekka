@@ -39,6 +39,8 @@ function ViewCommunity({ navigation, route }) {
     const [joinAnswer, setJoinAnswer] = useState(null);
     const [sentJoinRequest, setSentJoinRequest] = useState(false);
     const [owner, setOwner] = useState(false);
+    const [page, setPage] = useState(1);
+    const [seeMore, setSeeMore] = useState(true);
     const [loading, setLoading] = useState(true);
 
     const { id } = useUserStore();
@@ -92,7 +94,6 @@ function ViewCommunity({ navigation, route }) {
         });
     };
 
-    const [page, setPage] = useState(1);
 
     function loadFeed(page = 1) {
         setIsJoined(true);
@@ -102,6 +103,10 @@ function ViewCommunity({ navigation, route }) {
                     setFeed(data);
                 } else {
                     setFeed(f => f.concat(data));
+                }
+                
+                if (data.length < 3) {
+                    setSeeMore(false);
                 }
                 setLoading(false);
             }
@@ -211,7 +216,7 @@ function ViewCommunity({ navigation, route }) {
                                         </View>
                                     );
                                 })}
-                                {feed.length > 0 &&
+                                {feed.length >= 3 && seeMore &&
                                     <TouchableOpacity activeOpacity={0.7} style={[styles.w100, styles.alignCenter, styles.mt10]} onPress={loadMore}>
                                         <Text style={[styles.text, styles.primary, styles.bold, styles.font14]}>{t('see_more')}</Text>
                                     </TouchableOpacity>
