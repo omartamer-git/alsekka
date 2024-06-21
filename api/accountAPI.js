@@ -24,6 +24,12 @@ const useUserStore = create((set) => ({
     bankAccounts: [],
     mobileWallets: [],
     unreadMessages: 0,
+    preferences: {
+        smoking: '',
+        chattiness: '',
+        music: '',
+        rest_stop: ''
+    },
 
     setId: (id) => set((state) => ({ id: id })),
     setFirstName: (firstName) => set((state) => ({ firstName })),
@@ -40,7 +46,7 @@ const useUserStore = create((set) => ({
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
     setGender: (gender) => set((state) => ({ gender: gender })),
     setUnreadMessages: (unreadMessages) => set((state) => ({ unreadMessages: unreadMessages })),
-
+    setPreferences: (preferences) => set((state) => ({ preferences })),
     reset: async function () {
         set(
             (state) => (
@@ -59,7 +65,13 @@ const useUserStore = create((set) => ({
                     availableCards: [],
                     bankAccounts: [],
                     mobileWallets: [],
-                    unreadMessages: 0
+                    unreadMessages: 0,
+                    preferences: {
+                        smoking: '',
+                        chattiness: '',
+                        music: '',
+                        rest_stop: ''
+                    },
                 }
             )
         )
