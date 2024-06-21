@@ -49,6 +49,7 @@
         "wait_processing2": "سنراجع معلوماتك في خلال 24 ساعة",
         "verification_code": "رمز التحقق",
         "code_sent": "لقد أرسلنا رسالة نصية قصيرة تحتوي على رمز التحقق إلى",
+        "verify_phone": "إرسال الرمز",
         "please_wait": "يرجى الانتظار لمدة",
         "seconds_before_requesting": "ثوانٍ قبل إرسال رمز جديد",
         "resend": "إعادة إرسال",
