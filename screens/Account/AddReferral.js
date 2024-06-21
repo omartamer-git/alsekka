@@ -73,7 +73,7 @@ function AddReferral({ navigation, route }) {
                             <SuccessCheck />
                             <Text style={[styles.text, styles.headerText3, styles.primary, styles.textCenter]}>{t('referral_code_applied')}</Text>
                             <Text style={[styles.text, styles.textCenter, styles.mt5]}>{t('referral_description')}</Text>
-                            <Button style={[styles.mt10]} bgColor={palette.accent} textColor={palette.white} text={t('back')} onPress={() => navigation.navigate('Account', { screen: 'Account Home' })} />
+                            <Button style={[styles.mt10]} bgColor={palette.accent} textColor={palette.white} text={t('back')} onPress={() => navigation.navigate('Account Home')} />
                         </View>
                     </>
                 }

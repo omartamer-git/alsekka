@@ -192,7 +192,7 @@ function Account({ route, navigation }) {
                                 </View>
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('messages')}</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet', {comeFrom: 'Account Home'}) }}>
+                            <TouchableOpacity activeOpacity={0.9} style={accountStyles.acctButtons} onPress={function () { navigation.navigate('Wallet') }}>
                                 <MaterialIcons name="account-balance-wallet" size={40} color={palette.white} />
                                 <Text style={[styles.text, accountStyles.acctButtonsText]}>{t('wallet')}</Text>
                             </TouchableOpacity>
@@ -230,7 +230,7 @@ function Account({ route, navigation }) {
 
                         {!referralsDisabled &&
                             <>
-                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={function () { navigation.navigate('Referral', {comeFrom: 'Account Home'}) }} />
+                                <Button bgColor={palette.accent} textColor={palette.white} text={t('refer_friend')} onPress={function () { navigation.navigate('Referral') }} />
                                 <Button bgColor={palette.primary} textColor={palette.white} text={t('add_referral')} onPress={function () { navigation.navigate('Add Referral') }} />
                             </>
                         }

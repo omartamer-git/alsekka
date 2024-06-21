@@ -40,7 +40,7 @@ function List({ icon, headline, text }) {
 
 function Referral({ navigation, route }) {
 
-    const goBackDestination = route.params.comeFrom;
+    const goBackDestination = route.params?.comeFrom;
     const { id } = useUserStore();
     const [copied, setCopied] = useState(false);
     const shareMsg = `Hey! Carpool using Seaats and save money commuting! Get 60 EGP added to your wallet using my referral code ${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}. Join now and let's ride together! https://seaats.app/share/referral/${config.REFERRAL_PREFIX}${config.REFERRAL_INCREMENT + id}`;
@@ -64,15 +64,17 @@ function Referral({ navigation, route }) {
         }
     };
 
+  
+
     const replaceScreen = () => {
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
                 routes: [
-                    { name: goBackDestination=='Account Home'?"Account":"Home", 
+                    { name: goBackDestination=='User Home'?"Home":"Account", 
                       state: {
                         routes: [
-                            { name: goBackDestination }
+                            { name: goBackDestination=='User Home'?goBackDestination:"Account Home" }
                         ]
                       } 
                     },

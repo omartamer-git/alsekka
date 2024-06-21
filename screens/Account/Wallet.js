@@ -22,17 +22,17 @@ import { CommonActions } from '@react-navigation/native';
 
 function Wallet({ navigation, route }) {
     const { availableCards, bankAccounts, mobileWallets, balance } = useUserStore();
-    const goBackDestination = route.params.comeFrom;
+    const goBackDestination = route.params?.comeFrom;
 
     const replaceScreen = () => {
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
                 routes: [
-                    { name: goBackDestination=='Account Home'?"Account":"Home", 
+                    { name: goBackDestination=='User Home'?"Home":"Account", 
                       state: {
                         routes: [
-                            { name: goBackDestination }
+                            { name: goBackDestination=='User Home'?goBackDestination:"Account Home" }
                         ]
                       } 
                     },
@@ -43,7 +43,7 @@ function Wallet({ navigation, route }) {
 
 
     function viewTrip(id) {
-        navigation.navigate('View Trip', { tripId: id });
+        navigation.navigate('Home', { screen: 'View Trip', params: { tripId: id } });
     };
 
     const { t } = useTranslation();
