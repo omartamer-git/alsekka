@@ -864,12 +864,18 @@ export const styles = StyleSheet.create({
         fontSize: 14 * rem,
         lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
     },
-
+    font16: {
+        fontSize: 16 * rem,
+        lineHeight: Platform.OS === 'ios' ? 18 * rem : undefined,
+    },
     font18: {
         fontSize: 18 * rem,
         lineHeight: Platform.OS === 'ios' ? 20 * rem : undefined,
     },
-
+    font24: {
+        fontSize: 24 * rem,
+        lineHeight: Platform.OS === 'ios' ? 26 * rem : undefined,
+    },
     font28: {
         fontSize: 28 * rem,
         lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,

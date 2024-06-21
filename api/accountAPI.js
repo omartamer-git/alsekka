@@ -2,7 +2,7 @@ import * as Keychain from 'react-native-keychain';
 import { create } from 'zustand';
 import useAuthManager from '../context/authManager';
 import useAxiosManager from '../context/axiosManager';
-import { config } from '../config';
+// import { config } from '../config';
 import useAppManager from '../context/appManager';
 import { Platform } from 'react-native';
 import axios from 'axios';
@@ -24,6 +24,12 @@ const useUserStore = create((set) => ({
     bankAccounts: [],
     mobileWallets: [],
     unreadMessages: 0,
+    preferences: {
+        smoking: '',
+        chattiness: '',
+        music: '',
+        rest_stop: ''
+    },
 
     setId: (id) => set((state) => ({ id: id })),
     setFirstName: (firstName) => set((state) => ({ firstName })),
@@ -40,6 +46,7 @@ const useUserStore = create((set) => ({
     setMobileWallets: (wallets) => set((state) => ({ mobileWallets: wallets })),
     setGender: (gender) => set((state) => ({ gender: gender })),
     setUnreadMessages: (unreadMessages) => set((state) => ({ unreadMessages: unreadMessages })),
+    setPreferences: (preferences) => set((state) => ({ preferences })),
 
     reset: async function () {
         set(
@@ -59,7 +66,13 @@ const useUserStore = create((set) => ({
                     availableCards: [],
                     bankAccounts: [],
                     mobileWallets: [],
-                    unreadMessages: 0
+                    unreadMessages: 0,
+                    preferences: {
+                        smoking: '',
+                        chattiness: '',
+                        music: '',
+                        rest_stop: ''
+                    },
                 }
             )
         )

@@ -5,7 +5,7 @@
  * @format
  * @flow strict-local
  */
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import 'react-native-gesture-handler';
 
 
@@ -14,7 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, PermissionsAndroid, TouchableOpacity } from 'react-native';
+import { Image, PermissionsAndroid } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 import * as TaskManager from 'expo-task-manager';
@@ -31,6 +31,7 @@ import UserHome from './screens/HomeScreen/UserHome';
 import PostRide from './screens/PostRide/PostRide';
 import ViewTrip from './screens/PostRide/ViewTrip';
 import ManageTrip from './screens/Rides/ManageTrip';
+import UserPreferences from './screens/Account/UserPreferences';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -86,9 +87,6 @@ import Payment from './screens/BookRide/Payment';
 import RideBooked from './screens/BookRide/RideBooked';
 import CustomerService from './screens/Chat/CustomerService';
 import useErrorManager from './context/errorManager';
-import useAppStateManager from './context/appStateManager';
-import LottieView from 'lottie-react-native';
-import { AppState } from 'react-native';
 
 
 const RootStack = createNativeStackNavigator();
@@ -105,15 +103,10 @@ const CommunityStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-
 function App() {
   const { t, i18n } = useTranslation();
 
-  // const authManager = useAuthManager();
-  const authAccessToken = useAuthManager((state) => state.accessToken);
-  const authRefreshToken = useAuthManager((state) => state.refreshToken);
-  const authAuthenticated = useAuthManager((state) => state.authenticated);
-  const authSetState = useAuthManager((state) => state.setState);
+  const authManager = useAuthManager();
 
   const postDriverLocation = useUserStore((state) => state.postDriverLocation);
   const userInfo = useUserStore((state) => state.userInfo);
@@ -125,20 +118,12 @@ function App() {
   const verified = useUserStore((state) => state.verified);
   const linkDevice = useUserStore((state) => state.linkDevice);
 
-  // const appManager = useAppManager();
-  const setDeviceToken = useAppManager((state) => state.setDeviceToken);
-  const deviceToken = useAppManager((state) => state.deviceToken);
-  const verificationsDisabled = useAppManager((state) => state.verificationsDisabled);
-
-  // const appStateManager = useAppStateManager();
-  const appStateLoading = useAppStateManager((state) => state.loading);
-  const appStateSetLoading = useAppStateManager((state) => state.setLoading);
-
-  // const [state, setState] = useState('LOADING');
+  const appManager = useAppManager();
+  const [state, setState] = useState('LOADING');
   I18nManager.allowRTL(true);
   // const { t } = useTranslation();
 
-  const config = useMemo(() => ({
+  const config = {
     screens: {
       LoggedIn: {
         screens: {
@@ -164,19 +149,19 @@ function App() {
         },
       },
     },
-  }), []);
+  };
 
-  const linking = useMemo(() => ({
+  const linking = {
     prefixes: ['seaats://', 'https://seaats.app/share/', 'https://www.seaats.app/share/'],
     config
-  }), [])
+  };
 
   const localeContext = useLocale();
   Text.defaultProps = {};
-  Text.defaultProps.maxFontSizeMultiplier = 1.15;
+  Text.defaultProps.maxFontSizeMultiplier = 1.3;
 
   TextInput.defaultProps = {};
-  TextInput.defaultProps.maxFontSizeMultiplier = 1.15;
+  TextInput.defaultProps.maxFontSizeMultiplier = 1.3;
 
 
   useEffect(function () {
@@ -225,7 +210,7 @@ function App() {
     }
   }, []);
 
-  const requestLocationPermissions = useCallback(() => {
+  function requestLocationPermissions() {
     setModalFineLocation(false);
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -241,9 +226,9 @@ function App() {
         setModalBackgroundLocation(true);
       }
     })
-  }, [t]);
+  }
 
-  const requestBgLocationPermissions = useCallback(() => {
+  function requestBgLocationPermissions() {
     setModalBackgroundLocation(false);
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
@@ -255,7 +240,7 @@ function App() {
         buttonPositive: t('allow'),
       },
     );
-  }, [t])
+  }
 
   useEffect(
     function () {
@@ -264,7 +249,7 @@ function App() {
 
         PushNotificationIOS.addEventListener("register", (deviceToken) => {
           registerDevice(deviceToken);
-          setDeviceToken(deviceToken);
+          appManager.setDeviceToken(deviceToken);
         });
 
         PushNotificationIOS.requestPermissions();
@@ -278,7 +263,7 @@ function App() {
             .getToken()
             .then(token => {
               registerDevice(token);
-              setDeviceToken(token);
+              appManager.setDeviceToken(token);
             })
             .catch(error => {
               console.error('Error getting device token:', error);
@@ -297,7 +282,7 @@ function App() {
       const lat = locations[0].coords.latitude;
       const lng = locations[0].coords.longitude;
       const timestamp = locations[0].timestamp;
-      if (authAuthenticated) {
+      if (authManager.authenticated) {
         postDriverLocation(lat, lng, timestamp);
       } else {
         stopLocationUpdatesAsync("UPDATE_LOCATION_DRIVER");
@@ -312,34 +297,40 @@ function App() {
       const value = await Keychain.getGenericPassword();
 
       if (!value || JSON.parse(value.password).accessToken === null) {
-        authSetState({
-          accessToken: null,
-          refreshToken: null,
-          authenticated: false
-        });
+        console.log("VALUE FALSE")
 
-        return appStateSetLoading(false);
+        authManager.setAccessToken(null);
+        authManager.setRefreshToken(null);
+        authManager.setAuthenticated(false);
+        return setState("Guest");
+      } else {
+        console.log("VALUE TRUE")
+        console.log(value);
       }
-
       const jwt = JSON.parse(value.password);
 
-      authSetState({
-        accessToken: jwt.accessToken || null,
-        refreshToken: jwt.refreshToken || null,
-        authenticated: jwt.accessToken !== null
-      })
+      authManager.setAccessToken(jwt.accessToken || null);
+      authManager.setRefreshToken(jwt.refreshToken || null);
+      authManager.setAuthenticated(jwt.accessToken !== null);
+      await userInfo();
+      await getAvailableCards();
+      await getBankAccounts();
+      await getMobileWallets();
 
-      try {
-        await Promise.all([userInfo(), getAvailableCards(), getBankAccounts(), getMobileWallets()]);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        appStateSetLoading(false);
-      }
+
+      setState("LoggedIn");
     } catch (error) {
-      appStateSetLoading(false);
+      console.log(error);
+      setState("Guest");
+      authManager.setAccessToken(null);
+      authManager.setRefreshToken(null);
+      authManager.setAuthenticated(false);
     }
   }, []);
+
+  useEffect(function () {
+    appManager.getAllowedEmails();
+  }, [])
 
   useEffect(function () {
     loadJWT()
@@ -351,81 +342,21 @@ function App() {
   const [pendingRatings, setPendingRatings] = useState();
 
   useEffect(function () {
-    if (deviceToken && userId) {
-      linkDevice(deviceToken);
+    if (appManager.deviceToken && userId) {
+      linkDevice(appManager.deviceToken);
     }
-  }, [deviceToken, userId]);
+  }, [appManager.deviceToken, userId]);
 
   useEffect(() => {
-    if (authAuthenticated) {
+    console.log(authManager.authenticated);
+    if (authManager.authenticated) {
       const pending = passengerPendingRatings().then(pending => {
         if (!pending.complete) {
-          setPendingRatings(pending)
+          setPendingRatings(pending);
         }
       });
     }
-  }, [authAuthenticated])
-
-  const LoadingSplashScreen = memo((props) => {
-    const [takingTooLong, setTakingTooLong] = useState(false);
-    const timerRef = useRef(null);
-
-    useEffect(() => {
-      setTimeout(() => {
-        setTakingTooLong(true);
-      }, 5000);
-
-      return () => clearTimeout(timerRef.current);
-    }, []);
-
-
-    return (
-      <>
-        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
-        <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
-          <View style={[styles.flexOne, styles.w100, styles.fullCenter]}>
-            <Image source={require('./assets/logo.png')} resizeMode='contain' style={{ width: '70%', height: '9.5%' }} />
-          </View>
-          <LottieView source={require('./assets/loading_animation.json')} style={{ width: 75, height: 75 }} loop autoPlay />
-          {takingTooLong &&
-            <TouchableOpacity onPress={() => appStateSetLoading(false)} style={[styles.w100, styles.p16, styles.fullCenter]}>
-              <Text style={[styles.text, styles.white, styles.textCenter, styles.bold]}>{t('splashscreen_failsafe')}</Text>
-            </TouchableOpacity>
-          }
-        </View>
-      </>
-    )
-  });
-
-  const appState = useRef(AppState.currentState)
-  const stateRef = useRef(appStateLoading);
-
-  useEffect(() => {
-    stateRef.current = appStateLoading;
-  }, [appStateLoading]);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  const handleAppStateChange = useCallback((nextAppState) => {
-    if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-      if (stateRef.current === true) {
-        // console.log(stateRef.current);
-        authSetState({
-          accessToken: null,
-          refreshToken: null,
-          authenticated: false
-        });
-        loadJWT(); // Re-run the JWT loading function
-      }
-    }
-    appState.current = nextAppState
-  }, [authSetState, loadJWT])
+  }, [authManager.authenticated]);
 
   const LoggedInStack = ({ route, navigation }) => {
     return (
@@ -564,6 +495,7 @@ function App() {
     return (
       <AccountStack.Navigator initialRouteName='Account Home'>
         <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
+        <AccountStack.Screen name="User Preferences" component={UserPreferences} options={{ headerShown: false }}/>
         <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
         <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
         <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
@@ -595,10 +527,18 @@ function App() {
     );
   }
 
-
-  if (appStateLoading) {
+  if (state === 'LOADING') {
     return (
-      <LoadingSplashScreen />
+      <>
+        <StatusBar barStyle={'light-content'} backgroundColor={palette.primary} />
+        <View style={[styles.bgPrimary, styles.flexOne, styles.w100, styles.p24, styles.fullCenter]}>
+          {/* <Text style={[styles.freeSans, styles.white, styles.logoSpacing,
+        { fontSize: 75 * rem }
+        ]
+        }>{t('seaats')}</Text> */}
+          <Image source={require('./assets/logo.png')} resizeMode='contain' style={{ width: '70%', height: '9.5%' }} />
+        </View>
+      </>
     );
   } else {
     return (
@@ -657,7 +597,7 @@ function App() {
         >
           <RootStack.Navigator>
             {
-              authAuthenticated === false || (verified === false && !verificationsDisabled) ? (
+              authManager.authenticated === false || (verified === false && !appManager.verificationsDisabled) ? (
                 <RootStack.Screen name="Guest" component={Guest} options={{ headerShown: false }} />
               ) : (
                 <RootStack.Screen name="LoggedIn" component={LoggedInStack} options={{ headerShown: false }} />
@@ -672,8 +612,5 @@ function App() {
   }
 
 }
-
-App.whyDidYouRender = true;
-
 
 export default codePush(App);
