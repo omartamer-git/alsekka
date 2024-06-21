@@ -89,6 +89,7 @@ import useErrorManager from './context/errorManager';
 import useAppStateManager from './context/appStateManager';
 import LottieView from 'lottie-react-native';
 import { AppState } from 'react-native';
+import UserPreferences from './screens/Account/UserPreferences';
 
 
 const RootStack = createNativeStackNavigator();
@@ -564,6 +565,7 @@ function App() {
     return (
       <AccountStack.Navigator initialRouteName='Account Home'>
         <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
+        <AccountStack.Screen name="User Preferences" component={UserPreferences} options={{ headerShown: false }} />
         <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
         <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
         <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />

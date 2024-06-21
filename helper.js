@@ -864,12 +864,18 @@ export const styles = StyleSheet.create({
         fontSize: 14 * rem,
         lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
     },
-
+    font16: {
+        fontSize: 16 * rem,
+        lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
+    },
     font18: {
         fontSize: 18 * rem,
         lineHeight: Platform.OS === 'ios' ? 20 * rem : undefined,
     },
-
+    font24: {
+        fontSize: 24 * rem,
+        lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,
+    },
     font28: {
         fontSize: 28 * rem,
         lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,
@@ -889,7 +895,9 @@ export const styles = StyleSheet.create({
     alignSelfCenter: {
         alignSelf: 'center',
     },
-
+    alignSelfEnd: {
+        alignSelf: 'flex-end',
+    },
     alignStart: {
         alignItems: 'flex-start'
     },
@@ -923,6 +931,13 @@ export const styles = StyleSheet.create({
     textEnd: {
         textAlign: 'right',
     },
+    breakline: {
+        height: 1,
+        backgroundColor: palette.light,
+        marginTop: 10,
+        marginBottom: 10,
+        alignSelf: 'stretch'
+    },
     overflowHidden: {
         overflow: 'hidden'
     },
@@ -935,6 +950,9 @@ export const styles = StyleSheet.create({
         marginTop: -20 * rem,
         borderBottomColor: palette.light,
         borderBottomWidth: 1 * rem,
+    },
+    capitalize: {
+        textTransform: 'capitalize'
     },
     AndroidSafeArea: {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
