@@ -344,7 +344,7 @@ function App() {
 
   useEffect(function () {
     loadJWT()
-  }, [loadJWT]);
+  }, [loadJWT, authAccessToken]);
 
   // const errorManager = useErrorManager();
   const navigationRef = useRef();
