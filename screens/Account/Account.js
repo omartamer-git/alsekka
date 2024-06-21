@@ -192,7 +192,7 @@ function Account({ route, navigation }) {
                     <View style={[styles.w100]}>
                         <AccountSections title='account'>
                             <AccountSectionItems icon='settings' text='profile_settings' onPress={() => setEditProfile(true)} />
-                            <AccountSectionItems icon='groups' text='ride_preferences' onPress={() => navigation.navigate('UserPreferences', { userId })} />
+                            <AccountSectionItems icon='groups' text='ride_preferences' onPress={() => navigation.navigate('User Preferences', { userId })} />
                             <AccountSectionItems icon='directions-car' text='manage_cars' onPress={() => navigation.navigate('Manage Cars')} />
                             <AccountSectionItems icon='route' text='my_trips' onPress={() => navigation.navigate('All Trips')} />
                             <AccountSectionItems icon='lock' text='terms_&_privacy_policy' onPress={() => setTermsModalVisible(true)} />
