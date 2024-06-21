@@ -29,6 +29,8 @@ import { decodePolyline } from '../../util/maps';
 import ScreenWrapper from '../ScreenWrapper';
 import FastImage from 'react-native-fast-image';
 import { Triangle } from '../../components/Triangle';
+import BottomModalSheet from '../../components/ModalSheet';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 
 function ViewTrip({ route, navigation }) {
@@ -45,6 +47,7 @@ function ViewTrip({ route, navigation }) {
     });
     const [objDate, setObjDate] = useState(new Date());
     const [isDriver, setIsDriver] = useState(false);
+    const { dismiss, dismissAll } = useBottomSheetModal();
 
     const [cancelModalVisible, setCancelModalVisible] = useState(false);
     const [cancelledModalVisible, setCancelledModalVisible] = useState(false);
@@ -399,7 +402,7 @@ function ViewTrip({ route, navigation }) {
                                 }
                             </View>
 
-                            <BottomModal modalVisible={cancelRideModalVisible} onHide={() => setCancelRideModalVisible(false)}>
+                            <BottomModalSheet snapPoints={['50%']} modalVisible={cancelRideModalVisible} setModalVisible={setCancelRideModalVisible}>
                                 <View style={[styles.w100, styles.alignCenter, styles.justifyCenter, styles.pv16]}>
                                     <Text style={[styles.text, styles.font18, styles.bold, styles.textCenter]}>
                                         {t('cancel_confirm')}
@@ -428,11 +431,11 @@ function ViewTrip({ route, navigation }) {
                                     <Button onPress={cancelRide} text={t('cancel_ride')} bgColor={palette.red} textColor={palette.white} />
                                     <Button onPress={() => setCancelRideModalVisible(false)} text={t('back')} bgColor={palette.primary} textColor={palette.white} />
                                 </View>
-                            </BottomModal>
+                            </BottomModalSheet>
 
                             {costBreakdownModalVisible &&
-                                <BottomModal modalVisible={costBreakdownModalVisible} onHide={() => setCostBreakdownModalVisible(false)}>
-                                    <View style={[styles.w100, styles.pv16]}>
+                                <BottomModalSheet snapPoints={['40%']} modalVisible={costBreakdownModalVisible} setModalVisible={setCostBreakdownModalVisible}>
+                                    <View style={[styles.w100, styles.pv16, styles.ph24]}>
                                         <Text style={[styles.bold, styles.font28, styles.text, styles.primary, styles.mb10]}>{t('bill_summary')}</Text>
 
                                         <View style={[styles.w100, styles.spaceBetween, styles.flexRow]}>
@@ -468,7 +471,7 @@ function ViewTrip({ route, navigation }) {
                                             <Text style={[styles.text]}>{(tripDetails.passenger.Invoice.grandTotal / 100).toFixed(2)} {t('EGP')}</Text>
                                         </View>
                                     </View>
-                                </BottomModal>
+                                </BottomModalSheet>
                             }
                         </>
 
@@ -497,7 +500,7 @@ function ViewTrip({ route, navigation }) {
             </ScreenWrapper >
 
             {!loading &&
-                <BottomModal onHide={() => setCancelModalVisible(false)} modalVisible={cancelModalVisible}>
+                <BottomModalSheet snapPoints={['40%']} setModalVisible={setCancelModalVisible} modalVisible={cancelModalVisible}>
                     <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
                         <Text style={[styles.text, styles.headerText3, styles.mv5, styles.textCenter]}>{t('cancel_confirm')}</Text>
                         <Text style={[styles.text, styles.textCenter]}>{translatedFormat(t('cancel_disclaimer'), [translateDate(addSecondsToDate(objDate, -(24 * 60 * 60)), t).join(" ")])}</Text>
@@ -511,19 +514,19 @@ function ViewTrip({ route, navigation }) {
                                 {t('free_cancel')}
                             </Text>
                         }
-                        <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => setCancelModalVisible(false)} />
-                        <Button bgColor={palette.red} textColor={palette.white} text={t('cancel_seat')} onPress={cancelPassenger} />
+                        <Button bgColor={palette.red} textColor={palette.white} text={t('cancel_ride')} onPress={cancelPassenger} />
+                        <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => {dismiss(); setCancelModalVisible(false);} } />
                     </View>
-                </BottomModal>
+                </BottomModalSheet>
             }
 
-            <BottomModal modalVisible={cancelledModalVisible} onHide={function () { setCancelledModalVisible(false); navigation.goBack() }}>
-                <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.pv24, styles.ph16]}>
+            <BottomModalSheet snapPoints={['30%']} modalVisible={cancelledModalVisible} setModalVisible={setCancelledModalVisible} onDismiss={function () { navigation.goBack() }}>
+                <View style={[styles.w100, styles.flexOne, styles.fullCenter, styles.p24, styles.ph16]}>
                     <Text style={[styles.text, styles.headerText3, styles.mv5]}>{t('ride_cancelled')}</Text>
                     <Text style={[styles.text, styles.textCenter]}>{t('ride_cancelled_text')}</Text>
-                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => navigation.goBack()} />
+                    <Button style={[styles.mt15]} bgColor={palette.primary} textColor={palette.white} text={t('back')} onPress={() => {dismissAll(); navigation.goBack()}} />
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
         </>
     );
 }

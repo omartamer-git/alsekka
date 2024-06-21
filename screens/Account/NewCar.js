@@ -277,7 +277,7 @@ function NewCar({ route, navigation }) {
                                 textColor={palette.white}
                                 onPress={chooseLicenseFront}
                             />
-                            <ImagePicker visible={frontImageModal} onHide={() => setFrontImageModal(false)} onChoose={setImageFront} />
+                            <ImagePicker visible={frontImageModal} setVisible={setFrontImageModal} onChoose={setImageFront} />
 
                             <Text style={[styles.text, styles.inputText]}>{t('car_license_back')}</Text>
                             <ErrorMessage condition={backPhotoButtonTouched && !licenseBack} message={t('error_required')} />
@@ -287,7 +287,7 @@ function NewCar({ route, navigation }) {
                                 textColor={palette.white}
                                 onPress={chooseLicenseBack}
                             />
-                            <ImagePicker visible={backImageModal} onHide={() => setBackImageModal(false)} onChoose={setImageBack} />
+                            <ImagePicker visible={backImageModal} setVisible={setBackImageModal} onChoose={setImageBack} />
 
                             <Button
                                 text={t('confirm')}

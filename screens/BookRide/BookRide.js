@@ -34,6 +34,8 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useFocusEffect } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import { Triangle } from '../../components/Triangle';
+import BottomModalSheet from '../../components/ModalSheet';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 function BookRide({ route, navigation }) {
     const { rideId } = route.params;
@@ -183,10 +185,11 @@ function BookRide({ route, navigation }) {
             }
         }, 1000);
     }, [mapViewRef.current]);
-
+    const { dismiss, dismissAll } = useBottomSheetModal();
 
     const hideRideBooked = function () {
         setRideBookedModalVisible(false);
+        dismissAll();
         navigation.navigate('Find a Ride');
     };
 
@@ -568,8 +571,8 @@ function BookRide({ route, navigation }) {
                 }
             </BottomModal>
 
-            <BottomModal onHide={hideRideBooked} modalVisible={rideBookedModalVisible}>
-                <View style={[styles.alignCenter, styles.justifyCenter]}>
+            <BottomModalSheet snapPoints={['50%']} onDismiss={hideRideBooked} modalVisible={rideBookedModalVisible} setModalVisible={setRideBookedModalVisible}>
+                <View style={[styles.alignCenter, styles.justifyCenter, styles.ph24, styles.flexOne]}>
                     <MaterialIcons name="check-circle" size={55} color={palette.success} />
                     <Text style={[styles.text, styles.mt10, styles.font18, styles.success]}>{t('booked_successfully')}</Text>
 
@@ -623,7 +626,7 @@ function BookRide({ route, navigation }) {
                         &nbsp;{t('EGP')}</Text>
                     <Button text={t('book_return')} style={[styles.mt10]} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Find a Ride')} />
                 </View>
-            </BottomModal>
+            </BottomModalSheet>
 
             <BottomModal onHide={() => setVoucherModalVisible(false)} modalVisible={voucherModalVisible}>
                 <View style={[styles.w100, styles.alignStart]}>

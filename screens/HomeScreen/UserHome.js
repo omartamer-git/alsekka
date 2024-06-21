@@ -25,6 +25,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import LottieView from 'lottie-react-native';
 import Button from '../../components/Button';
 import BottomModal from '../../components/BottomModal';
+import BottomModalSheet from '../../components/ModalSheet';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -279,7 +280,7 @@ function UserHome({ navigation, route }) {
                         </View>
 
                         {safetyTipsVisible &&
-                            <BottomModal modalVisible={safetyTipsVisible} onHide={() => setSafetyTipsVisible(false)} extended>
+                            <BottomModalSheet modalVisible={safetyTipsVisible} setModalVisible={setSafetyTipsVisible} snapPoints={['75%']} onHide={() => setSafetyTipsVisible(false)} extended>
                                 <View style={[styles.flexOne, styles.w100, styles.p8, styles.gap10]}>
                                     <View style={[styles.w100, styles.flexRow, styles.fullCenter, styles.gap20]}>
                                         <View style={[styles.fullCenter]}>
@@ -349,7 +350,7 @@ function UserHome({ navigation, route }) {
 
                                     <Button text={t('ok')} bgColor={palette.accent} textColor={palette.white} onPress={() => setSafetyTipsVisible(false)} />
                                 </View>
-                            </BottomModal>
+                            </BottomModalSheet>
                         }
                     </>
                 }

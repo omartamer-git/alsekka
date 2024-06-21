@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import useAxiosManager from './axiosManager';
 
 const useAppManager = create((set) => ({
-    passengerFee: 43,
-    driverFee: 42,
+    passengerFee: 0,
+    driverFee: 0,
     cardsEnabled: true,
     verificationsDisabled: false,
     referralsDisabled: true,
