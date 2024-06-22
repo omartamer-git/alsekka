@@ -17,6 +17,7 @@
         "messages": "الرسائل",
         "wallet": "محفظتي",
         "preferences": "التفضيلات",
+        "save_preferences": "حفظ التفضيلات",
         "trips": "الرحلات",
         "first_name": "الإسم",
         "last_name": "إسم العائلة",
@@ -393,7 +394,30 @@
         "favorite_destinations": "الوجهات المفضلة",
         "recent_destinations": "تم استخدامها مؤخرًا",
         "update_booking": "تحديث الحجز",
-
+        "chattiness": {
+            "topic": "التحدث",
+            "CHATTY": "أفضل التحدث أثناء الرحلة",
+            "QUIET": "أفضل رحلة هادئة",
+            "FLEXIBLE": "أنا مرن مع الاثنين"
+        },
+        "rest_stop": {
+            "topic": "التوقف للراحة",
+            "FREQUENT": "أفضل التوقف المتكرر أثناء الرحلة",
+            "WHEN_NECESSARY": "أفضل التوقف للراحة فقط عند الضرورة",
+            "DONT_MIND": "لا أمانع طالما سنصل للوجهة!"
+        },
+        "music": {
+            "topic": "الأغاني",
+            "LIKE_MUSIC": "أفضل الموسيقى أثناء الرحلة",
+            "NO_MUSIC": "لا أفضل الموسيقى أثناء الرحلة",
+            "FLEXIBLE": "لا امانع أي منهما"
+        },
+        "smoking": {
+            "topic": "التدخين",
+            "SMOKE_FREE": "أفضل رحلة خالية من التدخين",
+            "SMOKING": "أفضل السماح بالتدخين أثناء الرحلة",
+            "CIGARETTE_BREAKS": "لا مانع من استراحة للتدخين خارج السيارة"
+        },
         "notification_titlestatus": "وضع رحلتك",
         "notification_onehour": "استعد، ستغادر رحلتك إلى %% خلال ساعة واحدة!",
         "notification_oneday": "رحلتك إلى %% غدًا!",
