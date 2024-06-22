@@ -25,10 +25,10 @@ const useUserStore = create((set) => ({
     mobileWallets: [],
     unreadMessages: 0,
     preferences: {
-        smoking: '',
-        chattiness: '',
-        music: '',
-        rest_stop: ''
+        smoking: null,
+        chattiness: null,
+        music: null,
+        rest_stop: null
     },
 
     setId: (id) => set((state) => ({ id: id })),
@@ -67,10 +67,10 @@ const useUserStore = create((set) => ({
                     mobileWallets: [],
                     unreadMessages: 0,
                     preferences: {
-                        smoking: '',
-                        chattiness: '',
-                        music: '',
-                        rest_stop: ''
+                        smoking: null,
+                        chattiness: null,
+                        music: null,
+                        rest_stop: null
                     },
                 }
             )

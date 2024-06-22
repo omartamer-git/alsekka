@@ -3,25 +3,21 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import ScreenWrapper from '../ScreenWrapper';
 import { styles, palette } from '../../helper';
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 import RadioButton from '../../components/RadioButton';
 import Button from '../../components/Button';
 import useAxiosManager from '../../context/axiosManager';
 import useUserStore from '../../api/accountAPI';
 
+
 const UserPreferences = ({ route, navigation }) => {
   const {userId} = route.params;
   const { authAxios } = useAxiosManager();
-  const preferences = useUserStore(state => state.preferences);
-  console.log("initial values here", preferences)
-  const setPreferences = useUserStore(state => state.setPreferences);
-  // const [preferences, setPreferences] = useState({
-  //   smoking: "I prefer a smoke-free ride",
-  //   chattiness: "I prefer a quiet ride",
-  //   music: 'I prefer no music during the ride',
-  //   rest_stop: 'I prefer rest stops only when necessary'
-  // });
-
   const { t } = useTranslation();
+  const preferences = useUserStore(state => state.preferences);
+  const setPreferences = useUserStore(state => state.setPreferences);
+  console.log("initial values here", preferences)
+
 
   
   
@@ -43,8 +39,8 @@ const UserPreferences = ({ route, navigation }) => {
       try {
         console.log('user id here:', userId);
         const response = await authAxios.get(`/v1/preferences/${userId}`);
-        console.log('response here', response);
         const {chattiness, rest_stop, music, smoking} = response.data;
+        console.log('api responded with', response.data);
         setPreferences({
           chattiness,
           rest_stop,
@@ -62,93 +58,105 @@ const UserPreferences = ({ route, navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[styles.mh15, styles.pv16]}>
           <View style={buttonStyles.preference}>
-            <Text style={buttonStyles.label}>Chattiness</Text>
+            <Text style={buttonStyles.label}>{t('chattiness.topic')}</Text>
             <RadioButton
               iconName='chat'
-              value="I prefer talking during the ride"
+              value={"CHATTY"}
+              displayText={t('chattiness.CHATTY')}
               selectedValue={preferences.chattiness}
               onSelect={(value) => handlePreferenceChange('chattiness', value)}
             />
             <RadioButton
               iconName='chat-bubble'
-              value="I prefer a quiet ride"
+              value="QUIET"
+              displayText={t('chattiness.QUIET')}
               selectedValue={preferences.chattiness}
               onSelect={(value) => handlePreferenceChange('chattiness', value)}
             />
             <RadioButton
               iconName='textsms'
-              value="I am flexible about talking"
+              value="FLEXIBLE"
+              displayText={t('chattiness.FLEXIBLE')}
               selectedValue={preferences.chattiness}
               onSelect={(value) => handlePreferenceChange('chattiness', value)}
             />
           </View>
 
           <View style={buttonStyles.preference}>
-            <Text style={buttonStyles.label}>Rest-Stop</Text>
+            <Text style={buttonStyles.label}>{t('rest_stop.topic')}</Text>
             <RadioButton
               iconName='multiple-stop'
-              value="I prefer frequent stops during the ride"
+              value="FREQUENT"
+              displayText={t('rest_stop.FREQUENT')}
               selectedValue={preferences.rest_stop}
               onSelect={(value) => handlePreferenceChange('rest_stop', value)}
             />
             <RadioButton
               iconName='airline-stops'
-              value="I prefer rest stops only when necessary"
+              value="WHEN_NECESSARY"
+              displayText={t('rest_stop.WHEN_NECESSARY')}
               selectedValue={preferences.rest_stop}
               onSelect={(value) => handlePreferenceChange('rest_stop', value)}
             />
             <RadioButton
               iconName='location-pin'
-              value="I don't mind as long as we get there!"
+              value="DONT_MIND"
+              displayText={t('rest_stop.DONT_MIND')}
               selectedValue={preferences.rest_stop}
               onSelect={(value) => handlePreferenceChange('rest_stop', value)}
             />
           </View>
 
           <View style={buttonStyles.preference}>
-            <Text style={buttonStyles.label}>Music</Text>
+            <Text style={buttonStyles.label}>{t('music.topic')}</Text>
             <RadioButton
               iconName='music-note'
-              value="I prefer music during the ride"
+              value="LIKE_MUSIC"
+              displayText={t('music.LIKE_MUSIC')}
               selectedValue={preferences.music}
               onSelect={(value) => handlePreferenceChange('music', value)}
             />
             <RadioButton
               iconName='music-off'
-              value="I prefer no music during the ride"
+              value="NO_MUSIC"
+              displayText={t('music.NO_MUSIC')}
               selectedValue={preferences.music}
               onSelect={(value) => handlePreferenceChange('music', value)}
             />
             <RadioButton
               iconName='music-note'
-              value="I am flexible about music"
+              value="FLEXIBLE"
+              displayText={t('music.FLEXIBLE')}
               selectedValue={preferences.music}
               onSelect={(value) => handlePreferenceChange('music', value)}
             />
           </View>
 
           <View style={buttonStyles.preference}>
-            <Text style={buttonStyles.label}>Smoking</Text>
+            <Text style={buttonStyles.label}>{t('smoking.topic')}</Text>
             <RadioButton
               iconName='smoking-rooms'
-              value="I prefer smoking during the ride"
+              value="SMOKING"
+              displayText={t('smoking.SMOKING')}
               selectedValue={preferences.smoking}
               onSelect={(value) => handlePreferenceChange('smoking', value)}
             />
             <RadioButton
               iconName='smoke-free'
-              value="I prefer a smoke-free ride"
+              value="SMOKE_FREE"
+              displayText={t('smoking.SMOKE_FREE')}
               selectedValue={preferences.smoking}
               onSelect={(value) => handlePreferenceChange('smoking', value)}
             />
             <RadioButton
               iconName='smoking-rooms'
-              value="Cigarette breaks outside the car are ok"
+              value="CIGARETTE_BREAKS"
+              displayText={t('smoking.CIGARETTE_BREAKS')}
               selectedValue={preferences.smoking}
               onSelect={(value) => handlePreferenceChange('smoking', value)}
             />
           </View>
-          <Button text="Save Preferences" bgColor={palette.accent} textColor={palette.white} onPress={handleSavePreferences} />
+          <Button text={t('save_preferences')} bgColor={palette.accent} textColor={palette.white} onPress={handleSavePreferences} />
         </View>
       </ScrollView>
     </ScreenWrapper>
@@ -157,7 +165,8 @@ const UserPreferences = ({ route, navigation }) => {
 
 const buttonStyles = StyleSheet.create({
   preference: {
-    ...styles.mb5
+    ...styles.mb5,
+    ...styles.mh5
   },
   label: {
     ...styles.text,

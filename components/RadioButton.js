@@ -1,29 +1,29 @@
 import React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { styles, palette } from "../helper";
+import { styles, palette, rem } from "../helper";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-const RadioButton = ({ value, selectedValue, onSelect, iconName, iconSize = 26, iconColor }) => {
+const RadioButton = ({ value, displayText, selectedValue, onSelect, iconName, iconSize = 26, iconColor }) => {
   return (
-    <TouchableOpacity onPress={() => onSelect(value)} style={buttonStyles.radioContainer}>
-        {iconName ? (
-          <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween]}>
-            <View style={[styles.flexRow, styles.fullCenter]}>
-              <MaterialIcon name={iconName} size={iconSize} color={iconColor ? iconColor : palette.primary} />
-              <Text style={[buttonStyles.buttonLabel, styles.mh5]}>{value}</Text>
-            </View>
-            <View style={[buttonStyles.radioButton]}>
-              {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
-            </View>
-          </View>
-        ) : (
-          <>
-            <View style={[buttonStyles.radioButton]}>
-              {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
-            </View>
-            <Text style={buttonStyles.buttonLabel}>{value}</Text>
-          </>
-        )}
+    <TouchableOpacity onPress={() => onSelect(value)} style={[buttonStyles.radioContainer, iconName ? styles.spaceBetween : styles.justifyStart]}>
+          {iconName ? (
+            <>
+              <View style={[styles.flexRow, styles.fullCenter]}>
+                <MaterialIcon name={iconName} size={iconSize} color={iconColor ? iconColor : palette.primary} />
+                <Text style={[buttonStyles.buttonLabel]}>{displayText}</Text>
+              </View>
+              <View style={buttonStyles.radioButton}>
+                {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
+              </View>
+            </>
+          ) : (
+            <>
+              <View style={buttonStyles.radioButton}>
+                {selectedValue === value && <View style={buttonStyles.radioButtonInner} />}
+              </View>
+              <Text style={[buttonStyles.buttonLabel, styles.font16]}>{displayText}</Text>
+            </>
+          )}
     </TouchableOpacity>
   );
 };
@@ -33,7 +33,7 @@ export default RadioButton;
 const buttonStyles = StyleSheet.create({
   radioContainer: {
     ...styles.flexRow,
-    ...styles.alignCenter,
+    ...styles.fullCenter,
     ...styles.mb10,
   },
   radioButton: {
@@ -42,9 +42,8 @@ const buttonStyles = StyleSheet.create({
     borderColor: palette.primary,
     ...styles.border1,
     ...styles.fullCenter,
-    ...styles.mr10,
     ...styles.br8,
-    ...styles.mr5
+    ...styles.mh5,
   },
   radioButtonInner: {
     height: 10,
@@ -55,8 +54,8 @@ const buttonStyles = StyleSheet.create({
   },
   buttonLabel: {
     ...styles.text, 
-    ...styles.font16,
+    ...styles.font14,
+    ...styles.ml5,
     color: palette.dark,
-    flexShrink: 1
   }
 })
