@@ -92,6 +92,7 @@ import { AppState } from 'react-native';
 import UserPreferences from './screens/Account/UserPreferences';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import Profile from './screens/Account/Profile';
 
 
 const RootStack = createNativeStackNavigator();
@@ -566,7 +567,8 @@ function App() {
   const AccountNavigator = ({ route, navigation }) => {
     return (
       <AccountStack.Navigator initialRouteName='Account Home'>
-        <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} />
+        <AccountStack.Screen name="Account Home" component={Profile} options={{ headerShown: false }} />
+        {/* <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} /> */}
         <AccountStack.Screen name="User Preferences" component={UserPreferences} options={{ headerShown: false }} />
         <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
         <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />

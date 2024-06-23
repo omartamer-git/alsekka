@@ -42,7 +42,7 @@ function Account({ route, navigation }) {
     const [deleteError, setDeleteError] = useState('');
     const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
     const [editProfile, setEditProfile] = useState(false);
-    
+
     // const userStore = useUserStore();
     const userId = useUserStore((state) => state.id);
     const userPhone = useUserStore((state) => state.phone);
@@ -173,7 +173,7 @@ function Account({ route, navigation }) {
     return (
         <>
             <ScreenWrapper screenName={t('account')}>
-            <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
+                <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                     <View style={[accountStyles.topSection, styles.w100]}>
                         <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
                             {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}

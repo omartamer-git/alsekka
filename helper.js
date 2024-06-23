@@ -156,6 +156,7 @@ export const palette = {
     dark: '#24202E',
 
     light: '#DBD8D3',
+    lighter: '#f4f5f5',
     lightGray: '#FFFBF5',
     gray: '#44404E',
 
@@ -754,6 +755,10 @@ export const styles = StyleSheet.create({
         borderRadius: 24 * rem,
     },
 
+    brFull: {
+        borderRadius: 9999,
+    },
+
     bgPrimary: {
         backgroundColor: palette.primary,
     },
@@ -780,6 +785,10 @@ export const styles = StyleSheet.create({
 
     bgLight: {
         backgroundColor: palette.light,
+    },
+
+    bgLighter: {
+        backgroundColor: palette.lighter,
     },
 
     bgDark: {
@@ -1217,6 +1226,6 @@ export const customMapStyle = [
 ];
 export const mapPadding = Platform.OS === 'ios' ? { bottom: 48 * rem, top: 0, left: 16 * rem, right: 0 } : { bottom: 48 * rem, top: 48 * rem, left: 16 * rem, right: 0 };
 
-export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
+export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lighter, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
 // export const SERVER_URL = "http://127.0.0.1:3000";
