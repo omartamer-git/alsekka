@@ -18,13 +18,12 @@ import Pending from '../../svgs/pending';
 import ScreenWrapper from '../ScreenWrapper';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from '../../components/ImagePicker';
+import { useDoxter, Subscriptions } from 'react-native-doxter-ekyc-sdk';
 import LottieView from 'lottie-react-native';
 
 const carsAPI = require('../../api/carsAPI');
 
 function SubmitDriverDocuments({ route, navigation }) {
-    useEffect(function () {
-    }, []);
     const { t } = useTranslation();
 
     const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -36,6 +35,57 @@ function SubmitDriverDocuments({ route, navigation }) {
     const [licenseStatus, setLicenseStatus] = useState(null);
     const [frontSideTouched, setFrontSideTouched] = useState(false);
     const [backSideTouched, setBackSideTouched] = useState(false);
+    const { configureDoxterSDK, initializeDoxterSDK } = useDoxter();
+    const [isDoxterConfigured, setIsDoxterConfigured] = useState(false);
+
+    // Function to handle the configuration of Doxter SDK
+    const handleSdkConfiguration = async () => {
+        try {
+            // Configure the Doxter SDK with the provided API key and project numbers
+            await configureDoxterSDK({
+                api_key: 'vs8TQKgl.RzjqMzbItn4MzicVrP01btamPSYVKvup',
+                back_project: '1450',
+                front_project: '1449',
+                end_user: 'Seaats',
+            });
+            setIsDoxterConfigured(true);
+        } catch (err) {
+            // Handle errors, if any, during the configuration process
+            console.error('Error configuring Doxter SDK:', err);
+        }
+    };
+
+    useEffect(() => {
+        handleSdkConfiguration();
+    }, []);
+
+    useEffect(() => {
+        if (isDoxterConfigured) {
+            initializeDoxterSDK();
+        }
+    }, [isDoxterConfigured]);
+
+    useEffect(() => {
+        //subscribe to get the data when the ekyc process finishes
+        Subscriptions.addEventListener('end', (data: DoxterResultTypes) => {
+            console.log(data);
+            console.log('#######################')
+            console.log(data.OCR.data.front_side);
+            console.log('#######################')
+            // console.log(data.OCR.data.front_side.data);
+            console.log('#######################')
+            console.log(data.OCR.data.back_side)
+            console.log('#######################')
+            // console.log(data.OCR.back_side.data)
+        });
+
+        return () => {
+            //remove the listener to avoid memory leak
+
+            Subscriptions.removeEventListener('end');
+        };
+    }, []);
+
 
     const userStore = useUserStore();
 
@@ -135,7 +185,7 @@ function SubmitDriverDocuments({ route, navigation }) {
                             {!userStore.driver && licenseStatus === 'PENDING' &&
                                 <>
                                     {/* <Pending width="300" height="300" /> */}
-                                    <LottieView source={require('../../assets/waiting_animation.json')} loop autoPlay style={{width: 300 * rem, height: 300 * rem, marginVertical: '-15%'}} resizeMode='center' />
+                                    <LottieView source={require('../../assets/waiting_animation.json')} loop autoPlay style={{ width: 300 * rem, height: 300 * rem, marginVertical: '-15%' }} resizeMode='center' />
                                     <Text style={[styles.text, styles.headerText, styles.textCenter]}>{t('wait_processing')}</Text>
                                     <Text style={[styles.text, styles.mt10, styles.font14, styles.dark, styles.textCenter]}>{t('wait_processing2')}</Text>
                                 </>
