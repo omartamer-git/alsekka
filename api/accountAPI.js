@@ -30,6 +30,9 @@ const useUserStore = create((set) => ({
         music: null,
         rest_stop: null
     },
+    stats: {},
+    socials: null,
+    createdAt: null,
 
     setId: (id) => set((state) => ({ id: id })),
     setFirstName: (firstName) => set((state) => ({ firstName })),
@@ -47,6 +50,10 @@ const useUserStore = create((set) => ({
     setGender: (gender) => set((state) => ({ gender: gender })),
     setUnreadMessages: (unreadMessages) => set((state) => ({ unreadMessages: unreadMessages })),
     setPreferences: (preferences) => set((state) => ({ preferences })),
+    setStats: (stats) => set((state) => ({ stats })),
+    setSocials: (socials) => set((state) => ({ socials: socials })),
+    setCreatedAt: (createdAt) => set((state) => ({ createdAt: createdAt })),
+    
     reset: async function () {
         set(
             (state) => (
@@ -72,6 +79,9 @@ const useUserStore = create((set) => ({
                         music: null,
                         rest_stop: null
                     },
+                    stats: null,
+                    socials: null,
+                    createdAt: null,
                 }
             )
         )
@@ -320,6 +330,83 @@ const useUserStore = create((set) => ({
 
         const data = response.data;
         set(oldState => ({ mobileWallets: oldState.mobileWallets.concat([body]) }));
+        return data;
+    },
+
+    updatePreferences: async function (preferences) {
+        const body = {
+            ...preferences
+        };
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.put(`/v1/user/preferences`, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = response.data;
+        set((state) => ({ preferences: data }));
+        return data;
+    },
+
+    updateFacebookLink: async function (facebookLink) {
+        const url = `/v1/user/linkfacebook`;
+
+        const body = {
+            facebookLink: facebookLink,
+        };
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.patch(url, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = response.data;
+        set((state) => ({ socials: data }));
+
+        return data;
+    },
+
+    updateInstagramLink: async function (instagramLink) {
+        const url = `/v1/user/linkinstagram`;
+
+        const body = {
+            instagramLink: instagramLink,
+        };
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.patch(url, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = response.data;
+        set((state) => ({ socials: data }));
+
+        return data;
+    },
+
+    updateMusicLink: async function (musicLink) {
+        const url = `/v1/user/linkmusic`;
+
+        const body = {
+            musicLink: musicLink,
+        };
+
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.authAxios.patch(url, body, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = response.data;
+        set((state) => ({ socials: data }));
+
         return data;
     },
 

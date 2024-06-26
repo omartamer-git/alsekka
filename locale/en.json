@@ -131,6 +131,8 @@
         "apply_vehicle_owner": "Save money and earn extra cash. Start hosting rides with Seaats now!",
         "upcoming_rides": "Your Upcoming Rides",
         "shortcuts": "Shortcuts",
+        "next": "Next",
+        "link": "Link",
         "cta_no_rides": "Your next ride is just a tap away. Book or post a ride now!",
         "view_all_trips": "View All Trips",
         "read_more": "Read More...",
@@ -353,6 +355,9 @@
         "safety_emergency_2": "Have emergency contacts & services' numbers readily available in your phone.",
         "learn_more": "Learn More",
         "splashscreen_failsafe": "Taking too long? Skip to login",
+        "spotify": "Spotify",
+        "apple_music": "Apple Music",
+        "anghami": "Anghami",
         
         "error_required": "This field is required",
         "error_name_short": "Name is too short",

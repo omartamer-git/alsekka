@@ -16,10 +16,6 @@ const UserPreferences = ({ route, navigation }) => {
   const { t } = useTranslation();
   const preferences = useUserStore(state => state.preferences);
   const setPreferences = useUserStore(state => state.setPreferences);
-  console.log("initial values here", preferences)
-
-
-  
   
   const handleSavePreferences = async () => {
     try {

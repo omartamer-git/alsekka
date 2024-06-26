@@ -568,7 +568,7 @@ function App() {
     return (
       <AccountStack.Navigator initialRouteName='Account Home'>
         <AccountStack.Screen name="Account Home" component={Profile} options={{ headerShown: false }} />
-        {/* <AccountStack.Screen name="Account Home" component={Account} options={{ headerShown: false }} /> */}
+        <AccountStack.Screen name="Settings" component={Account} options={{ headerShown: false }} />
         <AccountStack.Screen name="User Preferences" component={UserPreferences} options={{ headerShown: false }} />
         <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
         <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />

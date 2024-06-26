@@ -52,8 +52,6 @@ function Account({ route, navigation }) {
     const userEditEmail = useUserStore((state) => state.editEmail);
     const userEditPhone = useUserStore((state) => state.editPhone);
     const userDeleteAccount = useUserStore((state) => state.deleteAccount);
-    const userUpdateProfilePicture = useUserStore((state) => state.uploadProfilePicture);
-    const userProfilePicture = useUserStore((state) => state.profilePicture);
     const userFirstName = useUserStore((state) => state.firstName);
     const userLastName = useUserStore((state) => state.lastName);
     const userUnreadMessages = useUserStore((state) => state.unreadMessages);
@@ -121,6 +119,7 @@ function Account({ route, navigation }) {
     function saveEditName(firstNameInput, lastNameInput) {
         userEditName(firstNameInput, lastNameInput).then(function () {
             setEditNameModalVisible(false);
+            dismissAll();
         }).catch(err => {
             console.log(err);
         })
@@ -129,6 +128,7 @@ function Account({ route, navigation }) {
     function saveEditEmail(emailInput) {
         userEditEmail(emailInput).then(data => {
             setEditEmailModalVisible(false);
+            dismissAll();
         }).catch(err => {
             setEmailError(err.response.data.error.message);
         });
@@ -159,43 +159,13 @@ function Account({ route, navigation }) {
     }
 
 
-    const imagePickerOptions = { title: 'New Profile Picture', multiple: false, mediaType: 'photo', quality: 0.75, maxWidth: 500 * rem, maxHeight: 500 * rem, storageOptions: { skipBackup: true, path: 'images' } };
-
-
-    async function onClickUpload(e) {
-        const response = await launchImageLibrary(imagePickerOptions);
-        if (!response.didCancel && !response.error) {
-            userUpdateProfilePicture(response);
-        }
-    };
-
-
     return (
         <>
-            <ScreenWrapper screenName={t('account')}>
+            <ScreenWrapper navType='back' navAction={() => navigation.goBack()} screenName={t('account')}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
-                    <View style={[accountStyles.topSection, styles.w100]}>
-                        <TouchableOpacity activeOpacity={0.8} onPress={onClickUpload} style={accountStyles.profilePictureView}>
-                            {userProfilePicture && <FastImage source={{ uri: userProfilePicture }} style={accountStyles.profilePicture} />}
-
-                            <View style={[accountStyles.profilePictureOverlay]}>
-                                <MaterialIcons name="photo-camera" size={50} style={accountStyles.cameraOverlay} color={palette.light} />
-                            </View>
-                        </TouchableOpacity>
-                        <View style={[styles.flexOne, styles.fullCenter]}>
-                            <Text style={[styles.text, styles.headerText2, styles.capitalize]}>{userFirstName} {userLastName}</Text>
-                            <View style={[styles.flexRow, styles.mt5]}>
-                                {ratings}
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={styles.breakline} />
-
                     <View style={[styles.w100]}>
                         <AccountSections title='account'>
                             <AccountSectionItems icon='settings' text='profile_settings' onPress={() => setEditProfile(true)} />
-                            <AccountSectionItems icon='groups' text='ride_preferences' onPress={() => navigation.navigate('User Preferences', { userId })} />
                             <AccountSectionItems icon='directions-car' text='manage_cars' onPress={() => navigation.navigate('Manage Cars')} />
                             <AccountSectionItems icon='route' text='my_trips' onPress={() => navigation.navigate('All Trips')} />
                             <AccountSectionItems icon='lock' text='terms_&_privacy_policy' onPress={() => setTermsModalVisible(true)} />
@@ -219,28 +189,37 @@ function Account({ route, navigation }) {
             </ScreenWrapper>
 
 
-            <BottomModal onHide={() => setEditProfile(false)} modalVisible={editProfile}>
-                <CustomTextInput
-                    value={userFirstName + " " + userLastName}
-                    iconLeft="badge"
-                    iconRight="edit"
-                    editable={false}
-                    style={accountStyles.editInput}
-                    onPressIn={() => !userDriver ? setEditNameModalVisible(true) : ""}
-                    role="button"
-                    disabled={userDriver}
-                />
-                <CustomTextInput
-                    value={userEmail}
-                    iconLeft="mail"
-                    iconRight="edit"
-                    editable={false}
-                    style={accountStyles.editInput}
-                    onPressIn={() => setEditEmailModalVisible(true)}
-                    role="button"
-                />
-            </BottomModal>
-            <BottomModalSheet snapPoints={['50%']} bgColor={palette.lightGray} setModalVisible={setEditNameModalVisible} modalVisible={editNameModalVisible}>
+            <BottomModalSheet bgColor={palette.lighter} snapPoints={['35%', '50%']} setModalVisible={setEditProfile} modalVisible={editProfile}>
+                <View style={[styles.ph16]}>
+                    <CustomTextInput
+                        value={userFirstName + " " + userLastName}
+                        iconLeft="badge"
+                        iconRight="edit"
+                        editable={false}
+                        style={accountStyles.editInput}
+                        onPressIn={() => {
+                            setEditProfile(false);
+                            setEditNameModalVisible(true);
+                        }}
+                        role="button"
+                        disabled={userDriver}
+                    />
+                    <CustomTextInput
+                        value={userEmail}
+                        iconLeft="mail"
+                        iconRight="edit"
+                        editable={false}
+                        style={accountStyles.editInput}
+                        onPressIn={() => {
+                            setEditProfile(false);
+                            setEditEmailModalVisible(true);
+                        }}
+                        role="button"
+                    />
+                </View>
+            </BottomModalSheet>
+
+            <BottomModalSheet snapPoints={['50%']} bgColor={palette.lighter} setModalVisible={setEditNameModalVisible} modalVisible={editNameModalVisible}>
                 <View style={[styles.w100, styles.p24]}>
                     <Formik
                         initialValues={{ firstNameInput: userFirstName, lastNameInput: userLastName }}

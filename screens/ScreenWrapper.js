@@ -33,7 +33,7 @@ function ScreenWrapper({ screenName, children, navType, navAction, lip = true })
                 </View>
 
                 <View style={[styles.wrapper]}>
-                    <View style={[styles.bgLightGray, styles.w100, styles.flexOne]}>
+                    <View style={[styles.bgLighter, styles.w100, styles.flexOne]}>
                         {lip &&
                             <View style={wrapperStyles.lipStyle}>
 
