@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { palette, rem, styles } from '../helper';
 
-function Button({ text, onPress, bgColor, disabled, textColor, style, icon, iconColor, borderColor, children }) {
+function Button({ text, onPress, bgColor, disabled, textColor, style, icon, iconSize, iconColor, borderColor, children }) {
     let borderColor_ = borderColor;
     if (borderColor_ === undefined) {
         borderColor_ = bgColor;
@@ -24,7 +24,7 @@ function Button({ text, onPress, bgColor, disabled, textColor, style, icon, icon
             onPress={onPress_}
             disabled={disabled}
         >
-            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={20} color={iconColor} />}
+            {icon === undefined ? null : <FontsAwesome5 style={styles2.icon} name={icon} size={iconSize} color={iconColor} />}
             <View style={[styles2.viewStyle, icon === undefined ? {} : { marginEnd: 20 }]}>
                 {text && <Text style={[styles2.continueBtnText, styles.text, { color: textColor }]}>{text}</Text>}
                 {children}

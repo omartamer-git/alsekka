@@ -34,13 +34,13 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                     <View style={styles.flexRow}>
                         <View>
-                            <Text style={[styles.text, styles.dark, { fontWeight: '700', fontSize: 16 }]}>{getTime(date)[0]}
+                            <Text style={[styles.boldText, styles.dark, styles.font16]}>{getTime(date)[0]}
                                 <Text style={[styles.font12]}>&nbsp;{t(getTime(date)[1])}</Text>
                             </Text>
                         </View>
                         <View style={[styles.flexRow, styles.fullCenter, styles.mt5]}>
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
-                            <Text style={[styles.text, { color: palette.dark, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }]}>{getDurationValues(duration)[0]}{t('h')}{getDurationValues(duration)[1]}{t('m')}</Text>
+                            <Text style={[styles.boldText, styles.font10, { color: palette.dark, marginHorizontal: 2 }]}>{getDurationValues(duration)[0]}{t('h')}{getDurationValues(duration)[1]}{t('m')}</Text>
                             <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
                         </View>
                     </View>
@@ -48,7 +48,7 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 </View>
 
                 <View style={[styles.flexOne, styles.alignStart]}>
-                    <Text style={[styles.text, styles.dark, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
+                    <Text style={[styles.boldText, styles.dark, styles.font16]}>{getTime(addSecondsToDate(date, duration))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(date, duration))[1])}</Text></Text>
                     <Text style={[styles.text, styles.dark]} numberOfLines={2} ellipsizeMode='tail'>{toAddress.split(',')[0].split('،')[0]}</Text>
                 </View>
             </View>
@@ -57,7 +57,7 @@ function AvailableRide({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupie
                 <View style={[{ flexWrap: 'wrap' }, styles.flexOne, styles.flexRow, styles.alignEnd]}>
                     {gender !== "ANY" &&
                         <View style={[styles.fullCenter, { width: 32, height: 24, borderRadius: 12, margin: 1 * rem, backgroundColor: gender === "MALE" ? "#1d74c6" : "pink" }]}>
-                            <Text style={[styles.bold, styles.text, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
+                            <Text style={[styles.boldText, styles.font12, { color: gender === "MALE" ? "white" : "black" }]}>{gender.substring(0, 1).toUpperCase()}</Text>
                         </View>
                     }
 

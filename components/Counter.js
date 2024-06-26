@@ -1,3 +1,4 @@
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { rem, styles, translateEnglishNumbers } from "../helper";
 import FontsAwesome5 from 'react-native-vector-icons/FontAwesome5';

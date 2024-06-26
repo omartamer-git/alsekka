@@ -33,9 +33,9 @@ function Wallet({ navigation, route }) {
     return (
         <ScreenWrapper screenName={t('wallet')} navType="back" navAction={function () { navigation.goBack() }}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
-                <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
+                <Text style={[styles.boldText, styles.font28]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.secondary, palette.primary]} style={walletStyles.card}>
-                    <Text style={[styles.text, styles.white, styles.bold]}>{t('balance')}</Text>
+                    <Text style={[styles.boldText, styles.white]}>{t('balance')}</Text>
                     <Text style={[styles.text, styles.headerText, styles.white]}>{t('EGP')} {I18nManager.isRTL ? translateEnglishNumbers(Math.ceil(balance / 100)) : Math.ceil(balance / 100)}</Text>
                     <View style={[styles.justifyEnd, styles.mb5, styles.flexOne]}>
                         {
@@ -68,7 +68,7 @@ function Wallet({ navigation, route }) {
                 }
 
 
-                <Text style={[styles.text, styles.headerText3, styles.mt15]}>{t('withdrawal_options')}</Text>
+                <Text style={[styles.boldText, styles.headerText3, styles.mt15]}>{t('withdrawal_options')}</Text>
 
                 {
                     bankAccounts.map((data, index) => {
@@ -96,7 +96,7 @@ function Wallet({ navigation, route }) {
                     <Text style={[styles.text, walletStyles.paymentMethodButtonText]}>{t('add_mobile_wallet')}</Text>
                 </TouchableOpacity>
 
-                <Text style={[styles.text, styles.headerText3, styles.mt15]}>{t('my_withdrawals')}</Text>
+                <Text style={[styles.boldText, styles.headerText3, styles.mt15]}>{t('my_withdrawals')}</Text>
                 <ArrowButton
                     icon="account-balance-wallet"
                     bgColor={palette.light}
@@ -123,7 +123,7 @@ const walletStyles = StyleSheet.create({
 
     paymentMethodButtonText: {
         ...styles.dark,
-        ...styles.bold,
+        ...styles.boldText,
         ...styles.ml15,
     },
 

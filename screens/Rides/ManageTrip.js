@@ -310,7 +310,7 @@ function ManageTrip({ route, navigation }) {
 
         return (
             <>
-                <Text style={[styles.text, styles.bold, styles.font28, styles.primary]}>{displayTime()}</Text>
+                <Text style={[styles.boldText, styles.font28, styles.primary]}>{displayTime()}</Text>
             </>
         );
     }
@@ -325,7 +325,7 @@ function ManageTrip({ route, navigation }) {
                             {getPhase() !== 4 &&
                                 <>
                                     <LiveAnimation width={75} height={75} />
-                                    <Text style={[styles.text, styles.bold, styles.font28, styles.textCenter]}>
+                                    <Text style={[styles.boldText, styles.font28, styles.textCenter]}>
                                         {
                                             getPhase() === 0 ? t('wait_starting') :
                                                 getPhase() === 1 ? t('head_pickup') :
@@ -361,7 +361,7 @@ function ManageTrip({ route, navigation }) {
                                             data.status === 'CONFIRMED' &&
                                             <TouchableOpacity disabled={submitDisabled} onPress={function () { noShow(data.UserId) }} style={[manageTripStyles.manageBtn, styles.bgRed]} activeOpacity={0.9}>
                                                 {/* <MaterialIcons name="close" size={14} color={palette.white} /> */}
-                                                <Text style={[styles.text, manageTripStyles.manageBtnText]}>{t('no_show')}</Text>
+                                                <Text style={manageTripStyles.manageBtnText}>{t('no_show')}</Text>
                                             </TouchableOpacity>
                                         }
                                     </View>
@@ -396,7 +396,7 @@ function ManageTrip({ route, navigation }) {
                                     </View>
                                     <View style={[styles.ml10]}>
                                         <Text style={[styles.text, styles.mb5, styles.font14]}>{t('picking_up')}</Text>
-                                        <Text style={[styles.text, styles.bold, styles.font18]}>
+                                        <Text style={[styles.boldText, styles.font18]}>
                                             {
                                                 getPickupPassenger().User.firstName
                                             }
@@ -466,7 +466,7 @@ function ManageTrip({ route, navigation }) {
                                                             passenger.paymentMethod === 'CASH' ? `${t('collect_payment_from')}` : t('good_to_go')
                                                         }
                                                     </Text>
-                                                    <Text style={[styles.text, styles.bold, styles.font18]}>
+                                                    <Text style={[styles.boldText, styles.font18]}>
                                                         {
                                                             passenger.User.firstName
                                                         }
@@ -509,7 +509,7 @@ function ManageTrip({ route, navigation }) {
                                                         <FastImage source={{ uri: passenger.User.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                                     </View>
                                                     <View style={[styles.ml10]}>
-                                                        <Text style={[styles.text, styles.bold, styles.font18]}>
+                                                        <Text style={[styles.boldText, styles.font18]}>
                                                             {
                                                                 passenger.User.firstName
                                                             }
@@ -548,19 +548,19 @@ function ManageTrip({ route, navigation }) {
                         }
 
                         {getPhase() === 0 &&
-                            <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                            <Text style={[styles.boldText, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 {t('please_press')} <Text style={styles.accent}>{t('check_in')}</Text> {t('passenger_in_car')} <Text style={styles.error}>{t('red_x_button')}</Text>.
                             </Text>
                         }
 
                         {getPhase() === 2 &&
-                            <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                            <Text style={[styles.boldText, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 {t('please_press')} <Text style={styles.accent}>{t('next')}</Text> {t('arrive_at_dest')}
                             </Text>
                         }
 
                         {getPhase() === 3 &&
-                            <Text style={[styles.text, styles.bold, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
+                            <Text style={[styles.boldText, styles.smallText, styles.dark, styles.fullCenter, styles.textCenter, styles.mt10]}>
                                 {t('please_press')} <Text style={styles.success}>{t('confirm_collections')}</Text> {t('receive_payments')}
                             </Text>
                         }
@@ -617,7 +617,7 @@ const manageTripStyles = StyleSheet.create({
     },
 
     manageBtnText: {
-        ...styles.bold,
+        ...styles.boldText,
         ...styles.white
     }
 });

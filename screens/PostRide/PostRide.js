@@ -364,7 +364,7 @@ function PostRide({ route, navigation }) {
                                 >
                                     {({ handleChange, handleBlur, handleSubmit, setFieldValue, setFieldTouched, values, errors, isValid, touched }) => (
                                         <>
-                                            <Text style={[styles.text, styles.inputText]}>{t('pickup_point')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('pickup_point')}</Text>
                                             <AutoComplete
                                                 key={"autoCompleteFrom" + rideId}
                                                 type="my-location"
@@ -376,7 +376,7 @@ function PostRide({ route, navigation }) {
                                                 handleCancelLocationSelect={cancelLocationFrom}
                                             />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('destination')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('destination')}</Text>
                                             <AutoComplete
                                                 key={"autoCompleteTo" + rideId}
                                                 type="place"
@@ -388,11 +388,11 @@ function PostRide({ route, navigation }) {
                                                 handleCancelLocationSelect={cancelLocationTo}
                                             />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('date')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('date')}</Text>
 
                                             <CustomDatePicker style={[styles.mv10]} date={values.dateInput} setDate={(newDate) => { setFieldValue('dateInput', newDate) }} />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('time')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('time')}</Text>
 
                                             <CustomTextInput
                                                 placeholder={t('time')}
@@ -426,7 +426,7 @@ function PostRide({ route, navigation }) {
                                             />
 
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('seats_available')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('seats_available')}</Text>
 
                                             <Counter
                                                 counter={values.seatsInput}
@@ -439,7 +439,7 @@ function PostRide({ route, navigation }) {
                                                 max={4}
                                             />
 
-                                            <Text style={[styles.text, styles.inputText]}>{t('price_per_seat')}</Text>
+                                            <Text style={[styles.boldText, styles.inputText]}>{t('price_per_seat')}</Text>
 
                                             <View style={[styles.flexRow, styles.w100]}>
 
@@ -460,34 +460,34 @@ function PostRide({ route, navigation }) {
                                                     onPress={() => setFieldValue('priceInput', suggestedPrice.toString())}
                                                     activeOpacity={0.9}
                                                     style={[styles.flexOne, styles.bgPrimary, { height: 48 * rem, marginTop: 8 * rem, marginBottom: 8 * rem, padding: 6 * rem, borderTopEndRadius: 8 * rem, borderBottomEndRadius: 8 * rem }]}>
-                                                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.white, styles.bold, { fontSize: 10 * rem }]}>{t('suggested_price')}</Text>
-                                                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.white, styles.bold, styles.font18, styles.mt5]}>{suggestedPrice} {t('EGP')}</Text>
+                                                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.white, { fontSize: 10 * rem }]}>{t('suggested_price')}</Text>
+                                                    <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.white, styles.font18, styles.mt5]}>{suggestedPrice} {t('EGP')}</Text>
                                                 </TouchableOpacity>
 
                                             </View>
 
 
                                             {values.priceInput && driverFee !== 0 &&
-                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('your_share')} {Math.ceil(((1 - driverFee) * values.priceInput))} {t('EGP')}</Text>
+                                                <Text style={[styles.boldText, styles.dark]}>{t('your_share')} {Math.ceil(((1 - driverFee) * values.priceInput))} {t('EGP')}</Text>
                                             }
 
                                             {
                                                 driverFee !== 0 && values.priceInput &&
-                                                <Text style={[styles.text, styles.dark, styles.bold]}>{t('service_fees')}{Math.floor(driverFee * values.priceInput)} {t('EGP')} ({driverFee * 100}%)</Text>
+                                                <Text style={[styles.boldText, styles.dark]}>{t('service_fees')}{Math.floor(driverFee * values.priceInput)} {t('EGP')} ({driverFee * 100}%)</Text>
                                             }
 
 
                                             
                                             { /* TEMPORARILY DISABLED, TODO: RE-ENABLE PROPERLY */}
 
-                                            {/* <Text style={[styles.text, styles.inputText]}>{t('allow_pickup')}</Text>
+                                            {/* <Text style={[styles.boldText, styles.inputText]}>{t('allow_pickup')}</Text>
 
                                             <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                                 <TouchableOpacity onPress={function () { setPickupEnabled(true) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: pickupEnabled ? palette.secondary : palette.dark }]}>
-                                                    <Text style={[styles.text, postRideStyles.genderText]}>{t('yes')}</Text>
+                                                    <Text style={[postRideStyles.genderText]}>{t('yes')}</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity onPress={function () { setPickupEnabled(false) }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: !pickupEnabled ? palette.secondary : palette.dark }]}>
-                                                    <Text style={[styles.text, postRideStyles.genderText]}>{t('no')}</Text>
+                                                    <Text style={[postRideStyles.genderText]}>{t('no')}</Text>
                                                 </TouchableOpacity>
                                             </View> */}
 
@@ -496,7 +496,7 @@ function PostRide({ route, navigation }) {
                                                 <>
                                                     <Text style={[styles.text, styles.dark, { textAlign: 'left' }]}>{t('pickup_range')}</Text>
 
-                                                    <Text style={[styles.text, styles.inputText]}>{t('pickup_price')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('pickup_price')}</Text>
                                                     <CustomTextInput
                                                         value={values.pickupPriceInput}
                                                         iconLeft="attach-money"
@@ -510,7 +510,7 @@ function PostRide({ route, navigation }) {
 
                                             <TouchableWithoutFeedback onPress={() => setAdvancedOptions(a => !a)}>
                                                 <View style={[styles.w100, styles.pv8]}>
-                                                    <Text style={[styles.text, styles.primary, styles.bold, styles.textCenter]}>
+                                                    <Text style={[styles.boldText, styles.primary, styles.textCenter]}>
                                                         {!advancedOptions && t('show_advanced_options')}
                                                         {advancedOptions && t('hide_advanced_options')}
                                                     </Text>
@@ -521,7 +521,7 @@ function PostRide({ route, navigation }) {
                                             {
                                                 (advancedOptions || !carInput || errors.communityInput) &&
                                                 <>
-                                                    <Text style={[styles.text, styles.inputText]}>{t('select_car')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('select_car')}</Text>
 
                                                     <CustomTextInput
                                                         placeholder={t('select_car')}
@@ -536,28 +536,28 @@ function PostRide({ route, navigation }) {
                                                     />
 
 
-                                                    <Text style={[styles.text, styles.inputText]}>{t('gender_to_carpool')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('gender_to_carpool')}</Text>
 
                                                     <View style={[styles.flexRow, styles.w100, styles.mv10, styles.br8, styles.overflowHidden]}>
                                                         {
                                                             userStore.gender === "FEMALE" &&
                                                             <TouchableOpacity onPress={function () { setGenderChoice('FEMALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'FEMALE' ? palette.primary : palette.gray }]}>
-                                                                <Text style={[styles.text, postRideStyles.genderText]}>{t('female_only')}</Text>
+                                                                <Text style={[postRideStyles.genderText]}>{t('female_only')}</Text>
                                                             </TouchableOpacity>
                                                         }
                                                         <TouchableOpacity onPress={function () { setGenderChoice('ANY') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'ANY' ? palette.primary : palette.gray }]}>
-                                                            <Text style={[styles.text, postRideStyles.genderText]}>{t('any')}</Text>
+                                                            <Text style={[postRideStyles.genderText]}>{t('any')}</Text>
                                                         </TouchableOpacity>
                                                         {
                                                             userStore.gender === "MALE" &&
                                                             <TouchableOpacity onPress={function () { setGenderChoice('MALE') }} activeOpacity={0.9} style={[postRideStyles.genderButton, { backgroundColor: genderChoice === 'MALE' ? palette.primary : palette.gray }]}>
-                                                                <Text style={[styles.text, postRideStyles.genderText]}>{t('male_only')}</Text>
+                                                                <Text style={[postRideStyles.genderText]}>{t('male_only')}</Text>
                                                             </TouchableOpacity>
                                                         }
                                                     </View>
 
 
-                                                    <Text style={[styles.text, styles.inputText]}>{t('post_to_community')}</Text>
+                                                    <Text style={[styles.boldText, styles.inputText]}>{t('post_to_community')}</Text>
                                                     <CustomTextInput
                                                         placeholder={t('select_community')}
                                                         value={communitySelectorText}
@@ -718,7 +718,7 @@ const postRideStyles = StyleSheet.create({
 
     genderText: {
         ...styles.white,
-        ...styles.bold
+        ...styles.boldText
     }
 });
 

@@ -152,6 +152,9 @@ function BookRide({ route, navigation }) {
             }
 
             setServiceFee(Math.floor(data.pricePerSeat * passengerFee));
+            if (mapViewRef) {
+                mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 } });
+            }
             setDriver(data.Driver.id);
             setFirstName(data.Driver.firstName);
             setLastName(data.Driver.lastName);
@@ -174,16 +177,6 @@ function BookRide({ route, navigation }) {
             setLoading(false);
         });
     }, []);
-
-
-    useEffect(function () {
-        setTimeout(() => {
-            if (mapViewRef) {
-                mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 }, animated: true });
-            }
-        }, 1000);
-    }, [mapViewRef.current]);
-
 
     const hideRideBooked = function () {
         setRideBookedModalVisible(false);
@@ -354,7 +347,7 @@ function BookRide({ route, navigation }) {
                             <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
                                 <View style={styles.flexRow}>
                                     <View>
-                                        <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(new Date(datetime))[0]}
+                                        <Text style={[styles.boldText, styles.light, styles.font16]}>{getTime(new Date(datetime))[0]}
                                             <Text style={[styles.font12]}>&nbsp;{t(getTime(new Date(datetime))[1])}</Text>
                                         </Text>
                                     </View>
@@ -368,7 +361,7 @@ function BookRide({ route, navigation }) {
                             </View>
 
                             <View style={[styles.flexOne, styles.alignStart]}>
-                                <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
+                                <Text style={[styles.boldText, styles.light, styles.font16]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
                                 <Text style={[styles.text, styles.light]} numberOfLines={2} ellipsizeMode='tail'>{mainTextTo.split(',')[0].split('،')[0]}</Text>
                             </View>
                         </View>
@@ -418,10 +411,10 @@ function BookRide({ route, navigation }) {
 
                                         <View style={[styles.flexRow, styles.w100, styles.mv10]}>
                                             <TouchableOpacity onPress={function () { setWantPickup(true) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: wantPickup ? palette.secondary : palette.dark }]}>
-                                                <Text style={[styles.text, styles.white, styles.bold]}>{t('yes')}</Text>
+                                                <Text style={[styles.boldText, styles.white]}>{t('yes')}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={function () { setWantPickup(false) }} activeOpacity={0.9} style={[styles.flexOne, styles.fullCenter, { height: 48 * rem, backgroundColor: !wantPickup ? palette.secondary : palette.dark }]}>
-                                                <Text style={[styles.text, styles.white, styles.bold]}>{t('no')}</Text>
+                                                <Text style={[styles.boldText, styles.white]}>{t('no')}</Text>
                                             </TouchableOpacity>
                                         </View>
                                         {
@@ -436,13 +429,13 @@ function BookRide({ route, navigation }) {
 
                                 <View>
                                     <View style={[styles.flexRow, styles.w100]}>
-                                        <Text style={[styles.text, styles.bold, styles.dark]}>{t('fare')}</Text>
+                                        <Text style={[styles.boldText, styles.dark]}>{t('fare')}</Text>
                                         <View style={styles.flexOne} />
                                         <Text style={[styles.text]}>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {Math.ceil(pricePerSeat / 100)} {t('EGP')} = {Math.ceil(numSeats * pricePerSeat / 100)} {t('EGP')}</Text>
                                     </View>
                                     {balance != 0 &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
+                                            <Text style={[styles.boldText, styles.dark]}>{t('balance')}{balance < 0 ? " Owed" : ""}</Text>
                                             <View style={styles.flexOne} />
                                             <Text style={[styles.text]}>{balance > 0 ? '-' : '+'} {Math.abs(Math.min(Math.ceil((pricePerSeat * numSeats) / 100), Math.ceil(balance / 100)))} {t('EGP')}</Text>
                                         </View>
@@ -450,7 +443,7 @@ function BookRide({ route, navigation }) {
                                     {
                                         voucher &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('voucher')} (-{parseInt(voucher.type === "PERCENTAGE" ? voucher.value : Math.ceil(voucher.value / 100))}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                                            <Text style={[styles.boldText, styles.dark]}>{t('voucher')} (-{parseInt(voucher.type === "PERCENTAGE" ? voucher.value : Math.ceil(voucher.value / 100))}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
                                             <View style={styles.flexOne} />
                                             <Text style={[styles.text]}>-{Math.ceil(voucherDiscount.current / 100)} {t('EGP')}</Text>
                                         </View>
@@ -458,7 +451,7 @@ function BookRide({ route, navigation }) {
                                     {
                                         wantPickup &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('pickup_fee')}</Text>
+                                            <Text style={[styles.boldText, styles.dark]}>{t('pickup_fee')}</Text>
                                             <View style={styles.flexOne} />
                                             <Text style={[styles.text]}>+ {Math.ceil(pickupPrice / 100)} {t('EGP')}</Text>
                                         </View>
@@ -466,13 +459,13 @@ function BookRide({ route, navigation }) {
                                     {
                                         passengerFee !== 0 &&
                                         <View style={[styles.flexRow, styles.w100]}>
-                                            <Text style={[styles.text, styles.bold, styles.dark]}>{t('service_fees')}</Text>
+                                            <Text style={[styles.boldText, styles.dark]}>{t('service_fees')}</Text>
                                             <View style={styles.flexOne} />
                                             <Text style={[styles.text]}>+ {Math.ceil(serviceFee * numSeats / 100)} {t('EGP')}</Text>
                                         </View>
                                     }
                                     <View style={[styles.flexRow, styles.w100]}>
-                                        <Text style={[styles.text, styles.bold, styles.dark]}>{t('you_pay')}</Text>
+                                        <Text style={[styles.boldText, styles.dark]}>{t('you_pay')}</Text>
                                         <View style={styles.flexOne} />
                                         <Text style={[styles.text]}>
                                             {/* {
@@ -573,20 +566,20 @@ function BookRide({ route, navigation }) {
                     <MaterialIcons name="check-circle" size={55} color={palette.success} />
                     <Text style={[styles.text, styles.mt10, styles.font18, styles.success]}>{t('booked_successfully')}</Text>
 
-                    <Text style={[styles.text, styles.bold, styles.font18, styles.mt10]}>{t('bill_summary')}</Text>
+                    <Text style={[styles.boldText, styles.font18, styles.mt10]}>{t('bill_summary')}</Text>
 
-                    <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('fare')}</Text>
+                    <Text style={[styles.boldText, styles.dark, styles.mt5]}>{t('fare')}</Text>
                     <Text style={[styles.text]}>{numSeats} {numSeats > 1 ? t("seats") : t("seat")} x {Math.ceil(pricePerSeat / 100)} {t('EGP')} = {Math.ceil(numSeats * pricePerSeat / 100)} {t('EGP')}</Text>
                     {balance != 0 &&
                         <>
-                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
+                            <Text style={[styles.boldText, styles.dark, styles.mt5]}>{t('balance')}{balance < 0 ? t('owed') : ""}</Text>
                             <Text style={[styles.text]}>{balance > 0 ? '+' : '-'} {Math.ceil(Math.abs(Math.min(pricePerSeat * numSeats, parseInt(balance))) / 100)} {t('EGP')}</Text>
                         </>
                     }
 
                     {pickupEnabled && wantPickup &&
                         <>
-                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('pickup_fee')}</Text>
+                            <Text style={[styles.boldText, styles.dark, styles.mt5]}>{t('pickup_fee')}</Text>
                             <Text style={[styles.text]}>+ {Math.ceil(pickupPrice / 100)} {t('EGP')}</Text>
                         </>
                     }
@@ -594,20 +587,20 @@ function BookRide({ route, navigation }) {
                     {
                         passengerFee !== 0 &&
                         <>
-                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('service_fees')}{balance < 0 ? t('owed') : ""}</Text>
+                            <Text style={[styles.boldText, styles.dark, styles.mt5]}>{t('service_fees')}{balance < 0 ? t('owed') : ""}</Text>
                             <Text style={[styles.text]}>+ {Math.ceil(serviceFee * numSeats / 100)} {t('EGP')}</Text>
                         </>
                     }
 
                     {voucher &&
                         <>
-                            <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('voucher')} (-{parseInt(voucher.type === "PERCENTAGE" ? voucher.value : Math.ceil(voucher.value / 100))}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
+                            <Text style={[styles.boldText, styles.dark, styles.mt5]}>{t('voucher')} (-{parseInt(voucher.type === "PERCENTAGE" ? voucher.value : Math.ceil(voucher.value / 100))}{voucher.type === "PERCENTAGE" ? '%' : t('EGP')})</Text>
                             <View style={styles.flexOne} />
                             <Text style={[styles.text]}>-{Math.ceil(voucherDiscount.current / 100)} {t('EGP')}</Text>
                         </>
                     }
 
-                    <Text style={[styles.text, styles.bold, styles.dark, styles.mt5]}>{t('total')}</Text>
+                    <Text style={[styles.boldText, styles.dark, styles.mt5]}>{t('total')}</Text>
                     <Text style={[styles.text]}>
                         {
                             Math.max(0,

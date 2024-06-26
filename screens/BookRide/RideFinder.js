@@ -279,7 +279,7 @@ function RideFinder({ route, navigation }) {
                     !loading && availableRides && availableRides.length === 0 && alternateRides.length === 0 &&
                     <View style={[styles.fullCenter, styles.w100, styles.flexOne]}>
                         <MaterialIcons name="sentiment-very-dissatisfied" size={125 * rem} color={palette.dark} />
-                        <Text style={[styles.text, styles.bold, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
+                        <Text style={[styles.boldText, styles.dark, styles.font14, styles.textCenter]}>{t('no_rides_posted')}</Text>
                         <Button text={t('post_ride')} bgColor={palette.primary} textColor={palette.white} onPress={() => navigation.navigate('Post Ride')} />
                     </View>
                 }

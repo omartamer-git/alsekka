@@ -84,7 +84,7 @@ function NewCommunity({ navigation, route }) {
                                     </View>
                                 </TouchableOpacity>
 
-                                {/* <Text style={[styles.text, styles.error, styles.bold, styles.font14, styles.mt10]}>{error}</Text> */}
+                                {/* <Text style={[styles.text, styles.error, styles.boldText, styles.font14, styles.mt10]}>{error}</Text> */}
                             </View>
 
                             <Text style={[styles.text, styles.inputText]}>{t('community_name')}</Text>

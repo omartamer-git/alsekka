@@ -93,7 +93,7 @@ const DismissableError = () => {
         <>
             {errorManager.error && (
                 <Animated.View {...panResponder.panHandlers} style={animatedStyle}>
-                    <Text style={[styles.text, styles.bold, styles.font14, styles.white]}>Error</Text>
+                    <Text style={[styles.boldText, styles.font14, styles.white]}>Error</Text>
                     <Text style={[styles.text, styles.font14, styles.white]}>{errorManager.error}</Text>
                 </Animated.View>
             )}

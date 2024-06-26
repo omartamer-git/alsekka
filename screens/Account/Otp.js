@@ -17,6 +17,7 @@ import ScreenWrapper from '../ScreenWrapper';
 import { useTranslation } from 'react-i18next';
 import Button from '../../components/Button';
 import FastImage from 'react-native-fast-image';
+import useAxiosManager from '../../context/axiosManager';
 
 function Otp({ route, navigation }) {
     const firstName = route.params?.firstName;
@@ -33,6 +34,7 @@ function Otp({ route, navigation }) {
     const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login } = useUserStore();
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
+    const { publicAxios } = useAxiosManager();
 
     const clockTick = function () {
         isVerified(phone).then(response => {
@@ -115,10 +117,10 @@ function Otp({ route, navigation }) {
     return (
         <ScreenWrapper screenName={t('verification_code')} navType="back" navAction={function () { navigation.goBack() }} lip={false}>
             <View style={[styles.bgPrimary, styles.w100, styles.p24]}>
-                <Text style={[styles.text, styles.white, styles.bold, styles.font28]}>
+                <Text style={[styles.boldText, styles.white, styles.font28]}>
                     {t('verification_code')}
                 </Text>
-                <Text style={[styles.text, styles.white, styles.bold, styles.font12, styles.mt5]}>
+                <Text style={[styles.boldText, styles.white, styles.font12, styles.mt5]}>
                     +2{phone}
                 </Text>
                 <Text style={[styles.text, styles.white, styles.font12, styles.mt5]}>

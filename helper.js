@@ -45,7 +45,6 @@ export const getDateSQL = function (date) {
 
     return `${year}-${month}-${day} ${hour}:${minute}:00`;
 };
-
 export const translateEnglishNumbers = function (text) {
     text = String(text);
     const x = text.length;
@@ -283,7 +282,11 @@ export const styles = StyleSheet.create({
         fontFamily: I18nManager.isRTL ? (Platform.OS === 'ios' ? 'TheSansArabic-Bold' : 'thesansarabic') : (Platform.OS === 'ios' ? 'FreeSansBold' : 'freesans'),
     },
     text: {
-        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'generalsans' : 'General Sans Variable'),
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'GeneralSans-Regular' : 'General Sans Variable'),
+        textAlign: 'left'
+    },
+    boldText: {
+        fontFamily: I18nManager.isRTL ? (Platform.OS === 'android' ? 'sans-serif' : 'Helvetica') : (Platform.OS === 'android' ? 'GeneralSans-Bold' : 'General Sans Variable'),
         textAlign: 'left'
     },
     logoSpacing: {
@@ -835,7 +838,7 @@ export const styles = StyleSheet.create({
     },
 
     bold: {
-        fontWeight: '600',
+        fontWeight: 'bold',
     },
 
     semiBold: {
@@ -865,11 +868,23 @@ export const styles = StyleSheet.create({
         lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
     },
 
+    font16: {
+        fontSize: 16 * rem,
+        lineHeight: Platform.OS === 'ios' ? 16 * rem : undefined,
+    },
+
     font18: {
         fontSize: 18 * rem,
         lineHeight: Platform.OS === 'ios' ? 20 * rem : undefined,
     },
-
+    font22: {
+        fontSize: 22 * rem,
+        lineHeight: Platform.OS === 'ios' ? 24 * rem : undefined,
+    },
+    font24: {
+        fontSize: 24 * rem,
+        lineHeight: Platform.OS === 'ios' ? 26 * rem : undefined,
+    },
     font28: {
         fontSize: 28 * rem,
         lineHeight: Platform.OS === 'ios' ? 30 * rem : undefined,
@@ -889,7 +904,9 @@ export const styles = StyleSheet.create({
     alignSelfCenter: {
         alignSelf: 'center',
     },
-
+    alignSelfEnd: {
+        alignSelf: 'flex-end',
+    },
     alignStart: {
         alignItems: 'flex-start'
     },
@@ -923,6 +940,13 @@ export const styles = StyleSheet.create({
     textEnd: {
         textAlign: 'right',
     },
+    breakline: {
+        height: 1,
+        backgroundColor: palette.light,
+        marginTop: 10,
+        marginBottom: 10,
+        alignSelf: 'stretch'
+    },
     overflowHidden: {
         overflow: 'hidden'
     },
@@ -935,6 +959,9 @@ export const styles = StyleSheet.create({
         marginTop: -20 * rem,
         borderBottomColor: palette.light,
         borderBottomWidth: 1 * rem,
+    },
+    capitalize: {
+        textTransform: 'capitalize'
     },
     AndroidSafeArea: {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
@@ -1201,4 +1228,4 @@ export const mapPadding = Platform.OS === 'ios' ? { bottom: 48 * rem, top: 0, le
 
 export const containerStyle = [styles.defaultContainer, styles.defaultPadding, styles.alignStart, { backgroundColor: palette.lightGray, width: '100%', zIndex: 5, flex: 0, flexGrow: 1, }];
 export const mapContainerStyle = [styles.flexOne, { zIndex: 3, elevation: 3, position: 'relative', marginTop: -20 * rem }];
-// export const SERVER_URL = "http://127.0.0.1:3000";
+export const SERVER_URL = "http://192.168.1.105:3000";

@@ -13,18 +13,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { containerStyle, dateDiffInDays, palette, rem, styles } from '../../helper';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from 'lottie-react-native';
 import { useTranslation } from 'react-i18next';
-import Carousel from 'react-native-reanimated-carousel';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import useUserStore from '../../api/accountAPI';
 import * as announcementsAPI from '../../api/announcementsAPI';
 import * as ridesAPI from '../../api/ridesAPI';
 import AvailableRide from '../../components/AvailableRide';
+import BottomModal from '../../components/BottomModal';
+import Button from '../../components/Button';
 import { DriverPopUp } from '../../components/DriverPopUp';
 import ScreenWrapper from '../ScreenWrapper';
-import LottieView from 'lottie-react-native';
-import Button from '../../components/Button';
-import BottomModal from '../../components/BottomModal';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -138,11 +137,11 @@ function UserHome({ navigation, route }) {
                             />
 
                         }
-                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.headerText2, styles.mt20]}>
+                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.boldText, styles.headerText2, styles.mt20]}>
                             {
                                 currentTime.getHours() < 12 ? t('greeting_morning') : currentTime.getHours() < 18 ? t('greeting_afternoon') : t('greeting_night')
                             }
-                            {t('comma')}&nbsp;{userStore.firstName}!
+                            {t('comma')}&nbsp;<Text style={[styles.capitalize]}>{userStore.firstName}</Text>!
                         </Text>
 
                         {driverElement && driverMainTextTo &&
@@ -173,7 +172,7 @@ function UserHome({ navigation, route }) {
                             </TouchableOpacity>
                         }
 
-                        <Text style={[styles.text, styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
+                        <Text style={[styles.boldText, styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
                         {
                             nextRideData &&
                             <AvailableRide
@@ -186,7 +185,6 @@ function UserHome({ navigation, route }) {
                                 seatsAvailable={nextRideData.seatsAvailable}
                                 pickupEnabled={nextRideData.pickupEnabled}
                                 gender={nextRideData.gender}
-                                duration={nextRideData.duration}
                                 date={nextRideDate}
                                 style={[styles.mv10, { minHeight: 140 * rem }]}
                                 onPress={function () { viewTrip(nextRideData.id); }} />
@@ -195,20 +193,20 @@ function UserHome({ navigation, route }) {
                             !nextRideData &&
                             <View style={userHomeStyles.noRides} >
                                 <MaterialIcons name="sentiment-very-satisfied" size={48} color={palette.dark} />
-                                <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
+                                <Text style={[styles.boldText, styles.mt5, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
                         <TouchableOpacity underlayColor={palette.lightGray} style={[styles.w100, styles.fullCenter]} onPress={function () { navigation.navigate('All Trips') }}>
-                            <Text style={[styles.text, styles.bold, styles.primary]}>{t('view_all_trips')}</Text>
+                            <Text style={[styles.boldText, styles.primary]}>{t('view_all_trips')}</Text>
                         </TouchableOpacity>
 
                         <View style={[styles.w100, styles.mt10]}>
-                            <Text style={[styles.text, styles.headerText3]}>{t('shortcuts')}</Text>
+                            <Text style={[styles.boldText, styles.headerText3]}>{t('shortcuts')}</Text>
 
                             <View style={[styles.w100, styles.flexRow, styles.gap10, styles.mt10]}>
                                 <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Referral' }) }} style={[styles.flexOne, styles.bgPrimary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.p8, styles.w100, styles.h100, { overflow: 'hidden' }]}>
-                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
+                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.headerText3, styles.white]}>
                                             {t('refer_shortcut')}
                                         </Text>
                                         <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, styles.white]}>
@@ -222,7 +220,7 @@ function UserHome({ navigation, route }) {
 
                                 <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Wallet' }) }} style={[styles.flexOne, styles.bgGray, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
-                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
+                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.headerText3, styles.white]}>
                                             {t('earnings_shortcut')}
                                         </Text>
                                         <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, styles.white]}>
@@ -241,7 +239,7 @@ function UserHome({ navigation, route }) {
 
                                 <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Communities') }} style={[styles.flexOne, styles.bgSecondary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
-                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
+                                        <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.headerText3, styles.white]}>
                                             {t('community_shortcut')}
                                         </Text>
                                         <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.text, styles.white]}>
@@ -262,15 +260,15 @@ function UserHome({ navigation, route }) {
                         <View style={[styles.w100, styles.br8, styles.p8, styles.bgAccent, styles.mt10, styles.flexRow, styles.spaceBetween, styles.gap15]}>
                             <View style={[styles.spaceBetween, styles.flexOne, styles.gap10]}>
                                 <View>
-                                    <Text style={[styles.text, styles.white, styles.bold, styles.headerText3]}>
+                                    <Text style={[styles.boldText, styles.white, styles.headerText3]}>
                                         {t('safety_tips')}
                                     </Text>
-                                    <Text style={[styles.text, styles.dark, styles.semibold, styles.black]}>
+                                    <Text style={[styles.text, styles.dark, styles.semiBold, styles.black]}>
                                         {t('ensure_safety')}
                                     </Text>
                                 </View>
                                 <TouchableOpacity onPress={() => setSafetyTipsVisible(true)} activeOpacity={0.9} style={[styles.bgWhite, styles.p8, styles.br8, styles.fullCenter, styles.mt5]}>
-                                    <Text style={[styles.text, styles.bold]}>
+                                    <Text style={[styles.boldText]}>
                                         {t('learn_more')}
                                     </Text>
                                 </TouchableOpacity>
@@ -287,7 +285,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_verify_driver')}
                                             </Text>
 
@@ -304,7 +302,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_route')}
                                             </Text>
 
@@ -321,7 +319,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_ratings')}
                                             </Text>
 
@@ -337,7 +335,7 @@ function UserHome({ navigation, route }) {
                                         </View>
 
                                         <View style={[styles.flexOne]}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.bold, styles.text, styles.font18]}>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.boldText, styles.font18]}>
                                                 {t('safety_emergency')}
                                             </Text>
 

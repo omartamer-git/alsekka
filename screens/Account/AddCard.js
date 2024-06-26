@@ -146,12 +146,12 @@ function AddCard({ navigation, route }) {
                 <LinearGradient colors={[palette.secondary, palette.dark]} style={addCardStyles.card}>
                     <Text adjustsFontSizeToFit
                         numberOfLines={1}
-                        style={[styles.text, styles.white, styles.bold, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
+                        style={[styles.boldText, styles.white, styles.font28]}>{cardNumber ? cardNumber : "1234 5678 9123 4567"}</Text>
                     <View style={[styles.flexOne, styles.flexRow, styles.spaceBetween, styles.alignEnd]}>
                         <>
                             <View style={styles.flexOne}>
-                                <Text style={[styles.text, addCardStyles.cardDetailsText]}>{t('EXP')}: {expiryDate}</Text>
-                                <Text style={[styles.text, addCardStyles.cardDetailsText, styles.mt5]}>{cardholderName.toUpperCase()}</Text>
+                                <Text style={[addCardStyles.cardDetailsText]}>{t('EXP')}: {expiryDate}</Text>
+                                <Text style={[addCardStyles.cardDetailsText, styles.mt5]}>{cardholderName.toUpperCase()}</Text>
                             </View>
                             {
                                 cardType === "visa" ? <Visa color={palette.white} width={50} height={50} /> : (cardType === "mastercard") ? <Mastercard color={palette.white} width={50} height={50} /> : ""
@@ -237,7 +237,7 @@ function AddCard({ navigation, route }) {
 const addCardStyles = StyleSheet.create({
     cardDetailsText: {
         ...styles.white,
-        ...styles.bold,
+        ...styles.boldText,
     },
 
     card: {

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
 import { rem, styles, translateDate } from "../helper";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import useRenderCounter from "./useRenderCounter";
 
 
@@ -62,7 +62,7 @@ function CustomDatePicker({ date, setDate, style }) {
                         setDate(dates.current[i]);
                     }}
                     style={[chosen ? styles.bgPrimary : styles.bgGray, styles.justifyCenter, styles.alignCenter, styles.w100, styles.h100, styleBorder]}>
-                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.white, styles.bold, styles.text]}>{dateStrings.current[i]}</Text>
+                    <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.white, styles.boldText]}>{dateStrings.current[i]}</Text>
                 </TouchableOpacity>
             </View>
         )

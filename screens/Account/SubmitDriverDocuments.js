@@ -109,7 +109,7 @@ function SubmitDriverDocuments({ route, navigation }) {
                                     {/* <Text style={[styles.text, styles.textCenter, styles.mb5]}>
                                         Please upload your driving license
                                     </Text>
-                                    <Text style={[styles.bold, styles.mb5]}>(رخصة القيادة الشخصية)</Text>
+                                    <Text style={[styles.boldText, styles.mb5]}>(رخصة القيادة الشخصية)</Text>
                                     <Text style={[styles.text, styles.textCenter, styles.mb5]}>
                                         in order to proceed
                                     </Text> */}

@@ -54,7 +54,7 @@ function HeaderView({ screenName, navType, action, children, borderVisible = tru
             </View>
 
             <View style={[styles.flexOne, styles.alignCenter, { paddingEnd: navType ? 44 * rem : 0 }]}>
-                {screenName && <View style={styles2.screenName}><Text style={[styles.text, { textAlign: 'center', color: palette.white, fontWeight: '600', fontSize: 16 }]}>{screenName}</Text></View>}
+                {screenName && <View style={styles2.screenName}><Text style={[styles.text, styles.alignCenter, styles.headerText, styles.font16, { color: palette.white }]}>{screenName}</Text></View>}
             </View>
         </View>
     );

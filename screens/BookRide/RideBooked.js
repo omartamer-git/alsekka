@@ -26,7 +26,7 @@ function RideBooked({ navigation, route }) {
             <View style={[styles.flexOne, styles.w100, styles.fullCenter, styles.defaultPadding, styles.defaultContainer]}>
                 <SuccessfulBooking width={400} height={130} />
 
-                <Text style={[styles.text, styles.textCenter, styles.font28, styles.bold, styles.mt10]}>
+                <Text style={[styles.boldText, styles.textCenter, styles.font28, styles.mt10]}>
                     {t('booked_successfully')}
                 </Text>
 

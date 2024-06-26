@@ -84,7 +84,7 @@ export default function PendingRatingsModal({ pendingRatings }) {
                         <FastImage source={{ uri: driver.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                     </View>
                     <View style={[styles.ml10]}>
-                        <Text style={[styles.text, styles.bold, styles.font18]}>
+                        <Text style={[styles.boldText, styles.font18]}>
                             {
                                 driver.firstName
                             }
@@ -122,7 +122,7 @@ export default function PendingRatingsModal({ pendingRatings }) {
                                     <FastImage source={{ uri: passenger.profilePicture }} style={[styles.border2, styles.borderWhite, { height: 70, width: 70, resizeMode: 'cover', borderRadius: 70 / 2 }]} />
                                 </View>
                                 <View style={[styles.ml10]}>
-                                    <Text style={[styles.text, styles.bold, styles.font18]}>
+                                    <Text style={[styles.boldText, styles.font18]}>
                                         {
                                             passenger.firstName
                                         }

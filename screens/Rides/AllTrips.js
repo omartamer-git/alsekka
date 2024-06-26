@@ -76,12 +76,12 @@ function AllTrips({ navigation, route }) {
     const { t } = useTranslation();
 
     return (
-        <ScreenWrapper screenName={t('all_trips')} navAction={() => navigation.goBack()} navType="back">
+        <ScreenWrapper screenName={t('my_trips')} navAction={() => navigation.goBack()} navType="back">
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 {
                     !loading &&
                     <>
-                        <Text style={[styles.text, styles.headerText2, { marginTop: 20 }]}>
+                        <Text style={[styles.boldText, styles.headerText2, { marginTop: 20 }]}>
                             {t('trips')}
                         </Text>
 
@@ -137,13 +137,13 @@ function AllTrips({ navigation, route }) {
                             (!nextRides || nextRides.length === 0) &&
                             <View style={allTripsStyle.noRides} >
                                 <MaterialIcons name="sentiment-very-dissatisfied" size={48} color={palette.dark} />
-                                <Text style={[styles.text, styles.mt5, styles.bold, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
+                                <Text style={[styles.boldText, styles.mt5, styles.dark, styles.textCenter]}>{t('cta_no_rides')}</Text>
                             </View>
                         }
                         {
                             (hasMoreTrips && nextRides && nextRides.length > 0) &&
                             <TouchableOpacity style={[styles.w100, styles.fullCenter]} onPress={updateRides}>
-                                <Text style={[styles.text, styles.bold, styles.primary]}>{t('load_more_trips')}</Text>
+                                <Text style={[styles.boldText, styles.primary]}>{t('load_more_trips')}</Text>
                             </TouchableOpacity>
                         }
 
