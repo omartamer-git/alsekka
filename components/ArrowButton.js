@@ -25,7 +25,7 @@ function ArrowButton({ text, onPress, bgColor, disabled, textColor, style, icon,
         >
             {icon === undefined ? null : <MaterialIcons style={styles2.icon} name={icon} size={19 * rem} color={disabled ? palette.light : iconColor} />}
             <View style={[styles2.viewStyle, icon ? {} : { marginEnd: 20 }]}>
-                { text && <Text style={[styles2.continueBtnText, styles.text, styles.bold, { color: disabled ? palette.light : textColor }]}>{text}</Text> }
+                { text && <Text style={[styles2.continueBtnText, styles.text, styles.semiBold, { color: disabled ? palette.light : textColor }]}>{text}</Text> }
             </View>
             <View style={[styles.alignEnd]}>
                 <MaterialIcons name={I18nManager.isRTL ? "chevron-left" : "chevron-right"} size={19 * rem} color={disabled ? palette.light : iconColor || palette.black} />

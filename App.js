@@ -93,6 +93,7 @@ import UserPreferences from './screens/Account/UserPreferences';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import Profile from './screens/Account/Profile';
+import ViewProfile from './screens/BookRide/ViewProfile';
 
 
 const RootStack = createNativeStackNavigator();
@@ -533,6 +534,7 @@ function App() {
         <BookingStack.Screen name="Find a Ride" component={MapScreen} options={{ headerShown: false }} />
         <BookingStack.Screen name="Choose a Ride" component={RideFinder} options={{ headerShown: false }} />
         <BookingStack.Screen name="Book Ride" component={BookRide} options={{ headerShown: false }} />
+        <BookingStack.Screen name="View Profile" component={ViewProfile} options={{ headerShown: false }} />
         <BookingStack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
         <BookingStack.Screen name="Ride Booked" component={RideBooked} options={{ headerShown: false }} />
         <UserHomeStack.Screen name="View Trip" component={ViewTrip} options={{ headerShown: false }} />

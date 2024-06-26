@@ -101,6 +101,7 @@ function BookRide({ route, navigation }) {
     const [pickupText, setPickupText] = useState("Choose Location on Map")
     const [placeId, setPlaceId] = useState(null);
     const [prevPassenger, setPrevPassenger] = useState(null);
+    const [rating, setRating] = useState(0);
 
     const [loading, setLoading] = useState(true);
 
@@ -134,6 +135,7 @@ function BookRide({ route, navigation }) {
             setPickupPrice(data.pickupPrice);
             setPolyline(data.polyline);
             setPrevPassenger(data.Passenger);
+            setRating(data.Driver.rating);
             if (data.Passenger) {
                 if (data.Passenger.pickupLocationLat && data.Passenger.pickupLocationLng) {
                     setWantPickup(true);
@@ -309,6 +311,10 @@ function BookRide({ route, navigation }) {
         setPickupText("Choose Location on Map");
     }
 
+    function visitProfile() {
+        navigation.navigate('View Profile', { userId: driver, firstName: firstName, lastName: lastName, rating: rating, profilePicture: profilePicture });
+    }
+
     const safeAreaInsets = useSafeAreaInsets();
 
 
@@ -383,9 +389,12 @@ function BookRide({ route, navigation }) {
                             !loading &&
                             <>
                                 <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
-                                    <View style={bookRideStyles.profilePictureView}>
+                                    <TouchableOpacity activeOpacity={0.9} onPress={visitProfile} style={bookRideStyles.profilePictureView}>
                                         {profilePicture && <FastImage source={{ uri: profilePicture }} style={bookRideStyles.profilePicture} />}
-                                    </View>
+                                        <View style={[{ right: 0, bottom: 0, padding: 6 }, styles.fullCenter, styles.positionAbsolute, styles.bgWhite, styles.shadow, styles.brFull]}>
+                                            <MaterialIcons name="visibility" color={palette.dark} size={16} />
+                                        </View>
+                                    </TouchableOpacity>
                                     <View style={[styles.flexOne, styles.ml20]}>
                                         <Text style={[styles.text, styles.headerText2]}>{firstName} {lastName}</Text>
                                         <Text style={[styles.text]}>{car.year} {car.brand} {car.model}</Text>

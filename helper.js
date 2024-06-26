@@ -157,7 +157,8 @@ export const palette = {
 
     light: '#DBD8D3',
     lighter: '#f4f5f5',
-    lightGray: '#FFFBF5',
+    lightGray: '#f4f5f5',
+    // lightGray: '#FFFBF5',
     gray: '#44404E',
 
     white: '#fff',
