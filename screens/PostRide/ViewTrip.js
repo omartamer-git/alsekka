@@ -31,6 +31,7 @@ import FastImage from 'react-native-fast-image';
 import { Triangle } from '../../components/Triangle';
 import BottomModalSheet from '../../components/ModalSheet';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+import Ride from '../../components/Ride';
 
 
 function ViewTrip({ route, navigation }) {
@@ -72,7 +73,6 @@ function ViewTrip({ route, navigation }) {
         setLoading(true);
         ridesAPI.tripDetails(tripId).then(
             data => {
-                // console.log(data);
                 setTripDetails(data);
                 setIsDriver(data.isDriver === 1);
                 setObjDate(new Date(data.datetime));
@@ -86,11 +86,11 @@ function ViewTrip({ route, navigation }) {
 
                 let ratingsItems = [];
                 for (let i = 0; i < fullStars; i++) {
-                    ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" color={palette.secondary} />);
+                    ratingsItems.push(<MaterialIcons key={"fullStar" + i} name="star" color={palette.accent} />);
                 }
 
                 for (let j = 0; j < halfStars; j++) {
-                    ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" color={palette.secondary} />);
+                    ratingsItems.push(<MaterialIcons key={"halfStar" + j} name="star-half" color={palette.accent} />);
                 }
 
                 setRatings(ratingsItems);
@@ -253,7 +253,7 @@ function ViewTrip({ route, navigation }) {
                         <>
                             {
                                 tripDetails &&
-                                <AvailableRide
+                                <Ride
                                     style={viewTripStyles.availableRide}
                                     model={tripDetails.Car.model}
                                     brand={tripDetails.Car.brand}
@@ -266,7 +266,8 @@ function ViewTrip({ route, navigation }) {
                                     pricePerSeat={tripDetails.pricePerSeat}
                                     pickupEnabled={tripDetails.pickupEnabled}
                                     gender={tripDetails.gender}
-                                    date={objDate} />
+                                    date={objDate}
+                                    page={"view_trip"} />
                             }
 
                             <View style={[styles.defaultPadding, styles.bgLightGray, styles.w100, styles.fullCenter, styles.flexOne, { zIndex: 5 }]}>

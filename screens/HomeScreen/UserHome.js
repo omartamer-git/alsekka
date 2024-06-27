@@ -26,6 +26,7 @@ import LottieView from 'lottie-react-native';
 import Button from '../../components/Button';
 import BottomModal from '../../components/BottomModal';
 import BottomModalSheet from '../../components/ModalSheet';
+import Ride from '../../components/Ride';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -177,7 +178,8 @@ function UserHome({ navigation, route }) {
                         <Text style={[styles.text, styles.headerText3, styles.mt20]}>{t('upcoming_rides')}</Text>
                         {
                             nextRideData &&
-                            <AvailableRide
+                            <Ride
+                                rid={nextRideData.id}
                                 fromAddress={nextRideData.mainTextFrom}
                                 toAddress={nextRideData.mainTextTo}
                                 pricePerSeat={nextRideData.pricePerSeat}
@@ -187,10 +189,11 @@ function UserHome({ navigation, route }) {
                                 seatsAvailable={nextRideData.seatsAvailable}
                                 pickupEnabled={nextRideData.pickupEnabled}
                                 gender={nextRideData.gender}
-                                duration={nextRideData.duration}
                                 date={nextRideDate}
                                 style={[styles.mv10, { minHeight: 140 * rem }]}
-                                onPress={function () { viewTrip(nextRideData.id); }} />
+                                onPress={function () { viewTrip(nextRideData.id); }} 
+                                page={'user_home'}
+                                />
                         }
                         {
                             !nextRideData &&
