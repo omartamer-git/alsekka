@@ -24,6 +24,7 @@ import { containerStyle, palette, rem, styles } from '../../helper';
 import CoffeeIcon from '../../svgs/coffee';
 import ScreenWrapper from '../ScreenWrapper';
 import FastImage from 'react-native-fast-image';
+import Ride from '../../components/Ride';
 
 
 function ViewCommunity({ navigation, route }) {
@@ -172,7 +173,7 @@ function ViewCommunity({ navigation, route }) {
                                         <MaterialIcons name="settings" size={25} color={palette.dark} />
                                     </TouchableOpacity>
                                     {owner && (
-                                        <TouchableOpacity style={[styles.mh5]} activeOpacity={0.75} style={[styles.ml5]} onPress={() => navigation.navigate('Community Members', { communityId })}>
+                                        <TouchableOpacity style={[styles.mh5, styles.ml5]} activeOpacity={0.75} onPress={() => navigation.navigate('Community Members', { communityId })}>
                                             <MaterialIcons name="people" size={25} color={palette.dark} />
                                         </TouchableOpacity>
                                     )}
@@ -185,7 +186,7 @@ function ViewCommunity({ navigation, route }) {
                                     const nextRideDate = new Date(data.datetime);
                                     return (
                                         <View style={[styles.w100]} key={"feed" + index}>
-                                            <AvailableRide
+                                            <Ride
                                                 rid={data.ride_id}
                                                 fromAddress={data.mainTextFrom}
                                                 toAddress={data.mainTextTo}
@@ -194,7 +195,7 @@ function ViewCommunity({ navigation, route }) {
                                                 duration={data.duration}
                                                 DriverId={data.DriverId}
                                                 seatsAvailable={data.seatsAvailable}
-                                                driverName={data.Driver.firstName + " " + data.Driver.lastName}
+                                                // driverName={data.Driver.firstName + " " + data.Driver.lastName}
                                                 date={nextRideDate}
                                                 style={styles.mt10}
                                                 pickupEnabled={data.pickupEnabled}
@@ -206,7 +207,7 @@ function ViewCommunity({ navigation, route }) {
                                                         navigation.navigate('Find Rides', { screen: 'Book Ride', params: { rideId: data.ride_id } })
                                                     }
                                                 }
-                                                }
+                                                }  
                                             />
                                         </View>
                                     );

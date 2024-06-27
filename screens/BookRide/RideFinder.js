@@ -19,6 +19,7 @@ import { containerStyle, palette, rem, styles } from '../../helper';
 import ScreenWrapper from '../ScreenWrapper';
 import Button from '../../components/Button';
 import useAppManager from '../../context/appManager';
+import Ride from '../../components/Ride';
 
 
 function RideFinder({ route, navigation }) {
@@ -222,7 +223,7 @@ function RideFinder({ route, navigation }) {
                     availableRides.map((data, index) => {
                         const objDate = new Date(data.datetime);
                         return (
-                            <AvailableRide
+                            <Ride
                                 key={"ar" + index}
                                 rid={data.id}
                                 model={data.model}
@@ -238,10 +239,12 @@ function RideFinder({ route, navigation }) {
                                 onPress={onClickRide}
                                 pickupEnabled={data.pickupEnabled}
                                 gender={data.gender}
-                                style={rideFinderStyles.availableRide} />
+                                style={rideFinderStyles.availableRide}
+                                page={'ride_finder'} />
                         );
                     }
                     )
+
                 }
 
                 {!loading && alternateRides.length > 0 &&
@@ -251,7 +254,7 @@ function RideFinder({ route, navigation }) {
                             alternateRides.map((data, index) => {
                                 const objDate = new Date(data.datetime);
                                 return (
-                                    <AvailableRide
+                                    <Ride
                                         key={"alr" + index}
                                         rid={data.id}
                                         model={data.model}
@@ -267,7 +270,8 @@ function RideFinder({ route, navigation }) {
                                         onPress={onClickRide}
                                         pickupEnabled={data.pickupEnabled}
                                         gender={data.gender}
-                                        style={rideFinderStyles.availableRide} />
+                                        style={rideFinderStyles.availableRide}
+                                        page={'ride_finder'} />
                                 );
                             }
                             )
