@@ -179,7 +179,7 @@ function Ride({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsA
 
             </View>
 
-            <View style={[styles.flexRow, styles.flexGrow, styles.w100, styles.p8, (page == 'view_trip') && styles.justifyCenter, { borderTopWidth: 0.75, borderTopColor: palette.light, paddingTop: 14, paddingBottom: 10 }]}>
+            { !(preferences?.chattiness==0 && preferences?.rest_stop==0 && preferences?.music ==0 && preferences?.smoking == 0 && page=='view_trip') &&  <View style={[styles.flexRow, styles.flexGrow, styles.w100, styles.p8, (page == 'view_trip') && styles.justifyCenter, { borderTopWidth: 0.75, borderTopColor: palette.light, paddingTop: 14, paddingBottom: 10 }]}>
                 {!(page == 'view_trip') &&
                     <>
                         <FastImage source={{ uri: driverProfilePicture }}
@@ -196,7 +196,7 @@ function Ride({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsA
                 }
 
 
-                <View style={[styles.flexRow, (page != 'view_trip') && styles.p8, styles.alignCenter, { marginLeft: (page != 'view_trip') ? 'auto' : '', padding: (page == 'view_trip') && 4 }]}>
+                { <View style={[styles.flexRow, (page != 'view_trip') && styles.p8, styles.alignCenter, { marginLeft: (page != 'view_trip') ? 'auto' : '', padding: (page == 'view_trip') && 4 }]}>
                     {preferences?.chattiness == 1 && <MaterialIcons name="chat" size={22} color={palette.primary} style={{ marginRight: (page != 'view_trip') ? 11 : 30 }} />}
                     {preferences?.chattiness == -1 && <MaterialIcons name="chat-bubble" size={22} color={palette.primary} style={{ marginRight: (page != 'view_trip') ? 11 : 30 }} />}
 
@@ -212,8 +212,8 @@ function Ride({ rid, fromAddress, toAddress, pricePerSeat, seatsOccupied, seatsA
                     {preferences?.smoking == 1 && <MaterialIcons name="smoking-rooms" size={20} color={palette.primary} />}
                     {preferences?.smoking == -1 && <MaterialIcons name="smoke-free" size={20} color={palette.primary} />}
 
-                </View>
-            </View>
+                </View>}
+            </View>}
 
         </TouchableOpacity>
 

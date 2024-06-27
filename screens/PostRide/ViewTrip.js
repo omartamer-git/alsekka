@@ -537,7 +537,7 @@ const viewTripStyles = StyleSheet.create({
         ...styles.mb10,
         ...styles.br0,
         ...styles.bgWhite,
-        minHeight: 140 * rem
+        minHeight: 110 * rem
     },
 
     profilePictureView: {
