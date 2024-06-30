@@ -26,6 +26,7 @@ import LottieView from 'lottie-react-native';
 import Button from '../../components/Button';
 import BottomModal from '../../components/BottomModal';
 import BottomModalSheet from '../../components/ModalSheet';
+import { CommonActions } from '@react-navigation/native';
 
 function UserHome({ navigation, route }) {
     const [nextRideData, setNextRideData] = useState(null);
@@ -121,6 +122,24 @@ function UserHome({ navigation, route }) {
         loadData();
     };
 
+    function shortcutWallet() {
+        navigation.navigate('Account', { screen: 'Account Home' });
+        setTimeout(() => {
+            navigation.push('Wallet')
+        }, 100);
+    }
+
+    function shortcutReferral() {
+        navigation.navigate('Account', { screen: 'Account Home' });
+        setTimeout(() => {
+            navigation.push('Referral')
+        }, 100);
+    }
+
+    function shortcutCommunities() {
+        navigation.navigate('Communities');
+    }    
+
     const width = Dimensions.get('window').width;
 
     return (
@@ -207,7 +226,7 @@ function UserHome({ navigation, route }) {
                             <Text style={[styles.text, styles.headerText3]}>{t('shortcuts')}</Text>
 
                             <View style={[styles.w100, styles.flexRow, styles.gap10, styles.mt10]}>
-                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Referral' }) }} style={[styles.flexOne, styles.bgPrimary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                <TouchableOpacity activeOpacity={0.75} onPress={shortcutReferral} style={[styles.flexOne, styles.bgPrimary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.p8, styles.w100, styles.h100, { overflow: 'hidden' }]}>
                                         <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
                                             {t('refer_shortcut')}
@@ -221,7 +240,7 @@ function UserHome({ navigation, route }) {
                                     </View>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Account', { screen: 'Wallet' }) }} style={[styles.flexOne, styles.bgGray, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                <TouchableOpacity activeOpacity={0.75} onPress={shortcutWallet} style={[styles.flexOne, styles.bgGray, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
                                         <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
                                             {t('earnings_shortcut')}
@@ -240,7 +259,7 @@ function UserHome({ navigation, route }) {
                                 </TouchableOpacity>
 
 
-                                <TouchableOpacity activeOpacity={0.75} onPress={() => { navigation.navigate('Communities') }} style={[styles.flexOne, styles.bgSecondary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
+                                <TouchableOpacity activeOpacity={0.75} onPress={shortcutCommunities} style={[styles.flexOne, styles.bgSecondary, styles.br8, { aspectRatio: 1, position: 'relative', overflow: 'hidden' }]}>
                                     <View style={[styles.positionAbsolute, { top: 0, left: 0 }, styles.w100, styles.h100, styles.p8, { zIndex: 40 }]}>
                                         <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.headerText3, styles.white]}>
                                             {t('community_shortcut')}

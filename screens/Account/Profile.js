@@ -96,9 +96,9 @@ export default function Profile({ route, navigation }) {
         ), [activeProvider]);
 
         const currentProviderDescription = useMemo(() => (
-            activeProvider === 'SPOTIFY' ? 'Tap Your Profile Picture > View Profile > Share Button > Copy Link' :
-                activeProvider === 'ANGHAMI' ? 'Tap The Share Button (Top Right) > Copy Link' :
-                    activeProvider === 'APPLE_MUSIC' ? 'Tap Your Profile Picture > View Profile > Tap the 3 Dots > Share Profile' : null
+            activeProvider === 'SPOTIFY' ? t('spotify_instr') :
+                activeProvider === 'ANGHAMI' ? t('anghami_instr') :
+                    activeProvider === 'APPLE_MUSIC' ? t('apple_music_instr') : null
         ), [activeProvider]);
 
         function openSpotify() {
@@ -144,7 +144,7 @@ export default function Profile({ route, navigation }) {
                 {
                     step === 1 &&
                     <Animated.View exiting={FadeOutLeft} style={[styles.fullCenter, styles.flexOne, styles.fullCenter, styles.p16]}>
-                        <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>Choose Your Provider</Text>
+                        <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>{t('choose_provider')}</Text>
 
                         <View style={[styles.flexCol, styles.gap10, styles.w100, styles.fullCenter, styles.mt20]}>
                             <RoundedButton activeColor={palette.dark} onPress={() => handleChangeActiveProvider('ANGHAMI')} active={activeProvider === 'ANGHAMI'} style={[styles.bgLighter, { minWidth: '66%' }]} icon={<Image source={require('../../assets/anghami_logo.png')} style={{ width: 30 * rem, height: 30 * rem }} />}>
@@ -164,13 +164,13 @@ export default function Profile({ route, navigation }) {
                 {
                     step === 2 &&
                     <Animated.View entering={FadeInRight.delay(300)} exiting={FadeOutLeft} style={[styles.fullCenter, styles.flexOne, styles.fullCenter, styles.p16]}>
-                        <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>Connect Your {t(activeProvider.toLowerCase())}</Text>
+                        <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>{t('connect_your')} {t(activeProvider.toLowerCase())}</Text>
                         <Text style={[styles.text, styles.textCenter]}>
                             {currentProviderDescription}
                         </Text>
 
                         <RoundedButton activeColor={'#1fd961'} onPress={openProvider} style={[styles.bgLighter, styles.mt10, { minWidth: '66%' }]} icon={currentProviderIcon}>
-                            Open {t(activeProvider.toLowerCase())}
+                            {t('open')} {t(activeProvider.toLowerCase())}
                         </RoundedButton>
 
 
@@ -185,7 +185,6 @@ export default function Profile({ route, navigation }) {
                     <Animated.View entering={FadeInRight.delay(300)} style={[styles.fullCenter, styles.flexOne, styles.fullCenter, styles.p16]}>
                         <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>{t(activeProvider.toLowerCase())} Profile Link</Text>
 
-                        {/* <Text style={[styles.mt10, styles.text, styles.bold, styles.textCenter, styles.w100]}>{t('spotify')} Profile Link</Text> */}
                         <CustomTextInput autoCapitalize={'none'} value={providerLink} onChangeText={setProviderLink} placeholder={"https://open.spotify.com/user/..."} />
 
                         <RoundedButton style={[styles.mt20]} activeColor={'#1fd961'} dark onPress={linkAccount} style={[styles.bgAccent, styles.mt20, { minWidth: '80%' }]}>
@@ -208,7 +207,9 @@ export default function Profile({ route, navigation }) {
         return (
             <BottomModalSheet snapPoints={['50%']} modalVisible={facebookModalVisible} setModalVisible={setFacebookModalVisible}>
                 <View style={[styles.fullCenter, styles.flexOne, styles.fullCenter, styles.p16]}>
-                    <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>Facebook Profile Link</Text>
+                    <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>
+                        {t('facebook_link')}
+                    </Text>
 
                     <CustomTextInput autoCapitalize={'none'} value={providerLink} onChangeText={setProviderLink} placeholder={"https://facebook.com/..."} />
 
@@ -231,7 +232,9 @@ export default function Profile({ route, navigation }) {
         return (
             <BottomModalSheet snapPoints={['50%']} modalVisible={instagramModalVisible} setModalVisible={setInstagramModalVisible}>
                 <View style={[styles.fullCenter, styles.flexOne, styles.fullCenter, styles.p16]}>
-                    <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>Instagram Username</Text>
+                    <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>
+                        {t('instagram_username')}
+                    </Text>
 
                     <CustomTextInput prefix={'@'} autoCapitalize={'none'} value={username} onChangeText={setUsername} placeholder={"example"} />
 
@@ -270,73 +273,73 @@ export default function Profile({ route, navigation }) {
         return (
             <BottomModalSheet snapPoints={['70%', '90%']} modalVisible={preferencesModalVisible} setModalVisible={setPreferencesModalVisible}>
                 <ScrollView style={[styles.flexOne]} contentContainerStyle={[styles.flexGrow, styles.ph16, { paddingBottom: insets.bottom }]}>
-                    <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>Preferences</Text>
+                    <Text style={[styles.text, styles.font24, styles.bold, styles.dark, styles.textCenter]}>{t('preferences')}</Text>
 
                     <View style={[styles.mt20, styles.w100, styles.gap20]}>
                         <View style={[styles.w100]}>
-                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>Music</Text>
+                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>{t('music')}</Text>
                             <View style={[styles.flexRow, styles.gap5]}>
                                 <RoundedButton onPress={() => setMusicPreference(-1)} active={musicPreference === -1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="music-off" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    No Music
+                                    {t('no_music')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setMusicPreference(0)} active={musicPreference === 0} textStyle={[styles.font12]} activeBgColor={palette.accent} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Neutral
+                                    {t('neutral')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setMusicPreference(1)} active={musicPreference === 1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="music-note" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Preferred
+                                    {t('preferred')}
                                 </RoundedButton>
                             </View>
                         </View>
 
                         <View style={[styles.w100]}>
-                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>Smoking</Text>
+                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>{t('smoking')}</Text>
                             <View style={[styles.flexRow, styles.gap5]}>
                                 <RoundedButton onPress={() => setSmokingPreference(-1)} active={smokingPreference === -1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="smoke-free" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Smoke-free
+                                    {t('no_smoking')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setSmokingPreference(0)} active={smokingPreference === 0} textStyle={[styles.font12]} activeBgColor={palette.accent} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Neutral
+                                    {t('neutral')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setSmokingPreference(1)} active={smokingPreference === 1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="smoking-rooms" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Preferred
+                                    {t('preferred')}
                                 </RoundedButton>
                             </View>
                         </View>
 
                         <View style={[styles.w100]}>
-                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>Chattiness</Text>
+                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>{t('chattiness')}</Text>
                             <View style={[styles.flexRow, styles.gap5]}>
                                 <RoundedButton onPress={() => setChattinessPreference(-1)} active={chattinessPreference === -1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="volume-off" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Silent Ride
+                                    {t('silent_ride')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setChattinessPreference(0)} active={chattinessPreference === 0} textStyle={[styles.font12]} activeBgColor={palette.accent} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Neutral
+                                    {t('neutral')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setChattinessPreference(1)} active={chattinessPreference === 1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="question-answer" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Preferred
+                                    {t('preferred')}
                                 </RoundedButton>
                             </View>
                         </View>
 
                         <View style={[styles.w100]}>
-                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>Rest Stops</Text>
+                            <Text style={[styles.text, styles.font18, styles.bold, styles.dark, styles.textCenter]}>{t('rest_stops')}</Text>
                             <View style={[styles.flexRow, styles.gap5]}>
                                 <RoundedButton onPress={() => setRestStopsPreference(-1)} active={restStopsPreference === -1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="bolt" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    No Stops
+                                    {t('no_stops')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setRestStopsPreference(0)} active={restStopsPreference === 0} textStyle={[styles.font12]} activeBgColor={palette.accent} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Neutral
+                                    {t('neutral')}
                                 </RoundedButton>
 
                                 <RoundedButton onPress={() => setRestStopsPreference(1)} active={restStopsPreference === 1} textStyle={[styles.font12]} activeBgColor={palette.accent} icon={<MaterialIcons name="airline-stops" size={16} />} dark={false} style={[styles.bgLighter, styles.mt10, styles.flexOne]}>
-                                    Preferred
+                                    {t('preferred')}
                                 </RoundedButton>
                             </View>
                         </View>
@@ -404,21 +407,21 @@ export default function Profile({ route, navigation }) {
                             <Text style={[styles.text, styles.bold, styles.dark, styles.font28, styles.textCenter]} numberOfLines={1} adjustsFontSizeToFit>
                                 {userStats.ridesTaken < 1000 ? userStats.ridesTaken : (userStats.ridesTaken / 1000).toFixed(1) + 'K'}
                             </Text>
-                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.dark, { opacity: 0.3 }, styles.font16, styles.textCenter]}>Trips</Text>
+                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.dark, { opacity: 0.3 }, styles.font16, styles.textCenter]}>{t('trips')}</Text>
                         </View>
 
                         <View style={[{ width: '32%' }, styles.br24, styles.bgWhite, styles.pv16, styles.ph24, styles.shadow, styles.fullCenter, styles.gap5]}>
                             <Text style={[styles.text, styles.bold, styles.dark, styles.font28, styles.textCenter]} numberOfLines={1} adjustsFontSizeToFit>
                                 {userStats.ridesDriven < 1000 ? userStats.ridesDriven : (userStats.ridesDriven / 1000).toFixed(1) + 'K'}
                             </Text>
-                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.dark, { opacity: 0.3 }, styles.font16, styles.textCenter]}>Drives</Text>
+                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.dark, { opacity: 0.3 }, styles.font16, styles.textCenter]}>{t('drives')}</Text>
                         </View>
 
                         <View style={[{ width: '32%' }, styles.br24, styles.bgWhite, styles.pv16, styles.ph24, styles.shadow, styles.fullCenter, styles.gap5]}>
                             <Text style={[styles.text, styles.bold, styles.dark, styles.font28, styles.textCenter]} numberOfLines={1} adjustsFontSizeToFit>
                                 {new Date(userStats.createdAt).getFullYear()}
                             </Text>
-                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.dark, { opacity: 0.3 }, styles.font16, styles.textCenter]}>Created</Text>
+                            <Text adjustsFontSizeToFit numberOfLines={1} style={[styles.text, styles.dark, { opacity: 0.3 }, styles.font16, styles.textCenter]}>{t('created')}</Text>
                         </View>
                     </View>
 
@@ -428,7 +431,7 @@ export default function Profile({ route, navigation }) {
                                 !socials?.facebookLink &&
                                 <TouchableOpacity activeOpacity={0.9} onPress={handlePressFacebook} style={[styles.flexCol, styles.flexOne, styles.br24, styles.pv16, styles.ph16, styles.bgWhite, styles.shadow, styles.mt10, styles.fullCenter]}>
                                     <LottieView source={require('../../assets/facebook_animation.json')} loop={false} autoPlay style={{ width: '75%', aspectRatio: 1 }} />
-                                    <Text style={[styles.text, styles.semiBold, styles.dark, styles.font16, styles.textCenter]}>Link Your Facebook</Text>
+                                    <Text style={[styles.text, styles.semiBold, styles.dark, styles.font16, styles.textCenter]}>{t('link_facebook')}</Text>
                                 </TouchableOpacity>
                             }
                             {
@@ -436,7 +439,7 @@ export default function Profile({ route, navigation }) {
                                 <TouchableOpacity activeOpacity={0.9} onPress={handlePressFacebook} style={[styles.flexCol, styles.flexOne, styles.br24, styles.pv16, styles.ph16, styles.shadow, styles.mt10, styles.fullCenter, styles.gap15, { backgroundColor: '#0866ff' }]}>
                                     {/* <LottieView source={require('../../assets/facebook_animation.json')} loop={false} autoPlay style={{ width: '75%', aspectRatio: 1 }} /> */}
                                     <Image source={require('../../assets/facebook_logo_white.png')} style={{ width: 70, height: 70 }} />
-                                    <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>Facebook Linked</Text>
+                                    <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>{t('fb_linked')}</Text>
                                 </TouchableOpacity>
 
                             }
@@ -446,7 +449,7 @@ export default function Profile({ route, navigation }) {
                                 !socials?.instagramLink &&
                                 <TouchableOpacity onPress={handlePressInstagram} activeOpacity={0.9} style={[styles.flexCol, styles.flexOne, styles.br24, styles.pv16, styles.ph8, styles.bgWhite, styles.shadow, styles.mt10, styles.fullCenter]}>
                                     <LottieView source={require('../../assets/instagram_animation.json')} loop autoPlay style={{ width: '75%', aspectRatio: 1 }} />
-                                    <Text style={[styles.text, styles.semiBold, styles.dark, styles.font16, styles.textCenter]}>Link Your Instagram</Text>
+                                    <Text style={[styles.text, styles.semiBold, styles.dark, styles.font16, styles.textCenter]}>{t('link_instagram')}</Text>
                                 </TouchableOpacity>
                             }
 
@@ -455,7 +458,7 @@ export default function Profile({ route, navigation }) {
                                 <TouchableOpacity onPress={handlePressInstagram} activeOpacity={0.9} style={[styles.flexCol, styles.flexOne, styles.br24, styles.pv16, styles.ph8, styles.shadow, styles.mt10, styles.fullCenter, styles.gap15, styles.overflowHidden, { backgroundColor: palette.dark }]}>
                                     <Image source={require('../../assets/instagram_logo_white.png')} style={{ zIndex: 20, width: 70, height: 70 }} />
                                     {/* <IGBackground style={[{zIndex: -1}]} /> */}
-                                    <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>Instagram Linked</Text>
+                                    <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>{t('ig_linked')}</Text>
                                 </TouchableOpacity>
                             }
                         </View>
@@ -463,8 +466,8 @@ export default function Profile({ route, navigation }) {
                             <TouchableOpacity activeOpacity={0.9} onPress={() => setPreferencesModalVisible(true)} style={[styles.flexCol, styles.br24, styles.p24, styles.bgAccent, styles.shadow, styles.mt10]}>
                                 {(!userPreferences || Object.values(userPreferences).filter((x) => x === 0).length === 4) &&
                                     <>
-                                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, styles.white, styles.textStart, styles.font18]}>Set Your</Text>
-                                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, styles.white, styles.textStart, styles.font18]}>Preferences</Text>
+                                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, styles.white, styles.textStart, styles.font18]}>{t('set_your')}</Text>
+                                        <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.text, styles.bold, styles.white, styles.textStart, styles.font18]}>{t('preferences')}</Text>
                                     </>
                                 }
                                 {
@@ -514,7 +517,7 @@ export default function Profile({ route, navigation }) {
                                 !socials?.musicLink &&
                                 <TouchableOpacity activeOpacity={0.9} onPress={handlePressMusic} style={[styles.flexCol, styles.flexOne, styles.br24, styles.p16, styles.shadow, styles.mt10, styles.fullCenter, styles.bgWhite]}>
                                     <LottieView source={require('../../assets/casette.json')} loop autoPlay style={{ width: '75%', aspectRatio: 1 }} />
-                                    <Text style={[styles.text, styles.semiBold, styles.dark, styles.font16, styles.textCenter]}>Connect Your Music Library</Text>
+                                    <Text style={[styles.text, styles.semiBold, styles.dark, styles.font16, styles.textCenter]}>{t('connect_your')} {t('music_library')}</Text>
 
                                     <View style={[styles.flexRow, styles.gap5, styles.w100, styles.fullCenter, styles.mt10]}>
                                         <Image source={require('../../assets/anghami_logo.png')} style={{ width: 30 * rem, height: 30 * rem }} />
@@ -529,7 +532,7 @@ export default function Profile({ route, navigation }) {
                                     {linkedProvider === 'SPOTIFY' &&
                                         <>
                                             <Image source={require('../../assets/spotify_logo_alt.png')} style={{ width: 120, height: 120 }} />
-                                            <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>Spotify Linked</Text>
+                                            <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>{t('spotify_linked')}</Text>
                                         </>
 
                                     }
@@ -537,14 +540,14 @@ export default function Profile({ route, navigation }) {
                                         linkedProvider === 'ANGHAMI' &&
                                         <>
                                             <Image source={require('../../assets/anghami_logo_alt.png')} style={{ width: 120, height: 120 }} />
-                                            <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>Anghami Linked</Text>
+                                            <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>{t('anghami_linked')}</Text>
                                         </>
                                     }
                                     {
                                         linkedProvider === 'APPLE_MUSIC' &&
                                         <>
                                             <Image source={require('../../assets/applemusic_logo.png')} style={{ width: 120, height: 120 }} />
-                                            <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>Apple Music Linked</Text>
+                                            <Text style={[styles.text, styles.textCenter, styles.white, styles.bold]}>{t('apple_music_linked')}</Text>
                                         </>
                                     }
                                 </TouchableOpacity>

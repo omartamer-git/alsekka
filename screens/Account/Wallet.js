@@ -30,8 +30,12 @@ function Wallet({ navigation, route }) {
     const { t } = useTranslation();
     const { cardsEnabled } = useAppManager();
 
+    function goBack() {
+        navigation.goBack();
+    }
+
     return (
-        <ScreenWrapper screenName={t('wallet')} navType="back" navAction={function () { navigation.goBack() }}>
+        <ScreenWrapper screenName={t('wallet')} navType="back" navAction={goBack}>
             <ScrollView keyboardShouldPersistTaps={'handled'} style={styles.flexOne} contentContainerStyle={containerStyle}>
                 <Text style={[styles.text, styles.headerText]}>{t('wallet')}</Text>
                 <LinearGradient colors={[palette.secondary, palette.primary]} style={walletStyles.card}>

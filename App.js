@@ -568,24 +568,26 @@ function App() {
 
   const AccountNavigator = ({ route, navigation }) => {
     return (
-      <AccountStack.Navigator initialRouteName='Account Home'>
-        <AccountStack.Screen name="Account Home" component={Profile} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Settings" component={Account} options={{ headerShown: false }} />
-        <AccountStack.Screen name="User Preferences" component={UserPreferences} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
-        <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
-        <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
-        <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
-        <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
-      </AccountStack.Navigator>
+      <>
+        <AccountStack.Navigator initialRouteName='Account Home'>
+          <AccountStack.Screen name="Account Home" component={Profile} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Settings" component={Account} options={{ headerShown: false }} />
+          <AccountStack.Screen name="User Preferences" component={UserPreferences} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Wallet" component={Wallet} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Withdraw" component={Withdraw} options={{ headerShown: false }} />
+          <AccountStack.Screen name="View Withdrawals" component={ViewWithdrawals} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Debt Payment" component={DebtPayment} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Add Card" component={AddCard} options={{ headerShown: false }} />
+          <AccountStack.Screen name="All Trips" component={AllTrips} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Manage Cars" component={ManageCars} options={{ headerShown: false }} />
+          <AccountStack.Screen name="New Car" component={NewCar} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Chats List" component={ChatsList} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Add Bank" component={AddBank} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Add Mobile Wallet" component={AddMobileWallet} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Referral" component={Referral} options={{ headerShown: false }} />
+          <AccountStack.Screen name="Add Referral" component={AddReferral} options={{ headerShown: false }} />
+        </AccountStack.Navigator>
+      </>
     );
   }
 
@@ -612,7 +614,6 @@ function App() {
     return (
       <GestureHandlerRootView>
         <BottomSheetModalProvider>
-
           <React.Fragment>
             {
               modalFineLocation &&
