@@ -352,24 +352,25 @@ function BookRide({ route, navigation }) {
                     <View style={[containerStyle, styles.p24, styles.bgPrimary, styles.fullCenter, { borderTopWidth: 1 }, styles.borderLight]}>
                         <View style={[styles.flexRow, styles.w100, styles.fullCenter]}>
                             <View style={{ maxWidth: '60%', alignItems: 'flex-start' }}>
-                                <View style={styles.flexRow}>
+                                <Text style={[styles.white, styles.text, styles.font12]}>{new Date(datetime).toDateString()}</Text>
+                                <View style={[styles.flexRow, styles.mt5]}>
                                     <View>
-                                        <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(new Date(datetime))[0]}
+                                        <Text style={[styles.text, styles.white, { fontWeight: '700', fontSize: 16 }]}>{getTime(new Date(datetime))[0]}
                                             <Text style={[styles.font12]}>&nbsp;{t(getTime(new Date(datetime))[1])}</Text>
                                         </Text>
                                     </View>
                                     <View style={[styles.flexRow, styles.fullCenter, styles.mt5]}>
                                         <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
-                                        <Text style={[styles.text, { color: palette.light, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }]}>{getDurationValues(durationOfTrip)[0]}{t('h')}{getDurationValues(durationOfTrip)[1]}{t('m')}</Text>
+                                        <Text style={[styles.text, { color: palette.white, fontWeight: '600', marginHorizontal: 2, fontSize: 10 }]}>{getDurationValues(durationOfTrip)[0]}{t('h')}{getDurationValues(durationOfTrip)[1]}{t('m')}</Text>
                                         <View style={{ height: 0.5, backgroundColor: 'darkgray', marginHorizontal: 4, width: 25 }} />
                                     </View>
                                 </View>
-                                <Text style={[styles.text, styles.pr8, styles.light]} numberOfLines={2} ellipsizeMode='tail'>{mainTextFrom.split(',')[0].split('،')[0]}</Text>
+                                <Text style={[styles.text, styles.pr8, styles.white]} numberOfLines={2} ellipsizeMode='tail'>{mainTextFrom.split(',')[0].split('،')[0]}</Text>
                             </View>
 
                             <View style={[styles.flexOne, styles.alignStart]}>
-                                <Text style={[styles.text, styles.light, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
-                                <Text style={[styles.text, styles.light]} numberOfLines={2} ellipsizeMode='tail'>{mainTextTo.split(',')[0].split('،')[0]}</Text>
+                                <Text style={[styles.text, styles.white, { fontWeight: '700', fontSize: 16 }]}>{getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[0]}<Text style={styles.font12}>&nbsp;{t(getTime(addSecondsToDate(new Date(datetime), durationOfTrip))[1])}</Text></Text>
+                                <Text style={[styles.text, styles.white]} numberOfLines={2} ellipsizeMode='tail'>{mainTextTo.split(',')[0].split('،')[0]}</Text>
                             </View>
                         </View>
 
