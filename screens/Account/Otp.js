@@ -30,7 +30,16 @@ function Otp({ route, navigation }) {
     const [currentInput, setCurrentInput] = useState(0);
     const [error, setError] = useState(null);
     let countdownInterval = null;
-    const { getOtp, sendOtp, sendOtpSecurity, isVerified, createAccount, login } = useUserStore();
+
+    const getOtp = useUserStore(state => state.getOtp);
+    const sendOtp = useUserStore(state => state.sendOtp);
+    const sendOtpSecurity = useUserStore(state => state.sendOtpSecurity);
+    const isVerified = useUserStore(state => state.isVerified);
+    const verified = useUserStore(state => state.verified);
+    const createAccount = useUserStore(state => state.createAccount);
+    const confirmOtp = useUserStore(state => state.confirmOtp);
+    const login = useUserStore(state => state.login);
+
     const [uri, setUri] = useState('');
     const [token, setToken] = useState('');
 
@@ -41,29 +50,40 @@ function Otp({ route, navigation }) {
     const [otpValue3, setOtpValue3] = useState("");
     const [otpValue4, setOtpValue4] = useState("");
 
+    // useEffect(() => {
+    //     if(verified) {
+    //         navigation.popToTop();
+    //         navigation.replace("LoggedIn", {
+    //             screen: 'TabScreen',
+    //             params: {
+    //                 screen: 'Home',
+    //             }
+    //         });
+    //         clearInterval(countdownInterval);
+    //     }
+    // }, [verified])
+
+    function createAccountAndLogin() {
+        if (onVerify === 'login') {
+            console.log('sd')
+            console.log(firstName, lastName, phone, email, password, gender);
+            createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
+                login(phone, password);
+            }).catch(err => {
+                console.log(err);
+                const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
+                setError(errorMessage);
+            })
+        } else {
+            navigation.popToTop();
+            navigation.replace("Change Password", { token });
+        }
+    }
+
     const clockTick = function () {
         isVerified(phone).then(response => {
             if (response === true) {
-                if (onVerify === 'login') {
-                    createAccount(firstName, lastName, phone, email, password, gender).then((data) => {
-                        login(phone, password).then(function () {
-                            navigation.popToTop();
-                            navigation.replace("LoggedIn", {
-                                screen: 'TabScreen',
-                                params: {
-                                    screen: 'Home',
-                                }
-                            });
-                            clearInterval(countdownInterval);
-                        })
-                    }).catch(err => {
-                        const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
-                        setError(errorMessage);
-                    })
-                } else {
-                    navigation.popToTop();
-                    navigation.replace("Change Password", { token });
-                }
+                createAccountAndLogin();
             }
         }).catch(err => {
             console.log(err);
@@ -88,15 +108,29 @@ function Otp({ route, navigation }) {
 
 
     const resendOtp = function () {
+        console.log('resending otp');
         getOtp(phone).then((response) => {
-            setUri(response.uri);
-            setToken(response.token);
-            setTriggerCountdown(true);
+            if (response.type === "sms") {
+            } else {
+                setUri(response.uri);
+                setToken(response.token);
+                setTriggerCountdown(true);
+            }
         }).catch(err => {
             const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
             setError(errorMessage);
         });
     };
+
+    function verifyOtp() {
+        const otp = otpValue0 + otpValue1 + otpValue2 + otpValue3 + otpValue4;
+        confirmOtp(phone, otp).then(function (response) {
+            createAccountAndLogin();
+        }).catch(err => {
+            const errorMessage = I18nManager.isRTL ? err.response.data.error.message_ar : err.response.data.error.message;
+            setError(errorMessage);
+        })
+    }
 
     const openWhatsapp = function () {
         Linking.openURL(uri);
@@ -104,6 +138,10 @@ function Otp({ route, navigation }) {
 
     useEffect(function () {
         resendOtp();
+
+        return () => {
+            console.log("OTP Unmounting")
+        }
     }, [])
 
     const onFocusEffect = useCallback(function () {
@@ -172,15 +210,22 @@ function Otp({ route, navigation }) {
             <View style={[styles.flexOne, styles.w100, styles.bgPrimary]}>
                 <View style={[styles.flexOne, styles.w100, styles.defaultPadding, styles.bgLightGray, styles.fullCenter, { borderTopLeftRadius: 16, borderTopRightRadius: 16 }]}>
 
-                    <View style={[styles.flexRow, styles.w100, styles.gap10]}>
-                        <TextInput style={OTPStyles.inputStyle} value={otpValue0} onChangeText={(text) => changeOTP(0, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[0]}></TextInput>
-                        <TextInput onKeyPress={(e) => handleKeyPress(1, e)} style={OTPStyles.inputStyle} value={otpValue1} onChangeText={(text) => changeOTP(1, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[1]}></TextInput>
-                        <TextInput onKeyPress={(e) => handleKeyPress(2, e)} style={OTPStyles.inputStyle} value={otpValue2} onChangeText={(text) => changeOTP(2, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[2]}></TextInput>
-                        <TextInput onKeyPress={(e) => handleKeyPress(3, e)} style={OTPStyles.inputStyle} value={otpValue3} onChangeText={(text) => changeOTP(3, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[3]}></TextInput>
-                        <TextInput onKeyPress={(e) => handleKeyPress(4, e)} style={OTPStyles.inputStyle} value={otpValue4} onChangeText={(text) => changeOTP(4, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[4]}></TextInput>
-                    </View>
-
-                    <Button disabled={!uri} onPress={openWhatsapp} bgColor={palette.accent} textColor={palette.white} text={t('verify_phone')} />
+                    {!phone.startsWith('10') &&
+                        <>
+                            <View style={[styles.flexRow, styles.w100, styles.gap10]}>
+                                <TextInput style={OTPStyles.inputStyle} value={otpValue0} onChangeText={(text) => changeOTP(0, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[0]}></TextInput>
+                                <TextInput onKeyPress={(e) => handleKeyPress(1, e)} style={OTPStyles.inputStyle} value={otpValue1} onChangeText={(text) => changeOTP(1, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[1]}></TextInput>
+                                <TextInput onKeyPress={(e) => handleKeyPress(2, e)} style={OTPStyles.inputStyle} value={otpValue2} onChangeText={(text) => changeOTP(2, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[2]}></TextInput>
+                                <TextInput onKeyPress={(e) => handleKeyPress(3, e)} style={OTPStyles.inputStyle} value={otpValue3} onChangeText={(text) => changeOTP(3, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[3]}></TextInput>
+                                <TextInput onKeyPress={(e) => handleKeyPress(4, e)} style={OTPStyles.inputStyle} value={otpValue4} onChangeText={(text) => changeOTP(4, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[4]}></TextInput>
+                            </View>
+                            <Button onPress={verifyOtp} bgColor={palette.accent} textColor={palette.white} text={t('verify_phone')} />
+                        </>
+                    }
+                    {
+                        phone.startsWith('10') &&
+                        <Button disabled={!uri} onPress={openWhatsapp} bgColor={palette.accent} textColor={palette.white} text={t('verify_whatsapp')} />
+                    }
                     {/* <FastImage source={{ uri: 'https://seaats.app/img/create_acc_guide.png' }} style={{ width: '100%', aspectRatio: 1, borderRadius: 8 }} /> */}
                 </View>
             </View>
@@ -191,13 +236,15 @@ function Otp({ route, navigation }) {
 const OTPStyles = StyleSheet.create({
     inputStyle: {
         ...styles.flexOne,
-        ...styles.border1,
+        ...styles.border2,
         ...styles.br8,
         ...styles.borderLight,
         ...styles.text,
         ...styles.textCenter,
         ...styles.font28,
-        ...styles.p8,
+        ...styles.ph8,
+        ...styles.pv8,
+        ...styles.shadow,
         aspectRatio: 1,
         lineHeight: null
     }

@@ -52,6 +52,7 @@
         "verification_code": "Verification",
         "code_sent": "A one time code has been sent to you. Please enter it below.",
         "verify_phone": "Verify Phone Number",
+        "verify_whatsapp": "Verify Using Whatsapp",
         "please_wait": "Please wait",
         "seconds_before_requesting": "seconds before requesting a new code",
         "resend": "Resend",

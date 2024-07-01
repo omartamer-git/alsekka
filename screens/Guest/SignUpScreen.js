@@ -30,7 +30,6 @@ function SignUpScreen({ route, navigation }) {
   const [phoneNumExists, setPhoneNumExists] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
-  const { allowedEmails } = useAppManager();
 
   const userStore = useUserStore();
   const errorManager = useErrorManager();
@@ -67,7 +66,6 @@ function SignUpScreen({ route, navigation }) {
   }
   // const allowedEmailDomains = ['student.guc.edu.eg'];
 
-  const emailValidationRegex = new RegExp(`@(${allowedEmails})$`);
 
   const signUpSchema = Yup.object().shape({
     phoneInput: Yup.string().matches(

@@ -82,16 +82,20 @@ const useUserStore = create((set) => ({
         set(data);
 
         const authManager = useAuthManager.getState();
-        authManager.setAccessToken(data.accessToken);
-        authManager.setRefreshToken(data.refreshToken);
-        authManager.setAuthenticated(true);
+        authManager.setState({
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+            authenticated: true,
+        });
 
-        appManager.setPassengerFee(data.passengerFee);
-        appManager.setDriverFee(data.driverFee);
-        appManager.setCardsEnabled(data.cardsEnabled);
-        appManager.setVerificationsDisabled(data.verificationsDisabled);
-        appManager.setReferralsDisabled(data.referralsDisabled);
-        appManager.setCities(data.cities);
+        appManager.setState((state) => ({
+            passengerFee: data.passengerFee,
+            driverFee: data.driverFee,
+            cardsEnabled: data.cardsEnabled,
+            verificationsDisabled: data.verificationsDisabled,
+            referralsDisabled: data.referralsDisabled,
+            cities: data.cities
+        }))
 
         await Keychain.setGenericPassword(
             'token',
@@ -174,7 +178,9 @@ const useUserStore = create((set) => ({
         const response = await axiosManager.publicAxios.get(url, { params });
         const data = response.data;
 
-        set((state) => data);
+        console.log(data);
+
+        // set((state) => {ver});
 
         return data;
     },
@@ -325,6 +331,27 @@ const useUserStore = create((set) => ({
         return waUri;
     },
 
+    confirmOtp: async function (phone, otp) {
+        const url = `/v1/user/confirmotp`;
+
+        const axiosManager = useAxiosManager.getState();
+        const body = {
+            phone: phone,
+            otp: otp
+        };
+
+        const response = await axiosManager.publicAxios.get(url, {
+            params: body
+        });
+
+        const data = response.data;
+        if (data.success) {
+            return true
+        } else {
+            return false;
+        }
+    },
+
     isVerified: async function (phone) {
         try {
             const url = `/v1/user/isverified`;
@@ -337,7 +364,7 @@ const useUserStore = create((set) => ({
             });
 
             if (isVerified.data.verified == true) {
-                set(isVerified.data);
+                set((state) => { verified: isVerified.data });
                 return true;
             } else {
                 return false;
