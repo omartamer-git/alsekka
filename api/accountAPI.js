@@ -68,6 +68,7 @@ const useUserStore = create((set) => ({
     login: async function (phoneNum, password) {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();
+        const authManager = useAuthManager.getState();
 
         const response = await axiosManager.publicAxios.get(`/v1/user/login`, {
             params: {
@@ -79,9 +80,7 @@ const useUserStore = create((set) => ({
         });
 
         const data = response.data;
-        set(data);
 
-        const authManager = useAuthManager.getState();
         authManager.setState({
             accessToken: data.accessToken,
             refreshToken: data.refreshToken,
@@ -96,6 +95,8 @@ const useUserStore = create((set) => ({
             referralsDisabled: data.referralsDisabled,
             cities: data.cities
         }))
+
+        set(data);
 
         await Keychain.setGenericPassword(
             'token',
@@ -317,13 +318,14 @@ const useUserStore = create((set) => ({
         return data;
     },
 
-    getOtp: async function (phone) {
+    getOtp: async function (phone, type) {
         const url = `/v1/user/verify`;
 
         const axiosManager = useAxiosManager.getState();
         const otpLink = await axiosManager.publicAxios.get(url, {
             params: {
-                phone: phone
+                phone: phone,
+                type: type
             }
         });
 

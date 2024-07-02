@@ -8,6 +8,7 @@ import {
     StyleSheet,
     Text,
     TextInput,
+    TouchableOpacity,
     View
 } from 'react-native';
 import { AvoidSoftInput } from 'react-native-avoid-softinput';
@@ -29,6 +30,7 @@ function Otp({ route, navigation }) {
     const onVerify = route.params?.onVerify;
     const [currentInput, setCurrentInput] = useState(0);
     const [error, setError] = useState(null);
+    const [otpType, setOtpType] = useState(phone.startsWith('10') ? 'whatsapp' : 'sms');
     let countdownInterval = null;
 
     const getOtp = useUserStore(state => state.getOtp);
@@ -50,19 +52,6 @@ function Otp({ route, navigation }) {
     const [otpValue3, setOtpValue3] = useState("");
     const [otpValue4, setOtpValue4] = useState("");
 
-    // useEffect(() => {
-    //     if(verified) {
-    //         navigation.popToTop();
-    //         navigation.replace("LoggedIn", {
-    //             screen: 'TabScreen',
-    //             params: {
-    //                 screen: 'Home',
-    //             }
-    //         });
-    //         clearInterval(countdownInterval);
-    //     }
-    // }, [verified])
-
     function createAccountAndLogin() {
         if (onVerify === 'login') {
             console.log('sd')
@@ -75,10 +64,11 @@ function Otp({ route, navigation }) {
                 setError(errorMessage);
             })
         } else {
+            console.log("token: " + token);
             navigation.popToTop();
             navigation.replace("Change Password", { token });
         }
-    }
+    }    
 
     const clockTick = function () {
         isVerified(phone).then(response => {
@@ -106,11 +96,18 @@ function Otp({ route, navigation }) {
         };
     }, [triggerCountdown, time])
 
+    useEffect(() => {
+        if(otpInputs[0].current) {
+            otpInputs[0].current.focus();
+        }
+    }, [])
+
 
     const resendOtp = function () {
         console.log('resending otp');
-        getOtp(phone).then((response) => {
+        getOtp(phone, otpType).then((response) => {
             if (response.type === "sms") {
+                setToken(response.token);
             } else {
                 setUri(response.uri);
                 setToken(response.token);
@@ -142,7 +139,7 @@ function Otp({ route, navigation }) {
         return () => {
             console.log("OTP Unmounting")
         }
-    }, [])
+    }, [otpType])
 
     const onFocusEffect = useCallback(function () {
         // This should be run when screen gains focus - enable the module where it's needed
@@ -154,21 +151,34 @@ function Otp({ route, navigation }) {
     }, []);
 
     function setOtpValue(index, text) {
-        if (index === 0) {
-            setOtpValue0(text);
-        } else if (index === 1) {
-            setOtpValue1(text);
-        } else if (index === 2) {
-            setOtpValue2(text);
-        } else if (index === 3) {
-            setOtpValue3(text);
+        // console.log(text);
+        let firstChar;
+        if(text.length === 1) {
+            firstChar = text;
+            text = '';
         } else {
-            setOtpValue4(text);
+            firstChar = text.charAt(0);
+            text = text.slice(1);
         }
+        // const firstChar = text.charAt(0);
+
+        if (index === 0) {
+            setOtpValue0(firstChar);
+        } else if (index === 1) {
+            setOtpValue1(firstChar);
+        } else if (index === 2) {
+            setOtpValue2(firstChar);
+        } else if (index === 3) {
+            setOtpValue3(firstChar);
+        } else {
+            setOtpValue4(firstChar);
+        }
+
+        return text;
     }
 
     function changeOTP(index, text) {
-        setOtpValue(index, text);
+        const remainingText = setOtpValue(index, text);
 
         if ((index === 0 && text.length === 0) || (index === 4 && text.length === 1)) {
             return;
@@ -178,6 +188,10 @@ function Otp({ route, navigation }) {
             otpInputs[index - 1].current.focus();
         } else {
             otpInputs[index + 1].current.focus();
+        }
+
+        if(remainingText.length > 0) {
+            changeOTP(index + 1, remainingText);
         }
     }
 
@@ -210,20 +224,27 @@ function Otp({ route, navigation }) {
             <View style={[styles.flexOne, styles.w100, styles.bgPrimary]}>
                 <View style={[styles.flexOne, styles.w100, styles.defaultPadding, styles.bgLightGray, styles.fullCenter, { borderTopLeftRadius: 16, borderTopRightRadius: 16 }]}>
 
-                    {!phone.startsWith('10') &&
+                    {otpType === 'sms' &&
                         <>
                             <View style={[styles.flexRow, styles.w100, styles.gap10]}>
-                                <TextInput style={OTPStyles.inputStyle} value={otpValue0} onChangeText={(text) => changeOTP(0, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[0]}></TextInput>
-                                <TextInput onKeyPress={(e) => handleKeyPress(1, e)} style={OTPStyles.inputStyle} value={otpValue1} onChangeText={(text) => changeOTP(1, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[1]}></TextInput>
-                                <TextInput onKeyPress={(e) => handleKeyPress(2, e)} style={OTPStyles.inputStyle} value={otpValue2} onChangeText={(text) => changeOTP(2, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[2]}></TextInput>
-                                <TextInput onKeyPress={(e) => handleKeyPress(3, e)} style={OTPStyles.inputStyle} value={otpValue3} onChangeText={(text) => changeOTP(3, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[3]}></TextInput>
-                                <TextInput onKeyPress={(e) => handleKeyPress(4, e)} style={OTPStyles.inputStyle} value={otpValue4} onChangeText={(text) => changeOTP(4, text)} keyboardType='number-pad' maxLength={1} ref={otpInputs[4]}></TextInput>
+                                <TextInput textContentType='oneTimeCode' style={OTPStyles.inputStyle} value={otpValue0} onChangeText={(text) => changeOTP(0, text)} keyboardType='number-pad' ref={otpInputs[0]}></TextInput>
+                                <TextInput textContentType='oneTimeCode' onKeyPress={(e) => handleKeyPress(1, e)} style={OTPStyles.inputStyle} value={otpValue1} onChangeText={(text) => changeOTP(1, text)} keyboardType='number-pad' ref={otpInputs[1]}></TextInput>
+                                <TextInput textContentType='oneTimeCode' onKeyPress={(e) => handleKeyPress(2, e)} style={OTPStyles.inputStyle} value={otpValue2} onChangeText={(text) => changeOTP(2, text)} keyboardType='number-pad' ref={otpInputs[2]}></TextInput>
+                                <TextInput textContentType='oneTimeCode' onKeyPress={(e) => handleKeyPress(3, e)} style={OTPStyles.inputStyle} value={otpValue3} onChangeText={(text) => changeOTP(3, text)} keyboardType='number-pad' ref={otpInputs[3]}></TextInput>
+                                <TextInput textContentType='oneTimeCode' onKeyPress={(e) => handleKeyPress(4, e)} style={OTPStyles.inputStyle} value={otpValue4} onChangeText={(text) => changeOTP(4, text)} keyboardType='number-pad' ref={otpInputs[4]}></TextInput>
                             </View>
                             <Button onPress={verifyOtp} bgColor={palette.accent} textColor={palette.white} text={t('verify_phone')} />
+
+
+                            <TouchableOpacity onPress={() => setOtpType('whatsapp')} activeOpacity={0.8} style={[styles.w100, styles.p8, styles.fullCenter]}>
+                                <Text style={[styles.text, styles.textCenter, styles.bold, styles.font14, styles.primary]}>
+                                    {t('sms_failsafe')}
+                                </Text>
+                            </TouchableOpacity>
                         </>
                     }
                     {
-                        phone.startsWith('10') &&
+                        otpType === 'whatsapp' &&
                         <Button disabled={!uri} onPress={openWhatsapp} bgColor={palette.accent} textColor={palette.white} text={t('verify_whatsapp')} />
                     }
                     {/* <FastImage source={{ uri: 'https://seaats.app/img/create_acc_guide.png' }} style={{ width: '100%', aspectRatio: 1, borderRadius: 8 }} /> */}

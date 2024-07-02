@@ -344,6 +344,7 @@
         "safety_emergency_2": "Have emergency contacts & services' numbers readily available in your phone.",
         "learn_more": "Learn More",
         "splashscreen_failsafe": "Taking too long? Skip to login",
+        "sms_failsafe": "Didn't receive the code? Tap to verify through WhatsApp",
         
         "error_required": "This field is required",
         "error_name_short": "Name is too short",
@@ -370,6 +371,7 @@
         "error_datetime": "Date and time must be in the future",
         "error_wait_time": "You must wait for the timer to reach zero in order to set a passenger as no show",
         "error_number_type": "Please enter a number in English numerals (eg. 1234)",
+        "error_password": "Password must be at least 8 characters long",
 
         "permissions": "Permissions",
         "permissions_open_settings": "Open Settings",

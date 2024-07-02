@@ -49,7 +49,7 @@ const useAxiosManager = create((set) => {
                 useErrorManager.getState().setError('An unexpected error occurred');
                 return Promise.reject(error);
             }
-            console.log('B')
+            // console.log('B')
             // Handle response errors, extracting error message
             if(error.response.status == 401) return Promise.reject(error);
 

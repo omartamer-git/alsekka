@@ -50,6 +50,12 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         latitudeDelta: 0.0922, // Adjust as needed
         longitudeDelta: 0.0421, // Adjust as needed
     });
+    const [mapRegion, setMapRegion] = useState({
+        latitude: 30.0444,
+        longitude: 31.2357,
+        latitudeDelta: 0.0922, // Adjust as needed
+        longitudeDelta: 0.0421, // Adjust as needed
+    });
     // const sessionToken = useRef(null);
     const [mapPred, setMapPred] = useState(null);
     const inputLocRef = useRef(null);
@@ -281,6 +287,16 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
         setModalVisible(false);
     }
 
+    function handleChangeCity(city) {
+        setCity(city);
+        setMapRegion({
+            latitude: appManager.cities[city].latitude,
+            longitude: appManager.cities[city].longitude,
+            latitudeDelta: 0.0922, // Adjust as needed
+            longitudeDelta: 0.0421, // Adjust as needed
+        })
+    }
+
     function Prediction({ prediction }) {
         let color = palette.light;
         if (favoritePlaces) {
@@ -341,7 +357,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
 
                             {
                                 !city &&
-                                <CitySelector cities={cities} onCitySelect={setCity} />
+                                <CitySelector cities={cities} onCitySelect={handleChangeCity} />
                             }
 
                             {
@@ -450,7 +466,7 @@ const AutoComplete = forwardRef(function ({ style = {}, type, placeholder, handl
                                 <MapView
                                     style={[styles2.fullCenter, { ...StyleSheet.absoluteFillObject }]}
                                     showsUserLocation={true}
-                                    region={myLocation}
+                                    region={mapRegion}
                                     onRegionChangeComplete={onChangeRegion}
                                     provider={PROVIDER_GOOGLE}
                                     ref={mapViewRef}
