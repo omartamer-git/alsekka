@@ -125,6 +125,8 @@ function App() {
   const verified = useUserStore((state) => state.verified);
   const linkDevice = useUserStore((state) => state.linkDevice);
 
+  const [guest, setGuest] = useState(true);
+
   // const appManager = useAppManager();
   const setDeviceToken = useAppManager((state) => state.setDeviceToken);
   const deviceToken = useAppManager((state) => state.deviceToken);
@@ -170,6 +172,13 @@ function App() {
     prefixes: ['seaats://', 'https://seaats.app/share/', 'https://www.seaats.app/share/'],
     config
   }), [])
+
+  // useEffect(() => {
+  //   let newGuest = authAuthenticated === false || (verified === false && !verificationsDisabled);
+  //   if(guest !== newGuest) {
+  //     setGuest(newGuest);
+  //   }
+  // }, [authAuthenticated, verified, verificationsDisabled])
 
   const localeContext = useLocale();
   Text.defaultProps = {};
