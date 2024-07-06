@@ -65,6 +65,17 @@ const useUserStore = create((set) => ({
         )
     },
 
+    getVerificationsStatus: async function () {
+        const axiosManager = useAxiosManager.getState();
+        const response = await axiosManager.publicAxios.get(`/verificationsstatus`);
+
+        const data = response.data;
+        const appManager = useAppManager.getState();
+        appManager.setVerificationsDisabled(data.VERIFICATIONS_DISABLED)
+        console.log(data);
+        return data.VERIFICATIONS_DISABLED;
+    },
+
     login: async function (phoneNum, password) {
         const axiosManager = useAxiosManager.getState();
         const appManager = useAppManager.getState();

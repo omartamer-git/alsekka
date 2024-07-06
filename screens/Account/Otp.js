@@ -30,10 +30,11 @@ function Otp({ route, navigation }) {
     const onVerify = route.params?.onVerify;
     const [currentInput, setCurrentInput] = useState(0);
     const [error, setError] = useState(null);
-    const [otpType, setOtpType] = useState(phone.startsWith('10') ? 'whatsapp' : 'sms');
+    const [otpType, setOtpType] = useState(phone.startsWith('010') ? 'whatsapp' : 'sms');
     let countdownInterval = null;
 
     const getOtp = useUserStore(state => state.getOtp);
+    const getVerificationsStatus = useUserStore(state => state.getVerificationsStatus);
     const sendOtp = useUserStore(state => state.sendOtp);
     const sendOtpSecurity = useUserStore(state => state.sendOtpSecurity);
     const isVerified = useUserStore(state => state.isVerified);
@@ -68,7 +69,7 @@ function Otp({ route, navigation }) {
             navigation.popToTop();
             navigation.replace("Change Password", { token });
         }
-    }    
+    }
 
     const clockTick = function () {
         isVerified(phone).then(response => {
@@ -97,7 +98,7 @@ function Otp({ route, navigation }) {
     }, [triggerCountdown, time])
 
     useEffect(() => {
-        if(otpInputs[0].current) {
+        if (otpInputs[0].current) {
             otpInputs[0].current.focus();
         }
     }, [])
@@ -134,7 +135,19 @@ function Otp({ route, navigation }) {
     };
 
     useEffect(function () {
-        resendOtp();
+        if (onVerify === 'login') {
+            getVerificationsStatus().then((response) => {
+                console.log('res')
+                console.log(response);
+                if (response === true) {
+                    createAccountAndLogin();
+                } else {
+                    resendOtp();
+                }
+            });
+        } else {
+            resendOtp();
+        }
 
         return () => {
             console.log("OTP Unmounting")
@@ -153,7 +166,7 @@ function Otp({ route, navigation }) {
     function setOtpValue(index, text) {
         // console.log(text);
         let firstChar;
-        if(text.length === 1) {
+        if (text.length === 1) {
             firstChar = text;
             text = '';
         } else {
@@ -190,7 +203,7 @@ function Otp({ route, navigation }) {
             otpInputs[index + 1].current.focus();
         }
 
-        if(remainingText.length > 0) {
+        if (remainingText.length > 0) {
             changeOTP(index + 1, remainingText);
         }
     }
