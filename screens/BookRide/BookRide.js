@@ -179,7 +179,7 @@ function BookRide({ route, navigation }) {
     useEffect(function () {
         setTimeout(() => {
             if (mapViewRef) {
-                mapViewRef.current.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 }, animated: true });
+                mapViewRef.current?.fitToSuppliedMarkers(["from", "to"], { edgePadding: { top: 70, bottom: 50, right: 50, left: 50 }, animated: true });
             }
         }, 1000);
     }, [mapViewRef.current]);
@@ -313,7 +313,7 @@ function BookRide({ route, navigation }) {
 
     return (
         <>
-            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={function () { navigation.goBack() }}>
+            <ScreenWrapper screenName={t('book_ride')} navType="back" navAction={function () { navigation.replace('Find a Ride') }}>
                 <ScrollView keyboardShouldPersistTaps={'handled'} style={mapContainerStyle} contentContainerStyle={styles.flexGrow}>
                     <MapView
                         style={[styles.mapStyle]}
